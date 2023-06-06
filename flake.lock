@@ -1,0 +1,101 @@
+{
+  "nodes": {
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "mini-base16": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1683463477,
+        "narHash": "sha256-dP1lDEQ++HLoz1ald75HnEYtv4BLC3mLD+vqIwM6x6M=",
+        "owner": "echasnovski",
+        "repo": "mini.base16",
+        "rev": "577219204f2e29ff4e2095c979409d5498d7c226",
+        "type": "github"
+      },
+      "original": {
+        "owner": "echasnovski",
+        "repo": "mini.base16",
+        "type": "github"
+      }
+    },
+    "neovim": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "dir": "contrib",
+        "lastModified": 1685359478,
+        "narHash": "sha256-G51qD7GklEn0JrneKSSqDDx0Odi7W2FjdQc0ZDE9ZK4=",
+        "owner": "neovim",
+        "repo": "neovim",
+        "rev": "7d4bba7aa7a4a3444919ea7a3804094c290395ef",
+        "type": "github"
+      },
+      "original": {
+        "dir": "contrib",
+        "owner": "neovim",
+        "ref": "stable",
+        "repo": "neovim",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1686089707,
+        "narHash": "sha256-LTNlJcru2qJ0XhlhG9Acp5KyjB774Pza3tRH0pKIb3o=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "af21c31b2a1ec5d361ed8050edd0303c31306397",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nvim-luaref": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1645064202,
+        "narHash": "sha256-nmsKg1Ah67fhGzevTFMlncwLX9gN0JkR7Woi0T5On34=",
+        "owner": "milisims",
+        "repo": "nvim-luaref",
+        "rev": "9cd3ed50d5752ffd56d88dd9e395ddd3dc2c7127",
+        "type": "github"
+      },
+      "original": {
+        "owner": "milisims",
+        "repo": "nvim-luaref",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "mini-base16": "mini-base16",
+        "neovim": "neovim",
+        "nixpkgs": "nixpkgs",
+        "nvim-luaref": "nvim-luaref"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

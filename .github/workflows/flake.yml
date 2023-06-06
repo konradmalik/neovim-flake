@@ -1,0 +1,31 @@
+on: [push, pull_request]
+
+name: flake
+jobs:
+  flake:
+    runs-on: ubuntu-22.04
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v20
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
+
+      - name: Flake check
+        run: |
+          nix flake check
+
+      - uses: cachix/cachix-action@v12
+        with:
+          name: konradmalik
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+
+      - name: Shell build linux
+        run: |
+          nix build .#devShells.x86_64-linux.default
+
+      - name: Flake build default package
+        run: |
+          nix build .#packages.x86_64-linux.default
