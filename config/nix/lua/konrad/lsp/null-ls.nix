@@ -16,10 +16,14 @@ pkgs.writeTextDir "lua/konrad/lsp/null-ls.lua" ''
   -- the number of buffers it attaches to but we need it in all buffers in
   -- fact due to gitsigns
   null_ls.setup({
+      debug = false,
       sources = {
           -- always available
-          formatting.prettier_d_slim.with({
-            command = "${pkgs.nodePackages.prettier_d_slim}/bin/prettier_d_slim",
+          formatting.prettier.with({
+            command = "${pkgs.nodePackages.prettier}/bin/prettier",
+            timeout = 10000,
+            extra_filetypes = { "toml" },
+            extra_args = { "--plugin-search-dir", "${pkgs.nodePackages.prettier-plugin-toml}/lib" },
           }),
           formatting.shfmt.with({
             command = "${pkgs.shfmt}/bin/shfmt",
