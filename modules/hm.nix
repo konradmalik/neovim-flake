@@ -53,7 +53,7 @@ in
 
       appName = mkOption {
         type = types.str;
-        default = "neovim-pde";
+        default = "neovim-pde-hm";
         description = "NVIM_APPNAME to use";
       };
 
