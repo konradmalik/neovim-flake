@@ -20,12 +20,13 @@ pkgs.writeTextDir "lua/konrad/lsp/settings/yamlls.lua" ''
               format = {
                   enable = false -- use prettier from null-ls instead
               },
+              completion = true,
+              hover = true,
               validate = true,
               schemas = vim.tbl_extend("error",
                   schemastore.yaml.schemas(),
                   {
-                      ["https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master-standalone-strict/all.json"] =
-                      { "k8s/**/*.yml", "k8s/**/*.yaml" },
+                      ["kubernetes"] = { "k8s/**/*.yml", "k8s/**/*.yaml" },
                       -- or use:
                       -- # yaml-language-server: $schema=<urlToTheSchema>
                   }),
