@@ -34,6 +34,10 @@ pkgs.writeTextDir "lua/konrad/lsp/null-ls.lua" ''
           }),
 
           code_actions.gitsigns,
+          code_actions.shellcheck.with({
+            command = "${pkgs.shellcheck}/bin/shellcheck",
+          }),
+
           -- per project can be added in .nvim.lua via "register" function
           -- which takes a table of sources
       },
