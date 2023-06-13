@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     neovim = {
-      url = "github:neovim/neovim/stable?dir=contrib";
+      url = "github:neovim/neovim/release-0.9?dir=contrib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     mini-base16 = {
