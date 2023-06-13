@@ -1,8 +1,8 @@
 { pkgs, lib }:
 lib.makeOverridable (
-  { appName ? "neovim-pde", colorscheme ? "catppuccin-macchiato", viAlias ? false, vimAlias ? false, isolated ? true }:
+  { appName ? "neovim-pde", colorscheme ? "catppuccin-macchiato", palette ? null, viAlias ? false, vimAlias ? false, isolated ? true }:
   let
-    config = pkgs.callPackage ../../config { inherit appName colorscheme; };
+    config = pkgs.callPackage ../../config { inherit appName colorscheme palette; };
     plugins = pkgs.callPackage ./plugins.nix { };
     deps = pkgs.callPackage ./deps.nix { };
     extraMakeWrapperArgs =
