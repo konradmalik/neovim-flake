@@ -13,6 +13,9 @@ let
         "--cmd \"lua vim.opt.rtp:append('${config}')\""
         "--add-flags"
         "-u \"${config}/init.lua\""
+        "--set"
+        "XDG_CACHE_HOME"
+        "/tmp/${appName}-cache"
       ];
 
   neovimConfig = pkgs.neovimUtils.makeNeovimConfig {
