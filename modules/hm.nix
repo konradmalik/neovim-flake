@@ -1,5 +1,5 @@
-self:
-{ config, lib, pkgs, ... }:
+{ self, pkgs }:
+{ config, lib, ... }:
 with lib;
 let
   cfg = config.programs.neovim-pde;
@@ -111,11 +111,10 @@ in
 
   config =
     let
-      defaultBundle = self.lib.${pkgs.system}.bundle;
-      overridenBundle = defaultBundle.override { inherit (cfg) appName colorscheme palette isolated viAlias vimAlias; };
+      neovimBundle = self.lib.makeNeovimBundle pkgs { inherit (cfg) appName colorscheme palette isolated viAlias vimAlias; };
     in
     mkIf cfg.enable {
-      home.packages = [ overridenBundle.nvim ];
+      home.packages = [ neovimBundle.nvim ];
 
       home.sessionVariables = mkIf
         cfg.simpleDefaultEditor
@@ -130,7 +129,7 @@ in
 
       xdg.configFile = mkIf (!cfg.isolated) {
         ${cfg.appName} = {
-          source = overridenBundle.config;
+          source = neovimBundle.config;
           recursive = true;
         };
       };

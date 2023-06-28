@@ -19,6 +19,7 @@
 
   outputs = { self, nixpkgs, neovim, ... }@inputs:
     let
+      makeNeovimBundle = pkgs: args: (pkgs.callPackage ./packages/neovim-pde args);
       forAllSystems = function:
         nixpkgs.lib.genAttrs [
           "x86_64-linux"
@@ -38,7 +39,7 @@
                   };
                 })
                 (final: prev: {
-                  neovim-pde = (final.callPackage ./packages/neovim-pde { }) { };
+                  neovim-pde = (makeNeovimBundle final { }).nvim;
                 })
               ];
             }));
@@ -61,18 +62,19 @@
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
       packages = forAllSystems (pkgs: rec {
         default = neovim;
-        neovim = pkgs.neovim-pde.nvim;
+        neovim = pkgs.neovim-pde;
       });
       apps = forAllSystems (pkgs: {
         default = {
           type = "app";
-          program = "${pkgs.neovim-pde.nvim}/bin/nvim";
+          program = "${pkgs.neovim-pde}/bin/nvim";
         };
       });
-      lib = forAllSystems (pkgs: {
-        bundle = pkgs.neovim-pde;
+      lib = { inherit makeNeovimBundle; };
+      # TODO don't know how to do it better :(
+      homeManagerModules = forAllSystems (pkgs: {
+        default = import ./modules/hm.nix { inherit self pkgs; };
       });
-      homeManagerModules.default = import ./modules/hm.nix self;
     };
 
   nixConfig = {
