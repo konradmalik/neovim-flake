@@ -1,5 +1,5 @@
-{ self, pkgs }:
-{ config, lib, ... }:
+self:
+{ config, lib, pkgs, ... }:
 with lib;
 let
   cfg = config.programs.neovim-pde;
@@ -111,10 +111,10 @@ in
 
   config =
     let
-      neovimBundle = self.lib.makeNeovimBundle pkgs { inherit (cfg) appName colorscheme palette isolated viAlias vimAlias; };
+      bundle = self.lib.${pkgs.system}.makeNeovimBundle { inherit (cfg) appName colorscheme palette isolated viAlias vimAlias; };
     in
     mkIf cfg.enable {
-      home.packages = [ neovimBundle.nvim ];
+      home.packages = [ bundle.nvim ];
 
       home.sessionVariables = mkIf
         cfg.simpleDefaultEditor
@@ -127,11 +127,13 @@ in
           GIT_EDITOR = "nvim -u NONE";
         };
 
-      xdg.configFile = mkIf (!cfg.isolated) {
-        ${cfg.appName} = {
-          source = neovimBundle.config;
-          recursive = true;
-        };
+      xdg.configFile.${cfg.appName} = {
+        enable = !cfg.isolated;
+        source = bundle.config;
+        recursive = true;
+        onChange = ''
+          rm -rf ${config.xdg.cacheHome}/${cfg.appName}
+        '';
       };
 
       programs.git.ignores = mkIf

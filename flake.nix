@@ -19,7 +19,6 @@
 
   outputs = { self, nixpkgs, neovim, ... }@inputs:
     let
-      makeNeovimBundle = pkgs: args: (pkgs.callPackage ./packages/neovim-pde args);
       forAllSystems = function:
         nixpkgs.lib.genAttrs [
           "x86_64-linux"
@@ -34,12 +33,9 @@
               overlays = [
                 (final: prev: { neovim = neovim.packages.${system}.neovim; })
                 (final: prev: {
-                  vimPlugins = prev.vimPlugins // final.callPackage ./packages/vimPlugins {
+                  vimPlugins = prev.vimPlugins // prev.callPackage ./packages/vimPlugins {
                     inherit inputs;
                   };
-                })
-                (final: prev: {
-                  neovim-pde = (makeNeovimBundle final { }).nvim;
                 })
               ];
             }));
@@ -60,21 +56,27 @@
           };
       });
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
-      packages = forAllSystems (pkgs: rec {
-        default = neovim;
-        neovim = pkgs.neovim-pde;
-      });
+      packages = forAllSystems (pkgs:
+        let
+          bundle = self.lib.${pkgs.system}.makeNeovimBundle { };
+        in
+        {
+          default = bundle.nvim;
+          neovim = bundle.nvim;
+          config = bundle.config;
+          mini-base16 = pkgs.vimPlugins.mini-base16;
+          nvim-luaref = pkgs.vimPlugins.nvim-luaref;
+        });
       apps = forAllSystems (pkgs: {
         default = {
           type = "app";
-          program = "${pkgs.neovim-pde}/bin/nvim";
+          program = "${self.packages.${pkgs.system}.neovim}/bin/nvim";
         };
       });
-      lib = { inherit makeNeovimBundle; };
-      # TODO don't know how to do it better :(
-      homeManagerModules = forAllSystems (pkgs: {
-        default = import ./modules/hm.nix { inherit self pkgs; };
+      lib = forAllSystems (pkgs: {
+        makeNeovimBundle = args: (pkgs.callPackage ./packages/neovim-pde args);
       });
+      homeManagerModules.default = import ./modules/hm.nix self;
     };
 
   nixConfig = {
@@ -87,5 +89,4 @@
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs"
     ];
   };
-
 }
