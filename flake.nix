@@ -15,6 +15,10 @@
       url = "github:milisims/nvim-luaref";
       flake = false;
     };
+    fidget-nvim = {
+      url = "github:j-hui/fidget.nvim/legacy";
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, neovim, ... }@inputs:
