@@ -1,24 +1,10 @@
 local icons = require("konrad.icons")
 
 local colors = require('konrad.heirline.colors')
-local augroup = vim.api.nvim_create_augroup("ViModeHeirlineRedraw", { clear = true })
 
 return {
     init = function(self)
         self.mode = vim.fn.mode(1)
-        -- this is a workaround needed to see operation-pending status changes like n -> no
-        -- as they don't trigger statusline updates, but do trigger ModeChanged
-        -- pattern for this event is old_mode:new_mode
-        if not self.once then
-            vim.api.nvim_create_autocmd("ModeChanged", {
-                group = augroup,
-                pattern = "*:*o",
-                callback = function()
-                    vim.cmd("redrawstatus")
-                end
-            })
-        end
-        self.once = true
     end,
     static = {
         mode_names = {
@@ -82,5 +68,13 @@ return {
         local modeone = self.mode:sub(1, 1) -- get only the first mode character
         return { fg = self.mode_colors[modeone], bold = true, }
     end,
-    update = { "ModeChanged" },
+    update = {
+        -- Re-evaluate the component only on ModeChanged event
+        "ModeChanged",
+        -- Also allows the statusline to be re-evaluated when entering operator-pending mode
+        pattern = "*:*",
+        callback = vim.schedule_wrap(function()
+            vim.cmd("redrawstatus")
+        end),
+    },
 }
