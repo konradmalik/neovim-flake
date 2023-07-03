@@ -66,12 +66,18 @@ local DefaultStatusline = {
 
 local InactiveStatusline = {
     condition = conditions.is_not_active,
-    FileType, Space, FileName, Align,
+    FileType,
+    Space,
+    FileName,
+    Align,
 }
 
 local SpecialStatusline = {
     condition = isSpecial,
-    FileType, Space, HelpFileName, Align
+    FileType,
+    Space,
+    HelpFileName,
+    Align
 }
 
 local StatusLines = {
@@ -85,7 +91,9 @@ local StatusLines = {
     -- the first statusline with no condition, or which condition returns true is used.
     -- think of it as a switch case with breaks to stop fallthrough.
     fallthrough = false,
-    SpecialStatusline, InactiveStatusline, DefaultStatusline,
+    SpecialStatusline,
+    InactiveStatusline,
+    DefaultStatusline,
 }
 
 -- global statusline
