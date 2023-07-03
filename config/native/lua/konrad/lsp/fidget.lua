@@ -6,7 +6,7 @@ end
 
 fidget.setup {
     text = {
-        spinner = "moon",
+        spinner = "dots",
     },
     window = {
         relative = "editor",
