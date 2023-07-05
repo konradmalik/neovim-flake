@@ -34,8 +34,20 @@ M.setup = function()
         else
             vim.notify("bad type for config: " .. vim.inspect(config))
         end
-
     end
 end
+
+-- lazy loading on demand
+local utils = require("konrad.utils")
+utils.make_enable_command(
+    "DapEnable",
+    { 'nvim-dap', 'nvim-dap-ui', 'nvim-dap-virtual-text' },
+    function()
+        M.setup()
+    end,
+    {
+        desc = "Initialize Dap functionalities",
+    }
+)
 
 return M

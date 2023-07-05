@@ -72,3 +72,14 @@ cmp.setup({
         documentation = cmp.config.window.bordered(),
     },
 })
+
+local utils = require("konrad.utils")
+utils.make_enable_command(
+    "CopilotEnable",
+    { "copilot.lua", "copilot-cmp" },
+    function()
+        require("konrad.cmp.copilot")
+    end,
+    {
+        desc = "Initialize Copilot server and cmp source",
+    })
