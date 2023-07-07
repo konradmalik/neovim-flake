@@ -29,6 +29,11 @@ pkgs.symlinkJoin {
     lsp-yamlls-lua
     lsp-nullls-lua
   ];
+  # config structure:
+  # - if isolated is false, then $out/init.lua. This is for home-manager
+  # - if isolated is true, then $out/${appName}/init.lua. This is for 'nix run .' etc where we override XDG_CONFIG_HOME
+  #   and the expected structure is the same as XDG_CONFIG_HOME
+  # postBuild below rusn if isolated and it's purpose is to create XDG_CONFIG_HOME-like folder structure
   postBuild = lib.optionalString isolated ''
     mkdir $out/${appName}
     shopt -s extglob dotglob
