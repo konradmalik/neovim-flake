@@ -1,4 +1,4 @@
-{ pkgs, appName, colorscheme, palette }:
+{ pkgs, lib, appName, colorscheme, isolated, palette }:
 let
   nativeConfig = pkgs.stdenv.mkDerivation {
     name = "${appName}-native-config";
@@ -29,4 +29,10 @@ pkgs.symlinkJoin {
     lsp-yamlls-lua
     lsp-nullls-lua
   ];
+  postBuild = lib.optionalString isolated ''
+    mkdir $out/${appName}
+    shopt -s extglob dotglob
+    mv $out/!(${appName}) $out/${appName}
+    shopt -u dotglob
+  '';
 }

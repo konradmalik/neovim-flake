@@ -1,6 +1,6 @@
 { pkgs, lib, appName ? "neovim-pde", colorscheme ? "catppuccin-macchiato", palette ? null, viAlias ? false, vimAlias ? false, isolated ? true }:
 let
-  config = pkgs.callPackage ../../config { inherit appName colorscheme palette; };
+  config = pkgs.callPackage ../../config { inherit appName colorscheme isolated palette; };
   plugins = pkgs.callPackage ./plugins.nix { };
   deps = pkgs.callPackage ./deps.nix { };
   extraMakeWrapperArgs =
@@ -9,10 +9,9 @@ let
       [ "--suffix" "PATH" ":" "${lib.makeBinPath deps}" ]
     ++ lib.optionals isolated
       [
-        "--add-flags"
-        "--cmd \"lua vim.opt.rtp:append('${config}')\""
-        "--add-flags"
-        "-u \"${config}/init.lua\""
+        "--set"
+        "XDG_CONFIG_HOME"
+        "${config}"
         "--set"
         "XDG_CACHE_HOME"
         "/tmp/${appName}-cache"
