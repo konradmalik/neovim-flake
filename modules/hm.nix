@@ -3,34 +3,6 @@ self:
 with lib;
 let
   cfg = config.programs.neovim-pde;
-
-  mkColorType = name:
-    mkOption {
-      type = types.str;
-      description =
-        "${name} color in RRGGBB format";
-    };
-
-  paletteType = types.nullOr (types.submodule {
-    options = {
-      base00 = mkColorType "base00";
-      base01 = mkColorType "base01";
-      base02 = mkColorType "base02";
-      base03 = mkColorType "base03";
-      base04 = mkColorType "base04";
-      base05 = mkColorType "base05";
-      base06 = mkColorType "base06";
-      base07 = mkColorType "base07";
-      base08 = mkColorType "base08";
-      base09 = mkColorType "base09";
-      base0A = mkColorType "base0A";
-      base0B = mkColorType "base0B";
-      base0C = mkColorType "base0C";
-      base0D = mkColorType "base0D";
-      base0E = mkColorType "base0E";
-      base0F = mkColorType "base0F";
-    };
-  });
 in
 {
   options = {
@@ -94,24 +66,12 @@ in
           If false, will symlink it's config to `$XDG_CONFIG_HOME/$NVIM_APPNAME` and run without -u flag.
         '';
       };
-
-      colorscheme = mkOption {
-        type = types.str;
-        default = "catppuccin-macchiato";
-        description = "colorscheme slug. See colorscheme.lua";
-      };
-
-      palette = mkOption {
-        type = paletteType;
-        default = null;
-        description = "base16 palette to use in case of no matching colorscheme found";
-      };
     };
   };
 
   config =
     let
-      bundle = self.lib.${pkgs.system}.makeNeovimBundle { inherit (cfg) appName colorscheme palette isolated viAlias vimAlias; };
+      bundle = self.lib.${pkgs.system}.makeNeovimBundle { inherit (cfg) appName isolated viAlias vimAlias; };
     in
     mkIf cfg.enable {
       home.packages = [ bundle.nvim ];

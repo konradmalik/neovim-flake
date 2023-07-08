@@ -1,6 +1,6 @@
-{ pkgs, lib, appName ? "neovim-pde", colorscheme ? "catppuccin-macchiato", palette ? null, viAlias ? false, vimAlias ? false, isolated ? true }:
+{ pkgs, lib, appName ? "neovim-pde", viAlias ? false, vimAlias ? false, isolated ? true }:
 let
-  config = pkgs.callPackage ../../config { inherit appName colorscheme isolated palette; };
+  config = pkgs.callPackage ../../config { inherit appName isolated; };
   plugins = pkgs.callPackage ./plugins.nix { };
   deps = pkgs.callPackage ./deps.nix { };
   extraMakeWrapperArgs =

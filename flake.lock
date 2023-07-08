@@ -32,22 +32,6 @@
         "type": "github"
       }
     },
-    "mini-base16": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1687437368,
-        "narHash": "sha256-QpWKP0L77hBkKaG8fcPaMRKq7bATwUpWOC6tAw9/T8Y=",
-        "owner": "echasnovski",
-        "repo": "mini.base16",
-        "rev": "d896e8e41cdfb97ea6fa4f1129901aca6d201b5a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "echasnovski",
-        "repo": "mini.base16",
-        "type": "github"
-      }
-    },
     "neovim": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -107,7 +91,6 @@
     "root": {
       "inputs": {
         "fidget-nvim": "fidget-nvim",
-        "mini-base16": "mini-base16",
         "neovim": "neovim",
         "nixpkgs": "nixpkgs",
         "nvim-luaref": "nvim-luaref"

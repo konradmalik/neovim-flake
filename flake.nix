@@ -7,10 +7,6 @@
       url = "github:neovim/neovim/release-0.9?dir=contrib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    mini-base16 = {
-      url = "github:echasnovski/mini.base16";
-      flake = false;
-    };
     nvim-luaref = {
       url = "github:milisims/nvim-luaref";
       flake = false;
@@ -75,7 +71,6 @@
           default = bundle.nvim;
           neovim = bundle.nvim;
           config = bundle.config;
-          mini-base16 = pkgs.vimPlugins.mini-base16;
           nvim-luaref = pkgs.vimPlugins.nvim-luaref;
         });
       apps = forAllSystems (pkgs: {

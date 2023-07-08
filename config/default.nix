@@ -1,4 +1,4 @@
-{ pkgs, lib, appName, colorscheme, isolated, palette }:
+{ pkgs, lib, appName, isolated }:
 let
   nativeConfig = pkgs.stdenv.mkDerivation {
     name = "${appName}-native-config";
@@ -9,7 +9,6 @@ let
     '';
   };
   # manually handle nix templates to avoid IFD
-  colorscheme-lua = pkgs.callPackage ./nix/lua/konrad/colorscheme.nix { inherit colorscheme palette; };
   dap-cs-lua = pkgs.callPackage ./nix/lua/konrad/dap/configurations/cs.nix { };
   dap-go-lua = pkgs.callPackage ./nix/lua/konrad/dap/configurations/go.nix { };
   dap-python-lua = pkgs.callPackage ./nix/lua/konrad/dap/configurations/python.nix { };
@@ -21,7 +20,6 @@ pkgs.symlinkJoin {
   name = "${appName}-config";
   paths = [
     nativeConfig
-    colorscheme-lua
     dap-cs-lua
     dap-go-lua
     dap-python-lua

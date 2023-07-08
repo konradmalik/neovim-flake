@@ -72,8 +72,7 @@ processMadePlugins (with pkgs.vimPlugins; [
     dependencies = [ gitsigns-nvim nvim-web-devicons { plugin = nvim-navic; optional = true; } ];
   })
   # ui
-  (makePlugin catppuccin-nvim)
-  (makePlugin { plugin = mini-base16; optional = true; })
+  (makePlugin kanagawa-nvim)
   (makePlugin dressing-nvim)
   (makePlugin
     {
