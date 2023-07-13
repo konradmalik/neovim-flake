@@ -154,8 +154,6 @@ M.attach = function(client, bufnr)
             desc = "AutoFormat on save",
             group = augroup,
             buffer = bufnr,
-            -- why pcall? null-ls registers itself as formatter, but
-            -- it attaches to all buffers
             callback = function()
                 if format_is_enabled then
                     vim.lsp.buf.format({
