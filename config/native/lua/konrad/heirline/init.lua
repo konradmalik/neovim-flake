@@ -36,7 +36,7 @@ local Hostname = require('konrad.heirline.hostname')
 local isSpecial = function()
     return conditions.buffer_matches({
         buftype = { "nofile", "prompt", "help", "quickfix" },
-        filetype = { "^git.*" },
+        filetype = { "^git.*", "fugitive" },
     })
 end
 

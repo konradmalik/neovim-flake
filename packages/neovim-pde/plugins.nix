@@ -94,10 +94,6 @@ processMadePlugins (with pkgs.vimPlugins; [
   (makePlugin indent-blankline-nvim)
   (makePlugin nvim-luaref)
   (makePlugin { plugin = undotree; optional = true; })
-  (makePlugin {
-    plugin = neogit;
-    optional = true;
-    dependencies = [ plenary-nvim telescope-nvim ];
-  })
+  (makePlugin { plugin = vim-fugitive; optional = true; })
   (makePlugin which-key-nvim)
 ])

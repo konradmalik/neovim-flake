@@ -7,5 +7,4 @@ utils.make_enable_command(
     end,
     {
         desc = "Initialize Undotree and open it",
-    },
-    true)
+    })
