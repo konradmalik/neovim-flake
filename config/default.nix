@@ -9,6 +9,7 @@ let
     '';
   };
   # manually handle nix templates to avoid IFD
+  cmp-copilot-lua = pkgs.callPackage ./nix/lua/konrad/cmp/copilot.nix { };
   dap-cs-lua = pkgs.callPackage ./nix/lua/konrad/dap/configurations/cs.nix { };
   dap-go-lua = pkgs.callPackage ./nix/lua/konrad/dap/configurations/go.nix { };
   dap-python-lua = pkgs.callPackage ./nix/lua/konrad/dap/configurations/python.nix { };
@@ -22,6 +23,7 @@ pkgs.symlinkJoin {
   name = "${appName}-config";
   paths = [
     nativeConfig
+    cmp-copilot-lua
     dap-cs-lua
     dap-go-lua
     dap-python-lua

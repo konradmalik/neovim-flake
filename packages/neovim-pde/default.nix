@@ -20,8 +20,7 @@ let
   neovimConfig = pkgs.neovimUtils.makeNeovimConfig {
     inherit plugins viAlias vimAlias;
     withPython3 = false;
-    # copilot dependency
-    withNodeJs = true;
+    withNodeJs = false;
     withRuby = false;
   };
 in
