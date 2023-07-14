@@ -13,6 +13,7 @@ let
   dap-go-lua = pkgs.callPackage ./nix/lua/konrad/dap/configurations/go.nix { };
   dap-python-lua = pkgs.callPackage ./nix/lua/konrad/dap/configurations/python.nix { };
   lsp-efm-lua = pkgs.callPackage ./nix/lua/konrad/lsp/settings/efm.nix { };
+  lsp-efm-prettier-lua = pkgs.callPackage ./nix/lua/konrad/lsp/settings/efm/prettier.nix { };
   lsp-jsonls-lua = pkgs.callPackage ./nix/lua/konrad/lsp/settings/jsonls.nix { };
   lsp-yamlls-lua = pkgs.callPackage ./nix/lua/konrad/lsp/settings/yamlls.nix { };
   lsp-nullls-lua = pkgs.callPackage ./nix/lua/konrad/lsp/null-ls.nix { };
@@ -25,6 +26,7 @@ pkgs.symlinkJoin {
     dap-go-lua
     dap-python-lua
     lsp-efm-lua
+    lsp-efm-prettier-lua
     lsp-jsonls-lua
     lsp-yamlls-lua
     lsp-nullls-lua

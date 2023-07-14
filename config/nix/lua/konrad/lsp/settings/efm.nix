@@ -1,19 +1,8 @@
-# vim: ft=lua
 { pkgs }:
 pkgs.writeTextDir "lua/konrad/lsp/settings/efm.lua" ''
   -- https://github.com/mattn/efm-langserver
-  return {
-    cmd = { "${pkgs.efm-langserver}/bin/efm-langserver" },
-    single_file_support = true,
-    filetypes = { 'markdown' },
-    init_options = { documentFormatting = true, },
-    settings = {
-        rootMarkers = { '.git/' },
-        languages = {
-            markdown = {
-                { formatCommand = "${pkgs.nodePackages.prettier}/bin/prettier --plugin-search-dir ${pkgs.nodePackages.prettier-plugin-toml}/lib" },
-            },
-        },
-    },
-  }
+  local utils = require('konrad.lsp.settings.efm.utils')
+  local efm_config = utils.efm_with({'prettier'})
+
+  return vim.tbl_extend('error', { cmd = { "${pkgs.efm-langserver}/bin/efm-langserver" } }, efm_config)
 ''

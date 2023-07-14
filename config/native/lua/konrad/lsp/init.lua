@@ -1,6 +1,6 @@
 local utils = require('konrad.utils')
 -- if add is called rather late, after the file is opened, then the configured server won't start for the current buffer
--- solution is to check if we currently have a buffer and if it matches configure filetype
+-- solution is to check if we currently have a buffer and if it matches the configured filetype
 ---@param config table
 ---@return nil
 local function start_if_needed(config)
