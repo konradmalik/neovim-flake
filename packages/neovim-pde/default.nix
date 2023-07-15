@@ -9,8 +9,13 @@ let
       [ "--suffix" "PATH" ":" "${lib.makeBinPath deps}" ]
     ++ lib.optionals isolated
       [
-        "--set"
-        "XDG_CONFIG_HOME"
+        "--add-flags"
+        "-u"
+        "--add-flags"
+        "'${config}/${appName}/init.lua'"
+        "--prefix"
+        "XDG_CONFIG_DIRS"
+        ":"
         "${config}"
         "--set"
         "XDG_CACHE_HOME"
