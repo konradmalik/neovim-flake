@@ -1,6 +1,6 @@
 { pkgs }:
-pkgs.writeTextDir "lua/konrad/lsp/settings/efm/prettier.lua" ''
-  local utils = require('konrad.lsp.settings.efm.utils')
+pkgs.writeTextDir "lua/konrad/lsp/efm/prettier.lua" ''
+  local utils = require('konrad.lsp.efm.utils')
 
   local prettier_fts = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less",
       "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars", "toml" }

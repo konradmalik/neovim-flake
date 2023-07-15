@@ -1,4 +1,3 @@
-# vim: ft=lua
 { pkgs }:
 pkgs.writeTextDir "lua/konrad/lsp/null-ls.lua" ''
   -- https://github.com/jose-elias-alvarez/null-ls.nvim

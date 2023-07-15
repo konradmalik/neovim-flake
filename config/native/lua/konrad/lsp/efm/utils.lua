@@ -13,7 +13,7 @@ M.efm_with = function(plugins)
     local filetypes = {}
     local languages = {}
     for i, v in ipairs(plugins) do
-        local plugin = require('konrad.lsp.settings.efm.' .. v)
+        local plugin = require('konrad.lsp.efm.' .. v)
         filetypes = vim.tbl_extend('keep', vim.tbl_keys(plugin), {})
         languages = vim.tbl_deep_extend('error', plugin, {})
     end
