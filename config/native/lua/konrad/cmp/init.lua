@@ -10,7 +10,7 @@ end
 
 local kind_icons = require("konrad.icons").kind
 local menu_entries = {
-    -- copilot runs on demand via 'Copilot' command
+    -- copilot runs on demand via 'CopilotEnable' command
     copilot = "[Copilot]",
     nvim_lsp = "[LSP]",
     luasnip = "[Snippet]",
@@ -56,7 +56,12 @@ cmp.setup({
         fields = { "kind", "abbr", "menu" },
         format = function(entry, vim_item)
             vim_item.kind = kind_icons[vim_item.kind]
-            vim_item.menu = menu_entries[entry.source.name]
+            if entry.source.name == "nvim_lsp" then
+                -- name of lsp client
+                vim_item.menu = entry.source.source.client.name
+            else
+                vim_item.menu = menu_entries[entry.source.name] or entry.source.name
+            end
             return vim_item
         end,
     },
