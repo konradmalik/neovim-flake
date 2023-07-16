@@ -106,7 +106,7 @@ end
 M.setup = function()
     require("konrad.lsp.fidget")
     require("konrad.lsp.null-ls")
-    -- add_efm({ "prettier", "jq", "shellcheck" })
+    -- add_efm({ "prettier", "jq", "shfmt", "shellcheck" })
     require("konrad.lsp.attach")
 end
 
