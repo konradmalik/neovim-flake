@@ -105,6 +105,8 @@ neo_tree.setup({
                 ".null-ls_*",
             },
         },
-        follow_current_file = true,
+        follow_current_file = {
+            enabled = true,
+        },
     },
 })

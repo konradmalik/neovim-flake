@@ -7,12 +7,17 @@
       url = "github:neovim/neovim/release-0.9?dir=contrib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nvim-luaref = {
-      url = "github:milisims/nvim-luaref";
-      flake = false;
-    };
+    # plugins
     fidget-nvim = {
       url = "github:j-hui/fidget.nvim/legacy";
+      flake = false;
+    };
+    neo-tree-nvim = {
+      url = "github:nvim-neo-tree/neo-tree.nvim/v3.x";
+      flake = false;
+    };
+    nvim-luaref = {
+      url = "github:milisims/nvim-luaref";
       flake = false;
     };
   };

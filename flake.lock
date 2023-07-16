@@ -32,6 +32,23 @@
         "type": "github"
       }
     },
+    "neo-tree-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1689375767,
+        "narHash": "sha256-DfR0pFtQdkRmJexUVVCQ4xYHnlkOVbnhq+X43OORd9w=",
+        "owner": "nvim-neo-tree",
+        "repo": "neo-tree.nvim",
+        "rev": "981a43adcca25e7ccc3c589902d49f25e4d48ebc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-neo-tree",
+        "ref": "v3.x",
+        "repo": "neo-tree.nvim",
+        "type": "github"
+      }
+    },
     "neovim": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -91,6 +108,7 @@
     "root": {
       "inputs": {
         "fidget-nvim": "fidget-nvim",
+        "neo-tree-nvim": "neo-tree-nvim",
         "neovim": "neovim",
         "nixpkgs": "nixpkgs",
         "nvim-luaref": "nvim-luaref"
