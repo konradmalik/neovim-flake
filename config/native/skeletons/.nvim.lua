@@ -12,7 +12,7 @@ lsp.add("nil_ls")
 -- lsp.add("terraformls")
 -- lsp.add("yamlls")
 
--- lsp.add("efm", {'prettier'})
+-- lsp.add("efm", {'nixpkgs_fmt'})
 
 local null = require("null-ls")
 -- lsp.add("null-ls", null.builtins.formatting.black)

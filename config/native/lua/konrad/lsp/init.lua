@@ -42,7 +42,7 @@ local add_null_ls = function(sources)
 end
 
 local add_efm = function(plugins)
-    local config = require("konrad.lsp.efm").config_with_plugins(plugins)
+    local config = require("konrad.lsp.efm").updated_config_for(plugins)
     add_lspconfig("efm", config)
 end
 
@@ -64,7 +64,7 @@ local M = {}
 ---      - terraformls
 ---      - yamlls
 ---
---- Common examples for null-ls:
+--- Common examples for efm:
 --       - {'black','isort'}
 ---
 --- Common examples for null-ls:
@@ -106,6 +106,7 @@ end
 M.setup = function()
     require("konrad.lsp.fidget")
     require("konrad.lsp.null-ls")
+    -- add_efm({ "prettier", "jq", "shellcheck" })
     require("konrad.lsp.attach")
 end
 

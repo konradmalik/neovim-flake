@@ -1,5 +1,19 @@
 local utils = {}
 
+-- concatenate two array-like tables
+-- MODIFIES THE FIRST TABLE
+-- TODO make unique
+---@param t1 any[]
+---@param t2 any[]
+---@return any[]
+function utils.concat_lists(t1, t2)
+    for k, v in ipairs(t2) do
+        table.insert(t1, v)
+    end
+
+    return t1
+end
+
 function utils.first_to_upper(str)
     return str:gsub("^%l", string.upper)
 end

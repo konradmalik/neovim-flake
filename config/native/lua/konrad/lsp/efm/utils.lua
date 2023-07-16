@@ -1,3 +1,4 @@
+local utils = require("konrad.utils")
 local M = {}
 
 ---@param fts string[]
@@ -6,21 +7,31 @@ local M = {}
 M.make_languages_entry_for_fts = function(fts, entry)
     -- efm requires nested tables here (notice brackets in entry)
     local nested = vim.tbl_map(function(t) return { [t] = { entry } } end, fts)
+    if #nested < 1 then
+        error("must have at least one entry")
+    elseif #nested == 1 then
+        return nested[1]
+    end
     return vim.tbl_extend("error", unpack(nested))
 end
+
 ---@param plugins string[] names of plugins to add, ex. 'prettier'
 M.efm_with = function(plugins)
-    local filetypes = {}
     local languages = {}
-    for i, v in ipairs(plugins) do
+    for _, v in ipairs(plugins) do
         local plugin = require('konrad.lsp.efm.' .. v)
-        filetypes = vim.tbl_extend('keep', vim.tbl_keys(plugin), {})
-        languages = vim.tbl_deep_extend('error', plugin, {})
+        for key, value in pairs(plugin) do
+            if languages[key] then
+                languages[key] = utils.concat_lists(languages[key], value)
+            else
+                languages[key] = value
+            end
+        end
     end
 
     return {
         single_file_support = true,
-        filetypes = filetypes,
+        filetypes = vim.tbl_keys(languages),
         init_options = { documentFormatting = true, },
         settings = {
             rootMarkers = { '.git/' },
