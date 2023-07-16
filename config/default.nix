@@ -14,14 +14,10 @@ let
   dap-go-lua = pkgs.callPackage ./nix/lua/konrad/dap/configurations/go.nix { };
   dap-python-lua = pkgs.callPackage ./nix/lua/konrad/dap/configurations/python.nix { };
   lsp-efm-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/init.nix { };
-  lsp-efm-black-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/black.nix { };
-  lsp-efm-isort-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/isort.nix { };
   lsp-efm-jq-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/jq.nix { };
-  lsp-efm-nixpkgs-fmt-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/nixpkgs_fmt.nix { };
   lsp-efm-prettier-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/prettier.nix { };
   lsp-efm-shellcheck-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/shellcheck.nix { };
   lsp-efm-shfmt-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/shfmt.nix { };
-  lsp-efm-terraform-fmt-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/terraform_fmt.nix { };
   lsp-jsonls-lua = pkgs.callPackage ./nix/lua/konrad/lsp/settings/jsonls.nix { };
   lsp-yamlls-lua = pkgs.callPackage ./nix/lua/konrad/lsp/settings/yamlls.nix { };
   lsp-nullls-lua = pkgs.callPackage ./nix/lua/konrad/lsp/null-ls.nix { };
@@ -35,14 +31,10 @@ pkgs.symlinkJoin {
     dap-go-lua
     dap-python-lua
     lsp-efm-lua
-    lsp-efm-black-lua
-    lsp-efm-isort-lua
     lsp-efm-jq-lua
-    lsp-efm-nixpkgs-fmt-lua
     lsp-efm-prettier-lua
     lsp-efm-shellcheck-lua
     lsp-efm-shfmt-lua
-    lsp-efm-terraform-fmt-lua
     lsp-jsonls-lua
     lsp-yamlls-lua
     lsp-nullls-lua
