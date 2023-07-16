@@ -7,7 +7,7 @@
       url = "github:neovim/neovim/release-0.9?dir=contrib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # plugins
+    # plugins that I want to manually control
     fidget-nvim = {
       url = "github:j-hui/fidget.nvim/legacy";
       flake = false;
