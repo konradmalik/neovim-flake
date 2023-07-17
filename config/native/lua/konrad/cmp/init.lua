@@ -58,7 +58,7 @@ cmp.setup({
             vim_item.kind = kind_icons[vim_item.kind]
             if entry.source.name == "nvim_lsp" then
                 -- name of lsp client
-                vim_item.menu = entry.source.source.client.name
+                vim_item.menu = '[' .. entry.source.source.client.name .. ']'
             else
                 vim_item.menu = menu_entries[entry.source.name] or entry.source.name
             end
