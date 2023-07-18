@@ -1,8 +1,8 @@
 local utils = require('konrad.lsp.efm.utils')
 
-local fts = { "python" }
+local fts = { "go" }
 local entry = {
-    formatCommand = "black --no-color --quiet --stdin-filename ${INPUT} -",
+    formatCommand = "goimports",
     formatStdin = true,
 }
 
