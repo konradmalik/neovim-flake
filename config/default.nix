@@ -9,35 +9,13 @@ let
     '';
   };
   # manually handle nix templates to avoid IFD
-  cmp-copilot-lua = pkgs.callPackage ./nix/lua/konrad/cmp/copilot.nix { };
-  dap-cs-lua = pkgs.callPackage ./nix/lua/konrad/dap/configurations/cs.nix { };
-  dap-go-lua = pkgs.callPackage ./nix/lua/konrad/dap/configurations/go.nix { };
-  dap-python-lua = pkgs.callPackage ./nix/lua/konrad/dap/configurations/python.nix { };
-  lsp-efm-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/init.nix { };
-  lsp-efm-jq-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/jq.nix { };
-  lsp-efm-prettier-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/prettier.nix { };
-  lsp-efm-shellcheck-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/shellcheck.nix { };
-  lsp-efm-shfmt-lua = pkgs.callPackage ./nix/lua/konrad/lsp/efm/shfmt.nix { };
-  lsp-jsonls-lua = pkgs.callPackage ./nix/lua/konrad/lsp/settings/jsonls.nix { };
-  lsp-yamlls-lua = pkgs.callPackage ./nix/lua/konrad/lsp/settings/yamlls.nix { };
-  lsp-nullls-lua = pkgs.callPackage ./nix/lua/konrad/lsp/null-ls.nix { };
+  binaries-lua = pkgs.callPackage ./nix/lua/konrad/binaries.nix { };
 in
 pkgs.symlinkJoin {
   name = "${appName}-config";
   paths = [
     nativeConfig
-    cmp-copilot-lua
-    dap-cs-lua
-    dap-go-lua
-    dap-python-lua
-    lsp-efm-lua
-    lsp-efm-jq-lua
-    lsp-efm-prettier-lua
-    lsp-efm-shellcheck-lua
-    lsp-efm-shfmt-lua
-    lsp-jsonls-lua
-    lsp-yamlls-lua
-    lsp-nullls-lua
+    binaries-lua
   ];
   # config structure:
   # - if isolated is false, then $out/init.lua. This is for home-manager
