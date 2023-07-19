@@ -65,7 +65,7 @@ M.detach = function(client, bufnr)
         local keymaps = vim.api.nvim_buf_get_keymap(bufnr, mode)
         for _, keymap in ipairs(keymaps) do
             if keymap.desc then
-                if utils.stringstarts(keymap.desc, keymap_prefix) then
+                if vim.startswith(keymap.desc, keymap_prefix) then
                     pcall(vim.api.nvim_buf_del_keymap, bufnr, mode, keymap.lhs)
                 end
             end

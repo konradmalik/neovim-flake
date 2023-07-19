@@ -12,7 +12,6 @@ vim.filetype.add({
     --     },
     -- }
     filename = {
-        Earthfile = "dockerfile",
         Tiltfile = "python",
     },
 })

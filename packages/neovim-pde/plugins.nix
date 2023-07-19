@@ -84,6 +84,7 @@ processMadePlugins (with pkgs.vimPlugins; [
   (makePlugin comment-nvim)
   (makePlugin {
     plugin = diffview-nvim;
+    optional = true;
     dependencies = [ plenary-nvim nvim-web-devicons ];
   })
   (makePlugin {

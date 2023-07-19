@@ -4,13 +4,13 @@ local binaries = require('konrad.binaries')
 local already_enabled_set = {}
 --
 ---@param plugins string[] names of plugins to add, ex. 'prettier'
-function efm_with(plugins)
+local efm_with = function(plugins)
     local languages = {}
     for _, v in ipairs(plugins) do
         local plugin = require('konrad.lsp.efm.' .. v)
         for key, value in pairs(plugin) do
             if languages[key] then
-                languages[key] = utils.concat_lists(languages[key], value)
+                languages[key] = vim.list_extend(languages[key], value)
             else
                 languages[key] = value
             end
