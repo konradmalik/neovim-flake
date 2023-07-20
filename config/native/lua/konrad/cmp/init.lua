@@ -15,14 +15,12 @@ utils.make_enable_command(
 
 utils.lazy_load({},
     function()
-        P("hehe")
         local cmp_status_ok, cmp = pcall(require, "cmp")
         if not cmp_status_ok then
             vim.notify("cannot load cmp")
             return
         end
 
-        P("HOHO")
         local kind_icons = require("konrad.icons").kind
         local menu_entries = {
             -- copilot runs on demand via 'CopilotEnable' command

@@ -14,16 +14,22 @@ lsp.add("nil_ls")
 
 -- lsp.add("efm", {'nixpkgs_fmt'})
 
--- lsp.add("null-ls", function(null) return null.builtins.formatting.black end)
--- lsp.add("null-ls", function(null) return null.builtins.formatting.isort end)
--- lsp.add("null-ls", function(null) return null.builtins.formatting.xmllint end)
-lsp.add("null-ls", function(null) return null.builtins.formatting.nixpkgs_fmt end)
--- lsp.add("null-ls", function(null) return null.builtins.formatting.terraform_fmt end)
--- lsp.add("null-ls", function(null) return null.builtins.diagnostics.cspell end)
--- lsp.add("null-ls", function(null) return null.builtins.diagnostics.mypy end)
--- lsp.add("null-ls", function(null) return null.builtins.diagnostics.vale end)
+lsp.add("null-ls", function(null)
+    return {
+        -- null.builtins.formatting.black,
+        -- null.builtins.diagnostics.cspell,
+        -- null.builtins.formatting.isort,
+        -- null.builtins.diagnostics.mypy,
+        null.builtins.formatting.nixpkgs_fmt,
+        -- null.builtins.formatting.terraform_fmt,
+        -- null.builtins.diagnostics.vale,
+        -- null.builtins.formatting.xmllint,
+    }
+end)
 
 -- local dap = require("konrad.dap")
 -- dap.add("cs")
 -- dap.add("go")
 -- dap.add("python")
+
+lsp.initialize()

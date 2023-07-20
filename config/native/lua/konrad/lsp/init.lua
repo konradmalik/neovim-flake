@@ -18,109 +18,98 @@ local function start_if_needed(config)
     end
 end
 
-local add_lspconfig = function(server, opts)
-    utils.lazy_load("nvim-lspconfig", function()
-            local lspconfig = require("lspconfig")
-            local capabilities = require("konrad.lsp.capabilities")
+local init_lspconfig = function(server, opts)
+    local lspconfig = require("lspconfig")
+    local capabilities = require("konrad.lsp.capabilities")
 
-            local found, overrides = pcall(require, "konrad.lsp.settings." .. server)
-            if not found then
-                overrides = {}
-            end
+    local found, overrides = pcall(require, "konrad.lsp.settings." .. server)
+    if not found then
+        overrides = {}
+    end
 
-            local base = {
-                capabilities = capabilities,
-            }
+    local base = {
+        capabilities = capabilities,
+    }
 
-            local merged = vim.tbl_deep_extend("force", base, overrides, opts or {})
-            local config = lspconfig[server]
-            config.setup(merged)
-            start_if_needed(config)
-        end,
-        { "BufReadPre", "BufNewFile" }
-    )
+    local merged = vim.tbl_deep_extend("force", base, overrides, opts or {})
+    local config = lspconfig[server]
+    config.setup(merged)
+    start_if_needed(config)
 end
 
-local add_null_ls = function(f)
-    utils.lazy_load("null-ls.nvim", function()
-            local null = require('null-ls')
-            null.register(f(null))
-        end,
-        { "BufReadPre", "BufNewFile" }
-    )
+
+-- added via .nvim.lua
+local local_lsps = {}
+local init_lsps = function()
+    local additional = local_lsps
+    for k, v in pairs(additional) do
+        init_lspconfig(k, v)
+    end
 end
 
-local add_efm = function(plugins)
-    utils.lazy_load("nvim-lspconfig", function()
-            local config = require("konrad.lsp.efm").updated_config_for(plugins)
-            add_lspconfig("efm", config)
-        end,
-        { "BufReadPre", "BufNewFile" }
-    )
+-- added via .nvim.lua
+local local_nullls_sources_fun
+local init_null_ls = function()
+    if local_nullls_sources_fun then
+        local null = require('null-ls')
+        local additional = local_nullls_sources_fun(null)
+        null.register(additional)
+    end
+end
+
+-- added via .nvim.lua
+local local_efm_plugins = {}
+local init_efm = function()
+    local efm = require("konrad.lsp.efm")
+    local additional = local_efm_plugins
+    local config = efm.config_for(vim.list_extend(additional, efm.default_plugins))
+    init_lspconfig("efm", config)
 end
 
 local M = {}
+local reinitialize_needed = false
 
---- Configure lsp server, useful for per-project .nvim.lua files.
---- Can be called whenever. Works for lsp and null-ls currently.
----
---- Common examples for LSP:
----      - ansiblels
----      - csharp_ls
----      - gopls
----      - jsonls
----      - nil_ls
----      - omnisharp
----      - pyright
----      - rust_analyzer
----      - lua_ls
----      - terraformls
----      - yamlls
----
---- Common examples for efm:
---       - {'black','isort'}
----
---- Common examples for null-ls:
----      - require('null-ls').builtins.formatting.black
----      - require('null-ls').builtins.formatting.isort
----      - require('null-ls').builtins.formatting.nixpkgs_fmt
----      - require('null-ls').builtins.formatting.terraform_fmt
----      - require('null-ls').builtins.diagnostics.mypy.with({
----            condition = function(utils)
----                return kutils.has_bins("mypy")
----            end
----        })
----      - require('null-ls').builtins.diagnostics.vale.with({
----            condition = function(utils)
----                return kutils.has_bins("vale")
----            end
----        })
----
----@param server string any server name from nvim-lspconfig or 'null-ls' if this adds a null-ls source.
----@param opts any
---- options you would pass to lspconfig.setup(opts), will override base settings
---- or if server is 'efm', then a list of plugins, eg. {'black'} (some plugins are always enabled).
---  efm should only be called once! Can be called more, but next invocations will overwrite.
---- or if server is 'null-ls', a function which takes null-ls and returns config you'd pass to register function
+---@param server string
+-- any server name from nvim-lspconfig or 'null-ls' if this adds a null-ls source, of 'efm' if this
+-- enables an efm plugin.
+---@param value any
+--- server == 'lsp' -> options you would pass to lspconfig.setup(opts), will override base settings
+--- server == 'efm' -> a list of plugins to enable eg. {'black'} (some plugins are always enabled).
+--  server == 'null-ls' -> a function which takes null-ls and returns a list of sources to enable (some sources are always enabled)
 ---@return nil
-M.add = function(server, opts)
+M.add = function(server, value)
     if server == 'null-ls' then
-        add_null_ls(opts)
+        local_nullls_sources_fun = value
         return
     elseif server == 'efm' then
-        add_efm(opts)
+        local_efm_plugins = value
         return
     else
-        add_lspconfig(server, opts)
+        local_lsps[server] = value or {}
         return
     end
 end
 
+-- safe to call this many times, eg. from .nvim.lua on sourcing it manually
+M.initialize = function(force)
+    if force or reinitialize_needed then
+        init_null_ls()
+        --init_efm()
+        init_lsps()
+    end
+end
+
 M.setup = function()
-    require("konrad.lsp.fidget")
-    require("konrad.lsp.null-ls")
-    -- add_efm({ "prettier", "jq", "shfmt", "shellcheck" })
-    require("konrad.lsp.attach")
+    utils.lazy_load({ "j-hui", "null-ls.nvim", "nvim-lspconfig" },
+        function()
+            require("konrad.lsp.attach")
+            require("konrad.lsp.fidget")
+            require("konrad.lsp.null-ls")
+            M.initialize(true)
+            reinitialize_needed = true
+        end,
+        { "BufReadPre", "BufNewFile" }
+    )
 end
 
 return M
