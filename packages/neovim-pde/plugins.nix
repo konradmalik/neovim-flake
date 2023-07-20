@@ -112,7 +112,7 @@ processMadePlugins (with pkgs.vimPlugins; [
     plugin = gitsigns-nvim;
     dependencies = [ nvim-web-devicons ];
   })
-  (makePlugin harpoon)
+  (makePlugin { plugin = harpoon; optional = true; })
   (makePlugin { plugin = indent-blankline-nvim; optional = true; })
   (makePlugin nvim-luaref)
   (makePlugin { plugin = undotree; optional = true; })
