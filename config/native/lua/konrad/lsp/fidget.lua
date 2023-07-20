@@ -1,14 +1,14 @@
-local fidget_ok, fidget = pcall(require, "fidget")
-if not fidget_ok then
-    vim.notify("cannot load fidget")
-    return false
-end
-
-fidget.setup {
-    text = {
-        spinner = "dots",
-    },
-    window = {
-        relative = "editor",
-    },
-}
+local utils = require("konrad.utils")
+utils.lazy_load("j-hui", function()
+        local fidget = require("fidget")
+        fidget.setup {
+            text = {
+                spinner = "dots",
+            },
+            window = {
+                relative = "editor",
+            },
+        }
+    end,
+    { "BufReadPre", "BufNewFile" }
+)

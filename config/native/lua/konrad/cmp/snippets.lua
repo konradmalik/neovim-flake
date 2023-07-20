@@ -1,15 +1,5 @@
-local initialize = function()
-    vim.cmd('packadd luasnip')
-    vim.cmd('packadd friendly-snippets')
+local utils = require("konrad.utils")
+utils.lazy_load({ "luasnip", "friendly-snippets" }, function()
     require("konrad.luasnip")
     require("luasnip.loaders.from_vscode").lazy_load()
-end
-
-return function(group)
-    vim.api.nvim_create_autocmd("InsertEnter", {
-        group = group,
-        desc = "Lazily initialize snippets completion",
-        once = true,
-        callback = initialize,
-    })
-end
+end)

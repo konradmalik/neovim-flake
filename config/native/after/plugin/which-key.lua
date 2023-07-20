@@ -1,12 +1,11 @@
-local which_key_ok, which_key = pcall(require, "which-key")
-if not which_key_ok then
-    vim.notify("cannot load which-key")
-    return
-end
+local utils = require("konrad.utils")
+utils.lazy_load("which-key.nvim", function()
+    local which_key = require("which-key")
 
-which_key.setup({
-    disable = {
-        buftypes = {},
-        filetypes = { "TelescopePrompt" },
-    }
-})
+    which_key.setup({
+        disable = {
+            buftypes = {},
+            filetypes = { "TelescopePrompt" },
+        }
+    })
+end)

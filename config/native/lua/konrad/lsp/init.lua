@@ -19,31 +19,44 @@ local function start_if_needed(config)
 end
 
 local add_lspconfig = function(server, opts)
-    local lspconfig = require("lspconfig")
-    local capabilities = require("konrad.lsp.capabilities")
+    utils.lazy_load("nvim-lspconfig", function()
+            local lspconfig = require("lspconfig")
+            local capabilities = require("konrad.lsp.capabilities")
 
-    local found, overrides = pcall(require, "konrad.lsp.settings." .. server)
-    if not found then
-        overrides = {}
-    end
+            local found, overrides = pcall(require, "konrad.lsp.settings." .. server)
+            if not found then
+                overrides = {}
+            end
 
-    local base = {
-        capabilities = capabilities,
-    }
+            local base = {
+                capabilities = capabilities,
+            }
 
-    local merged = vim.tbl_deep_extend("force", base, overrides, opts or {})
-    local config = lspconfig[server]
-    config.setup(merged)
-    start_if_needed(config)
+            local merged = vim.tbl_deep_extend("force", base, overrides, opts or {})
+            local config = lspconfig[server]
+            config.setup(merged)
+            start_if_needed(config)
+        end,
+        { "BufReadPre", "BufNewFile" }
+    )
 end
 
-local add_null_ls = function(sources)
-    require('null-ls').register(sources)
+local add_null_ls = function(f)
+    utils.lazy_load("null-ls.nvim", function()
+            local null = require('null-ls')
+            null.register(f(null))
+        end,
+        { "BufReadPre", "BufNewFile" }
+    )
 end
 
 local add_efm = function(plugins)
-    local config = require("konrad.lsp.efm").updated_config_for(plugins)
-    add_lspconfig("efm", config)
+    utils.lazy_load("nvim-lspconfig", function()
+            local config = require("konrad.lsp.efm").updated_config_for(plugins)
+            add_lspconfig("efm", config)
+        end,
+        { "BufReadPre", "BufNewFile" }
+    )
 end
 
 local M = {}
@@ -84,11 +97,11 @@ local M = {}
 ---        })
 ---
 ---@param server string any server name from nvim-lspconfig or 'null-ls' if this adds a null-ls source.
----@param opts table|nil
+---@param opts any
 --- options you would pass to lspconfig.setup(opts), will override base settings
 --- or if server is 'efm', then a list of plugins, eg. {'black'} (some plugins are always enabled).
 --  efm should only be called once! Can be called more, but next invocations will overwrite.
---- or if server is 'null-ls', then source(s) config as a table
+--- or if server is 'null-ls', a function which takes null-ls and returns config you'd pass to register function
 ---@return nil
 M.add = function(server, opts)
     if server == 'null-ls' then

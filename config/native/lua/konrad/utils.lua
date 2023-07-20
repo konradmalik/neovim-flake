@@ -32,7 +32,7 @@ end
 ---@param ft string? | string[] filetype patterns to load on
 function utils.lazy_load(packadd, fun, event, ft)
     local group = vim.api.nvim_create_augroup("lazy-load", { clear = false })
-    vim.api.nvim_create_autocmd(event or 'UiEnter', {
+    vim.api.nvim_create_autocmd(event or 'UIEnter', {
         group = group,
         pattern = ft or '*',
         callback = function(args)

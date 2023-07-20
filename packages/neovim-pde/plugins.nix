@@ -15,17 +15,23 @@ processMadePlugins (with pkgs.vimPlugins; [
   # treesitter
   (makePlugin {
     plugin = nvim-treesitter.withAllGrammars;
-    dependencies = [ nvim-treesitter-context nvim-treesitter-textobjects ];
+    optional = true;
+    dependencies = [
+      { plugin = nvim-treesitter-context; optional = true; }
+      { plugin = nvim-treesitter-textobjects; optional = true; }
+    ];
   })
   # completion
   (makePlugin {
     plugin = nvim-cmp;
+    # note: for some reason cmp-related plugins cannot be optional, they won't work if true
+    optional = false;
     dependencies = [
-      { plugin = cmp-buffer; }
-      { plugin = cmp-nvim-lsp; }
-      { plugin = cmp-path; }
-      { plugin = cmp_luasnip; }
-      { plugin = copilot-cmp; }
+      { plugin = cmp-buffer; optional = false; }
+      { plugin = cmp-nvim-lsp; optional = false; }
+      { plugin = cmp-path; optional = false; }
+      { plugin = cmp_luasnip; optional = false; }
+      { plugin = copilot-cmp; optional = false; }
       { plugin = luasnip; optional = true; }
       { plugin = friendly-snippets; optional = true; }
       { plugin = copilot-lua; optional = true; }
@@ -34,10 +40,11 @@ processMadePlugins (with pkgs.vimPlugins; [
   # lsp
   (makePlugin {
     plugin = nvim-lspconfig;
+    optional = true;
     dependencies = [
-      null-ls-nvim
-      neodev-nvim
-      fidget-nvim
+      { plugin = null-ls-nvim; optional = true; }
+      { plugin = neodev-nvim; optional = true; }
+      { plugin = fidget-nvim; optional = true; }
       plenary-nvim
       SchemaStore-nvim
       {
@@ -49,6 +56,7 @@ processMadePlugins (with pkgs.vimPlugins; [
   # dap
   (makePlugin {
     plugin = nvim-dap;
+    optional = true;
     dependencies = [
       {
         plugin = nvim-dap-ui;
@@ -59,12 +67,15 @@ processMadePlugins (with pkgs.vimPlugins; [
         optional = true;
       }
     ];
-    optional = true;
   })
   # telescope
   (makePlugin {
     plugin = telescope-nvim;
-    dependencies = [ plenary-nvim telescope-fzf-native-nvim ];
+    optional = true;
+    dependencies = [
+      plenary-nvim
+      { plugin = telescope-fzf-native-nvim; optional = true; }
+    ];
   })
   # statusline
   (makePlugin {
@@ -73,15 +84,25 @@ processMadePlugins (with pkgs.vimPlugins; [
   })
   # ui
   (makePlugin kanagawa-nvim)
-  (makePlugin dressing-nvim)
+  (makePlugin {
+    plugin = dressing-nvim;
+    optional = true;
+  })
   (makePlugin
     {
       plugin = neo-tree-nvim;
+      optional = true;
       dependencies = [ nvim-web-devicons plenary-nvim nui-nvim ];
     })
   # misc
-  (makePlugin boole-nvim)
-  (makePlugin comment-nvim)
+  (makePlugin {
+    plugin = boole-nvim;
+    optional = true;
+  })
+  (makePlugin {
+    plugin = comment-nvim;
+    optional = true;
+  })
   (makePlugin {
     plugin = diffview-nvim;
     optional = true;
@@ -92,9 +113,9 @@ processMadePlugins (with pkgs.vimPlugins; [
     dependencies = [ nvim-web-devicons ];
   })
   (makePlugin harpoon)
-  (makePlugin indent-blankline-nvim)
+  (makePlugin { plugin = indent-blankline-nvim; optional = true; })
   (makePlugin nvim-luaref)
   (makePlugin { plugin = undotree; optional = true; })
   (makePlugin { plugin = vim-fugitive; optional = true; })
-  (makePlugin which-key-nvim)
+  (makePlugin { plugin = which-key-nvim; optional = true; })
 ])
