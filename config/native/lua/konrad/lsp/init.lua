@@ -53,7 +53,9 @@ local init_null_ls = function()
     if local_nullls_sources_fun then
         local null = require('null-ls')
         local additional = local_nullls_sources_fun(null)
-        null.register(additional)
+        if not vim.tbl_isempty(additional) then
+            null.register(additional)
+        end
     end
 end
 
@@ -62,8 +64,12 @@ local local_efm_plugins = {}
 local init_efm = function()
     local efm = require("konrad.lsp.efm")
     local additional = local_efm_plugins
-    local config = efm.config_for(vim.list_extend(additional, efm.default_plugins))
-    init_lspconfig("efm", config)
+    if not vim.tbl_isempty(additional) then
+        -- this will be enabled if we replace null-ls with efm
+        -- local config = efm.config_for(vim.list_extend(additional, efm.default_plugins))
+        local config = efm.config_for(additional)
+        init_lspconfig("efm", config)
+    end
 end
 
 local M = {}
@@ -91,25 +97,23 @@ M.add = function(server, value)
 end
 
 -- safe to call this many times, eg. from .nvim.lua on sourcing it manually
+-- placed in .nvim.lua won't be called before setup, due to reinitialize_needed==false
 M.initialize = function(force)
     if force or reinitialize_needed then
         init_null_ls()
-        --init_efm()
+        init_efm()
         init_lsps()
     end
 end
 
+-- main entrypoint. Should be called after .nvim.lua
+-- this will happen if this is called in 'after' folder (and it is -> lsp.lua)
 M.setup = function()
-    utils.lazy_load({ "j-hui", "null-ls.nvim", "nvim-lspconfig" },
-        function()
-            require("konrad.lsp.attach")
-            require("konrad.lsp.fidget")
-            require("konrad.lsp.null-ls")
-            M.initialize(true)
-            reinitialize_needed = true
-        end,
-        { "BufReadPre", "BufNewFile" }
-    )
+    require("konrad.lsp.attach")
+    require("konrad.lsp.fidget")
+    require("konrad.lsp.null-ls")
+    M.initialize(true)
+    reinitialize_needed = true
 end
 
 return M

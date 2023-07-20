@@ -1,5 +1,0 @@
-local utils = require('konrad.utils')
-utils.lazy_load("nvim-web-devicons", function()
-    local devicons = require("nvim-web-devicons")
-    devicons.setup()
-end)

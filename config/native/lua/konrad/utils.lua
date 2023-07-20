@@ -48,7 +48,7 @@ function utils.lazy_load(packadd, fun, event, ft)
                 fun()
             end
         end,
-        desc = "Lazily initialize " .. vim.inspect(packadds),
+        desc = "Lazily initialize " .. vim.inspect(packadd),
         once = true,
     })
 end

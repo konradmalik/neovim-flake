@@ -1,0 +1,1 @@
+require("konrad.lsp").setup()
