@@ -9,7 +9,7 @@ ls.add_snippets("yaml", {
         dscr = "yaml-language-server modeline template with kubernetes schema by default",
     }, {
         text(
-        "# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master-standalone-strict/all.json")
+            "# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master-standalone-strict/all.json")
     }),
 })
 
@@ -31,3 +31,5 @@ ls.add_snippets("all", {
 })
 
 require("luasnip.loaders.from_vscode").lazy_load()
+
+return ls

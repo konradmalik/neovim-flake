@@ -40,7 +40,7 @@ processMadePlugins (with pkgs.vimPlugins;[
     plugin = nvim-lspconfig;
     dependencies = [
       null-ls-nvim
-      neodev-nvim
+      { plugin = neodev-nvim; optional = true; }
       fidget-nvim
       plenary-nvim
       SchemaStore-nvim
