@@ -29,10 +29,10 @@ processMadePlugins (with pkgs.vimPlugins;[
       cmp-nvim-lsp
       cmp-path
       cmp_luasnip
-      copilot-cmp
+      { plugin = copilot-cmp; optional = true; }
+      { plugin = copilot-lua; optional = true; }
       luasnip
       friendly-snippets
-      copilot-lua
     ];
   })
   # lsp
