@@ -7,9 +7,18 @@ local function nix_omnisharp_dll_path()
     return dllpath
 end
 
+-- https://github.com/Hoffs/omnisharp-extended-lsp.nvim
+vim.cmd("packadd omnisharp-extended-lsp.nvim")
+
 return {
     -- use dotnet in the current PATH, and use dll found from OmniSharp in the current path
     cmd = { "dotnet", nix_omnisharp_dll_path() },
+
+    -- decompilation support via omnisharp-extended-lsp
+    enableDecompilationSupport = true,
+    handlers = {
+        ["textDocument/definition"] = require('omnisharp_extended').handler,
+    },
 
     -- Enables support for reading code style, naming convention and analyzer
     -- settings from .editorconfig.

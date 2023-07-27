@@ -48,6 +48,10 @@ processMadePlugins (with pkgs.vimPlugins;[
         plugin = lsp-inlayhints-nvim;
         optional = true;
       }
+      {
+        plugin = omnisharp-extended-lsp-nvim;
+        optional = true;
+      }
     ];
   })
   # dap
