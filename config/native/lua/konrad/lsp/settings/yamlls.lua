@@ -1,10 +1,7 @@
 -- https://github.com/redhat-developer/yaml-language-server
-local schemastore_ok, schemastore = pcall(require, "schemastore")
-if not schemastore_ok then
-    vim.notify("cannot load schemastore")
-    return
-end
 
+vim.cmd("packadd SchemaStore.nvim")
+local schemastore = require("schemastore")
 local binaries = require('konrad.binaries')
 return {
     cmd = { binaries.yamlls, "--stdio" },
@@ -16,7 +13,7 @@ return {
         },
         yaml = {
             format = {
-                enable = false   -- use prettier from null-ls instead
+                enable = false -- use prettier from null-ls instead
             },
             completion = true,
             hover = true,

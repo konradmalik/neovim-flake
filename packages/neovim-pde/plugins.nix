@@ -43,7 +43,7 @@ processMadePlugins (with pkgs.vimPlugins;[
       { plugin = neodev-nvim; optional = true; }
       fidget-nvim
       plenary-nvim
-      SchemaStore-nvim
+      { plugin = SchemaStore-nvim; optional = true; }
       {
         plugin = lsp-inlayhints-nvim;
         optional = true;
