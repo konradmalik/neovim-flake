@@ -93,6 +93,7 @@ processMadePlugins (with pkgs.vimPlugins;[
     plugin = diffview-nvim;
     dependencies = [ plenary-nvim nvim-web-devicons ];
   })
+  (makePlugin git-conflict-nvim)
   (makePlugin gitsigns-nvim)
   (makePlugin harpoon)
   (makePlugin indent-blankline-nvim)
