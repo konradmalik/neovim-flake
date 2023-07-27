@@ -1,9 +1,4 @@
-local dap_ok, dap = pcall(require, "dap")
-if not dap_ok then
-    vim.notify("cannot load dap")
-    return
-end
-
+local dap = require("dap")
 local binaries = require("konrad.binaries")
 dap.adapters.delve = {
     type = 'server',
