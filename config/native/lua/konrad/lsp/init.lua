@@ -48,15 +48,14 @@ end
 
 local local_efm_plugins = {}
 local init_efm = function()
-    local efm = require("konrad.lsp.efm")
-    local additional = local_efm_plugins
-    local config = efm.config_for(vim.list_extend(additional, efm.default_plugins))
+    local efm = require('konrad.lsp.efm')
+    local config = efm.build_config(vim.list_extend(local_efm_plugins, efm.default_plugins))
     init_lspconfig("efm", config)
 end
 
-local reinitialize_needed = false
-local initialize = function(force)
-    if force or reinitialize_needed then
+local already_setup = false
+local initialize = function()
+    if already_setup then
         init_efm()
         init_lsps()
     end
@@ -88,15 +87,15 @@ M.setup = function(tconfigs)
 
     -- if this is called from config, won't do anything
     -- if this is called via sourcing .nvim.lua (after our 'after' folder) it should act
-    initialize(false)
+    initialize()
 end
 
 -- call this after .nvim.lua (from after folder eg.)
 M.initialize = function()
     require("konrad.lsp.attach")
     require("konrad.lsp.fidget")
-    initialize(true)
-    reinitialize_needed = true
+    already_setup = true
+    initialize()
 end
 
 return M

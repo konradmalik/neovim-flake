@@ -1,8 +1,7 @@
 -- https://github.com/mattn/efm-langserver
 local binaries = require('konrad.binaries')
---
----@param plugins string[] names of plugins to add, ex. 'prettier'
-local efm_with = function(plugins)
+
+local make_config = function(plugins)
     local languages = {}
     for _, v in ipairs(plugins) do
         local plugin = require('konrad.lsp.efm.' .. v)
@@ -30,9 +29,10 @@ local M = {}
 
 M.default_plugins = { "prettier", "jq", "shfmt", "shellcheck" }
 
--- returns config to be put into lspconfig['efm'].setup(config)
-M.config_for = function(plugins)
-    local settings = efm_with(plugins)
+---@param plugins string[] names of plugins to add, ex. 'prettier'
+---@return table config to be put into lspconfig['efm'].setup(config)
+M.build_config = function(plugins)
+    local settings = make_config(plugins)
     return vim.tbl_extend('error', { cmd = { binaries.efm } }, settings)
 end
 

@@ -6,7 +6,7 @@ require("konrad.lsp").setup({
     },
     -- "gopls",
     -- "jsonls",
-    -- "lua_ls",
+    "lua_ls",
     "nil_ls",
     -- "omnisharp",
     -- "pyright",
