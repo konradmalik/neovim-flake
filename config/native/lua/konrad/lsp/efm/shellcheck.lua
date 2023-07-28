@@ -3,10 +3,10 @@ local binaries = require('konrad.binaries')
 
 local fts = { "sh" }
 local entry = {
-    lintCommand = binaries.shellcheck .. " -f gcc -x -",
+    lintCommand = binaries.shellcheck .. " --color=never --format=gcc -",
     lintStdin = true,
     lintFormats = {
-        "%f:%l:%c: %trror: %m", "%f:%l:%c: %tarning: %m", "%f:%l:%c: %tote: %m"
+        "-:%l:%c: %trror: %m", "-:%l:%c: %tarning: %m", "-:%l:%c: %tote: %m"
     },
     lintSource = "shellcheck",
 }
