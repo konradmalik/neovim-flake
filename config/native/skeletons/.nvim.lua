@@ -1,24 +1,23 @@
 -- CHANGEME: this is skeleton file from neovim
-local lsp = require("konrad.lsp")
--- lsp.add("ansiblels")
--- lsp.add("gopls")
--- lsp.add("jsonls")
--- lsp.add("lua_ls")
-lsp.add("nil_ls")
--- lsp.add("omnisharp")
--- lsp.add("pyright")
--- lsp.add("rust_analyzer")
--- lsp.add("terraformls")
--- lsp.add("yamlls")
-
-lsp.add("efm", {
-    'nixpkgs_fmt',
-    -- 'terraform_fmt'
+require("konrad.lsp").setup({
+    -- "ansiblels",
+    efm = {
+        'nixpkgs_fmt',
+        -- 'terraform_fmt'
+    },
+    -- "gopls",
+    -- "jsonls",
+    -- "lua_ls",
+    "nil_ls",
+    -- "omnisharp",
+    -- "pyright",
+    -- "rust_analyzer",
+    -- "terraformls",
+    -- "yamlls",
 })
-lsp.initialize()
 
--- local dap = require("konrad.dap")
--- dap.add("cs")
--- dap.add("go")
--- dap.add("python")
--- dap.initialize()
+-- require("konrad.dap").setup({
+--     "cs",
+--     "go",
+--     "python",
+-- })

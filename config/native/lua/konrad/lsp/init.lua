@@ -5,7 +5,7 @@ local utils = require('konrad.utils')
 -- manually sourcing .nvim.lua or similar)
 ---@param config table
 ---@return nil
-local function start_if_needed(config)
+local start_if_needed = function(config)
     -- if attached, restart because config changed
     local clients = vim.lsp.get_active_clients(config)
     if #clients > 0 then
@@ -38,7 +38,6 @@ local init_lspconfig = function(server, opts)
 end
 
 
--- added via .nvim.lua
 local local_lsps = {}
 local init_lsps = function()
     local additional = local_lsps
@@ -47,7 +46,6 @@ local init_lsps = function()
     end
 end
 
--- added via .nvim.lua
 local local_efm_plugins = {}
 local init_efm = function()
     local efm = require("konrad.lsp.efm")
@@ -56,40 +54,48 @@ local init_efm = function()
     init_lspconfig("efm", config)
 end
 
-local M = {}
 local reinitialize_needed = false
-
----@param server string
--- any server name from nvim-lspconfig or 'efm' if this enables an efm plugin.
----@param value any
---- server == 'lsp' -> options you would pass to lspconfig.setup(opts), will override base settings
---- server == 'efm' -> a list of plugins to enable eg. {'black'} (some plugins are always enabled).
----@return nil
-M.add = function(server, value)
-    if server == 'efm' then
-        local_efm_plugins = value
-        return
-    else
-        local_lsps[server] = value or {}
-        return
-    end
-end
-
--- safe to call this many times, eg. from .nvim.lua on sourcing it manually
--- placed in .nvim.lua won't be called before setup, due to reinitialize_needed==false
-M.initialize = function(force)
+local initialize = function(force)
     if force or reinitialize_needed then
         init_efm()
         init_lsps()
     end
 end
 
--- main entrypoint. Should be called after .nvim.lua
--- this will happen if this is called in 'after' folder (and it is -> lsp.lua)
-M.setup = function()
+local M = {}
+
+---@param tconfigs table of server-value mapping
+--- server: any server name from nvim-lspconfig or 'efm' if this enables an efm plugin.
+--- value:
+--- server == 'lsp' -> options you would pass to lspconfig.setup(opts), will override base settings
+--- server == 'efm' -> a list of plugins to enable eg. {'black'} (some plugins are always enabled).
+---@return nil
+M.setup = function(tconfigs)
+    local_efm_plugins = {}
+    local_lsps = {}
+    for server, value in pairs(tconfigs) do
+        if type(server) == "number" then
+            server = value
+            value = nil
+        end
+
+        if server == 'efm' then
+            local_efm_plugins = value
+        else
+            local_lsps[server] = value or {}
+        end
+    end
+
+    -- if this is called from config, won't do anything
+    -- if this is called via sourcing .nvim.lua (after our 'after' folder) it should act
+    initialize(false)
+end
+
+-- call this after .nvim.lua (from after folder eg.)
+M.initialize = function()
     require("konrad.lsp.attach")
     require("konrad.lsp.fidget")
-    M.initialize(true)
+    initialize(true)
     reinitialize_needed = true
 end
 

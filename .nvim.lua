@@ -1,7 +1,22 @@
-local lsp = require("konrad.lsp")
-lsp.add("nil_ls")
-lsp.add("lua_ls")
+require("konrad.lsp").setup({
+    -- "ansiblels",
+    efm = {
+        'nixpkgs_fmt',
+        -- 'terraform_fmt'
+    },
+    -- "gopls",
+    -- "jsonls",
+    -- "lua_ls",
+    "nil_ls",
+    -- "omnisharp",
+    -- "pyright",
+    -- "rust_analyzer",
+    -- "terraformls",
+    -- "yamlls",
+})
 
-lsp.add("efm", { 'nixpkgs_fmt' })
-
-lsp.initialize()
+-- require("konrad.dap").setup({
+--     "cs",
+--     "go",
+--     "python",
+-- })

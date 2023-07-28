@@ -1,29 +1,9 @@
-local M = {}
-
-local reinitialize_needed = false
 local configs = {}
+local reinitialize_needed = false
 
---- Configure DAP by name, useful for per-project .nvim.lua files.
---- Must be called before init. This works because I don't initialize DAP
----at start, but on demand via DapEnable command.
----
----Built-in names:
----      - cs
----      - go
----      - python
---- If anything else, a whole configuration function needs to be provided.
----
----@param config string|function config name or function with no arguments if custom config
----@return nil
-M.add = function(config)
-    table.insert(configs, config)
-end
---
--- safe to call this many times, eg. from .nvim.lua on sourcing it manually
--- placed in .nvim.lua won't be called before setup, due to reinitialize_needed==false
-M.initialize = function(force)
-    if force or reinitialize_needed then
-        if not vim.tbl_isempty(configs) then
+local initialize = function(force)
+    if not vim.tbl_isempty(configs) then
+        if force or reinitialize_needed then
             vim.cmd('packadd nvim-dap')
             vim.cmd('packadd nvim-dap-ui')
             vim.cmd('packadd nvim-dap-virtual-text')
@@ -48,10 +28,32 @@ M.initialize = function(force)
     end
 end
 
--- main entrypoint. Should be called after .nvim.lua
--- this will happen if this is called in 'after' folder (and it is -> lsp.lua)
-M.setup = function()
-    M.initialize(true)
+local M = {}
+
+--- Configure DAP by name, useful for per-project .nvim.lua files.
+---
+---Built-in names:
+---      - cs
+---      - go
+---      - python
+--- If anything else, a whole configuration function needs to be provided.
+---
+---@param tconfigs table (array-like) of string|function - dap config name or function with no arguments if custom config
+---@return nil
+M.setup = function(tconfigs)
+    configs = {}
+    for _, value in ipairs(tconfigs) do
+        table.insert(configs, value)
+    end
+
+    -- if this is called from config, won't do anything
+    -- if this is called via sourcing .nvim.lua (after our 'after' folder) it should act
+    initialize(false)
+end
+
+-- call this after .nvim.lua (from after folder eg.)
+M.initialize = function()
+    initialize(true)
     reinitialize_needed = true
 end
 
