@@ -1,4 +1,4 @@
-{ vimUtils, inputs }:
+{ system, vimUtils, inputs }:
 {
   fidget-nvim = vimUtils.buildVimPluginFrom2Nix {
     pname = "j-hui";
@@ -12,4 +12,5 @@
     src = inputs.nvim-luaref;
     meta.homepage = "https://github.com/milisims/nvim-luaref";
   };
+  sg-nvim = inputs.sg-nvim.packages.${system}.default;
 }

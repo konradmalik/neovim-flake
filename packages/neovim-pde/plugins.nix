@@ -102,6 +102,7 @@ processMadePlugins (with pkgs.vimPlugins;[
   (makePlugin indent-blankline-nvim)
   (makePlugin nvim-luaref)
   (makePlugin { plugin = undotree; optional = true; })
+  (makePlugin sg-nvim)
   (makePlugin vim-fugitive)
   (makePlugin which-key-nvim)
 ])

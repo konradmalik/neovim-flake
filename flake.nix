@@ -16,6 +16,10 @@
       url = "github:milisims/nvim-luaref";
       flake = false;
     };
+    sg-nvim = {
+      url = "github:sourcegraph/sg.nvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, neovim, ... }@inputs:
