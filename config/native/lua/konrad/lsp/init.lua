@@ -48,46 +48,25 @@ local init_lsps = function()
 end
 
 -- added via .nvim.lua
-local local_nullls_sources_fun
-local init_null_ls = function()
-    if local_nullls_sources_fun then
-        local null = require('null-ls')
-        local additional = local_nullls_sources_fun(null)
-        if not vim.tbl_isempty(additional) then
-            null.register(additional)
-        end
-    end
-end
-
--- added via .nvim.lua
 local local_efm_plugins = {}
 local init_efm = function()
     local efm = require("konrad.lsp.efm")
     local additional = local_efm_plugins
-    if not vim.tbl_isempty(additional) then
-        -- this will be enabled if we replace null-ls with efm
-        -- local config = efm.config_for(vim.list_extend(additional, efm.default_plugins))
-        local config = efm.config_for(additional)
-        init_lspconfig("efm", config)
-    end
+    local config = efm.config_for(vim.list_extend(additional, efm.default_plugins))
+    init_lspconfig("efm", config)
 end
 
 local M = {}
 local reinitialize_needed = false
 
 ---@param server string
--- any server name from nvim-lspconfig or 'null-ls' if this adds a null-ls source, of 'efm' if this
--- enables an efm plugin.
+-- any server name from nvim-lspconfig or 'efm' if this enables an efm plugin.
 ---@param value any
 --- server == 'lsp' -> options you would pass to lspconfig.setup(opts), will override base settings
 --- server == 'efm' -> a list of plugins to enable eg. {'black'} (some plugins are always enabled).
---  server == 'null-ls' -> a function which takes null-ls and returns a list of sources to enable (some sources are always enabled)
 ---@return nil
 M.add = function(server, value)
-    if server == 'null-ls' then
-        local_nullls_sources_fun = value
-        return
-    elseif server == 'efm' then
+    if server == 'efm' then
         local_efm_plugins = value
         return
     else
@@ -100,7 +79,6 @@ end
 -- placed in .nvim.lua won't be called before setup, due to reinitialize_needed==false
 M.initialize = function(force)
     if force or reinitialize_needed then
-        init_null_ls()
         init_efm()
         init_lsps()
     end
@@ -111,7 +89,6 @@ end
 M.setup = function()
     require("konrad.lsp.attach")
     require("konrad.lsp.fidget")
-    require("konrad.lsp.null-ls")
     M.initialize(true)
     reinitialize_needed = true
 end

@@ -129,16 +129,7 @@ M.attach = function(client, bufnr)
         vim.keymap.set("n", "<leader>cl", vim.lsp.codelens.run, opts_with_desc("CodeLens run"))
     end
 
-    -- why this check here?
-    -- because null-ls is specific, in that it registers documentFormattingProvider
-    -- only for specific filetypes (correctly set in client.config.filetypes)
-    -- but it attaches itself to all files (eg. if git_signs code action is enabled).
-    -- The result is that an autocommand that always fails in created for null_ls.
-    -- We're avoiding this situation here.
-    local properDocumentFormattingProvider = (client.name ~= "null-ls" or utils.is_matching_filetype(client.config)) and
-        capabilities.documentFormattingProvider
-
-    if properDocumentFormattingProvider then
+    if capabilities.documentFormattingProvider then
         local format_is_enabled = true;
         local command = "AutoFormatToggle"
         insert_into_nested(commands, client.id, command)

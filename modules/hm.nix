@@ -100,7 +100,6 @@ in
         cfg.extendGitIgnores
         [
           ".netcoredbg_hist"
-          ".null-ls*"
           ".nvim.lua"
         ];
 

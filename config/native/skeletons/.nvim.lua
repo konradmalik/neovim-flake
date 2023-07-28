@@ -12,20 +12,10 @@ lsp.add("nil_ls")
 -- lsp.add("terraformls")
 -- lsp.add("yamlls")
 
--- lsp.add("efm", {'nixpkgs_fmt'})
-
-lsp.add("null-ls", function(null)
-    return {
-        -- null.builtins.formatting.black,
-        -- null.builtins.diagnostics.cspell,
-        -- null.builtins.formatting.isort,
-        -- null.builtins.diagnostics.mypy,
-        null.builtins.formatting.nixpkgs_fmt,
-        -- null.builtins.formatting.terraform_fmt,
-        -- null.builtins.diagnostics.vale,
-        -- null.builtins.formatting.xmllint,
-    }
-end)
+lsp.add("efm", {
+    'nixpkgs_fmt',
+    -- 'terraform_fmt'
+})
 
 -- local dap = require("konrad.dap")
 -- dap.add("cs")

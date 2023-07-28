@@ -13,7 +13,7 @@ return {
         },
         yaml = {
             format = {
-                enable = false -- use prettier from null-ls instead
+                enable = false -- use prettier instead
             },
             completion = true,
             hover = true,

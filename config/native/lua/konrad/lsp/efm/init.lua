@@ -1,7 +1,5 @@
 -- https://github.com/mattn/efm-langserver
-local utils = require('konrad.utils')
 local binaries = require('konrad.binaries')
-local already_enabled_set = {}
 --
 ---@param plugins string[] names of plugins to add, ex. 'prettier'
 local efm_with = function(plugins)

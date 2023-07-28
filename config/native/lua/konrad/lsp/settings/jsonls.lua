@@ -6,7 +6,7 @@ local binaries = require('konrad.binaries')
 return {
     cmd = { binaries.jsonls, "--stdio" },
     init_options = {
-        provideFormatter = false, -- use prettier from null-ls instead
+        provideFormatter = false, -- use prettier instead
     },
     settings = {
         json = {

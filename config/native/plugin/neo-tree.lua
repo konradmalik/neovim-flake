@@ -60,9 +60,6 @@ neo_tree.setup({
             visible = true, -- when true, they will just be displayed differently than normal items
             hide_dotfiles = true,
             hide_gitignored = true,
-            never_show_by_pattern = { -- uses glob style patterns
-                ".null-ls_*",
-            },
         },
         use_libuv_file_watcher = true,
         follow_current_file = {
