@@ -1,14 +1,5 @@
-local dap_ok, dap = pcall(require, "dap")
-if not dap_ok then
-    vim.notify("cannot load dap")
-    return
-end
-
-local dapui_ok, dapui = pcall(require, "dapui")
-if not dapui_ok then
-    vim.notify("cannot load dapui")
-    return
-end
+local dap = require("dap")
+local dapui = require("dapui")
 
 local map = function(lhs, rhs, desc)
     if desc then
