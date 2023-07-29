@@ -1,7 +1,27 @@
 -- https://github.com/mattn/efm-langserver
 local binaries = require('konrad.binaries')
 
-local make_config = function(plugins)
+local M = {}
+
+---@param fts string[]
+---@param entry table
+---@return table
+M.make_languages_entry_for_fts = function(fts, entry)
+    -- efm requires nested tables here (notice brackets in entry)
+    local nested = vim.tbl_map(function(t) return { [t] = { entry } } end, fts)
+    if #nested < 1 then
+        error("must have at least one entry")
+    elseif #nested == 1 then
+        return nested[1]
+    end
+    return vim.tbl_extend("error", unpack(nested))
+end
+
+M.default_plugins = { "prettier", "jq", "shfmt", "shellcheck" }
+
+---@param plugins string[] names of plugins to add, ex. 'prettier'
+---@return table config to be put into lspconfig['efm'].setup(config)
+M.build_lspconfig = function(plugins)
     local languages = {}
     for _, v in ipairs(plugins) do
         local plugin = require('konrad.lsp.efm.' .. v)
@@ -15,6 +35,7 @@ local make_config = function(plugins)
     end
 
     return {
+        cmd = { binaries.efm },
         single_file_support = true,
         filetypes = vim.tbl_keys(languages),
         init_options = { documentFormatting = true, },
@@ -23,17 +44,6 @@ local make_config = function(plugins)
             languages = languages,
         },
     }
-end
-
-local M = {}
-
-M.default_plugins = { "prettier", "jq", "shfmt", "shellcheck" }
-
----@param plugins string[] names of plugins to add, ex. 'prettier'
----@return table config to be put into lspconfig['efm'].setup(config)
-M.build_config = function(plugins)
-    local settings = make_config(plugins)
-    return vim.tbl_extend('error', { cmd = { binaries.efm } }, settings)
 end
 
 return M

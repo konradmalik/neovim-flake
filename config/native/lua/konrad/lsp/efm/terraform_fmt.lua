@@ -1,4 +1,4 @@
-local utils = require('konrad.lsp.efm.utils')
+local efm = require('konrad.lsp.efm')
 
 local fts = { "terraform", "tf", "terraform-vars" }
 local entry = {
@@ -6,4 +6,4 @@ local entry = {
     formatStdin = true,
 }
 
-return utils.make_languages_entry_for_fts(fts, entry)
+return efm.make_languages_entry_for_fts(fts, entry)

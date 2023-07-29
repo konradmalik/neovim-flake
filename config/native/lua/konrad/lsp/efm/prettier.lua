@@ -1,4 +1,4 @@
-local utils = require('konrad.lsp.efm.utils')
+local efm = require('konrad.lsp.efm')
 local binaries = require('konrad.binaries')
 
 local fts = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less",
@@ -22,4 +22,4 @@ local entry = {
         ".prettierrc.toml",
     },
 }
-return utils.make_languages_entry_for_fts(fts, entry)
+return efm.make_languages_entry_for_fts(fts, entry)

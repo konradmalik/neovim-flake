@@ -1,4 +1,4 @@
-local utils = require('konrad.lsp.efm.utils')
+local efm = require('konrad.lsp.efm')
 
 local fts = { "go" }
 local entry = {
@@ -9,4 +9,4 @@ local entry = {
     rootMarkers = {},
 }
 
-return utils.make_languages_entry_for_fts(fts, entry)
+return efm.make_languages_entry_for_fts(fts, entry)

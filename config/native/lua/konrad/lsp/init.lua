@@ -49,7 +49,7 @@ end
 local local_efm_plugins = {}
 local init_efm = function()
     local efm = require('konrad.lsp.efm')
-    local config = efm.build_config(vim.list_extend(local_efm_plugins, efm.default_plugins))
+    local config = efm.build_lspconfig(vim.list_extend(local_efm_plugins, efm.default_plugins))
     init_lspconfig("efm", config)
 end
 

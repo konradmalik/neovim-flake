@@ -1,4 +1,4 @@
-local utils = require('konrad.lsp.efm.utils')
+local efm = require('konrad.lsp.efm')
 local binaries = require('konrad.binaries')
 
 local fts = { "sh" }
@@ -7,4 +7,4 @@ local entry = {
     formatStdin = true,
 }
 
-return utils.make_languages_entry_for_fts(fts, entry)
+return efm.make_languages_entry_for_fts(fts, entry)
