@@ -45,13 +45,13 @@ vim.opt.listchars = table.concat({
     "precedes:" .. icons.characters.SlopeUp
 }, ",")
 -- Lines of context when scrolling
-vim.o.scrolloff = 8
+vim.o.scrolloff = 10
 -- Columns of context when scrolling
-vim.o.sidescrolloff = 8
+vim.o.sidescrolloff = 10
 -- Decrease update time
-vim.o.updatetime = 250
+vim.o.updatetime = 1000
 vim.o.timeout = true
-vim.o.timeoutlen = 300
+vim.o.timeoutlen = 1000
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 -- True color support

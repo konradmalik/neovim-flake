@@ -1,6 +1,7 @@
 -- caching needs to be first
 require("konrad.loader")
 
+require("konrad.disable_builtin")
 -- this should contain plugins that I need to control the execution order of
 -- or the ones that are simply hard dependencies of the rest in ./plugins
 require("konrad.keymaps") -- maps leader
