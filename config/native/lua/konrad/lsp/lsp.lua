@@ -1,4 +1,3 @@
-local utils = require("konrad.utils")
 local telescope_ok, telescope = pcall(require, 'telescope.builtin')
 
 local keymap_prefix = "[LSP]"
@@ -37,6 +36,7 @@ local insert_into_nested = function(ttable, key, value)
 end
 
 M.get_augroup = get_augroup
+
 M.detach = function(client, bufnr)
     local augroup = get_augroup(client)
     local aucmds = vim.api.nvim_get_autocmds({
@@ -104,7 +104,8 @@ M.attach = function(client, bufnr)
                 if not codelens_is_enabled then
                     vim.lsp.codelens.clear()
                 end
-                print('Setting codelens to: ' .. tostring(codelens_is_enabled))
+                print('Setting codelens (client:' ..
+                client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(codelens_is_enabled))
             end, {
                 desc = "Enable/disable codelens with lsp",
             })
@@ -136,7 +137,8 @@ M.attach = function(client, bufnr)
         vim.api.nvim_create_user_command(command,
             function()
                 format_is_enabled = not format_is_enabled
-                print('Setting autoformatting to: ' .. tostring(format_is_enabled))
+                print('Setting autoformatting (client:' ..
+                client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(format_is_enabled))
             end, {
                 desc = "Enable/disable autoformat with lsp",
             })
@@ -178,7 +180,8 @@ M.attach = function(client, bufnr)
                 if not highlight_is_enabled then
                     vim.lsp.buf.clear_references()
                 end
-                print('Setting document highlight to: ' .. tostring(highlight_is_enabled))
+                print('Setting document highlight (client:' ..
+                client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(highlight_is_enabled))
             end, {
                 desc = "Enable/disable highlight word under cursor with lsp",
             })
@@ -271,7 +274,8 @@ M.attach = function(client, bufnr)
                     else
                         inlayhints.reset()
                     end
-                    print('Setting inlayhints to: ' .. tostring(inlayhints_is_enabled))
+                    print('Setting inlayhints (client:' ..
+                    client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(inlayhints_is_enabled))
                 end, {
                     desc = "Enable/disable inlayhints with lsp",
                 })
