@@ -54,6 +54,10 @@ local register_once = function(name, data, setup)
     local registered_client = once_per_buffer[key]
 
     if registered_client then
+        if registered_client.id == client.id then
+            return
+        end
+
         local tmpl = "cannot enable %s for '%s' on buf:%d, already enabled by '%s'"
         local msg = string.format(tmpl, name, client.name, bufnr, registered_client.name)
         vim.notify(msg, vim.log.levels.WARN)
@@ -151,6 +155,10 @@ M.attach = function(client, bufnr)
     if capabilities.documentHighlightProvider then
         register_once("DocumentHighlighting", register_data,
             require('konrad.lsp.capability_handlers.documenthighlight').setup)
+    end
+
+    if client.server_capabilities.documentSymbolProvider then
+        register_once("Navic", register_data, require("konrad.lsp.capability_handlers.navic").setup)
     end
 
     if capabilities.declarationProvider then

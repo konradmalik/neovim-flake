@@ -1,15 +1,11 @@
 local lsp = require("konrad.lsp.lsp")
-local navic = require("konrad.lsp.navic")
 local hacks = require("konrad.lsp.after_attach_hacks")
 
 ---@param client table
 ---@param bufnr number
 local on_attach = function(client, bufnr)
     -- print("attaching lsp client " .. client.name .. " to buf " .. bufnr)
-    -- builtin lsp
     lsp.attach(client, bufnr)
-    -- navigation bar
-    navic(client, bufnr)
 end
 
 ---@param client table
