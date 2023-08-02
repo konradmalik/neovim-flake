@@ -1,5 +1,6 @@
 local telescope = require('telescope.builtin')
 local keymapper = require('konrad.lsp.keymapper')
+local registry = require('konrad.lsp.registry')
 
 local M = {}
 
@@ -18,71 +19,6 @@ local get_augroup = function(client)
     return _augroups[client.id]
 end
 
--- client-id to command name
-local commands = {};
--- client id to buf command name (don't need to store buf here since del requires a buf arg so we won't delete stuff by
--- accident)
-local buf_commands = {};
--- track items that should be registered only once per buffer
--- this is a mapping 'name-bufnr' -> client
-local once_per_buffer = {}
-
----@param ttable table
----@param key any
----@param value any
-local insert_into_nested = function(ttable, key, value)
-    if not ttable[key] then
-        ttable[key] = {}
-    end
-    if vim.tbl_islist(value) then
-        vim.list_extend(ttable[key], value)
-    else
-        table.insert(ttable[key], value)
-    end
-end
-
----@param name string
----@param data table of
----augroup integer
----bufnr integer
----client table
----@param setup function takes a table containing all above params
-local register_once = function(name, data, setup)
-    local bufnr = data.bufnr
-    local client = data.client
-    local key = name .. '-' .. bufnr
-    local registered_client = once_per_buffer[key]
-
-    if registered_client then
-        if registered_client.id == client.id then
-            return
-        end
-
-        local tmpl = "cannot enable %s for '%s' on buf:%d, already enabled by '%s'"
-        local msg = string.format(tmpl, name, client.name, bufnr, registered_client.name)
-        vim.notify(msg, vim.log.levels.WARN)
-    else
-        local registered = setup(vim.tbl_extend('error', data, { name = name }))
-        if registered['commands'] then
-            insert_into_nested(commands, client.id, registered.commands)
-        end
-        if registered['buf_commands'] then
-            insert_into_nested(buf_commands, client.id, registered.buf_commands)
-        end
-        once_per_buffer[key] = client
-    end
-end
-
-local deregister = function(bufnr, client)
-    for key, registered_client in pairs(once_per_buffer) do
-        if vim.endswith(key, '-' .. bufnr) then
-            if registered_client.id == client.id then
-                once_per_buffer[key] = nil
-            end
-        end
-    end
-end
-
 M.detach = function(client, bufnr)
     local capabilities = client.server_capabilities
     local augroup = get_augroup(client)
@@ -92,20 +28,6 @@ M.detach = function(client, bufnr)
     })
     for _, aucmd in ipairs(aucmds) do
         pcall(vim.api.nvim_del_autocmd, aucmd.id)
-    end
-
-    local client_commands = commands[client.id]
-    if client_commands then
-        for _, cmd in ipairs(client_commands) do
-            pcall(vim.api.nvim_del_user_command, cmd)
-        end
-    end
-
-    local client_buf_commands = buf_commands[client.id]
-    if client_buf_commands then
-        for _, buf_cmd in ipairs(client_buf_commands) do
-            pcall(vim.api.nvim_buf_del_user_command, bufnr, buf_cmd)
-        end
     end
 
     for _, mode in ipairs({ 'n', 'i', 'v' }) do
@@ -127,7 +49,7 @@ M.detach = function(client, bufnr)
         require('konrad.lsp.capability_handlers.inlayhints').detach()
     end
 
-    deregister(bufnr, client)
+    registry.deregister(bufnr, client)
 end
 
 M.attach = function(client, bufnr)
@@ -145,20 +67,20 @@ M.attach = function(client, bufnr)
     end
 
     if capabilities.codeLensProvider then
-        register_once("CodeLens", register_data, require('konrad.lsp.capability_handlers.codelens').attach)
+        registry.register_once("CodeLens", register_data, require('konrad.lsp.capability_handlers.codelens').attach)
     end
 
     if capabilities.documentFormattingProvider then
-        register_once("Formatting", register_data, require('konrad.lsp.capability_handlers.format').setup)
+        registry.register_once("Formatting", register_data, require('konrad.lsp.capability_handlers.format').setup)
     end
 
     if capabilities.documentHighlightProvider then
-        register_once("DocumentHighlighting", register_data,
+        registry.register_once("DocumentHighlighting", register_data,
             require('konrad.lsp.capability_handlers.documenthighlight').setup)
     end
 
     if client.server_capabilities.documentSymbolProvider then
-        register_once("Navic", register_data, require("konrad.lsp.capability_handlers.navic").setup)
+        registry.register_once("Navic", register_data, require("konrad.lsp.capability_handlers.navic").setup)
     end
 
     if capabilities.declarationProvider then
@@ -206,7 +128,7 @@ M.attach = function(client, bufnr)
     end
 
     if capabilities.inlayHintProvider then
-        register_once("InlayHints", register_data, require('konrad.lsp.capability_handlers.inlayhints').attach)
+        registry.register_once("InlayHints", register_data, require('konrad.lsp.capability_handlers.inlayhints').attach)
     end
 
     vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts_with_desc("Add Workspace Folder"))
