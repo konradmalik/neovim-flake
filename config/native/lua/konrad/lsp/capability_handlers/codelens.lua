@@ -5,7 +5,7 @@ local M = {}
 
 ---@param data table
 ---@return table of commands and buf_commands for this client
-M.setup = function(data)
+M.attach = function(data)
     local augroup = data.augroup
     local bufnr = data.bufnr
 
@@ -44,6 +44,10 @@ M.setup = function(data)
         commands = { "CodeLensToggle" },
         buf_commands = { "CodeLensRefresh" },
     }
+end
+
+M.detach = function()
+    pcall(vim.lsp.codelens.clear)
 end
 
 return M

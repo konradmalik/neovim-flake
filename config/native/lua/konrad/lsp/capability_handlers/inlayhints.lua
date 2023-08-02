@@ -4,7 +4,7 @@ local M = {}
 
 ---@param data table
 ---@return table of commands and buf_commands for this client
-M.setup = function(data)
+M.attach = function(data)
     local bufnr = data.bufnr
     local client = data.client
 
@@ -30,6 +30,10 @@ M.setup = function(data)
     return {
         commands = { "InlayHintsToggle" },
     }
+end
+
+M.detach = function()
+    require('lsp-inlayhints').reset()
 end
 
 return M

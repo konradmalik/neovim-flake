@@ -23,6 +23,9 @@ local commands = {};
 -- client id to buf command name (don't need to store buf here since del requires a buf arg so we won't delete stuff by
 -- accident)
 local buf_commands = {};
+-- track items that should be registered only once per buffer
+-- this is a mapping 'name-bufnr' -> client
+local once_per_buffer = {}
 
 ---@param ttable table
 ---@param key any
@@ -38,7 +41,46 @@ local insert_into_nested = function(ttable, key, value)
     end
 end
 
+---@param name string
+---@param data table of
+---augroup integer
+---bufnr integer
+---client table
+---@param setup function takes a table containing all above params
+local register_once = function(name, data, setup)
+    local bufnr = data.bufnr
+    local client = data.client
+    local key = name .. '-' .. bufnr
+    local registered_client = once_per_buffer[key]
+
+    if registered_client then
+        local tmpl = "cannot enable %s for '%s' on buf:%d, already enabled by '%s'"
+        local msg = string.format(tmpl, name, client.name, bufnr, registered_client.name)
+        vim.notify(msg, vim.log.levels.WARN)
+    else
+        local registered = setup(vim.tbl_extend('error', data, { name = name }))
+        if registered['commands'] then
+            insert_into_nested(commands, client.id, registered.commands)
+        end
+        if registered['buf_commands'] then
+            insert_into_nested(buf_commands, client.id, registered.buf_commands)
+        end
+        once_per_buffer[key] = client
+    end
+end
+
+local deregister = function(bufnr, client)
+    for key, registered_client in pairs(once_per_buffer) do
+        if vim.endswith(key, '-' .. bufnr) then
+            if registered_client.id == client.id then
+                once_per_buffer[key] = nil
+            end
+        end
+    end
+end
+
 M.detach = function(client, bufnr)
+    local capabilities = client.server_capabilities
     local augroup = get_augroup(client)
     local aucmds = vim.api.nvim_get_autocmds({
         group = augroup,
@@ -73,41 +115,15 @@ M.detach = function(client, bufnr)
         end
     end
 
-    pcall(vim.lsp.codelens.clear)
-    local inlayhints_ok, inlayhints = pcall(require, 'lsp-inlayhints')
-    if inlayhints_ok then inlayhints.reset() end
-end
-
--- track items that should be registered only once per buffer
--- this is a mapping 'name-bufnr' -> client.name
-local once_per_buffer = {}
----comment
----@param name string
----@param data table of
----augroup integer
----bufnr integer
----client table
----@param setup function takes a table containing all above params
-local register_once = function(name, data, setup)
-    local bufnr = data.bufnr
-    local client = data.client
-    local key = name .. '-' .. tostring(bufnr)
-    local registered_client = once_per_buffer[key]
-
-    if registered_client then
-        local tmpl = "cannot enable %s for '%s' on buf:%d, already enabled by '%s'"
-        local msg = string.format(tmpl, name, client.name, bufnr, registered_client)
-        vim.notify(msg, vim.log.levels.WARN)
-    else
-        local registered = setup(vim.tbl_extend('error', data, { name = name }))
-        if registered['commands'] then
-            insert_into_nested(commands, client.id, registered.commands)
-        end
-        if registered['buf_commands'] then
-            insert_into_nested(buf_commands, client.id, registered.buf_commands)
-        end
-        once_per_buffer[key] = client.name
+    if capabilities.codeLensProvider then
+        require('konrad.lsp.capability_handlers.codelens').detach()
     end
+
+    if capabilities.inlayHintProvider then
+        require('konrad.lsp.capability_handlers.inlayhints').detach()
+    end
+
+    deregister(bufnr, client)
 end
 
 M.attach = function(client, bufnr)
@@ -125,7 +141,7 @@ M.attach = function(client, bufnr)
     end
 
     if capabilities.codeLensProvider then
-        register_once("CodeLens", register_data, require('konrad.lsp.capability_handlers.codelens').setup)
+        register_once("CodeLens", register_data, require('konrad.lsp.capability_handlers.codelens').attach)
     end
 
     if capabilities.documentFormattingProvider then
@@ -182,7 +198,7 @@ M.attach = function(client, bufnr)
     end
 
     if capabilities.inlayHintProvider then
-        register_once("InlayHints", register_data, require('konrad.lsp.capability_handlers.inlayhints').setup)
+        register_once("InlayHints", register_data, require('konrad.lsp.capability_handlers.inlayhints').attach)
     end
 
     vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts_with_desc("Add Workspace Folder"))
