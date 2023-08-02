@@ -2,7 +2,7 @@
 require("konrad.lsp").setup({
     -- "ansiblels",
     efm = {
-        -- 'terraform_fmt'
+        -- 'black'
     },
     -- "gopls",
     -- "jsonls",
