@@ -2,11 +2,13 @@ local format_is_enabled = true;
 
 local M = {}
 
----@param augroup integer
----@param client table
----@param bufnr integer
+---@param data table
 ---@return table of commands and buf_commands for this client
-M.attach = function(augroup, client, bufnr)
+M.setup = function(data)
+    local augroup = data.augroup
+    local bufnr = data.bufnr
+    local client = data.client
+
     vim.api.nvim_create_user_command("AutoFormatToggle",
         function()
             format_is_enabled = not format_is_enabled
@@ -20,9 +22,7 @@ M.attach = function(augroup, client, bufnr)
         group = augroup,
         buffer = bufnr,
         callback = function()
-            P("format_is_enabled " .. tostring(format_is_enabled))
             if format_is_enabled then
-                P('formatting')
                 vim.lsp.buf.format({
                     async = false,
                     id = client.id,

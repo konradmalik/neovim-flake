@@ -1,6 +1,5 @@
 local telescope = require('telescope.builtin')
-
-local keymap_prefix = "[LSP]"
+local keymapper = require('konrad.lsp.keymapper')
 
 local M = {}
 
@@ -67,7 +66,7 @@ M.detach = function(client, bufnr)
         local keymaps = vim.api.nvim_buf_get_keymap(bufnr, mode)
         for _, keymap in ipairs(keymaps) do
             if keymap.desc then
-                if vim.startswith(keymap.desc, keymap_prefix) then
+                if vim.startswith(keymap.desc, keymapper.prefix) then
                     pcall(vim.api.nvim_buf_del_keymap, bufnr, mode, keymap.lhs)
                 end
             end
@@ -80,103 +79,62 @@ M.detach = function(client, bufnr)
 end
 
 -- track items that should be registered only once per buffer
--- this is a mapping bufnr -> client.name
+-- this is a mapping 'name-bufnr' -> client.name
 local once_per_buffer = {}
+---comment
+---@param name string
+---@param data table of
+---augroup integer
+---bufnr integer
+---client table
+---@param setup function takes a table containing all above params
+local register_once = function(name, data, setup)
+    local bufnr = data.bufnr
+    local client = data.client
+    local key = name .. '-' .. tostring(bufnr)
+    local registered_client = once_per_buffer[key]
+
+    if registered_client then
+        local tmpl = "cannot enable %s for '%s' on buf:%d, already enabled by '%s'"
+        local msg = string.format(tmpl, name, client.name, bufnr, registered_client)
+        vim.notify(msg, vim.log.levels.WARN)
+    else
+        local registered = setup(vim.tbl_extend('error', data, { name = name }))
+        if registered['commands'] then
+            insert_into_nested(commands, client.id, registered.commands)
+        end
+        if registered['buf_commands'] then
+            insert_into_nested(buf_commands, client.id, registered.buf_commands)
+        end
+        once_per_buffer[key] = client.name
+    end
+end
+
 M.attach = function(client, bufnr)
     local capabilities = client.server_capabilities
     local augroup = get_augroup(client)
-
-    -- Mappings.
-    local opts = { buffer = bufnr, noremap = true, silent = true }
-    local opts_with_desc = function(desc)
-        return vim.tbl_extend("error", opts, { desc = keymap_prefix .. " " .. desc })
-    end
+    local opts_with_desc = keymapper.setup(bufnr)
+    local register_data = {
+        augroup = augroup,
+        bufnr = bufnr,
+        client = client,
+    }
 
     if capabilities.codeActionProvider then
         vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
     end
 
     if capabilities.codeLensProvider then
-        local codelens_is_enabled = true;
-        local command = "CodeLensToggle"
-        insert_into_nested(commands, client.id, command)
-        vim.api.nvim_create_user_command(command,
-            function()
-                codelens_is_enabled = not codelens_is_enabled
-                if not codelens_is_enabled then
-                    vim.lsp.codelens.clear()
-                end
-                print('Setting codelens (client:' ..
-                    client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(codelens_is_enabled))
-            end, {
-                desc = "Enable/disable codelens with lsp",
-            })
-
-        vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost' }, {
-            group = augroup,
-            buffer = bufnr,
-            callback = function()
-                if codelens_is_enabled then
-                    vim.lsp.codelens.refresh()
-                end
-            end,
-            desc = "Refresh codelens",
-        })
-        -- refresh now as well
-        vim.lsp.codelens.refresh()
-
-        command = "CodeLensRefresh"
-        insert_into_nested(buf_commands, client.id, command)
-        vim.api.nvim_buf_create_user_command(bufnr, command, vim.lsp.codelens.refresh,
-            { desc = 'Refresh codelens for the current buffer' })
-        vim.keymap.set("n", "<leader>cl", vim.lsp.codelens.run, opts_with_desc("CodeLens run"))
+        register_once("CodeLens", register_data, require('konrad.lsp.capability_handlers.codelens').setup)
     end
 
     if capabilities.documentFormattingProvider then
-        if once_per_buffer[bufnr] then
-            local tmpl = "cannot enable formatting for '%s' on buf:%d, already enabled by '%s'"
-            local msg = string.format(tmpl, client.name, bufnr, once_per_buffer[bufnr])
-            vim.notify(msg, vim.log.levels.WARN)
-        else
-            local registered = require('konrad.lsp.attach.format').attach(augroup, client, bufnr)
-            insert_into_nested(commands, client.id, registered.commands)
-            insert_into_nested(buf_commands, client.id, registered.buf_commands)
-            once_per_buffer[bufnr] = client.name
-        end
+        register_once("Formatting", register_data, require('konrad.lsp.capability_handlers.format').setup)
     end
 
     if capabilities.documentHighlightProvider then
-        local highlight_is_enabled = true;
-        local command = "DocumentHighlightToggle"
-        insert_into_nested(commands, client.id, command)
-        vim.api.nvim_create_user_command(command,
-            function()
-                highlight_is_enabled = not highlight_is_enabled
-                if not highlight_is_enabled then
-                    vim.lsp.buf.clear_references()
-                end
-                print('Setting document highlight (client:' ..
-                    client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(highlight_is_enabled))
-            end, {
-                desc = "Enable/disable highlight word under cursor with lsp",
-            })
-
-        vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-            group = augroup,
-            buffer = bufnr,
-            callback = function()
-                if highlight_is_enabled then
-                    vim.lsp.buf.document_highlight()
-                end
-            end,
-            desc = "Highlight references when cursor holds",
-        })
-        vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-            group = augroup,
-            buffer = bufnr,
-            callback = vim.lsp.buf.clear_references,
-            desc = "Clear references when cursor moves",
-        })
+        register_once("DocumentHighlighting", register_data,
+            require('konrad.lsp.capability_handlers.documenthighlight').setup)
     end
 
     if capabilities.declarationProvider then
@@ -185,9 +143,7 @@ M.attach = function(client, bufnr)
 
     if capabilities.definitionProvider then
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts_with_desc("Go To Definition"))
-        if telescope_ok then
-            vim.keymap.set("n", "<leader>fd", telescope.lsp_definitions, opts_with_desc("Telescope [D]efinitions"))
-        end
+        vim.keymap.set("n", "<leader>fd", telescope.lsp_definitions, opts_with_desc("Telescope [D]efinitions"))
     end
 
     if capabilities.hoverProvider then
@@ -196,17 +152,13 @@ M.attach = function(client, bufnr)
 
     if capabilities.implementationProvider then
         vim.keymap.set("n", "gp", vim.lsp.buf.implementation, opts_with_desc("Go To Implementation"))
-        if telescope_ok then
-            vim.keymap.set("n", "<leader>fp", telescope.lsp_implementations,
-                opts_with_desc("Telescope Im[p]lementations"))
-        end
+        vim.keymap.set("n", "<leader>fp", telescope.lsp_implementations,
+            opts_with_desc("Telescope Im[p]lementations"))
     end
 
     if capabilities.referencesProvider then
         vim.keymap.set("n", "gr", vim.lsp.buf.references, opts_with_desc("References"))
-        if telescope_ok then
-            vim.keymap.set("n", "<leader>fr", telescope.lsp_references, opts_with_desc("Telescope [R]eferences"))
-        end
+        vim.keymap.set("n", "<leader>fr", telescope.lsp_references, opts_with_desc("Telescope [R]eferences"))
     end
 
     if capabilities.renameProvider then
@@ -219,45 +171,18 @@ M.attach = function(client, bufnr)
 
     if capabilities.typeDefinitionProvider then
         vim.keymap.set("n", "gT", vim.lsp.buf.type_definition, opts_with_desc("Go To Type Definition"))
-        if telescope_ok then
-            vim.keymap.set("n", "<leader>fT", telescope.lsp_type_definitions,
-                opts_with_desc("Telescope [T]ype Definitions"))
-        end
+        vim.keymap.set("n", "<leader>fT", telescope.lsp_type_definitions,
+            opts_with_desc("Telescope [T]ype Definitions"))
     end
 
     if capabilities.workspaceSymbolProvider then
         vim.keymap.set("n", "<leader>ws", vim.lsp.buf.workspace_symbol, opts_with_desc("Search workspace symbols"))
-        if telescope_ok then
-            vim.keymap.set("n", "<leader>fws", telescope.lsp_workspace_symbols,
-                opts_with_desc("Telescope [W]orkspace [S]ymbols"))
-        end
+        vim.keymap.set("n", "<leader>fws", telescope.lsp_workspace_symbols,
+            opts_with_desc("Telescope [W]orkspace [S]ymbols"))
     end
 
     if capabilities.inlayHintProvider then
-        vim.cmd('packadd lsp-inlayhints.nvim')
-        local inlayhints_ok, inlayhints = pcall(require, 'lsp-inlayhints')
-        if inlayhints_ok then
-            local inlayhints_is_enabled = true;
-            local command = "InlayHintsToggle"
-            insert_into_nested(commands, client.id, command)
-            vim.api.nvim_create_user_command(command,
-                function()
-                    inlayhints_is_enabled = not inlayhints_is_enabled
-                    inlayhints.toggle()
-                    if inlayhints_is_enabled then
-                        inlayhints.show()
-                    else
-                        inlayhints.reset()
-                    end
-                    print('Setting inlayhints (client:' ..
-                        client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(inlayhints_is_enabled))
-                end, {
-                    desc = "Enable/disable inlayhints with lsp",
-                })
-
-            inlayhints.setup({ enabled_at_startup = inlayhints_is_enabled })
-            inlayhints.on_attach(client, bufnr)
-        end
+        register_once("InlayHints", register_data, require('konrad.lsp.capability_handlers.inlayhints').setup)
     end
 
     vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts_with_desc("Add Workspace Folder"))
