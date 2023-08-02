@@ -19,27 +19,12 @@ local get_augroup = function(client)
     return _augroups[client.id]
 end
 
+---@param client table
+---@param bufnr integer
 M.detach = function(client, bufnr)
     local capabilities = client.server_capabilities
     local augroup = get_augroup(client)
-    local aucmds = vim.api.nvim_get_autocmds({
-        group = augroup,
-        buffer = bufnr,
-    })
-    for _, aucmd in ipairs(aucmds) do
-        pcall(vim.api.nvim_del_autocmd, aucmd.id)
-    end
-
-    for _, mode in ipairs({ 'n', 'i', 'v' }) do
-        local keymaps = vim.api.nvim_buf_get_keymap(bufnr, mode)
-        for _, keymap in ipairs(keymaps) do
-            if keymap.desc then
-                if vim.startswith(keymap.desc, keymapper.prefix) then
-                    pcall(vim.api.nvim_buf_del_keymap, bufnr, mode, keymap.lhs)
-                end
-            end
-        end
-    end
+    vim.api.nvim_del_augroup_by_id(augroup)
 
     if capabilities.codeLensProvider then
         require('konrad.lsp.capability_handlers.codelens').detach()
@@ -49,7 +34,14 @@ M.detach = function(client, bufnr)
         require('konrad.lsp.capability_handlers.inlayhints').detach()
     end
 
-    registry.deregister(bufnr, client)
+    registry.deregister(augroup, client, bufnr)
+
+    local clients = vim.lsp.get_active_clients({ bufnr = bufnr })
+    -- don't remove if more than 1 client attached
+    -- 1 is allowed, since detach runs just before detaching from buffer
+    if #clients <= 1 then
+        keymapper.clear(bufnr)
+    end
 end
 
 M.attach = function(client, bufnr)

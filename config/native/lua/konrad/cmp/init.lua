@@ -16,7 +16,7 @@ local cmp = require("cmp")
 
 local kind_icons = require("konrad.icons").kind
 local menu_entries = {
-    -- copilot runs on demand via 'CopilotEnable' command
+    -- lsp gets lsp server name via client.name
     copilot = "[Copilot]",
     luasnip = "[Snippet]",
     buffer = "[Buffer]",

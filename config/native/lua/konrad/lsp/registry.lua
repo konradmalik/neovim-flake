@@ -1,3 +1,5 @@
+local keymapper = require('konrad.lsp.keymapper')
+
 -- track items that should be registered only once per buffer
 -- this is a mapping 'name-bufnr' -> client
 local once_per_buffer = {}
@@ -24,6 +26,9 @@ end
 
 local M = {}
 
+---Useful for functionalities that should be registered only once per buffer
+---in the case of multiple lsps attaching to the same buffer.
+---An example can be formatting.
 ---@param name string
 ---@param data table of
 ---augroup integer
@@ -56,7 +61,13 @@ M.register_once = function(name, data, setup)
     end
 end
 
-M.deregister = function(bufnr, client)
+---Call this to clean-up after any generic lsp.
+---Stuff like codelens clearing or other specific functionalities is not handled here.
+---@param augroup any
+---@param client any
+---@param bufnr any
+M.deregister = function(augroup, client, bufnr)
+    -- commands
     local client_commands = commands[client.id]
     if client_commands then
         for _, cmd in ipairs(client_commands) do
@@ -64,6 +75,7 @@ M.deregister = function(bufnr, client)
         end
     end
 
+    -- buf commands
     local client_buf_commands = buf_commands[client.id]
     if client_buf_commands then
         for _, buf_cmd in ipairs(client_buf_commands) do
@@ -71,10 +83,28 @@ M.deregister = function(bufnr, client)
         end
     end
 
+    -- once-per-buffer functionalities
     for key, registered_client in pairs(once_per_buffer) do
         if vim.endswith(key, '-' .. bufnr) then
             if registered_client.id == client.id then
                 once_per_buffer[key] = nil
+            end
+        end
+    end
+
+    -- keymaps
+    local clients = vim.lsp.get_active_clients({ bufnr = bufnr })
+    -- don't remove if more than 1 client attached
+    -- 1 is allowed, since detach runs just before detaching from buffer
+    if #clients <= 1 then
+        for _, mode in ipairs({ 'n', 'i', 'v' }) do
+            local keymaps = vim.api.nvim_buf_get_keymap(bufnr, mode)
+            for _, keymap in ipairs(keymaps) do
+                if keymap.desc then
+                    if vim.startswith(keymap.desc, keymapper.prefix) then
+                        pcall(vim.api.nvim_buf_del_keymap, bufnr, mode, keymap.lhs)
+                    end
+                end
             end
         end
     end

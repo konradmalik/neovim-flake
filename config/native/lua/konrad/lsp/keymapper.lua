@@ -11,4 +11,17 @@ M.setup = function(bufnr)
     end
 end
 
+M.clear = function(bufnr)
+    for _, mode in ipairs({ 'n', 'i', 'v' }) do
+        local keymaps = vim.api.nvim_buf_get_keymap(bufnr, mode)
+        for _, keymap in ipairs(keymaps) do
+            if keymap.desc then
+                if vim.startswith(keymap.desc, M.prefix) then
+                    pcall(vim.api.nvim_buf_del_keymap, bufnr, mode, keymap.lhs)
+                end
+            end
+        end
+    end
+end
+
 return M
