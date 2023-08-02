@@ -1,4 +1,4 @@
-local telescope_ok, telescope = pcall(require, 'telescope.builtin')
+local telescope = require('telescope.builtin')
 
 local keymap_prefix = "[LSP]"
 
@@ -32,10 +32,12 @@ local insert_into_nested = function(ttable, key, value)
     if not ttable[key] then
         ttable[key] = {}
     end
-    table.insert(ttable[key], value)
+    if vim.tbl_islist(value) then
+        vim.list_extend(ttable[key], value)
+    else
+        table.insert(ttable[key], value)
+    end
 end
-
-M.get_augroup = get_augroup
 
 M.detach = function(client, bufnr)
     local augroup = get_augroup(client)
@@ -77,12 +79,12 @@ M.detach = function(client, bufnr)
     if inlayhints_ok then inlayhints.reset() end
 end
 
+-- track items that should be registered only once per buffer
+-- this is a mapping bufnr -> client.name
+local once_per_buffer = {}
 M.attach = function(client, bufnr)
     local capabilities = client.server_capabilities
     local augroup = get_augroup(client)
-
-    -- Enable completion triggered by <c-x><c-o>
-    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
     -- Mappings.
     local opts = { buffer = bufnr, noremap = true, silent = true }
@@ -105,7 +107,7 @@ M.attach = function(client, bufnr)
                     vim.lsp.codelens.clear()
                 end
                 print('Setting codelens (client:' ..
-                client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(codelens_is_enabled))
+                    client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(codelens_is_enabled))
             end, {
                 desc = "Enable/disable codelens with lsp",
             })
@@ -131,43 +133,16 @@ M.attach = function(client, bufnr)
     end
 
     if capabilities.documentFormattingProvider then
-        local format_is_enabled = true;
-        local command = "AutoFormatToggle"
-        insert_into_nested(commands, client.id, command)
-        vim.api.nvim_create_user_command(command,
-            function()
-                format_is_enabled = not format_is_enabled
-                print('Setting autoformatting (client:' ..
-                client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(format_is_enabled))
-            end, {
-                desc = "Enable/disable autoformat with lsp",
-            })
-
-        vim.api.nvim_create_autocmd('BufWritePre', {
-            desc = "AutoFormat on save",
-            group = augroup,
-            buffer = bufnr,
-            callback = function()
-                if format_is_enabled then
-                    vim.lsp.buf.format({
-                        async = false,
-                        id = client.id,
-                        bufnr = bufnr,
-                    })
-                end
-            end,
-        })
-        command = "Format"
-        insert_into_nested(buf_commands, client.id, command)
-        vim.api.nvim_buf_create_user_command(bufnr, command,
-            function()
-                vim.lsp.buf.format({
-                    async = false,
-                    id = client.id,
-                    bufnr = bufnr,
-                })
-            end,
-            { desc = 'Format current buffer with LSP' })
+        if once_per_buffer[bufnr] then
+            local tmpl = "cannot enable formatting for '%s' on buf:%d, already enabled by '%s'"
+            local msg = string.format(tmpl, client.name, bufnr, once_per_buffer[bufnr])
+            vim.notify(msg, vim.log.levels.WARN)
+        else
+            local registered = require('konrad.lsp.attach.format').attach(augroup, client, bufnr)
+            insert_into_nested(commands, client.id, registered.commands)
+            insert_into_nested(buf_commands, client.id, registered.buf_commands)
+            once_per_buffer[bufnr] = client.name
+        end
     end
 
     if capabilities.documentHighlightProvider then
@@ -181,7 +156,7 @@ M.attach = function(client, bufnr)
                     vim.lsp.buf.clear_references()
                 end
                 print('Setting document highlight (client:' ..
-                client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(highlight_is_enabled))
+                    client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(highlight_is_enabled))
             end, {
                 desc = "Enable/disable highlight word under cursor with lsp",
             })
@@ -275,7 +250,7 @@ M.attach = function(client, bufnr)
                         inlayhints.reset()
                     end
                     print('Setting inlayhints (client:' ..
-                    client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(inlayhints_is_enabled))
+                        client.name .. ', bufnr:' .. bufnr .. ') to: ' .. tostring(inlayhints_is_enabled))
                 end, {
                     desc = "Enable/disable inlayhints with lsp",
                 })
