@@ -34,7 +34,7 @@ M.detach = function(client, bufnr)
         require('konrad.lsp.capability_handlers.inlayhints').detach()
     end
 
-    registry.deregister(augroup, client, bufnr)
+    registry.deregister(client, bufnr)
 
     local clients = vim.lsp.get_active_clients({ bufnr = bufnr })
     -- don't remove if more than 1 client attached
