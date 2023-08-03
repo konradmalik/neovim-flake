@@ -24,7 +24,15 @@ end
 M.detach = function(client, bufnr)
     local capabilities = client.server_capabilities
     local augroup = get_augroup(client)
-    vim.api.nvim_del_augroup_by_id(augroup)
+
+    local aucmds = vim.api.nvim_get_autocmds({
+        group = augroup,
+        buffer = bufnr,
+    })
+    for _, aucmd in ipairs(aucmds) do
+        pcall(vim.api.nvim_del_autocmd, aucmd.id)
+    end
+
 
     if capabilities.codeLensProvider then
         require('konrad.lsp.capability_handlers.codelens').detach()
