@@ -11,6 +11,15 @@ end
 vim.cmd("packadd omnisharp-extended-lsp.nvim")
 
 return {
+    on_init = function(client)
+        -- disable codelens for omnisharp because it makes it extremely slow
+        client.server_capabilities.codeLensProvider = nil
+
+        -- omnisharp does not implement semanticTokens properly
+        -- https://github.com/OmniSharp/omnisharp-roslyn/issues/2483
+        client.server_capabilities.semanticTokensProvider = nil
+    end,
+
     -- use dotnet in the current PATH, and use dll found from OmniSharp in the current path
     cmd = { "dotnet", nix_omnisharp_dll_path() },
 

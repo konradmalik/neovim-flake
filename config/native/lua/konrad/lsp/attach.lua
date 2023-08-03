@@ -1,5 +1,4 @@
 local lsp = require("konrad.lsp.lsp")
-local hacks = require("konrad.lsp.after_attach_hacks")
 
 ---@param client table
 ---@param bufnr number
@@ -23,8 +22,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
         local client_id = args.data.client_id
         local client = vim.lsp.get_client_by_id(client_id)
         local bufnr = args.buf
-        -- run needed hacks per server
-        hacks(client)
         on_attach(client, bufnr)
     end,
 })
