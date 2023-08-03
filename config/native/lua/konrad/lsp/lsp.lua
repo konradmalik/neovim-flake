@@ -53,6 +53,8 @@ M.attach = function(client, bufnr)
         bufnr = bufnr,
         client = client,
     }
+    -- Enable completion triggered by <c-x><c-o>
+    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
     if capabilities.codeActionProvider then
         vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
