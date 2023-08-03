@@ -19,12 +19,11 @@ local get_augroup = function(client)
     return _augroups[client.id]
 end
 
----@param client table
----@param bufnr integer
-M.detach = function(client, bufnr)
-    local capabilities = client.server_capabilities
-    local augroup = get_augroup(client)
 
+---comment
+---@param augroup integer
+---@param bufnr integer
+local del_autocmds_for_buf = function(augroup, bufnr)
     local aucmds = vim.api.nvim_get_autocmds({
         group = augroup,
         buffer = bufnr,
@@ -32,7 +31,15 @@ M.detach = function(client, bufnr)
     for _, aucmd in ipairs(aucmds) do
         pcall(vim.api.nvim_del_autocmd, aucmd.id)
     end
+end
 
+---@param client table
+---@param bufnr integer
+M.detach = function(client, bufnr)
+    local capabilities = client.server_capabilities
+    local augroup = get_augroup(client)
+
+    del_autocmds_for_buf(augroup, bufnr)
 
     if capabilities.codeLensProvider then
         require('konrad.lsp.capability_handlers.codelens').detach()

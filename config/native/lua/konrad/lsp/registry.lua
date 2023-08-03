@@ -92,23 +92,6 @@ M.deregister = function(client, bufnr)
             end
         end
     end
-
-    -- keymaps
-    local clients = vim.lsp.get_active_clients({ bufnr = bufnr })
-    -- don't remove if more than 1 client attached
-    -- 1 is allowed, since detach runs just before detaching from buffer
-    if #clients <= 1 then
-        for _, mode in ipairs({ 'n', 'i', 'v' }) do
-            local keymaps = vim.api.nvim_buf_get_keymap(bufnr, mode)
-            for _, keymap in ipairs(keymaps) do
-                if keymap.desc then
-                    if vim.startswith(keymap.desc, keymapper.prefix) then
-                        pcall(vim.api.nvim_buf_del_keymap, bufnr, mode, keymap.lhs)
-                    end
-                end
-            end
-        end
-    end
 end
 
 return M
