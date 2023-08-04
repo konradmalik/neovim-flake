@@ -1,5 +1,19 @@
 local trim_is_enabled = true
+
+local trim_is_enabled_in_editorconfig = function()
+    ---@diagnostic disable-next-line: undefined-field
+    local ed = vim.b.editorconfig
+    if ed then
+        return ed.trim_trailing_whitespace;
+    end
+    return false
+end
+
 vim.api.nvim_create_user_command('AutoTrimToggle', function()
+    if trim_is_enabled and trim_is_enabled_in_editorconfig() then
+        vim.notify("Cannot toggle autotrim because it's forced by editorconfig", vim.log.levels.WARN)
+        return
+    end
     trim_is_enabled = not trim_is_enabled
     print('Setting autotrim to: ' .. tostring(trim_is_enabled))
 end, {
@@ -19,6 +33,10 @@ local group = vim.api.nvim_create_augroup("personal-autotrim", { clear = true })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
     callback = function()
+        if trim_is_enabled_in_editorconfig() then
+            -- let native neovim handle it
+            return
+        end
         if not trim_is_enabled then
             return
         end
