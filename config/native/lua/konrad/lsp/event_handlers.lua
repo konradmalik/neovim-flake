@@ -1,45 +1,16 @@
 local telescope = require('telescope.builtin')
 local keymapper = require('konrad.lsp.keymapper')
 local registry = require('konrad.lsp.registry')
+local augroups = require('konrad.lsp.augroups')
 
 local M = {}
-
--- client id to group id mapping
-local _augroups = {}
-
----@param client table
----@return integer
-local get_augroup = function(client)
-    if not _augroups[client.id] then
-        local group_name = string.format('personal-lsp-%s-%d', client.name, client.id)
-        local group = vim.api.nvim_create_augroup(group_name, { clear = true })
-        _augroups[client.id] = group
-        return group
-    end
-    return _augroups[client.id]
-end
-
-
----comment
----@param augroup integer
----@param bufnr integer
-local del_autocmds_for_buf = function(augroup, bufnr)
-    local aucmds = vim.api.nvim_get_autocmds({
-        group = augroup,
-        buffer = bufnr,
-    })
-    for _, aucmd in ipairs(aucmds) do
-        pcall(vim.api.nvim_del_autocmd, aucmd.id)
-    end
-end
 
 ---@param client table
 ---@param bufnr integer
 M.detach = function(client, bufnr)
     local capabilities = client.server_capabilities
-    local augroup = get_augroup(client)
 
-    del_autocmds_for_buf(augroup, bufnr)
+    augroups.del_autocmds_for_buf(client, bufnr)
 
     if capabilities.codeLensProvider then
         require('konrad.lsp.capability_handlers.codelens').detach()
@@ -61,7 +32,7 @@ end
 
 M.attach = function(client, bufnr)
     local capabilities = client.server_capabilities
-    local augroup = get_augroup(client)
+    local augroup = augroups.get_augroup(client)
     local opts_with_desc = keymapper.setup(bufnr)
     local register_data = {
         augroup = augroup,

@@ -92,7 +92,7 @@ end
 
 -- call this after .nvim.lua (from after folder eg.)
 M.initialize = function()
-    require("konrad.lsp.attach")
+    require("konrad.lsp.events")
     require("konrad.lsp.fidget")
     already_setup = true
     initialize()

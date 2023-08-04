@@ -1,4 +1,4 @@
-local lsp = require("konrad.lsp.lsp")
+local lsp = require("konrad.lsp.event_handlers")
 
 ---@param client table
 ---@param bufnr number
