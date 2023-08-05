@@ -1,9 +1,4 @@
-local comment_ok, comment = pcall(require, "Comment")
-if not comment_ok then
-    vim.notify("cannot load Comment")
-    return
-end
-
+local comment = require("Comment")
 comment.setup({
     mappings = {
         basic = true,
