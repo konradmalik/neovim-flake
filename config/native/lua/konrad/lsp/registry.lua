@@ -1,5 +1,3 @@
-local keymapper = require('konrad.lsp.keymapper')
-
 -- track items that should be registered only once per buffer
 -- maps bufrn -> { functionality_name -> client }
 local once_per_buffer = {}
@@ -20,7 +18,7 @@ local insert_into_nested = function(ttable, key, value)
     if vim.tbl_islist(value) then
         vim.list_extend(ttable[key], value)
     else
-        local merged = vim.tbl_deep_extend('error', ttable[key], value)
+        local merged = vim.tbl_deep_extend('force', ttable[key], value)
         ttable[key] = merged
     end
 end
@@ -47,19 +45,24 @@ M.register_once = function(fname, data, setup)
             return
         end
 
-        local tmpl = "cannot enable %s for '%s' on buf:%d, already enabled by '%s'"
-        local msg = string.format(tmpl, fname, client.name, bufnr, registered_client.name)
-        vim.notify(msg, vim.log.levels.WARN)
-    else
-        local registered = setup(vim.tbl_extend('error', data, { name = fname }))
-        if registered['commands'] then
-            insert_into_nested(commands, client.id, registered.commands)
+        if registered_client.id ~= client.id and vim.lsp.get_client_by_id(registered_client.id) then
+            local tmpl = "cannot enable '%s' for '%s (id:%d)' on buf:%d,"
+                .. " already taken by '%s (id:%d)' which is still running"
+            local msg = string.format(tmpl, fname, client.name, client.id, bufnr, registered_client.name,
+                registered_client.id)
+            vim.notify(msg, vim.log.levels.WARN)
+            return
         end
-        if registered['buf_commands'] then
-            insert_into_nested(buf_commands, client.id, registered.buf_commands)
-        end
-        insert_into_nested(once_per_buffer, bufnr, { [fname] = { id = client.id, name = client.name } })
     end
+
+    local registered = setup(vim.tbl_extend('error', data, { name = fname }))
+    if registered['commands'] then
+        insert_into_nested(commands, client.id, registered.commands)
+    end
+    if registered['buf_commands'] then
+        insert_into_nested(buf_commands, client.id, registered.buf_commands)
+    end
+    insert_into_nested(once_per_buffer, bufnr, { [fname] = { id = client.id, name = client.name } })
 end
 
 ---Call this to clean-up after any generic lsp.

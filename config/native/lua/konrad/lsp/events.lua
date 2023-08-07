@@ -11,9 +11,7 @@ end
 ---@param bufnr number
 local on_detach = function(client, bufnr)
     -- print("detaching lsp client " .. client.name .. " from buf " .. bufnr)
-    -- builtin lsp
     lsp.detach(client, bufnr)
-    -- no way to detach navic as of now
 end
 
 vim.api.nvim_create_autocmd('LspAttach', {
