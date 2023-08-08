@@ -10,6 +10,7 @@ return {
         Lua = {
             telemetry = { enable = false },
             hint = { enable = true },
+            format = { enable = true },
         }
     }
 }
