@@ -50,11 +50,11 @@ M.register_once = function(fname, data, setup)
             return
         end
 
-        if registered_client.id ~= client.id and vim.lsp.get_client_by_id(registered_client.id) then
-            local tmpl = "cannot enable '%s' for '%s (id:%d)' on buf:%d,"
-                .. " already taken by '%s (id:%d)' which is still running"
-            local msg = string.format(tmpl, fname, client.name, client.id, bufnr, registered_client.name,
-                registered_client.id)
+        if registered_client.id ~= client.id and registered_client.name ~= client.name then
+            local tmpl = "cannot enable '%s' for '%s (id:%d)' on buf:%d, already taken by '%s (id:%d)'"
+            local msg = string.format(tmpl, fname,
+                client.name, client.id, bufnr,
+                registered_client.name, registered_client.id)
             vim.notify(msg, vim.log.levels.WARN)
             return
         end

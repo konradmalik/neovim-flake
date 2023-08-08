@@ -3,14 +3,14 @@ local lsp = require("konrad.lsp.event_handlers")
 ---@param client table
 ---@param bufnr number
 local on_attach = function(client, bufnr)
-    -- print("attaching lsp client " .. client.name .. " to buf " .. bufnr)
+    -- vim.notify("attaching lsp client " .. client.name .. " (" .. client.id .. ") to buf " .. bufnr, vim.log.levels.DEBUG)
     lsp.attach(client, bufnr)
 end
 
 ---@param client table
 ---@param bufnr number
 local on_detach = function(client, bufnr)
-    -- print("detaching lsp client " .. client.name .. " from buf " .. bufnr)
+    -- vim.notify("detaching lsp client " .. client.name .. " (" .. client.id .. ") from buf " .. bufnr, vim.log.levels.DEBUG)
     lsp.detach(client, bufnr)
 end
 
