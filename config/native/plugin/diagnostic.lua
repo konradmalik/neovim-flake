@@ -1,26 +1,13 @@
 local icons = require("konrad.icons")
-local signs = {
-    vim.fn.sign_getdefined("DiagnosticSignError")[1],
-    vim.fn.sign_getdefined("DiagnosticSignWarn")[1],
-    vim.fn.sign_getdefined("DiagnosticSignInfo")[1],
-    vim.fn.sign_getdefined("DiagnosticSignHint")[1],
-}
 
 vim.diagnostic.config({
-    signs = { active = signs },
-    underline = true,
     virtual_text = {
         prefix = icons.ui.Square,
-        source = false,
+        source = "if_many",
         spacing = 4,
     },
     update_in_insert = false,
     severity_sort = true,
-    float = {
-        source = "always",
-        prefix = "", -- removes numbers
-        header = "", -- removes "diagnostics" title
-    },
 })
 
 local opts = { noremap = true, silent = true }
