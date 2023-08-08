@@ -1,26 +1,31 @@
 -- track items that should be registered only once per buffer
 -- maps bufrn -> { functionality_name -> client }
 local once_per_buffer = {}
-
--- client-id to command name
+-- client-id -> {command name->true} (global commands)
 local commands = {};
--- client id to buf command name (don't need to store buf here since del requires a buf arg so we won't delete stuff by
--- accident)
+-- client id -> {command name -> true}
 local buf_commands = {};
 
 ---@param ttable table
 ---@param key any
----@param value any
+---@param value table
 local insert_into_nested = function(ttable, key, value)
     if not ttable[key] then
         ttable[key] = {}
     end
-    if vim.tbl_islist(value) then
-        vim.list_extend(ttable[key], value)
-    else
-        local merged = vim.tbl_deep_extend('force', ttable[key], value)
-        ttable[key] = merged
+
+    local merged = vim.tbl_deep_extend('force', ttable[key], value)
+    ttable[key] = merged
+end
+
+---@param list any[]
+---@return table
+local list_into_set = function(list)
+    local r = {}
+    for _, value in ipairs(list) do
+        r[value] = true
     end
+    return r
 end
 
 local M = {}
@@ -57,10 +62,10 @@ M.register_once = function(fname, data, setup)
 
     local registered = setup(vim.tbl_extend('error', data, { name = fname }))
     if registered['commands'] then
-        insert_into_nested(commands, client.id, registered.commands)
+        insert_into_nested(commands, client.id, list_into_set(registered.commands))
     end
     if registered['buf_commands'] then
-        insert_into_nested(buf_commands, client.id, registered.buf_commands)
+        insert_into_nested(buf_commands, client.id, list_into_set(registered.buf_commands))
     end
     insert_into_nested(once_per_buffer, bufnr, { [fname] = { id = client.id, name = client.name } })
 end
@@ -73,17 +78,19 @@ M.deregister = function(client, bufnr)
     -- commands
     local client_commands = commands[client.id]
     if client_commands then
-        for _, cmd in ipairs(client_commands) do
+        for cmd, _ in pairs(client_commands) do
             pcall(vim.api.nvim_del_user_command, cmd)
         end
+        commands[client.id] = nil
     end
 
     -- buf commands
     local client_buf_commands = buf_commands[client.id]
     if client_buf_commands then
-        for _, buf_cmd in ipairs(client_buf_commands) do
+        for buf_cmd, _ in pairs(client_buf_commands) do
             pcall(vim.api.nvim_buf_del_user_command, bufnr, buf_cmd)
         end
+        buf_commands[client.id] = nil
     end
 
     -- once-per-buffer functionalities
