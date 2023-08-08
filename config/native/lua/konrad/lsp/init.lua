@@ -1,23 +1,3 @@
-local utils = require('konrad.utils')
--- if add is called rather late, after the file is opened, then the configured server won't start for the current buffer
--- solution is to check if we currently have a buffer and if it matches the configured filetype
--- will also restart if the server is already started, because it's config most probably changed (useful for eg. when
--- manually sourcing .nvim.lua or similar)
----@param config table
----@return nil
-local start_if_needed = function(config)
-    -- if attached, restart because config changed
-    local clients = vim.lsp.get_active_clients(config)
-    if #clients > 0 then
-        local client = clients[1]
-        vim.lsp.stop_client(client.id)
-    end
-    -- launch if matching filetype
-    if utils.is_matching_filetype(config) then
-        config.launch()
-    end
-end
-
 local init_lspconfig = function(server, opts)
     local lspconfig = require("lspconfig")
     local capabilities = require("konrad.lsp.capabilities")
@@ -34,7 +14,6 @@ local init_lspconfig = function(server, opts)
     local merged = vim.tbl_deep_extend("force", base, overrides, opts or {})
     local config = lspconfig[server]
     config.setup(merged)
-    start_if_needed(config)
 end
 
 
