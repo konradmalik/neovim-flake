@@ -1,8 +1,8 @@
 local luasnip = require("konrad.cmp.snippets")
 
-local utils = require("konrad.utils")
+local lazy = require("konrad.lazy")
 -- load copilot on demand
-utils.make_enable_command(
+lazy.make_enable_command(
     "CopilotEnable",
     { "copilot.lua", "copilot-cmp" },
     function()

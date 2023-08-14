@@ -10,9 +10,8 @@ vim.diagnostic.config({
     severity_sort = true,
 })
 
-local opts = { noremap = true, silent = true }
 local opts_with_desc = function(desc)
-    return vim.tbl_extend("error", opts, { desc = "[Diagnostic] " .. desc })
+    return { noremap = true, silent = true, desc = "[Diagnostic] " .. desc }
 end
 
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts_with_desc("Open in floating window"))
@@ -22,16 +21,18 @@ vim.keymap.set('n', '<leader>ll', vim.diagnostic.setloclist,
     opts_with_desc("Send all from current buffer to location list"))
 vim.keymap.set('n', '<leader>lq', vim.diagnostic.setqflist, opts_with_desc("Send all to QF list"))
 
-local diagnostics_are_enabled = true;
-vim.api.nvim_create_user_command('DiagnosticsToggle', function()
-    if diagnostics_are_enabled then
-        vim.diagnostic.disable()
-        diagnostics_are_enabled = false
-    else
-        _, _ = pcall(vim.diagnostic.enable)
-        diagnostics_are_enabled = true
-    end
-    print('Setting diagnostics to: ' .. tostring(diagnostics_are_enabled))
-end, {
-    desc = "Enable/disable diagnostics globally",
-})
+do
+    local diagnostics_are_enabled = true;
+    vim.api.nvim_create_user_command('DiagnosticsToggle', function()
+        if diagnostics_are_enabled then
+            vim.diagnostic.disable()
+            diagnostics_are_enabled = false
+        else
+            _, _ = pcall(vim.diagnostic.enable)
+            diagnostics_are_enabled = true
+        end
+        print('Setting diagnostics to: ' .. tostring(diagnostics_are_enabled))
+    end, {
+        desc = "Enable/disable diagnostics globally",
+    })
+end

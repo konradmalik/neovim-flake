@@ -1,5 +1,5 @@
-local utils = require("konrad.utils")
-utils.make_enable_command(
+local lazy = require("konrad.lazy")
+lazy.make_enable_command(
     "UndotreeToggle",
     { "undotree" },
     function()

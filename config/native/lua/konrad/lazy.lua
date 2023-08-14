@@ -14,11 +14,4 @@ function M.make_enable_command(name, packadds, fun, opts)
     end, opts or {});
 end
 
----@param config table Can be obtained by getting the 'client' object in some way and calling 'client.config'
----@return boolean
-function M.is_matching_filetype(config)
-    local ft = vim.bo.filetype or ''
-    return ft ~= '' and vim.tbl_contains(config.filetypes or {}, ft)
-end
-
 return M
