@@ -6,7 +6,7 @@ local fts = { "javascript", "javascriptreact", "typescript", "typescriptreact", 
 
 local entry = {
     formatCommand = binaries.prettier .. " --plugin-search-dir " .. binaries.prettier_plugin_toml ..
-        ' --stdin --stdin-filepath ${INPUT} ${--range-start:charStart} '
+        " --stdin --stdin-filepath '${INPUT}' ${--range-start:charStart} "
         .. '${--range-end:charEnd} ${--tab-width:tabSize} ${--use-tabs:!insertSpaces}',
     formatStdin = true,
     formatCanRange = true,

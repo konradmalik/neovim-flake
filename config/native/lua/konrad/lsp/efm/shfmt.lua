@@ -3,7 +3,7 @@ local binaries = require('konrad.binaries')
 
 local fts = { "sh" }
 local entry = {
-    formatCommand = binaries.shfmt .. '-filename ${INPUT} -',
+    formatCommand = binaries.shfmt .. "-filename '${INPUT}' -",
     formatStdin = true,
 }
 

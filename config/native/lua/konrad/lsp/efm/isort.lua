@@ -2,7 +2,7 @@ local efm = require('konrad.lsp.efm')
 
 local fts = { "python" }
 local entry = {
-    formatCommand = "isort --stdout --filename ${INPUT} -",
+    formatCommand = "isort --stdout --filename '${INPUT}' -",
     formatStdin = true,
 }
 

@@ -1,9 +1,4 @@
-local kanagawa_ok, kanagawa = pcall(require, "kanagawa")
-if not kanagawa_ok then
-    vim.notify("cannot load kanagawa")
-    return
-end
-
+local kanagawa = require("kanagawa")
 kanagawa.setup({
     compile = true,
     background = {

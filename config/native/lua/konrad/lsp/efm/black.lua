@@ -2,7 +2,7 @@ local efm = require('konrad.lsp.efm')
 
 local fts = { "python" }
 local entry = {
-    formatCommand = "black --no-color --quiet --stdin-filename ${INPUT} -",
+    formatCommand = "black --no-color --quiet --stdin-filename '${INPUT}' -",
     formatStdin = true,
 }
 
