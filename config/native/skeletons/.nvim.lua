@@ -1,9 +1,9 @@
 -- CHANGEME: this is skeleton file from neovim
 require("konrad.lsp").setup({
     -- "ansiblels",
-    efm = {
-        -- 'black'
-    },
+    -- efm = {
+    --     'black'
+    -- },
     -- "gopls",
     -- "jsonls",
     -- "lua_ls",

@@ -10,12 +10,14 @@ let
   };
   # manually handle nix templates to avoid IFD
   binaries-lua = pkgs.callPackage ./nix/lua/konrad/binaries.nix { };
+  skeletons-lua = pkgs.callPackage ./nix/lua/konrad/skeletons.nix { inherit nativeConfig; };
 in
 pkgs.symlinkJoin {
   name = "${appName}-config";
   paths = [
     nativeConfig
     binaries-lua
+    skeletons-lua
   ];
   # config structure:
   # - if isolated is false, then $out/init.lua. This is for home-manager
