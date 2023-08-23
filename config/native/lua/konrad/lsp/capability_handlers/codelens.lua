@@ -9,9 +9,6 @@ M.attach = function(data)
     local augroup = data.augroup
     local bufnr = data.bufnr
 
-    -- refresh now as well
-    vim.lsp.codelens.refresh()
-
     vim.api.nvim_create_user_command("CodeLensToggle",
         function()
             codelens_is_enabled = not codelens_is_enabled
@@ -23,7 +20,7 @@ M.attach = function(data)
             desc = "Enable/disable codelens with lsp",
         })
 
-    vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost' }, {
+    vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'CursorHold', 'InsertLeave' }, {
         group = augroup,
         buffer = bufnr,
         callback = function()
@@ -40,6 +37,8 @@ M.attach = function(data)
         { desc = 'Refresh codelens for the current buffer' })
     vim.keymap.set("n", "<leader>cl", vim.lsp.codelens.run, opts_with_desc("CodeLens run"))
 
+    -- refresh manually right now for a start
+    vim.schedule(vim.lsp.codelens.refresh)
     return {
         commands = { "CodeLensToggle" },
         buf_commands = { "CodeLensRefresh" },
@@ -47,7 +46,7 @@ M.attach = function(data)
 end
 
 M.detach = function()
-    pcall(vim.lsp.codelens.clear)
+    vim.schedule(function() pcall(vim.lsp.codelens.clear) end)
 end
 
 return M
