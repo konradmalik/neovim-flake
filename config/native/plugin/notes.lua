@@ -4,7 +4,7 @@ end
 
 local open_quicknotes = function()
     local notes_path
-    if vim.fn.has('macunix') then
+    if vim.fn.has('mac') > 0 then
         notes_path = "/Users/konrad/Library/Mobile Documents/iCloud~md~obsidian/Documents"
     else
         notes_path = "/home/konrad/obsidian"
