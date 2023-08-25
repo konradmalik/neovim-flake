@@ -1,5 +1,4 @@
-local fidget = require("fidget")
-fidget.setup {
+require("fidget").setup {
     text = {
         spinner = "dots",
     },

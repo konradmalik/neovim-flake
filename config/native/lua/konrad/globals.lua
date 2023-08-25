@@ -1,5 +1,4 @@
-local plenary_reload = require("plenary.reload")
-local reloader = plenary_reload.reload_module
+local reloader = require("plenary.reload").reload_module
 
 P = function(v)
     print(vim.inspect(v))

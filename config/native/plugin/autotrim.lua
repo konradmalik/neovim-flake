@@ -10,7 +10,7 @@ local trim_is_enabled_in_editorconfig = function()
 end
 
 vim.api.nvim_create_user_command('AutoTrimToggle', function()
-    if trim_is_enabled and trim_is_enabled_in_editorconfig() then
+    if trim_is_enabled_in_editorconfig() then
         vim.notify("Cannot toggle autotrim because it's forced by editorconfig", vim.log.levels.WARN)
         return
     end

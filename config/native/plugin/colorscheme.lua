@@ -1,5 +1,4 @@
-local kanagawa = require("kanagawa")
-kanagawa.setup({
+require("kanagawa").setup({
     compile = true,
     background = {
         dark = "wave",

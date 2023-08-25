@@ -1,9 +1,7 @@
-local diffview = require("diffview")
-
 -- local actions = require("diffview.actions")
 local icons = require("konrad.icons")
 
-diffview.setup({
+require('diffview').setup({
     enhanced_diff_hl = false, -- See ':h diffview-config-enhanced_diff_hl'
     use_icons = true,         -- Requires nvim-web-devicons
     icons = {                 -- Only applies when use_icons is true.

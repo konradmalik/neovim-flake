@@ -1,6 +1,4 @@
-local treesitter = require("nvim-treesitter.configs")
-
-treesitter.setup({
+require("nvim-treesitter.configs").setup({
     ensure_installed = {},
     ignore_install = {},
     sync_install = false,
@@ -66,13 +64,7 @@ treesitter.setup({
     },
 })
 
-local treesitter_context_ok, treesitter_context = pcall(require, "treesitter-context")
-if not treesitter_context_ok then
-    vim.notify("cannot load treesitter-context")
-    return
-end
-
-treesitter_context.setup {
+require("treesitter-context").setup {
     enable = true,        -- Enable this plugin (Can be enabled/disabled later via commands)
     max_lines = 0,        -- How many lines the window should span. Values <= 0 mean no limit.
     trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
