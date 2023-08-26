@@ -92,10 +92,6 @@ processMadePlugins (with pkgs.vimPlugins;[
   # misc
   (makePlugin boole-nvim)
   (makePlugin comment-nvim)
-  (makePlugin {
-    plugin = diffview-nvim;
-    dependencies = [ plenary-nvim nvim-web-devicons ];
-  })
   (makePlugin gitsigns-nvim)
   (makePlugin harpoon)
   (makePlugin indent-blankline-nvim)
