@@ -1,5 +1,5 @@
 -- adapted from https://github.com/akinsho/git-conflict.nvim
-local color = require('konrad.git-conflict.colors')
+local color = require('git-conflict.colors')
 local api = vim.api
 
 --- @class ConflictHighlights
@@ -202,6 +202,11 @@ local function set_highlights(highlights)
     api.nvim_set_hl(0, INCOMING_LABEL_HL, { background = incoming_label_bg, default = true })
     api.nvim_set_hl(0, ANCESTOR_LABEL_HL, { background = ancestor_label_bg, default = true })
 end
+--
+---@return boolean
+local function buf_can_have_conflicts()
+    return vim.fn.search(conflict_start, 'cnw', nil, 500) > 0
+end
 
 local M = {}
 
@@ -219,8 +224,11 @@ function M.setup(user_config)
     api.nvim_create_autocmd({ 'BufReadPost', 'BufWritePost' }, {
         group = AUGROUP_NAME,
         callback = function()
-            -- TODO is it worth checking if git repo?
-            draw_buffer();
+            if buf_can_have_conflicts() then
+                draw_buffer();
+            else
+                clear_highlights(0)
+            end
         end,
     })
 end

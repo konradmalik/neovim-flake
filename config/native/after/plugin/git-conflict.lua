@@ -1,4 +1,4 @@
-require('konrad.git-conflict').setup({
+require('git-conflict').setup({
     highlights = {
         current = 'diffAdded',
         incoming = 'diffChanged',
