@@ -12,14 +12,21 @@ local api = vim.api
 --- @field middle Range
 --- @field current Range
 
+--- @class Range
+--- @field range_start integer
+--- @field range_end integer
+--- @field content_start integer
+--- @field content_end integer
+
 local CURRENT_HL = 'GitConflictCurrent'
 local INCOMING_HL = 'GitConflictIncoming'
 local ANCESTOR_HL = 'GitConflictAncestor'
 local CURRENT_LABEL_HL = 'GitConflictCurrentLabel'
 local INCOMING_LABEL_HL = 'GitConflictIncomingLabel'
 local ANCESTOR_LABEL_HL = 'GitConflictAncestorLabel'
-local PRIORITY = vim.highlight.priorities.user
-local NAMESPACE = api.nvim_create_namespace('git-conflict')
+local PRIORITY = vim.highlight.priorities.diagnostics - 1
+local NAME = 'git-conflict'
+local NAMESPACE = api.nvim_create_namespace(NAME)
 local AUGROUP_NAME = 'GitConflictCommands'
 
 local conflict_start = '^<<<<<<<'
@@ -42,6 +49,8 @@ local config = {
         incoming = '(Incoming Change)',
         ancestor = '(Base Change)',
     },
+    enable_autocommand = true,
+    enable_diagnostics = true,
 }
 
 ---@param name string?
@@ -84,10 +93,9 @@ local function draw_section_label(bufnr, hl_group, label, lnum)
 end
 
 ---Highlight each part of a git conflict i.e. the incoming changes vs the current/HEAD changes
+---@param bufnr integer
 ---@param positions table
-local function highlight_conflicts(positions)
-    local bufnr = api.nvim_get_current_buf()
-
+local function highlight_conflicts(bufnr, positions)
     for _, position in ipairs(positions) do
         local current_start = position.current.range_start
         local current_end = position.current.range_end
@@ -162,27 +170,6 @@ local function detect_conflicts(lines)
     return #positions > 0, positions
 end
 
----@param bufnr integer?
-local function clear_highlights(bufnr)
-    if bufnr and not api.nvim_buf_is_valid(bufnr) then return end
-    bufnr = bufnr or 0
-    api.nvim_buf_clear_namespace(bufnr, NAMESPACE, 0, -1)
-end
-
----Get the conflict marker positions for a buffer if any and update the buffers state
----@param bufnr integer?
----@param range_start integer?
----@param range_end integer?
-local function draw_buffer(bufnr, range_start, range_end)
-    local lines = api.nvim_buf_get_lines(bufnr or 0, range_start or 0, range_end or -1, false)
-    local has_conflict, positions = detect_conflicts(lines)
-
-    clear_highlights(bufnr)
-    if has_conflict then
-        highlight_conflicts(positions)
-    end
-end
-
 ---Derive the colour of the section label highlights based on each sections highlights
 ---@param highlights ConflictHighlights
 local function set_highlights(highlights)
@@ -208,7 +195,61 @@ local function buf_can_have_conflicts()
     return vim.fn.search(conflict_start, 'cnw', nil, 500) > 0
 end
 
+local function clear_highlights(bufnr)
+    api.nvim_buf_clear_namespace(bufnr, NAMESPACE, 0, -1)
+end
+
+local function clear_diagnostic(bufnr)
+    vim.diagnostic.reset(NAMESPACE, bufnr)
+end
+--
+---Set diagnostics for all conflicts
+---@param bufnr integer
+---@param positions table
+local function set_diagnostics(bufnr, positions)
+    for _, position in ipairs(positions) do
+        local diagnostic = {
+            lnum = position.current.range_start,
+            end_lnum = position.incoming.range_end,
+            col = 0,
+            severity = vim.diagnostic.severity.E,
+            message = "Git conflict",
+            source = NAME,
+        }
+        vim.diagnostic.set(NAMESPACE, bufnr, { diagnostic })
+    end
+end
+
 local M = {}
+
+---@param bufnr integer?
+M.clear = function(bufnr)
+    if bufnr and not api.nvim_buf_is_valid(bufnr) then return end
+    bufnr = bufnr or 0
+    clear_highlights(bufnr)
+    if config.enable_diagnostics then
+        clear_diagnostic(bufnr)
+    end
+end
+
+---Find all conflicts and highlight them
+---@param bufnr integer?
+---@param range_start integer?
+---@param range_end integer?
+M.run = function(bufnr, range_start, range_end)
+    bufnr = bufnr or 0
+    local lines = api.nvim_buf_get_lines(bufnr or 0, range_start or 0, range_end or -1, false)
+    local has_conflict, positions = detect_conflicts(lines)
+
+    M.clear(bufnr)
+    if has_conflict then
+        highlight_conflicts(bufnr, positions)
+
+        if config.enable_diagnostics then
+            set_diagnostics(bufnr, positions)
+        end
+    end
+end
 
 function M.setup(user_config)
     config = vim.tbl_deep_extend('force', config, user_config or {})
@@ -221,16 +262,22 @@ function M.setup(user_config)
         callback = function() set_highlights(config.highlights) end,
     })
 
-    api.nvim_create_autocmd({ 'BufReadPost', 'BufWritePost' }, {
-        group = AUGROUP_NAME,
-        callback = function()
-            if buf_can_have_conflicts() then
-                draw_buffer();
-            else
-                clear_highlights(0)
-            end
-        end,
-    })
+    local buf_was_drawn = {}
+    if config.enable_autocommand then
+        api.nvim_create_autocmd({ 'BufReadPost', 'BufWritePost' }, {
+            group = AUGROUP_NAME,
+            callback = function(args)
+                local buf = args.buf
+                if buf_can_have_conflicts() then
+                    M.run(buf);
+                    buf_was_drawn[buf] = true
+                elseif buf_was_drawn[buf] then
+                    M.clear(buf)
+                    buf_was_drawn[buf] = nil
+                end
+            end,
+        })
+    end
 end
 
 return M
