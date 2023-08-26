@@ -38,7 +38,7 @@ M.attach = function(data)
     vim.keymap.set("n", "<leader>cl", vim.lsp.codelens.run, opts_with_desc("CodeLens run"))
 
     -- refresh manually right now for a start
-    vim.schedule(vim.lsp.codelens.refresh)
+    vim.lsp.codelens.refresh()
     return {
         commands = { "CodeLensToggle" },
         buf_commands = { "CodeLensRefresh" },
@@ -46,7 +46,7 @@ M.attach = function(data)
 end
 
 M.detach = function()
-    vim.schedule(function() pcall(vim.lsp.codelens.clear) end)
+    pcall(vim.lsp.codelens.clear)
 end
 
 return M
