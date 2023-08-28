@@ -1,5 +1,6 @@
 -- adapted from https://github.com/akinsho/git-conflict.nvim
 local color = require('git-conflict.colors')
+local keymaps = require('git-conflict.keymaps')
 local api = vim.api
 
 --- @class ConflictHighlights
@@ -51,6 +52,7 @@ local config = {
     },
     enable_autocommand = true,
     enable_diagnostics = true,
+    enable_keymaps = true,
 }
 
 ---@param name string?
@@ -207,20 +209,46 @@ end
 ---@param bufnr integer
 ---@param positions table
 local function set_diagnostics(bufnr, positions)
+    local diagnostics = {}
     for _, position in ipairs(positions) do
-        local diagnostic = {
-            lnum = position.current.range_start,
-            end_lnum = position.incoming.range_end,
-            col = 0,
-            severity = vim.diagnostic.severity.E,
-            message = "Git conflict",
-            source = NAME,
-        }
-        vim.diagnostic.set(NAMESPACE, bufnr, { diagnostic })
+        table.insert(diagnostics,
+            {
+                lnum = position.current.range_start,
+                end_lnum = position.incoming.range_end,
+                col = 0,
+                severity = vim.diagnostic.severity.E,
+                message = "Git conflict",
+                source = NAME,
+            })
     end
+    vim.diagnostic.set(NAMESPACE, bufnr, diagnostics)
 end
 
 local M = {}
+
+---Find all conflicts and process them
+---@param bufnr integer?
+---@param range_start integer?
+---@param range_end integer?
+---@return ConflictPosition[]
+local function run(bufnr, range_start, range_end)
+    bufnr = bufnr or 0
+    local lines = api.nvim_buf_get_lines(bufnr or 0, range_start or 0, range_end or -1, false)
+    local has_conflict, positions = detect_conflicts(lines)
+
+    if has_conflict then
+        highlight_conflicts(bufnr, positions)
+
+        if config.enable_diagnostics then
+            set_diagnostics(bufnr, positions)
+        end
+
+        if config.enable_keymaps then
+            keymaps.set_buf_keymaps(bufnr, positions, M.refresh)
+        end
+    end
+    return positions
+end
 
 ---@param bufnr integer?
 M.clear = function(bufnr)
@@ -230,24 +258,27 @@ M.clear = function(bufnr)
     if config.enable_diagnostics then
         clear_diagnostic(bufnr)
     end
+    if config.enable_keymaps then
+        keymaps.del_buf_keymaps(bufnr)
+    end
 end
 
----Find all conflicts and highlight them
+local buf_conflicts = {}
+
 ---@param bufnr integer?
----@param range_start integer?
----@param range_end integer?
-M.run = function(bufnr, range_start, range_end)
-    bufnr = bufnr or 0
-    local lines = api.nvim_buf_get_lines(bufnr or 0, range_start or 0, range_end or -1, false)
-    local has_conflict, positions = detect_conflicts(lines)
+function M.refresh(bufnr)
+    if not bufnr then
+        bufnr = vim.api.nvim_get_current_buf()
+    end
 
-    M.clear(bufnr)
-    if has_conflict then
-        highlight_conflicts(bufnr, positions)
+    if buf_conflicts[bufnr] then
+        M.clear(bufnr)
+        buf_conflicts[bufnr] = nil
+    end
 
-        if config.enable_diagnostics then
-            set_diagnostics(bufnr, positions)
-        end
+    if buf_can_have_conflicts() then
+        local positions = run(bufnr);
+        buf_conflicts[bufnr] = positions
     end
 end
 
@@ -255,6 +286,9 @@ function M.setup(user_config)
     config = vim.tbl_deep_extend('force', config, user_config or {})
 
     set_highlights(config.highlights)
+    if config.enable_keymaps then
+        keymaps.set_global_keymaps(conflict_start)
+    end
 
     api.nvim_create_augroup(AUGROUP_NAME, { clear = true })
     api.nvim_create_autocmd('ColorScheme', {
@@ -262,19 +296,12 @@ function M.setup(user_config)
         callback = function() set_highlights(config.highlights) end,
     })
 
-    local buf_was_drawn = {}
     if config.enable_autocommand then
         api.nvim_create_autocmd({ 'BufReadPost', 'BufWritePost' }, {
             group = AUGROUP_NAME,
             callback = function(args)
                 local buf = args.buf
-                if buf_can_have_conflicts() then
-                    M.run(buf);
-                    buf_was_drawn[buf] = true
-                elseif buf_was_drawn[buf] then
-                    M.clear(buf)
-                    buf_was_drawn[buf] = nil
-                end
+                M.refresh(buf)
             end,
         })
     end
