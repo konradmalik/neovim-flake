@@ -10,11 +10,11 @@ local M = {}
 M.detach = function(client, bufnr)
     augroups.del_autocmds_for_buf(client, bufnr)
 
-    if client.supports_method("codeLensProvider") then
+    if client.supports_method("textDocument/codeLens") then
         require('konrad.lsp.capability_handlers.codelens').detach()
     end
 
-    if client.supports_method("inlayHintProvider") then
+    if client.supports_method("textDocument/inlayHint") then
         require('konrad.lsp.capability_handlers.inlayhints').detach()
     end
 
@@ -104,7 +104,7 @@ M.attach = function(client, bufnr)
             opts_with_desc("Telescope [W]orkspace [S]ymbols"))
     end
 
-    if client.supports_method("inlayHintProvider") then
+    if client.supports_method("textDocument/inlayHint") then
         registry.register_once("InlayHints", register_data, require('konrad.lsp.capability_handlers.inlayhints').attach)
     end
 
