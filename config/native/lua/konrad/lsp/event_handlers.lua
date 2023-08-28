@@ -104,7 +104,9 @@ M.attach = function(client, bufnr)
             opts_with_desc("Telescope [W]orkspace [S]ymbols"))
     end
 
-    if client.supports_method("textDocument/inlayHint") then
+    -- TODO not sure why this always returns true
+    -- if client.supports_method("textDocument/inlayHint") then
+    if client.server_capabilities.inlayHintProvider then
         registry.register_once("InlayHints", register_data, require('konrad.lsp.capability_handlers.inlayhints').attach)
     end
 

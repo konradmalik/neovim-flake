@@ -38,7 +38,9 @@ M.build_lspconfig = function(plugins)
         cmd = { binaries.efm },
         single_file_support = true,
         filetypes = vim.tbl_keys(languages),
-        init_options = { documentFormatting = true, },
+        init_options = {
+            documentFormatting = true,
+        },
         settings = {
             rootMarkers = { '.git/' },
             languages = languages,
