@@ -14,7 +14,9 @@ M.detach = function(client, bufnr)
         require('konrad.lsp.capability_handlers.codelens').detach()
     end
 
-    if client.supports_method("textDocument/inlayHint") then
+    -- TODO not sure why this always returns true
+    -- if client.supports_method("textDocument/inlayHint") then
+    if client.server_capabilities.inlayHintProvider then
         require('konrad.lsp.capability_handlers.inlayhints').detach()
     end
 
@@ -90,6 +92,7 @@ M.attach = function(client, bufnr)
 
     if client.supports_method("textDocument/signatureHelp") then
         vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
+        vim.keymap.set("i", "<c-s>", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
     end
 
     if client.supports_method("textDocument/typeDefinition") then
