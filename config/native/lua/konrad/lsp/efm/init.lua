@@ -1,14 +1,17 @@
 -- https://github.com/mattn/efm-langserver
-local binaries = require('konrad.binaries')
+local binaries = require("konrad.binaries")
 
-local M = {}
+--- @class EfmPlugin
+--- @field filetypes string[]
+--- @field entry table
 
----@param fts string[]
----@param entry table
+---@param plugin EfmPlugin
 ---@return table
-M.make_languages_entry_for_fts = function(fts, entry)
+local make_languages_entry_for_plugin = function(plugin)
     -- efm requires nested tables here (notice brackets in entry)
-    local nested = vim.tbl_map(function(t) return { [t] = { entry } } end, fts)
+    local nested = vim.tbl_map(function(t)
+        return { [t] = { plugin.entry } }
+    end, plugin.filetypes)
     if #nested < 1 then
         error("must have at least one entry")
     elseif #nested == 1 then
@@ -17,6 +20,8 @@ M.make_languages_entry_for_fts = function(fts, entry)
     return vim.tbl_extend("error", unpack(nested))
 end
 
+local M = {}
+
 M.default_plugins = { "prettier", "jq", "shfmt", "shellcheck" }
 
 ---@param plugins string[] names of plugins to add, ex. 'prettier'
@@ -24,8 +29,9 @@ M.default_plugins = { "prettier", "jq", "shfmt", "shellcheck" }
 M.build_lspconfig = function(plugins)
     local languages = {}
     for _, v in ipairs(plugins) do
-        local plugin = require('konrad.lsp.efm.' .. v)
-        for key, value in pairs(plugin) do
+        local plugin = require("konrad.lsp.efm." .. v)
+        local langages_entry = make_languages_entry_for_plugin(plugin)
+        for key, value in pairs(langages_entry) do
             if languages[key] then
                 languages[key] = vim.list_extend(languages[key], value)
             else
@@ -43,7 +49,7 @@ M.build_lspconfig = function(plugins)
             documentRangeFormatting = true,
         },
         settings = {
-            rootMarkers = { '.git/' },
+            rootMarkers = { ".git/" },
             languages = languages,
         },
     }
