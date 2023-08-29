@@ -4,6 +4,10 @@ local util = require 'lspconfig.util'
 
 local function nix_omnisharp_dll_path()
     local binpath = vim.fn.exepath("OmniSharp")
+    if not binpath then
+        vim.notify("cannot find omnisharp executable", vim.log.levels.ERROR)
+        return "OmniSharp"
+    end
     local omnipath = binpath:sub(1, -(string.len("bin/OmniSharp") + 1))
     local dllpath = omnipath .. "lib/omnisharp-roslyn/OmniSharp.dll"
     return dllpath

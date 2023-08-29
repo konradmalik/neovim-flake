@@ -6,11 +6,22 @@ neodev.setup({
 })
 
 return {
+    init_options = {
+        documentFormatting = false,
+        documentRangeFormatting = false,
+    },
+    on_init = function(client)
+        -- use stylua via efm, this formatter is not great and it cleares diagnostic text on save
+        client.server_capabilities.documentFormattingProvider = nil
+        client.server_capabilities.documentRangeFormattingProvider = nil
+    end,
     settings = {
         Lua = {
+            addonManager = { enable = false },
             telemetry = { enable = false },
             hint = { enable = true },
-            format = { enable = true },
+            -- use stylua via efm, this formatter is not great and it cleares diagnostic text on save
+            format = { enable = false },
         }
     }
 }

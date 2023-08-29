@@ -40,6 +40,7 @@ M.build_lspconfig = function(plugins)
         filetypes = vim.tbl_keys(languages),
         init_options = {
             documentFormatting = true,
+            documentRangeFormatting = true,
         },
         settings = {
             rootMarkers = { '.git/' },

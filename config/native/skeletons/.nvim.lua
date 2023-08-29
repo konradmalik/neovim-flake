@@ -3,6 +3,7 @@ require("konrad.lsp").setup({
     -- "ansiblels",
     -- efm = {
     --     'black'
+    --     'stylua'
     -- },
     -- "gopls",
     -- "jsonls",

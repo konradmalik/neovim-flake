@@ -46,6 +46,7 @@
             packages = with pkgs; [
               # formatters/linters
               nixpkgs-fmt
+              stylua
               # language-servers
               nil
               sumneko-lua-language-server
