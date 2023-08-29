@@ -34,14 +34,18 @@ vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>", opts_with_desc("Go to next LL
 
 vim.keymap.set("i", "<C-c>", "<esc>", opts_with_desc("Ctrl-c as ESC in insert mode"))
 
-vim.keymap.set("v", "<leader>p", "\"_dp", opts_with_desc("Replace selected by pasting and keep pasted in the register"))
+vim.keymap.set("v", "<leader>p", '"_dp', opts_with_desc("Replace selected by pasting and keep pasted in the register"))
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], opts_with_desc("delete without replacing your register"))
 
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], opts_with_desc("yank to system clipboard"))
 vim.keymap.set("n", "<leader>Y", [["+Y]], opts_with_desc("yank to system clipboard"))
 
-vim.keymap.set("v", "J", ":m '>+1<CR>gv", opts_with_desc("move current selection up"));
-vim.keymap.set("v", "K", ":m '<-2<CR>gv", opts_with_desc("move current selection down"));
+vim.keymap.set("v", "J", ":m '>+1<CR>gv", opts_with_desc("move current selection up"))
+vim.keymap.set("v", "K", ":m '<-2<CR>gv", opts_with_desc("move current selection down"))
 
-vim.keymap.set("n", "<leader>ss", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
-    opts_with_desc("prepopulate <cmd> to replace the current word", false))
+vim.keymap.set(
+    "n",
+    "<leader>ss",
+    [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+    opts_with_desc("prepopulate <cmd> to replace the current word", false)
+)
