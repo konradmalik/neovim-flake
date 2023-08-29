@@ -6,11 +6,6 @@ local opts_with_desc = function(desc, silent)
     return vim.tbl_extend("error", opts, { desc = "[konrad] " .. desc })
 end
 
--- map leader
-vim.keymap.set("n", "<Space>", "<Nop>", { silent = true, remap = false })
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
 -- Modes
 --   normal_mode = "n",
 --   insert_mode = "i",

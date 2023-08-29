@@ -2,6 +2,13 @@
 require("konrad.loader")
 
 require("konrad.disable_builtin")
-require("konrad.options") -- some of those options must be enabled very early (exrc)
-require("konrad.keymaps") -- maps leader
+
+-- exrc (.nvim.lua), I use it a lot
+vim.o.exrc = true
+
+-- map leader
+vim.keymap.set("n", "<Space>", "<Nop>", { silent = true, remap = false })
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
 require("konrad.globals")
