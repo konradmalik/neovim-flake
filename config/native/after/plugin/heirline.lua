@@ -1,39 +1,39 @@
 local heirline = require("heirline")
 
-local colors = require('konrad.heirline.colors')
+local colors = require("konrad.heirline.colors")
 
 local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
-local icons = require('konrad.icons')
+local icons = require("konrad.icons")
 
-local Align = require('konrad.heirline.primitives').Align
-local Cut = require('konrad.heirline.primitives').Cut
-local SeparatorLine = require('konrad.heirline.primitives').SeparatorLine
-local Space = require('konrad.heirline.primitives').Space
+local Align = require("konrad.heirline.primitives").Align
+local Cut = require("konrad.heirline.primitives").Cut
+local SeparatorLine = require("konrad.heirline.primitives").SeparatorLine
+local Space = require("konrad.heirline.primitives").Space
 
-local ViMode = require('konrad.heirline.vimode')
+local ViMode = require("konrad.heirline.vimode")
 ViMode = utils.surround({ icons.ui.LeftHalf, icons.ui.RightHalf }, colors.bright_bg, { ViMode })
-local FileNameBlock = require('konrad.heirline.filename').FileNameBlock
-local FileName = require('konrad.heirline.filename').FileNameFlexible
-local HelpFileName = require('konrad.heirline.filename').HelpFileName
-local TerminalName = require('konrad.heirline.terminal').TerminalName
-local WorkingDir = require('konrad.heirline.directory').WorkingDirFlexible
-local Git = require('konrad.heirline.git')
-local Diagnostics = require('konrad.heirline.diagnostics')
-local Navic = require('konrad.heirline.navic').NavicFlexible
-local DAPMessages = require('konrad.heirline.dap')
-local LSPActive = require('konrad.heirline.lsp').LSPActive
-local FileType = require('konrad.heirline.fileutils').FileType
-local FileEncoding = require('konrad.heirline.fileutils').FileEncoding
-local FileFormat = require('konrad.heirline.fileutils').FileFormat
-local Ruler = require('konrad.heirline.ruler')
-local ScrollBar = require('konrad.heirline.scrollbar')
-local Hostname = require('konrad.heirline.hostname')
+local FileNameBlock = require("konrad.heirline.filename").FileNameBlock
+local FileName = require("konrad.heirline.filename").FileNameFlexible
+local HelpFileName = require("konrad.heirline.filename").HelpFileName
+local TerminalName = require("konrad.heirline.terminal").TerminalName
+local WorkingDir = require("konrad.heirline.directory").WorkingDirFlexible
+local Git = require("konrad.heirline.git")
+local Diagnostics = require("konrad.heirline.diagnostics")
+local Navic = require("konrad.heirline.navic").NavicFlexible
+local DAPMessages = require("konrad.heirline.dap")
+local LSPActive = require("konrad.heirline.lsp").LSPActive
+local FileType = require("konrad.heirline.fileutils").FileType
+local FileEncoding = require("konrad.heirline.fileutils").FileEncoding
+local FileFormat = require("konrad.heirline.fileutils").FileFormat
+local Ruler = require("konrad.heirline.ruler")
+local ScrollBar = require("konrad.heirline.scrollbar")
+local Hostname = require("konrad.heirline.hostname")
 
 local isSpecial = function()
     return conditions.buffer_matches({
         buftype = { "nofile", "prompt", "help", "quickfix" },
-        filetype = { "^git.*", "fugitive" },
+        filetype = { "^git.*", "fugitive", "harpoon" },
     })
 end
 
@@ -41,8 +41,11 @@ local InactiveWinbar = {
     condition = function()
         return not conditions.is_active()
     end,
-    utils.surround({ icons.ui.LeftHalf, icons.ui.RightHalf }, colors.bright_bg,
-        { hl = { fg = colors.gray, force = true }, FileNameBlock }),
+    utils.surround(
+        { icons.ui.LeftHalf, icons.ui.RightHalf },
+        colors.bright_bg,
+        { hl = { fg = colors.gray, force = true }, FileNameBlock }
+    ),
 }
 
 local TerminalWinbar = {
@@ -58,23 +61,43 @@ local TerminalWinbar = {
 }
 
 local DefaultWinbar = {
-    WorkingDir, Cut, FileNameBlock, Space, Navic, Align
+    WorkingDir,
+    Cut,
+    FileNameBlock,
+    Space,
+    Navic,
+    Align,
 }
 
 local Winbars = {
     fallthrough = false,
     InactiveWinbar,
     TerminalWinbar,
-    DefaultWinbar
+    DefaultWinbar,
 }
 
 local DefaultStatusline = {
-    ViMode, Space, Git, Align,
-    DAPMessages, Align,
-    Diagnostics, Space, LSPActive, Space,
-    FileType, Space, FileFormat, Space, FileEncoding, Space,
-    Hostname, Space,
-    Ruler, Space, ScrollBar
+    ViMode,
+    Space,
+    Git,
+    Align,
+    DAPMessages,
+    Align,
+    Diagnostics,
+    Space,
+    LSPActive,
+    Space,
+    FileType,
+    Space,
+    FileFormat,
+    Space,
+    FileEncoding,
+    Space,
+    Hostname,
+    Space,
+    Ruler,
+    Space,
+    ScrollBar,
 }
 
 local InactiveStatusline = {
@@ -90,7 +113,7 @@ local SpecialStatusline = {
     FileType,
     Space,
     HelpFileName,
-    Align
+    Align,
 }
 
 local TerminalStatusline = {
@@ -137,9 +160,12 @@ heirline.setup({
         disable_winbar_cb = function(args)
             return conditions.buffer_matches({
                 buftype = { "nofile", "prompt", "help", "quickfix" },
-                filetype = { "^git.*", "fugitive",
+                filetype = {
+                    "^git.*",
+                    "fugitive",
                     -- undotree
-                    "undotree", "diff",
+                    "undotree",
+                    "diff",
                 },
             }, args.buf)
         end,
