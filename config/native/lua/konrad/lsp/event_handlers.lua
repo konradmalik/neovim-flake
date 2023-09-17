@@ -1,7 +1,7 @@
-local telescope = require('telescope.builtin')
-local keymapper = require('konrad.lsp.keymapper')
-local registry = require('konrad.lsp.registry')
-local augroups = require('konrad.lsp.augroups')
+local telescope = require("telescope.builtin")
+local keymapper = require("konrad.lsp.keymapper")
+local registry = require("konrad.lsp.registry")
+local augroups = require("konrad.lsp.augroups")
 
 local M = {}
 
@@ -11,13 +11,13 @@ M.detach = function(client, bufnr)
     augroups.del_autocmds_for_buf(client, bufnr)
 
     if client.supports_method("textDocument/codeLens") then
-        require('konrad.lsp.capability_handlers.codelens').detach()
+        require("konrad.lsp.capability_handlers.codelens").detach()
     end
 
     -- TODO not sure why this always returns true
     -- if client.supports_method("textDocument/inlayHint") then
     if client.server_capabilities.inlayHintProvider then
-        require('konrad.lsp.capability_handlers.inlayhints').detach()
+        require("konrad.lsp.capability_handlers.inlayhints").detach()
     end
 
     registry.deregister(client, bufnr)
@@ -38,28 +38,22 @@ M.attach = function(client, bufnr)
         bufnr = bufnr,
         client = client,
     }
-    -- Enable completion triggered by <c-x><c-o>
-    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
     if client.supports_method("textDocument/codeAction") then
         vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
     end
 
     if client.supports_method("textDocument/codeLens") then
-        registry.register_once("CodeLens", register_data, require('konrad.lsp.capability_handlers.codelens').attach)
+        registry.register_once("CodeLens", register_data, require("konrad.lsp.capability_handlers.codelens").attach)
+    end
+
+    if client.supports_method("textDocument/completion") then
+        -- Enable completion triggered by <c-x><c-o>
+        vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
     end
 
     if client.supports_method("textDocument/formatting") then
-        registry.register_once("Formatting", register_data, require('konrad.lsp.capability_handlers.format').setup)
-    end
-
-    if client.supports_method("textDocument/documentHighlight") then
-        registry.register_once("DocumentHighlighting", register_data,
-            require('konrad.lsp.capability_handlers.documenthighlight').setup)
-    end
-
-    if client.supports_method("textDocument/documentSymbol") then
-        registry.register_once("Navic", register_data, require("konrad.lsp.capability_handlers.navic").setup)
+        registry.register_once("Formatting", register_data, require("konrad.lsp.capability_handlers.format").setup)
     end
 
     if client.supports_method("textDocument/declaration") then
@@ -67,8 +61,21 @@ M.attach = function(client, bufnr)
     end
 
     if client.supports_method("textDocument/definition") then
+        vim.bo[bufnr].tagfunc = "v:lua.vim.lsp.tagfunc"
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts_with_desc("Go To Definition"))
         vim.keymap.set("n", "<leader>fd", telescope.lsp_definitions, opts_with_desc("Telescope [D]efinitions"))
+    end
+
+    if client.supports_method("textDocument/documentHighlight") then
+        registry.register_once(
+            "DocumentHighlighting",
+            register_data,
+            require("konrad.lsp.capability_handlers.documenthighlight").setup
+        )
+    end
+
+    if client.supports_method("textDocument/documentSymbol") then
+        registry.register_once("Navic", register_data, require("konrad.lsp.capability_handlers.navic").setup)
     end
 
     if client.supports_method("textDocument/hover") then
@@ -77,8 +84,7 @@ M.attach = function(client, bufnr)
 
     if client.supports_method("textDocument/implementation") then
         vim.keymap.set("n", "gp", vim.lsp.buf.implementation, opts_with_desc("Go To Implementation"))
-        vim.keymap.set("n", "<leader>fp", telescope.lsp_implementations,
-            opts_with_desc("Telescope Im[p]lementations"))
+        vim.keymap.set("n", "<leader>fp", telescope.lsp_implementations, opts_with_desc("Telescope Im[p]lementations"))
     end
 
     if client.supports_method("textDocument/references") then
@@ -97,26 +103,35 @@ M.attach = function(client, bufnr)
 
     if client.supports_method("textDocument/typeDefinition") then
         vim.keymap.set("n", "gT", vim.lsp.buf.type_definition, opts_with_desc("Go To Type Definition"))
-        vim.keymap.set("n", "<leader>fT", telescope.lsp_type_definitions,
-            opts_with_desc("Telescope [T]ype Definitions"))
+        vim.keymap.set(
+            "n",
+            "<leader>fT",
+            telescope.lsp_type_definitions,
+            opts_with_desc("Telescope [T]ype Definitions")
+        )
     end
 
     if client.supports_method("workspaceSymbol/resolve") then
         vim.keymap.set("n", "<leader>ws", vim.lsp.buf.workspace_symbol, opts_with_desc("Search workspace symbols"))
-        vim.keymap.set("n", "<leader>fws", telescope.lsp_workspace_symbols,
-            opts_with_desc("Telescope [W]orkspace [S]ymbols"))
+        vim.keymap.set(
+            "n",
+            "<leader>fws",
+            telescope.lsp_workspace_symbols,
+            opts_with_desc("Telescope [W]orkspace [S]ymbols")
+        )
     end
 
     -- TODO not sure why this always returns true
     -- if client.supports_method("textDocument/inlayHint") then
     if client.server_capabilities.inlayHintProvider then
-        registry.register_once("InlayHints", register_data, require('konrad.lsp.capability_handlers.inlayhints').attach)
+        registry.register_once("InlayHints", register_data, require("konrad.lsp.capability_handlers.inlayhints").attach)
     end
 
     vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts_with_desc("Add Workspace Folder"))
     vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts_with_desc("Remove Workspace Folder"))
-    vim.keymap.set("n", "<leader>wl", function() P(vim.lsp.buf.list_workspace_folders()) end,
-        opts_with_desc("List Workspace Folders"))
+    vim.keymap.set("n", "<leader>wl", function()
+        P(vim.lsp.buf.list_workspace_folders())
+    end, opts_with_desc("List Workspace Folders"))
 end
 
 return M
