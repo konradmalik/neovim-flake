@@ -12,7 +12,7 @@ let
 
   processMadePlugins = madePlugins: lib.unique (lib.flatten madePlugins);
 in
-processMadePlugins (with pkgs.vimPlugins;[
+processMadePlugins (with pkgs.neovimPlugins;[
   # treesitter
   (makePlugin {
     plugin = nvim-treesitter.withAllGrammars;

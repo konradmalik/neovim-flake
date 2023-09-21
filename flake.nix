@@ -1,22 +1,55 @@
 {
   description = "Neovim flake";
 
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    neovim = {
-      url = "github:neovim/neovim/release-0.9?dir=contrib";
-      inputs.nixpkgs.follows = "nixpkgs";
+  inputs =
+    {
+      nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+      neovim = {
+        url = "github:neovim/neovim?dir=contrib";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+
+      # plugins
+      SchemaStore-nvim = { url = "github:b0o/SchemaStore.nvim"; flake = false; };
+      boole-nvim = { url = "github:nat-418/boole.nvim"; flake = false; };
+      cmp-buffer = { url = "github:hrsh7th/cmp-buffer"; flake = false; };
+      cmp-nvim-lsp = { url = "github:hrsh7th/cmp-nvim-lsp"; flake = false; };
+      cmp-path = { url = "github:hrsh7th/cmp-path"; flake = false; };
+      cmp_luasnip = { url = "github:saadparwaiz1/cmp_luasnip"; flake = false; };
+      comment-nvim = { url = "github:numToStr/Comment.nvim"; flake = false; };
+      copilot-cmp = { url = "github:zbirenbaum/copilot-cmp"; flake = false; };
+      copilot-lua = { url = "github:zbirenbaum/copilot.lua"; flake = false; };
+      dressing-nvim = { url = "github:stevearc/dressing.nvim"; flake = false; };
+      fidget-nvim = { url = "github:j-hui/fidget.nvim/legacy"; flake = false; };
+      friendly-snippets = { url = "github:rafamadriz/friendly-snippets"; flake = false; };
+      gitsigns-nvim = { url = "github:lewis6991/gitsigns.nvim"; flake = false; };
+      harpoon = { url = "github:ThePrimeagen/harpoon"; flake = false; };
+      heirline-nvim = { url = "github:rebelot/heirline.nvim"; flake = false; };
+      indent-blankline-nvim = { url = "github:lukas-reineke/indent-blankline.nvim"; flake = false; };
+      kanagawa-nvim = { url = "github:rebelot/kanagawa.nvim"; flake = false; };
+      lsp-inlayhints-nvim = { url = "github:lvimuser/lsp-inlayhints.nvim"; flake = false; };
+      luasnip = { url = "github:L3MON4D3/LuaSnip"; flake = false; };
+      neo-tree-nvim = { url = "github:nvim-neo-tree/neo-tree.nvim"; flake = false; };
+      neodev-nvim = { url = "github:folke/neodev.nvim"; flake = false; };
+      nui-nvim = { url = "github:MunifTanjim/nui.nvim"; flake = false; };
+      nvim-cmp = { url = "github:hrsh7th/nvim-cmp"; flake = false; };
+      nvim-dap = { url = "github:mfussenegger/nvim-dap"; flake = false; };
+      nvim-dap-ui = { url = "github:rcarriga/nvim-dap-ui"; flake = false; };
+      nvim-dap-virtual-text = { url = "github:theHamsta/nvim-dap-virtual-text"; flake = false; };
+      nvim-lspconfig = { url = "github:neovim/nvim-lspconfig"; flake = false; };
+      nvim-luaref = { url = "github:milisims/nvim-luaref"; flake = false; };
+      nvim-navic = { url = "github:SmiteshP/nvim-navic"; flake = false; };
+      nvim-treesitter-context = { url = "github:nvim-treesitter/nvim-treesitter-context"; flake = false; };
+      nvim-treesitter-textobjects = { url = "github:nvim-treesitter/nvim-treesitter-textobjects"; flake = false; };
+      nvim-web-devicons = { url = "github:kyazdani42/nvim-web-devicons"; flake = false; };
+      omnisharp-extended-lsp-nvim = { url = "github:Hoffs/omnisharp-extended-lsp.nvim"; flake = false; };
+      plenary-nvim = { url = "github:nvim-lua/plenary.nvim"; flake = false; };
+      telescope-fzf-native-nvim = { url = "github:nvim-telescope/telescope-fzf-native.nvim"; flake = false; };
+      telescope-nvim = { url = "github:nvim-telescope/telescope.nvim"; flake = false; };
+      undotree = { url = "github:mbbill/undotree"; flake = false; };
+      vim-fugitive = { url = "github:tpope/vim-fugitive"; flake = false; };
+      which-key-nvim = { url = "github:folke/which-key.nvim"; flake = false; };
     };
-    # plugins that I need to manually control or are not in nixpkgs
-    fidget-nvim = {
-      url = "github:j-hui/fidget.nvim/legacy";
-      flake = false;
-    };
-    nvim-luaref = {
-      url = "github:milisims/nvim-luaref";
-      flake = false;
-    };
-  };
 
   outputs = { self, nixpkgs, neovim, ... }@inputs:
     let
@@ -56,9 +89,9 @@
       overlays = {
         default = final: prev: self.overlays.plugins final prev;
         plugins = final: prev: {
-          vimPlugins = prev.vimPlugins // prev.callPackage ./packages/vimPlugins {
-            inherit inputs;
-          };
+          neovimPlugins =
+            { inherit (prev.vimPlugins) nvim-treesitter; }
+            // prev.callPackage ./packages/plugins { inherit inputs; };
         };
         neovim = final: prev: {
           neovim = neovim.packages.${prev.system}.neovim;
@@ -73,7 +106,7 @@
           default = bundle.nvim;
           neovim = bundle.nvim;
           config = bundle.config;
-          nvim-luaref = pkgs.vimPlugins.nvim-luaref;
+          nvim-luaref = pkgs.neovimPlugins.nvim-luaref;
         });
       apps = forAllSystems (pkgs: {
         default = {
