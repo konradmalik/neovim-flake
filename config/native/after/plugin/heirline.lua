@@ -30,12 +30,10 @@ local Ruler = require("konrad.heirline.ruler")
 local ScrollBar = require("konrad.heirline.scrollbar")
 local Hostname = require("konrad.heirline.hostname")
 
-local isSpecial = function()
-    return conditions.buffer_matches({
-        buftype = { "nofile", "prompt", "help", "quickfix" },
-        filetype = { "^git.*", "fugitive", "harpoon" },
-    })
-end
+local specialsTable = {
+    buftype = { "nofile", "prompt", "help", "quickfix" },
+    filetype = { "^git.*", "fugitive", "harpoon", "undotree", "diff" },
+}
 
 local InactiveWinbar = {
     condition = function()
@@ -109,7 +107,9 @@ local InactiveStatusline = {
 }
 
 local SpecialStatusline = {
-    condition = isSpecial,
+    condition = function()
+        return conditions.buffer_matches(specialsTable)
+    end,
     FileType,
     Space,
     HelpFileName,
@@ -158,16 +158,7 @@ heirline.setup({
         -- if the callback returns true, the winbar will be disabled for that window
         -- the args parameter corresponds to the table argument passed to autocommand callbacks. :h nvim_lua_create_autocmd()
         disable_winbar_cb = function(args)
-            return conditions.buffer_matches({
-                buftype = { "nofile", "prompt", "help", "quickfix" },
-                filetype = {
-                    "^git.*",
-                    "fugitive",
-                    -- undotree
-                    "undotree",
-                    "diff",
-                },
-            }, args.buf)
+            return conditions.buffer_matches(specialsTable, args.buf)
         end,
     },
 })
