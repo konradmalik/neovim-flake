@@ -14,12 +14,6 @@ M.detach = function(client, bufnr)
         require("konrad.lsp.capability_handlers.codelens").detach()
     end
 
-    -- TODO not sure why this always returns true
-    -- if client.supports_method("textDocument/inlayHint") then
-    if client.server_capabilities.inlayHintProvider then
-        require("konrad.lsp.capability_handlers.inlayhints").detach()
-    end
-
     registry.deregister(client, bufnr)
 
     local clients = vim.lsp.get_active_clients({ bufnr = bufnr })
@@ -121,9 +115,7 @@ M.attach = function(client, bufnr)
         )
     end
 
-    -- TODO not sure why this always returns true
-    -- if client.supports_method("textDocument/inlayHint") then
-    if client.server_capabilities.inlayHintProvider then
+    if client.supports_method("textDocument/inlayHint") then
         registry.register_once("InlayHints", register_data, require("konrad.lsp.capability_handlers.inlayhints").attach)
     end
 

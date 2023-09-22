@@ -44,10 +44,6 @@ processMadePlugins (with pkgs.neovimPlugins;[
       plenary-nvim
       { plugin = SchemaStore-nvim; optional = true; }
       {
-        plugin = lsp-inlayhints-nvim;
-        optional = true;
-      }
-      {
         plugin = omnisharp-extended-lsp-nvim;
         optional = true;
       }

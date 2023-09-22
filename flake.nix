@@ -27,7 +27,6 @@
       heirline-nvim = { url = "github:rebelot/heirline.nvim"; flake = false; };
       indent-blankline-nvim = { url = "github:lukas-reineke/indent-blankline.nvim"; flake = false; };
       kanagawa-nvim = { url = "github:rebelot/kanagawa.nvim"; flake = false; };
-      lsp-inlayhints-nvim = { url = "github:lvimuser/lsp-inlayhints.nvim"; flake = false; };
       luasnip = { url = "github:L3MON4D3/LuaSnip"; flake = false; };
       neo-tree-nvim = { url = "github:nvim-neo-tree/neo-tree.nvim"; flake = false; };
       neodev-nvim = { url = "github:folke/neodev.nvim"; flake = false; };
