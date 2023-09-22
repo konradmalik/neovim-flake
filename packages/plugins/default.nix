@@ -13,7 +13,9 @@ let
 in
 rec {
   SchemaStore-nvim = buildVim "SchemaStore.nvim" inputs.SchemaStore-nvim;
-  boole-nvim = buildVim "boole.nvim" inputs.boole-nvim;
+  boole-nvim = (buildVim "boole.nvim" inputs.boole-nvim).overrideAttrs {
+    nvimRequireCheck = "boole";
+  };
   cmp-buffer = buildVim "cmp-buffer" inputs.cmp-buffer;
   cmp-nvim-lsp = buildVim "cmp-nvim-lsp" inputs.cmp-nvim-lsp;
   cmp-path = buildVim "cmp-path" inputs.cmp-path;
@@ -24,9 +26,15 @@ rec {
   dressing-nvim = buildVim "dressing.nvim" inputs.dressing-nvim;
   fidget-nvim = buildVim "fidget.nvim" inputs.fidget-nvim;
   friendly-snippets = buildVim "friendly-snippets" inputs.friendly-snippets;
-  gitsigns-nvim = buildNeovim "gitsigns.nvim" inputs.gitsigns-nvim;
+  gitsigns-nvim = (buildNeovim "gitsigns.nvim" inputs.gitsigns-nvim).overrideAttrs {
+    doInstallCheck = true;
+    nvimRequireCheck = "gitsigns";
+  };
   harpoon = (buildVim "harpoon" inputs.harpoon).overrideAttrs {
     dependencies = [ plenary-nvim ];
+    # fails on missing plenary, why? seems like dependencies above are not available during this check.
+    # so what do they do?
+    # nvimRequireCheck = "harpoon";
   };
   heirline-nvim = buildVim "heirline.nvim" inputs.heirline-nvim;
   indent-blankline-nvim = buildVim "indent-blankline.nvim" inputs.indent-blankline-nvim;
@@ -34,10 +42,13 @@ rec {
   luasnip = buildVim "luasnip" inputs.luasnip;
   neo-tree-nvim = (buildVim "neo-tree.nvim" inputs.neo-tree-nvim).overrideAttrs {
     dependencies = [ plenary-nvim nui-nvim ];
+    nvimRequireCheck = "neo-tree";
   };
   neodev-nvim = buildVim "neodev.nvim" inputs.neodev-nvim;
   nui-nvim = buildVim "nui.nvim" inputs.nui-nvim;
-  nvim-cmp = buildNeovim "nvim-cmp" inputs.nvim-cmp;
+  nvim-cmp = (buildNeovim "nvim-cmp" inputs.nvim-cmp).overrideAttrs {
+    nvimRequireCheck = "cmp";
+  };
   nvim-dap = buildVim "nvim-dap" inputs.nvim-dap;
   nvim-dap-ui = buildVim "nvim-dap-ui" inputs.nvim-dap-ui;
   nvim-dap-virtual-text = buildVim "nvim-dap-virtual-text" inputs.nvim-dap-virtual-text;
@@ -53,8 +64,6 @@ rec {
       sed -Ei lua/plenary/curl.lua \
           -e 's@(command\s*=\s*")curl(")@\1${curl}/bin/curl\2@'
     '';
-
-    doInstallCheck = true;
     nvimRequireCheck = "plenary";
   };
   telescope-fzf-native-nvim = (buildVim "telescope-fzf-native.nvim" inputs.telescope-fzf-native-nvim).overrideAttrs {
@@ -63,6 +72,7 @@ rec {
   };
   telescope-nvim = (buildNeovim "telescope.nvim" inputs.telescope-nvim).overrideAttrs {
     dependencies = [ plenary-nvim ];
+    nvimRequireCheck = "telescope";
   };
   undotree = buildVim "undotree" inputs.undotree;
   vim-fugitive = buildVim "vim-fugitive" inputs.vim-fugitive;
