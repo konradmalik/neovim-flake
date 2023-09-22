@@ -16,7 +16,7 @@ M.detach = function(client, bufnr)
 
     registry.deregister(client, bufnr)
 
-    local clients = vim.lsp.get_active_clients({ bufnr = bufnr })
+    local clients = vim.lsp.get_clients({ bufnr = bufnr })
     -- don't remove if more than 1 client attached
     -- 1 is allowed, since detach runs just before detaching from buffer
     if #clients <= 1 then
