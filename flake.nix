@@ -5,7 +5,8 @@
     {
       nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
       neovim = {
-        url = "github:neovim/neovim?dir=contrib";
+        # url = "github:neovim/neovim?dir=contrib";
+        url = "github:Pegasust/neovim/nix-aarch64-darwin-fix?dir=contrib";
         inputs.nixpkgs.follows = "nixpkgs";
       };
 

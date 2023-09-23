@@ -348,16 +348,17 @@
       },
       "locked": {
         "dir": "contrib",
-        "lastModified": 1695376565,
-        "narHash": "sha256-q0g7lGEb+BmpyQ17Df2pbCxuYKT+RqufUJEXYmA5kwI=",
-        "owner": "neovim",
+        "lastModified": 1695434072,
+        "narHash": "sha256-iiUAd2PKzHVUhfnRxfsrYPfLAy3gAk3PUfeGZLHUMq8=",
+        "owner": "Pegasust",
         "repo": "neovim",
-        "rev": "b7763d7f6b7fdcabe06658c664457df8bc147563",
+        "rev": "563efe467c8320c455e54e356dc76e488a51ec8e",
         "type": "github"
       },
       "original": {
         "dir": "contrib",
-        "owner": "neovim",
+        "owner": "Pegasust",
+        "ref": "nix-aarch64-darwin-fix",
         "repo": "neovim",
         "type": "github"
       }
