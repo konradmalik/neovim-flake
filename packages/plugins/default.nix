@@ -1,80 +1,49 @@
-{ curl, vimUtils, neovimUtils, inputs }:
+{ vimPlugins, vimUtils, inputs }:
 let
+  version = "master";
+  overrideAttrs = plugin: attrs: plugin.overrideAttrs (old: { inherit version; } // attrs);
   buildVim = name: src: vimUtils.buildVimPluginFrom2Nix {
+    inherit src version;
     pname = name;
-    src = src;
-    version = "master";
-  };
-  buildNeovim = name: src: neovimUtils.buildNeovimPlugin {
-    pname = name;
-    src = src;
-    version = "master";
   };
 in
-rec {
-  SchemaStore-nvim = buildVim "SchemaStore.nvim" inputs.SchemaStore-nvim;
-  boole-nvim = (buildVim "boole.nvim" inputs.boole-nvim).overrideAttrs {
-    nvimRequireCheck = "boole";
-  };
-  cmp-buffer = buildVim "cmp-buffer" inputs.cmp-buffer;
-  cmp-nvim-lsp = buildVim "cmp-nvim-lsp" inputs.cmp-nvim-lsp;
-  cmp-path = buildVim "cmp-path" inputs.cmp-path;
-  cmp_luasnip = buildVim "cmp_luasnip" inputs.cmp_luasnip;
-  comment-nvim = buildVim "comment.nvim" inputs.comment-nvim;
-  copilot-cmp = buildVim "copilot-cmp" inputs.copilot-cmp;
-  copilot-lua = buildVim "copilot.lua" inputs.copilot-lua;
-  dressing-nvim = buildVim "dressing.nvim" inputs.dressing-nvim;
-  fidget-nvim = buildVim "fidget.nvim" inputs.fidget-nvim;
-  friendly-snippets = buildVim "friendly-snippets" inputs.friendly-snippets;
-  gitsigns-nvim = (buildNeovim "gitsigns.nvim" inputs.gitsigns-nvim).overrideAttrs {
-    doInstallCheck = true;
-    nvimRequireCheck = "gitsigns";
-  };
-  harpoon = (buildVim "harpoon" inputs.harpoon).overrideAttrs {
-    dependencies = [ plenary-nvim ];
-    # fails on missing plenary, why? seems like dependencies above are not available during this check.
-    # so what do they do?
-    # nvimRequireCheck = "harpoon";
-  };
-  heirline-nvim = buildVim "heirline.nvim" inputs.heirline-nvim;
-  indent-blankline-nvim = buildVim "indent-blankline.nvim" inputs.indent-blankline-nvim;
-  kanagawa-nvim = buildVim "kanagawa.nvim" inputs.kanagawa-nvim;
-  luasnip = buildVim "luasnip" inputs.luasnip;
-  neo-tree-nvim = (buildVim "neo-tree.nvim" inputs.neo-tree-nvim).overrideAttrs {
-    dependencies = [ plenary-nvim nui-nvim ];
-    nvimRequireCheck = "neo-tree";
-  };
-  neodev-nvim = buildVim "neodev.nvim" inputs.neodev-nvim;
-  nui-nvim = buildVim "nui.nvim" inputs.nui-nvim;
-  nvim-cmp = (buildNeovim "nvim-cmp" inputs.nvim-cmp).overrideAttrs {
-    nvimRequireCheck = "cmp";
-  };
-  nvim-dap = buildVim "nvim-dap" inputs.nvim-dap;
-  nvim-dap-ui = buildVim "nvim-dap-ui" inputs.nvim-dap-ui;
-  nvim-dap-virtual-text = buildVim "nvim-dap-virtual-text" inputs.nvim-dap-virtual-text;
-  nvim-lspconfig = buildVim "nvim-lspconfig" inputs.nvim-lspconfig;
+{
+  SchemaStore-nvim = overrideAttrs vimPlugins.SchemaStore-nvim { src = inputs.SchemaStore-nvim; };
+  boole-nvim = overrideAttrs vimPlugins.boole-nvim { src = inputs.boole-nvim; };
+  cmp-buffer = overrideAttrs vimPlugins.cmp-buffer { src = inputs.cmp-buffer; };
+  cmp-nvim-lsp = overrideAttrs vimPlugins.cmp-nvim-lsp { src = inputs.cmp-nvim-lsp; };
+  cmp-path = overrideAttrs vimPlugins.cmp-path { src = inputs.cmp-path; };
+  cmp_luasnip = overrideAttrs vimPlugins.cmp_luasnip { src = inputs.cmp_luasnip; };
+  comment-nvim = overrideAttrs vimPlugins.comment-nvim { src = inputs.comment-nvim; };
+  copilot-cmp = overrideAttrs vimPlugins.copilot-cmp { src = inputs.copilot-cmp; };
+  copilot-lua = overrideAttrs vimPlugins.copilot-lua { src = inputs.copilot-lua; };
+  dressing-nvim = overrideAttrs vimPlugins.dressing-nvim { src = inputs.dressing-nvim; };
+  fidget-nvim = overrideAttrs vimPlugins.fidget-nvim { src = inputs.fidget-nvim; };
+  friendly-snippets = overrideAttrs vimPlugins.friendly-snippets { src = inputs.friendly-snippets; };
+  gitsigns-nvim = overrideAttrs vimPlugins.gitsigns-nvim { src = inputs.gitsigns-nvim; };
+  harpoon = overrideAttrs vimPlugins.harpoon { src = inputs.harpoon; };
+  heirline-nvim = overrideAttrs vimPlugins.heirline-nvim { src = inputs.heirline-nvim; };
+  indent-blankline-nvim = overrideAttrs vimPlugins.indent-blankline-nvim { src = inputs.indent-blankline-nvim; };
+  kanagawa-nvim = overrideAttrs vimPlugins.kanagawa-nvim { src = inputs.kanagawa-nvim; };
+  luasnip = overrideAttrs vimPlugins.luasnip { src = inputs.luasnip; };
+  neo-tree-nvim = overrideAttrs vimPlugins.neo-tree-nvim { src = inputs.neo-tree-nvim; };
+  neodev-nvim = overrideAttrs vimPlugins.neodev-nvim { src = inputs.neodev-nvim; };
+  nui-nvim = overrideAttrs vimPlugins.nui-nvim { src = inputs.nui-nvim; };
+  nvim-cmp = overrideAttrs vimPlugins.nvim-cmp { src = inputs.nvim-cmp; };
+  nvim-dap = overrideAttrs vimPlugins.nvim-dap { src = inputs.nvim-dap; };
+  nvim-dap-ui = overrideAttrs vimPlugins.nvim-dap-ui { src = inputs.nvim-dap-ui; };
+  nvim-dap-virtual-text = overrideAttrs vimPlugins.nvim-dap-virtual-text { src = inputs.nvim-dap-virtual-text; };
+  nvim-lspconfig = overrideAttrs vimPlugins.nvim-lspconfig { src = inputs.nvim-lspconfig; };
   nvim-luaref = buildVim "nvim-luaref" inputs.nvim-luaref;
-  nvim-navic = buildVim "nvim-navic" inputs.nvim-navic;
-  nvim-treesitter-context = buildVim "nvim-treesitter-context" inputs.nvim-treesitter-context;
-  nvim-treesitter-textobjects = buildVim "nvim-treesitter-textobjects" inputs.nvim-treesitter-textobjects;
-  nvim-web-devicons = buildVim "nvim-web-devicons" inputs.nvim-web-devicons;
-  omnisharp-extended-lsp-nvim = buildVim "omnisharp-extended-lsp.nvim" inputs.omnisharp-extended-lsp-nvim;
-  plenary-nvim = (buildNeovim "plenary.nvim" inputs.plenary-nvim).overrideAttrs {
-    postPatch = ''
-      sed -Ei lua/plenary/curl.lua \
-          -e 's@(command\s*=\s*")curl(")@\1${curl}/bin/curl\2@'
-    '';
-    nvimRequireCheck = "plenary";
-  };
-  telescope-fzf-native-nvim = (buildVim "telescope-fzf-native.nvim" inputs.telescope-fzf-native-nvim).overrideAttrs {
-    dependencies = [ telescope-nvim ];
-    buildPhase = "make";
-  };
-  telescope-nvim = (buildNeovim "telescope.nvim" inputs.telescope-nvim).overrideAttrs {
-    dependencies = [ plenary-nvim ];
-    nvimRequireCheck = "telescope";
-  };
-  undotree = buildVim "undotree" inputs.undotree;
-  vim-fugitive = buildVim "vim-fugitive" inputs.vim-fugitive;
-  which-key-nvim = buildVim "which-key.nvim" inputs.which-key-nvim;
+  nvim-navic = overrideAttrs vimPlugins.nvim-navic { src = inputs.nvim-navic; };
+  nvim-treesitter-context = overrideAttrs vimPlugins.nvim-treesitter-context { src = inputs.nvim-treesitter-context; };
+  nvim-treesitter-textobjects = overrideAttrs vimPlugins.nvim-treesitter-textobjects { src = inputs.nvim-treesitter-textobjects; };
+  nvim-web-devicons = overrideAttrs vimPlugins.nvim-web-devicons { src = inputs.nvim-web-devicons; };
+  omnisharp-extended-lsp-nvim = overrideAttrs vimPlugins.omnisharp-extended-lsp-nvim { src = inputs.omnisharp-extended-lsp-nvim; };
+  plenary-nvim = overrideAttrs vimPlugins.plenary-nvim { src = inputs.plenary-nvim; };
+  telescope-fzf-native-nvim = overrideAttrs vimPlugins.telescope-fzf-native-nvim { src = inputs.telescope-fzf-native-nvim; };
+  telescope-nvim = overrideAttrs vimPlugins.telescope-nvim { src = inputs.telescope-nvim; };
+  undotree = overrideAttrs vimPlugins.undotree { src = inputs.undotree; };
+  vim-fugitive = overrideAttrs vimPlugins.vim-fugitive { src = inputs.vim-fugitive; };
+  which-key-nvim = overrideAttrs vimPlugins.which-key-nvim { src = inputs.which-key-nvim; };
 }
