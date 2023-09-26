@@ -7,14 +7,13 @@ local _augroups = {}
 ---@return integer
 M.get_augroup = function(client)
     if not _augroups[client.id] then
-        local group_name = string.format('personal-lsp-%s-%d', client.name, client.id)
+        local group_name = string.format("personal-lsp-%s-%d", client.name, client.id)
         local group = vim.api.nvim_create_augroup(group_name, { clear = true })
         _augroups[client.id] = group
         return group
     end
     return _augroups[client.id]
 end
-
 
 ---@param augroup integer
 ---@param bufnr integer

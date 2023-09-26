@@ -2,15 +2,11 @@ local luasnip = require("konrad.cmp.snippets")
 
 local lazy = require("konrad.lazy")
 -- load copilot on demand
-lazy.make_enable_command(
-    "CopilotEnable",
-    { "copilot.lua", "copilot-cmp" },
-    function()
-        require("konrad.cmp.copilot")
-    end,
-    {
-        desc = "Initialize Copilot server and cmp source",
-    })
+lazy.make_enable_command("CopilotEnable", { "copilot.lua", "copilot-cmp" }, function()
+    require("konrad.cmp.copilot")
+end, {
+    desc = "Initialize Copilot server and cmp source",
+})
 
 local cmp = require("cmp")
 
@@ -22,6 +18,13 @@ local menu_entries = {
     buffer = "[Buffer]",
     path = "[Path]",
 }
+
+-- fill native LSP completion_item_kind
+-- cmp is filled below in format
+local kinds = vim.lsp.protocol.CompletionItemKind
+for i, kind in ipairs(kinds) do
+    kinds[i] = kind_icons[kind] or kind
+end
 
 cmp.setup({
     snippet = {
@@ -38,7 +41,7 @@ cmp.setup({
             behavior = cmp.ConfirmBehavior.Replace,
             select = true,
         }),
-        ['<C-n>'] = cmp.mapping(function(fallback)
+        ["<C-n>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_next_item()
             elseif luasnip.expand_or_jumpable() then
@@ -46,8 +49,8 @@ cmp.setup({
             else
                 fallback()
             end
-        end, { 'i', 's' }),
-        ['<C-p>'] = cmp.mapping(function(fallback)
+        end, { "i", "s" }),
+        ["<C-p>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_prev_item()
             elseif luasnip.jumpable(-1) then
@@ -55,15 +58,15 @@ cmp.setup({
             else
                 fallback()
             end
-        end, { 'i', 's' }),
+        end, { "i", "s" }),
     }),
     formatting = {
         fields = { "kind", "abbr", "menu" },
         format = function(entry, vim_item)
-            vim_item.kind = kind_icons[vim_item.kind]
+            vim_item.kind = kind_icons[vim_item.kind] or vim_item.kind
             if entry.source.name == "nvim_lsp" then
                 -- name of lsp client
-                vim_item.menu = '[' .. entry.source.source.client.name .. ']'
+                vim_item.menu = "[" .. entry.source.source.client.name .. "]"
             else
                 vim_item.menu = menu_entries[entry.source.name] or entry.source.name
             end

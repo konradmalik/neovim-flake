@@ -1,3 +1,5 @@
+require("konrad.lsp.borders")
+
 require("konrad.lsp").initialize()
 
 local lsp = require("konrad.lsp.event_handlers")
@@ -16,8 +18,8 @@ local on_detach = function(client, bufnr)
     lsp.detach(client, bufnr)
 end
 
-vim.api.nvim_create_autocmd('LspAttach', {
-    group = vim.api.nvim_create_augroup('personal-lsp-attach', { clear = true }),
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("personal-lsp-attach", { clear = true }),
     callback = function(args)
         local client_id = args.data.client_id
         local client = vim.lsp.get_client_by_id(client_id)
@@ -26,8 +28,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end,
 })
 
-vim.api.nvim_create_autocmd('LspDetach', {
-    group = vim.api.nvim_create_augroup('personal-lsp-detach', { clear = true }),
+vim.api.nvim_create_autocmd("LspDetach", {
+    group = vim.api.nvim_create_augroup("personal-lsp-detach", { clear = true }),
     callback = function(args)
         local client_id = args.data.client_id
         local client = vim.lsp.get_client_by_id(client_id)

@@ -17,7 +17,7 @@ M.attach = function(data)
     vim.api.nvim_create_autocmd({ "InsertLeave" }, {
         callback = function()
             if inlayhints_is_enabled then
-                vim.lsp.inlay_hint(bufnr, false)
+                pcall(vim.lsp.inlay_hint, bufnr, false)
             end
         end,
     })
