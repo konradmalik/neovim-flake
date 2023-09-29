@@ -1,11 +1,12 @@
 local configs = {}
-local already_setup = false
+local already_initialized = false
 
 local initialize = function()
-    if not vim.tbl_isempty(configs) and already_setup then
-        vim.cmd('packadd nvim-dap')
-        vim.cmd('packadd nvim-dap-ui')
-        vim.cmd('packadd nvim-dap-virtual-text')
+    already_initialized = true
+    if not vim.tbl_isempty(configs) then
+        vim.cmd("packadd nvim-dap")
+        vim.cmd("packadd nvim-dap-ui")
+        vim.cmd("packadd nvim-dap-virtual-text")
 
         require("konrad.dap.ui")
         require("konrad.dap.virtual-text")
@@ -44,14 +45,14 @@ M.setup = function(tconfigs)
         table.insert(configs, value)
     end
 
-    -- if this is called from config, won't do anything
-    -- if this is called via sourcing .nvim.lua (after our 'after' folder) it should act
-    initialize()
+    if already_initialized then
+        -- reinitialize essentially, this is useful mostly when sourcing .nvim.lua manually
+        initialize()
+    end
 end
 
 -- call this after .nvim.lua (from after folder eg.)
 M.initialize = function()
-    already_setup = true;
     initialize()
 end
 

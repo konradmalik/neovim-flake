@@ -1,7 +1,5 @@
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#omnisharp
 
-local util = require 'lspconfig.util'
-
 local function nix_omnisharp_dll_path()
     local binpath = vim.fn.exepath("OmniSharp")
     if not binpath then
@@ -19,7 +17,8 @@ vim.cmd("packadd omnisharp-extended-lsp.nvim")
 return {
     -- until https://github.com/neovim/nvim-lspconfig/pull/2754 is merged
     root_dir = function(fname)
-        local root_patterns = { '*.sln', '*.csproj', 'omnisharp.json', 'function.json' }
+        local util = require("lspconfig.util")
+        local root_patterns = { "*.sln", "*.csproj", "omnisharp.json", "function.json" }
         for _, pattern in ipairs(root_patterns) do
             local found = util.root_pattern(pattern)(fname)
             if found then
@@ -42,7 +41,7 @@ return {
     -- decompilation support via omnisharp-extended-lsp
     enableDecompilationSupport = true,
     handlers = {
-        ["textDocument/definition"] = require('omnisharp_extended').handler,
+        ["textDocument/definition"] = require("omnisharp_extended").handler,
     },
 
     -- Enables support for reading code style, naming convention and analyzer

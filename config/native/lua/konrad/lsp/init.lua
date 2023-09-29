@@ -16,7 +16,6 @@ local init_lspconfig = function(server, opts)
     config.setup(merged)
 end
 
-
 local local_lsps = {}
 local init_lsps = function()
     local additional = local_lsps
@@ -27,17 +26,16 @@ end
 
 local local_efm_plugins = {}
 local init_efm = function()
-    local efm = require('konrad.lsp.efm')
+    local efm = require("konrad.lsp.efm")
     local config = efm.build_lspconfig(vim.list_extend(local_efm_plugins, efm.default_plugins))
     init_lspconfig("efm", config)
 end
 
-local already_setup = false
+local already_initialized = false
 local initialize = function()
-    if already_setup then
-        init_efm()
-        init_lsps()
-    end
+    init_efm()
+    init_lsps()
+    already_initialized = true
 end
 
 local M = {}
@@ -57,21 +55,21 @@ M.setup = function(tconfigs)
             value = nil
         end
 
-        if server == 'efm' then
+        if server == "efm" then
             local_efm_plugins = value
         else
             local_lsps[server] = value or {}
         end
     end
 
-    -- if this is called from config, won't do anything
-    -- if this is called via sourcing .nvim.lua (after our 'after' folder) it should act
-    initialize()
+    if already_initialized then
+        -- reinitialize essentially, this is useful mostly when sourcing .nvim.lua manually
+        initialize()
+    end
 end
 
 -- call this after .nvim.lua (from after folder eg.)
 M.initialize = function()
-    already_setup = true
     initialize()
 end
 

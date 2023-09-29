@@ -2,20 +2,18 @@ require("konrad.lsp.borders")
 
 require("konrad.lsp").initialize()
 
-local lsp = require("konrad.lsp.event_handlers")
-
 ---@param client table
 ---@param bufnr number
 local on_attach = function(client, bufnr)
     -- vim.notify("attaching lsp client " .. client.name .. " (" .. client.id .. ") to buf " .. bufnr, vim.log.levels.DEBUG)
-    lsp.attach(client, bufnr)
+    require("konrad.lsp.event_handlers").attach(client, bufnr)
 end
 
 ---@param client table
 ---@param bufnr number
 local on_detach = function(client, bufnr)
     -- vim.notify("detaching lsp client " .. client.name .. " (" .. client.id .. ") from buf " .. bufnr, vim.log.levels.DEBUG)
-    lsp.detach(client, bufnr)
+    require("konrad.lsp.event_handlers").detach(client, bufnr)
 end
 
 vim.api.nvim_create_autocmd("LspAttach", {

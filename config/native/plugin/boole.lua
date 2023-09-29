@@ -1,12 +1,9 @@
-local boole_ok, boole = pcall(require, "boole")
-if not boole_ok then
-    return
-end
+local boole = require("boole")
 
 boole.setup({
     mappings = {
-        increment = '<C-a>',
-        decrement = '<C-x>'
+        increment = "<C-a>",
+        decrement = "<C-x>",
     },
     -- User defined loops
     additions = {

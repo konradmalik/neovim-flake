@@ -1,5 +1,3 @@
-vim.cmd("packadd heirline.nvim")
-
 local utils = require("heirline.utils")
 
 -- grabs stuff from the colorscheme, so it needs to be set first

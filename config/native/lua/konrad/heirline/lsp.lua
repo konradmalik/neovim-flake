@@ -1,12 +1,12 @@
 local conditions = require("heirline.conditions")
 local icons = require("konrad.icons")
-local colors = require('konrad.heirline.colors')
+local colors = require("konrad.heirline.colors")
 
 local M = {}
 
 M.LSPActive = {
     condition = conditions.lsp_attached,
-    update = { 'LspAttach', 'LspDetach' },
+    update = { "LspAttach", "LspDetach" },
     on_click = {
         callback = function()
             vim.cmd("LspInfo")
@@ -21,7 +21,7 @@ M.LSPActive = {
     },
 
     init = function(self)
-        self.clients = vim.lsp.get_active_clients({ bufnr = 0 })
+        self.clients = vim.lsp.get_clients({ bufnr = 0 })
     end,
 
     provider = function(self)

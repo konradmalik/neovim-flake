@@ -1,11 +1,12 @@
 local codelens_is_enabled = true
-local keymapper = require("konrad.lsp.keymapper")
 
 local M = {}
 
 ---@param data table
 ---@return table of commands and buf_commands for this client
 M.attach = function(data)
+    local keymapper = require("konrad.lsp.keymapper")
+
     local augroup = data.augroup
     local bufnr = data.bufnr
 

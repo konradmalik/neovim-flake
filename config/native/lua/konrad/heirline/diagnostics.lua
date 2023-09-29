@@ -1,6 +1,5 @@
 local conditions = require("heirline.conditions")
-local colors = require('konrad.heirline.colors')
-local icons = require('konrad.icons')
+local colors = require("konrad.heirline.colors")
 
 return {
     condition = conditions.has_diagnostics,
