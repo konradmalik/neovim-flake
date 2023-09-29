@@ -4,15 +4,14 @@ local M = {}
 
 M.prefix = keymap_prefix
 
-M.setup = function(bufnr)
-    local opts = { buffer = bufnr, noremap = true, silent = true }
+M.opts_for = function(bufnr)
     return function(desc)
-        vim.tbl_extend("error", opts, { desc = keymap_prefix .. " " .. desc })
+        return { buffer = bufnr, noremap = true, silent = true, desc = keymap_prefix .. " " .. desc }
     end
 end
 
 M.clear = function(bufnr)
-    for _, mode in ipairs({ 'n', 'i', 'v' }) do
+    for _, mode in ipairs({ "n", "i", "v" }) do
         local keymaps = vim.api.nvim_buf_get_keymap(bufnr, mode)
         for _, keymap in ipairs(keymaps) do
             if keymap.desc then

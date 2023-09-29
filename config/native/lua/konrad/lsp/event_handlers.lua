@@ -28,7 +28,7 @@ end
 
 M.attach = function(client, bufnr)
     local augroup = augroups.get_augroup(client)
-    local opts_with_desc = keymapper.setup(bufnr)
+    local opts_with_desc = keymapper.opts_for(bufnr)
     local register_data = {
         augroup = augroup,
         bufnr = bufnr,
