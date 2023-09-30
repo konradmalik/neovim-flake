@@ -1,6 +1,6 @@
 require("konrad.lsp.borders")
 
-require("konrad.lsp").initialize()
+require("konrad.lsp").init_efm()
 
 ---@param client table
 ---@param bufnr number

@@ -16,29 +16,18 @@ local init_lspconfig = function(server, opts)
     config.setup(merged)
 end
 
-local local_lsps = {}
-local init_lsps = function()
-    local additional = local_lsps
-    for k, v in pairs(additional) do
+---@param lsps table of server name->server config
+local init_lsps = function(lsps)
+    for k, v in pairs(lsps) do
         init_lspconfig(k, v)
     end
 end
 
-local local_efm_plugins = {}
-local init_efm = function()
-    local efm = require("konrad.lsp.efm")
-    local config = efm.build_lspconfig(vim.list_extend(local_efm_plugins, efm.default_plugins))
-    init_lspconfig("efm", config)
-end
-
-local already_initialized = false
-local initialize = function()
-    init_efm()
-    init_lsps()
-    already_initialized = true
-end
+local extra_efm_plugins = {}
+local initialized_efm = false
 
 local M = {}
+M.default_efm_plugins = { "prettier", "jq", "shfmt", "shellcheck" }
 
 ---@param tconfigs table of server-value mapping
 --- server: any server name from nvim-lspconfig or 'efm' if this enables an efm plugin.
@@ -47,8 +36,7 @@ local M = {}
 --- server == 'efm' -> a list of plugins to enable eg. {'black'} (some plugins are always enabled).
 ---@return nil
 M.setup = function(tconfigs)
-    local_efm_plugins = {}
-    local_lsps = {}
+    local lsps = {}
     for server, value in pairs(tconfigs) do
         if type(server) == "number" then
             server = value
@@ -56,21 +44,25 @@ M.setup = function(tconfigs)
         end
 
         if server == "efm" then
-            local_efm_plugins = value
+            extra_efm_plugins = value
         else
-            local_lsps[server] = value or {}
+            lsps[server] = value or {}
         end
     end
 
-    if already_initialized then
-        -- reinitialize essentially, this is useful mostly when sourcing .nvim.lua manually
-        initialize()
+    init_lsps(lsps)
+    if initialized_efm then
+        M.init_efm()
     end
 end
 
--- call this after .nvim.lua (from after folder eg.)
-M.initialize = function()
-    initialize()
+M.init_efm = function()
+    local efm = require("konrad.lsp.efm")
+    local all_plugins = {}
+    all_plugins = vim.list_extend(all_plugins, extra_efm_plugins)
+    local config = efm.build_lspconfig(vim.list_extend(all_plugins, M.default_efm_plugins))
+    init_lspconfig("efm", config)
+    initialized_efm = true
 end
 
 return M

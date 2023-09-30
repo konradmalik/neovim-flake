@@ -1,8 +1,4 @@
-local configs = {}
-local already_initialized = false
-
-local initialize = function()
-    already_initialized = true
+local initialize = function(configs)
     if not vim.tbl_isempty(configs) then
         vim.cmd("packadd nvim-dap")
         vim.cmd("packadd nvim-dap-ui")
@@ -40,20 +36,12 @@ local M = {}
 ---@param tconfigs string[]|function[] - dap config names or function with no arguments if custom config
 ---@return nil
 M.setup = function(tconfigs)
-    configs = {}
+    local configs = {}
     for _, value in ipairs(tconfigs) do
         table.insert(configs, value)
     end
 
-    if already_initialized then
-        -- reinitialize essentially, this is useful mostly when sourcing .nvim.lua manually
-        initialize()
-    end
-end
-
--- call this after .nvim.lua (from after folder eg.)
-M.initialize = function()
-    initialize()
+    initialize(configs)
 end
 
 return M

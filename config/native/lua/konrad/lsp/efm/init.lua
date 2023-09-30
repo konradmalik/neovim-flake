@@ -22,8 +22,6 @@ end
 
 local M = {}
 
-M.default_plugins = { "prettier", "jq", "shfmt", "shellcheck" }
-
 ---@param plugins string[] names of plugins to add, ex. 'prettier'
 ---@return table config to be put into lspconfig['efm'].setup(config)
 M.build_lspconfig = function(plugins)

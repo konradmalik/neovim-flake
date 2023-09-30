@@ -107,6 +107,7 @@
           neovim = bundle.nvim;
           config = bundle.config;
           nvim-luaref = pkgs.neovimPlugins.nvim-luaref;
+          plugins = pkgs.neovimPlugins;
         });
       apps = forAllSystems (pkgs: {
         default = {
