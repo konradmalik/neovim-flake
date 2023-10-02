@@ -1,7 +1,7 @@
 { curl, vimUtils, neovimUtils, inputs }:
 let
   version = "master";
-  buildVim = name: src: vimUtils.buildVimPluginFrom2Nix {
+  buildVim = name: src: vimUtils.buildVimPlugin {
     inherit version;
     pname = name;
     src = src;
