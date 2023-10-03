@@ -5,8 +5,7 @@
     {
       nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
       neovim = {
-        # url = "github:neovim/neovim?dir=contrib";
-        url = "github:Pegasust/neovim/nix-aarch64-darwin-fix?dir=contrib";
+        url = "github:neovim/neovim?dir=contrib";
         inputs.nixpkgs.follows = "nixpkgs";
       };
 
@@ -93,9 +92,40 @@
             { inherit (prev.vimPlugins) nvim-treesitter; }
             // prev.callPackage ./packages/plugins { inherit inputs; };
         };
-        neovim = final: prev: {
-          neovim = neovim.packages.${prev.system}.neovim;
-        };
+        neovim = final: prev:
+          let
+            # dirty fix for https://github.com/NixOS/nixpkgs/issues/229275
+            luajit = prev.luajit.override (prev.lib.optionalAttrs prev.stdenv.isDarwin {
+              packageOverrides = luafinal: luaprev: {
+                liblpeg = luaprev.lpeg.overrideAttrs (oa: {
+                  pname = "liblpeg";
+
+                  buildPhase = ''
+                    sed -i makefile -e "s/CC = gcc/CC = clang/"
+                    sed -i makefile -e "s/-bundle/-dynamiclib/"
+                    make macosx
+                  '';
+
+                  installPhase = ''
+                    mkdir -p $out/lib
+                    mv lpeg.so $out/lib/lpeg.dylib
+                  '';
+
+                  nativeBuildInputs = [ prev.fixDarwinDylibNames ] ++ oa.nativeBuildInputs;
+                });
+
+                lpeg = luaprev.lpeg.overrideAttrs {
+                  postInstall = ''
+                    mkdir -p $out/lib
+                    cp -r ${luafinal.liblpeg}/lib/* $out/lib/
+                  '';
+                };
+              };
+            });
+          in
+          {
+            neovim = neovim.packages.${prev.system}.neovim.override { lua = luajit; };
+          };
       };
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
       packages = forAllSystems (pkgs:
@@ -107,7 +137,6 @@
           neovim = bundle.nvim;
           config = bundle.config;
           nvim-luaref = pkgs.neovimPlugins.nvim-luaref;
-          plugins = pkgs.neovimPlugins;
         });
       apps = forAllSystems (pkgs: {
         default = {
