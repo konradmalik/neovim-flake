@@ -3,7 +3,9 @@
 
   inputs =
     {
-      nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+      # TODO master until https://github.com/NixOS/nixpkgs/commit/7b6b919f3a707c566b8592106bb7ce070721b137
+      # gets on nixpkgs-unstable
+      nixpkgs.url = "github:nixos/nixpkgs/master";
       neovim = {
         url = "github:neovim/neovim?dir=contrib";
         inputs.nixpkgs.follows = "nixpkgs";
@@ -92,40 +94,9 @@
             { inherit (prev.vimPlugins) nvim-treesitter; }
             // prev.callPackage ./packages/plugins { inherit inputs; };
         };
-        neovim = final: prev:
-          let
-            # dirty fix for https://github.com/NixOS/nixpkgs/issues/229275
-            luajit = prev.luajit.override (prev.lib.optionalAttrs prev.stdenv.isDarwin {
-              packageOverrides = luafinal: luaprev: {
-                liblpeg = luaprev.lpeg.overrideAttrs (oa: {
-                  pname = "liblpeg";
-
-                  buildPhase = ''
-                    sed -i makefile -e "s/CC = gcc/CC = clang/"
-                    sed -i makefile -e "s/-bundle/-dynamiclib/"
-                    make macosx
-                  '';
-
-                  installPhase = ''
-                    mkdir -p $out/lib
-                    mv lpeg.so $out/lib/lpeg.dylib
-                  '';
-
-                  nativeBuildInputs = [ prev.fixDarwinDylibNames ] ++ oa.nativeBuildInputs;
-                });
-
-                lpeg = luaprev.lpeg.overrideAttrs {
-                  postInstall = ''
-                    mkdir -p $out/lib
-                    cp -r ${luafinal.liblpeg}/lib/* $out/lib/
-                  '';
-                };
-              };
-            });
-          in
-          {
-            neovim = neovim.packages.${prev.system}.neovim.override { lua = luajit; };
-          };
+        neovim = final: prev: {
+          neovim = neovim.packages.${prev.system}.neovim;
+        };
       };
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
       packages = forAllSystems (pkgs:
