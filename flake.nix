@@ -3,9 +3,7 @@
 
   inputs =
     {
-      # TODO master until https://github.com/NixOS/nixpkgs/commit/7b6b919f3a707c566b8592106bb7ce070721b137
-      # gets on nixpkgs-unstable
-      nixpkgs.url = "github:nixos/nixpkgs/master";
+      nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
       neovim = {
         url = "github:neovim/neovim?dir=contrib";
         inputs.nixpkgs.follows = "nixpkgs";
