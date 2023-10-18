@@ -37,13 +37,14 @@ vim.o.smartcase = true
 vim.wo.signcolumn = "yes"
 -- show some hidden chars
 vim.opt.list = true
-vim.opt.listchars = table.concat({
-    "trail:" .. icons.characters.Trail,
-    "tab:" .. icons.characters.Tab .. "-" .. icons.characters.Tab,
-    "nbsp:" .. icons.characters.Nbsp2,
-    "extends:" .. icons.characters.SlopeDown,
-    "precedes:" .. icons.characters.SlopeUp,
-}, ",")
+vim.opt.listchars = {
+    trail = icons.characters.Trail,
+    tab = icons.characters.Tab .. "-" .. icons.characters.Tab,
+    nbsp = icons.characters.Nbsp2,
+    extends = icons.characters.SlopeDown,
+    precedes = icons.characters.SlopeUp,
+    leadmultispace = icons.ui.Guide .. " ",
+}
 -- Lines of context when scrolling
 vim.o.scrolloff = 10
 -- Columns of context when scrolling

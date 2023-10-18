@@ -90,7 +90,6 @@ processMadePlugins (with pkgs.neovimPlugins;[
   (makePlugin comment-nvim)
   (makePlugin gitsigns-nvim)
   (makePlugin harpoon)
-  (makePlugin indent-blankline-nvim)
   (makePlugin nvim-luaref)
   (makePlugin { plugin = undotree; optional = true; })
   (makePlugin vim-fugitive)

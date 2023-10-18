@@ -39,7 +39,6 @@ rec {
     # nvimRequireCheck = "harpoon";
   };
   heirline-nvim = buildVim "heirline.nvim" inputs.heirline-nvim;
-  indent-blankline-nvim = buildVim "indent-blankline.nvim" inputs.indent-blankline-nvim;
   kanagawa-nvim = buildVim "kanagawa.nvim" inputs.kanagawa-nvim;
   luasnip = buildVim "luasnip" inputs.luasnip;
   neo-tree-nvim = (buildVim "neo-tree.nvim" inputs.neo-tree-nvim).overrideAttrs {
