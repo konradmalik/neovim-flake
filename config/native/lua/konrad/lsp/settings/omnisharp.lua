@@ -1,31 +1,11 @@
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#omnisharp
 
-local function nix_omnisharp_dll_path()
-    local binpath = vim.fn.exepath("OmniSharp")
-    if not binpath then
-        vim.notify("cannot find omnisharp executable", vim.log.levels.ERROR)
-        return "OmniSharp"
-    end
-    local omnipath = binpath:sub(1, -(string.len("bin/OmniSharp") + 1))
-    local dllpath = omnipath .. "lib/omnisharp-roslyn/OmniSharp.dll"
-    return dllpath
-end
-
 -- https://github.com/Hoffs/omnisharp-extended-lsp.nvim
 vim.cmd("packadd omnisharp-extended-lsp.nvim")
 
+local binaries = require("konrad.binaries")
 return {
-    -- until https://github.com/neovim/nvim-lspconfig/pull/2754 is merged
-    root_dir = function(fname)
-        local util = require("lspconfig.util")
-        local root_patterns = { "*.sln", "*.csproj", "omnisharp.json", "function.json" }
-        for _, pattern in ipairs(root_patterns) do
-            local found = util.root_pattern(pattern)(fname)
-            if found then
-                return found
-            end
-        end
-    end,
+    cmd = { binaries.omnisharp() },
     on_init = function(client)
         -- disable codelens for omnisharp because it makes it extremely slow
         client.server_capabilities.codeLensProvider = nil
@@ -34,9 +14,6 @@ return {
         -- https://github.com/OmniSharp/omnisharp-roslyn/issues/2483
         client.server_capabilities.semanticTokensProvider = nil
     end,
-
-    -- use dotnet in the current PATH, and use dll found from OmniSharp in the current path
-    cmd = { "dotnet", nix_omnisharp_dll_path() },
 
     -- decompilation support via omnisharp-extended-lsp
     enableDecompilationSupport = true,

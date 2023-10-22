@@ -1,11 +1,11 @@
 local dap = require("dap")
 local binaries = require("konrad.binaries")
 dap.adapters.debugpy = {
-    type = 'executable',
-    command = binaries.debugpy,
-    args = { '-m', 'debugpy.adapter' },
+    type = "executable",
+    command = binaries.debugpy(),
+    args = { "-m", "debugpy.adapter" },
     options = {
-        source_filetype = 'python',
+        source_filetype = "python",
     },
 }
 
@@ -17,33 +17,33 @@ local get_python_path = function()
     local venv = os.getenv("VIRTUAL_ENV")
     if venv then
         return string.format("%s/bin/python", venv)
-    elseif vim.fn.executable(cwd .. '/venv/bin/python') == 1 then
-        return cwd .. '/venv/bin/python'
-    elseif vim.fn.executable(cwd .. '/.venv/bin/python') == 1 then
-        return cwd .. '/.venv/bin/python'
+    elseif vim.fn.executable(cwd .. "/venv/bin/python") == 1 then
+        return cwd .. "/venv/bin/python"
+    elseif vim.fn.executable(cwd .. "/.venv/bin/python") == 1 then
+        return cwd .. "/.venv/bin/python"
     else
-        return '/usr/bin/python'
+        return "/usr/bin/python"
     end
 end
 
 dap.configurations.python = {
     {
         -- The first three options are required by nvim-dap
-        type = 'debugpy', -- the type here established the link to the adapter definition: `dap.adapters.debugpy`
-        request = 'launch',
+        type = "debugpy", -- the type here established the link to the adapter definition: `dap.adapters.debugpy`
+        request = "launch",
         name = "Launch file",
         -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
         program = "$${file}", -- This configuration will launch the current file if used.
         pythonPath = get_python_path,
     },
     {
-        type = 'debugpy',
-        request = 'launch',
-        name = 'Launch file with arguments',
-        program = '$${file}',
+        type = "debugpy",
+        request = "launch",
+        name = "Launch file with arguments",
+        program = "$${file}",
         args = coroutine.create(function(dap_run_co)
             vim.ui.input({
-                prompt = 'Args:',
+                prompt = "Args:",
             }, function(input)
                 coroutine.resume(dap_run_co, input)
             end)
@@ -51,11 +51,11 @@ dap.configurations.python = {
         pythonPath = get_python_path,
     },
     {
-        type = 'debugpy',
-        request = 'launch',
-        name = 'Launch pytest on file',
-        module = 'pytest',
-        args = { '-s', '$${file}' },
+        type = "debugpy",
+        request = "launch",
+        name = "Launch pytest on file",
+        module = "pytest",
+        args = { "-s", "$${file}" },
         pythonPath = get_python_path,
-    }
+    },
 }

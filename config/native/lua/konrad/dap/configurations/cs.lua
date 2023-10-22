@@ -1,9 +1,9 @@
 local dap = require("dap")
 local binaries = require("konrad.binaries")
 dap.adapters.coreclr = {
-    type = 'executable',
-    command = binaries.netcoredbg,
-    args = { '--interpreter=vscode' },
+    type = "executable",
+    command = binaries.netcoredbg(),
+    args = { "--interpreter=vscode" },
 }
 
 dap.configurations.cs = {
@@ -12,9 +12,9 @@ dap.configurations.cs = {
         name = "Launch netcoredbg",
         request = "launch",
         program = coroutine.create(function(dap_run_co)
-            local dlls = vim.fn.glob('./**/Debug/*/*.dll', true, true)
+            local dlls = vim.fn.glob("./**/Debug/*/*.dll", true, true)
             vim.ui.select(dlls, {
-                prompt = 'Select dll to debug:',
+                prompt = "Select dll to debug:",
                 format_item = function(item)
                     return "debugee > " .. item
                 end,
@@ -28,9 +28,9 @@ dap.configurations.cs = {
         name = "Launch netcoredbg (with args)",
         request = "launch",
         program = coroutine.create(function(dap_run_co)
-            local dlls = vim.fn.glob('./**/Debug/*/*.dll', true, true)
+            local dlls = vim.fn.glob("./**/Debug/*/*.dll", true, true)
             vim.ui.select(dlls, {
-                prompt = 'Select dll to debug:',
+                prompt = "Select dll to debug:",
                 format_item = function(item)
                     return "debugee > " .. item
                 end,
@@ -40,7 +40,7 @@ dap.configurations.cs = {
         end),
         args = coroutine.create(function(dap_run_co)
             vim.ui.input({
-                prompt = 'Args:',
+                prompt = "Args:",
             }, function(input)
                 coroutine.resume(dap_run_co, input)
             end)

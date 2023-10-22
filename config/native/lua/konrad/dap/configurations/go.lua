@@ -1,12 +1,12 @@
 local dap = require("dap")
 local binaries = require("konrad.binaries")
 dap.adapters.delve = {
-    type = 'server',
-    port = '$${port}',
+    type = "server",
+    port = "$${port}",
     executable = {
-        command = binaries.delve,
-        args = { 'dap', '-l', '127.0.0.1:$${port}' },
-    }
+        command = binaries.delve(),
+        args = { "dap", "-l", "127.0.0.1:$${port}" },
+    },
 }
 
 dap.configurations.go = {
@@ -14,7 +14,7 @@ dap.configurations.go = {
         type = "delve",
         name = "Debug",
         request = "launch",
-        program = "$${file}"
+        program = "$${file}",
     },
     {
         type = "delve",
@@ -23,7 +23,7 @@ dap.configurations.go = {
         program = "$${file}",
         args = coroutine.create(function(dap_run_co)
             vim.ui.input({
-                prompt = 'Args:',
+                prompt = "Args:",
             }, function(input)
                 coroutine.resume(dap_run_co, input)
             end)
@@ -40,7 +40,7 @@ dap.configurations.go = {
         name = "Debug test", -- configuration for debugging test files
         request = "launch",
         mode = "test",
-        program = "$${file}"
+        program = "$${file}",
     },
     -- works with go.mod packages and sub packages
     {
@@ -48,6 +48,6 @@ dap.configurations.go = {
         name = "Debug test (go.mod)",
         request = "launch",
         mode = "test",
-        program = "./$${relativeFileDirname}"
-    }
+        program = "./$${relativeFileDirname}",
+    },
 }

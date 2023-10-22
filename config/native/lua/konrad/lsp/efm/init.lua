@@ -39,7 +39,7 @@ M.build_lspconfig = function(plugins)
     end
 
     return {
-        cmd = { binaries.efm },
+        cmd = { binaries.efm() },
         single_file_support = true,
         filetypes = vim.tbl_keys(languages),
         init_options = {

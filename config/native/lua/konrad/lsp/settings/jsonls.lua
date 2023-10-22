@@ -2,9 +2,9 @@
 
 vim.cmd("packadd SchemaStore.nvim")
 local schemastore = require("schemastore")
-local binaries = require('konrad.binaries')
+local binaries = require("konrad.binaries")
 return {
-    cmd = { binaries.jsonls, "--stdio" },
+    cmd = { binaries.jsonls(), "--stdio" },
     init_options = {
         provideFormatter = false, -- use prettier instead
     },

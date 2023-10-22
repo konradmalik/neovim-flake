@@ -1,6 +1,11 @@
+local binaries = require("konrad.binaries")
 return {
+    cmd = { binaries.rust_analyzer() },
     settings = {
         ["rust-analyzer"] = {
+            rustfmt = {
+                overrideCommand = binaries.rustfmt(),
+            },
             files = {
                 excludeDirs = {
                     "./.direnv/",
@@ -19,8 +24,8 @@ return {
                 enable = true,
                 experimental = {
                     enable = true,
-                }
-            }
-        }
-    }
+                },
+            },
+        },
+    },
 }

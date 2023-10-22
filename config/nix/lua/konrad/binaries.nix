@@ -3,18 +3,43 @@ let
   debugpy = pkgs.python3.withPackages (p: [ p.debugpy ]);
 in
 pkgs.writeTextDir "lua/konrad/binaries.lua" ''
+  local fs = require("konrad.fs")
   return {
-      debugpy = '${debugpy}/bin/python',
-      delve = '${pkgs.delve}/bin/dap',
-      efm = '${pkgs.efm-langserver}/bin/efm-langserver',
-      jsonls = "${pkgs.nodePackages.vscode-json-languageserver}/bin/vscode-json-languageserver",
-      jq = "${pkgs.jq}/bin/jq",
-      netcoredbg = '${pkgs.netcoredbg}/bin/netcoredbg',
-      node = '${pkgs.nodejs-slim}/bin/node',
-      prettier = "${pkgs.nodePackages.prettier}/bin/prettier",
-      prettier_plugin_toml = "${pkgs.nodePackages.prettier-plugin-toml}/lib",
-      shellcheck = "${pkgs.shellcheck}/bin/shellcheck",
-      shfmt = "${pkgs.shfmt}/bin/shfmt",
-      yamlls = "${pkgs.nodePackages.yaml-language-server}/bin/yaml-language-server",
+      -- formatters
+      black = function() return fs.from_path_or_default("black", "${pkgs.black}/bin/black") end,
+      isort = function() return fs.from_path_or_default("isort", "${pkgs.isort}/bin/isort") end,
+      nixpkgs_fmt = function() return "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" end,
+      prettier = function() return fs.from_path_or_default("prettier", "${pkgs.nodePackages.prettier}/bin/prettier") end,
+      prettier_plugin_toml = function() return "${pkgs.nodePackages.prettier-plugin-toml}/lib" end,
+      rustfmt = function() return "${pkgs.rustfmt}/bin/rustfmt" end,
+      shfmt = function() return "${pkgs.shfmt}/bin/shfmt" end,
+      stylua = function() return fs.from_path_or_default("stylua", "${pkgs.stylua}/bin/stylua") end,
+
+      -- linters
+      golangci_lint = function() return fs.from_path_or_default("golangci-lint", "${pkgs.golangci-lint}/bin/golangci-lint") end,
+      jq = function() return "${pkgs.jq}/bin/jq" end,
+      shellcheck = function() return "${pkgs.shellcheck}/bin/shellcheck" end,
+
+      -- lsps
+      ansiblels = function() return "${pkgs.ansible-language-server}/bin/ansible-language-server" end,
+      gopls = function() return "${pkgs.gopls}/bin/gopls" end,
+      jsonls = function() return "${pkgs.nodePackages.vscode-json-languageserver}/bin/vscode-json-languageserver" end,
+      lua_ls = function() return "${pkgs.sumneko-lua-language-server}/bin/lua-language-server" end,
+      nil_ls = function() return "${pkgs.nil}/bin/nil" end,
+      omnisharp = function() return "${pkgs.omnisharp-roslyn}/bin/OmniSharp" end,
+      pyright = function() return "${pkgs.nodePackages.pyright}/bin/pyright" end,
+      rust_analyzer = function() return "${pkgs.rust-analyzer}/bin/rust-analyzer" end,
+      terraformls = function() return "${pkgs.terraform-ls}/bin/terraform-ls" end,
+      yamlls = function() return "${pkgs.nodePackages.yaml-language-server}/bin/yaml-language-server" end,
+      zls = function() return "${pkgs.zls}/bin/zls" end,
+
+      -- debuggers
+      debugpy = function() return '${debugpy}/bin/python' end,
+      delve = function() return '${pkgs.delve}/bin/dap' end,
+      netcoredbg = function() return '${pkgs.netcoredbg}/bin/netcoredbg' end,
+
+      -- other
+      efm = function() return '${pkgs.efm-langserver}/bin/efm-langserver' end,
+      node = function() return '${pkgs.nodejs-slim}/bin/node' end,
   }
 ''

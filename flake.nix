@@ -73,15 +73,7 @@
         default = pkgs.mkShell
           {
             name = "neovim-shell";
-
-            packages = with pkgs; [
-              # formatters/linters
-              nixpkgs-fmt
-              stylua
-              # language-servers
-              nil
-              sumneko-lua-language-server
-            ];
+            packages = [ ];
           };
       });
       overlays = {

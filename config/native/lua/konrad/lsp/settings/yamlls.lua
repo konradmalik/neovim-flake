@@ -2,9 +2,9 @@
 
 vim.cmd("packadd SchemaStore.nvim")
 local schemastore = require("schemastore")
-local binaries = require('konrad.binaries')
+local binaries = require("konrad.binaries")
 return {
-    cmd = { binaries.yamlls, "--stdio" },
+    cmd = { binaries.yamlls(), "--stdio" },
     settings = {
         redhat = {
             telemetry = {
@@ -13,18 +13,16 @@ return {
         },
         yaml = {
             format = {
-                enable = false -- use prettier instead
+                enable = false, -- use prettier instead
             },
             completion = true,
             hover = true,
             validate = true,
-            schemas = vim.tbl_extend("error",
-                schemastore.yaml.schemas(),
-                {
-                    ["kubernetes"] = { "k8s/**/*.yml", "k8s/**/*.yaml" },
-                    -- or use:
-                    -- # yaml-language-server: $schema=<urlToTheSchema>
-                }),
+            schemas = vim.tbl_extend("error", schemastore.yaml.schemas(), {
+                ["kubernetes"] = { "k8s/**/*.yml", "k8s/**/*.yaml" },
+                -- or use:
+                -- # yaml-language-server: $schema=<urlToTheSchema>
+            }),
             schemaStore = {
                 -- we use above
                 enable = false,
@@ -33,5 +31,5 @@ return {
                 url = "",
             },
         },
-    }
+    },
 }

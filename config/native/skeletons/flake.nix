@@ -41,13 +41,7 @@
         default = pkgs.mkShell
           {
             name = "Shell for this project";
-
-            packages = with pkgs; [
-              # formatters/linters
-              nixpkgs-fmt
-              # language-servers
-              nil
-            ];
+            packages = [ ];
           };
       });
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);

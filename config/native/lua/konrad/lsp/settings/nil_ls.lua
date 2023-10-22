@@ -1,10 +1,13 @@
 -- https://github.com/oxalica/nil
+
+local binaries = require("konrad.binaries")
 return {
+    cmd = { binaries.nil_ls() },
     settings = {
-        ['nil'] = {
+        ["nil"] = {
             formatting = {
-                command = { 'nixpkgs-fmt' },
+                command = { binaries.nixpkgs_fmt() },
             },
-        }
-    }
+        },
+    },
 }
