@@ -9,7 +9,8 @@ ls.add_snippets("yaml", {
         dscr = "yaml-language-server modeline template with kubernetes schema by default",
     }, {
         text(
-            "# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master-standalone-strict/all.json")
+            "# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master-standalone-strict/all.json"
+        ),
     }),
 })
 
@@ -19,17 +20,15 @@ ls.add_snippets("all", {
         name = "ascii shrug",
         dscr = "shrug when you have nothing better to say",
     }, {
-        text("¯\\_(ツ)_/¯")
+        text("¯\\_(ツ)_/¯"),
     }),
     snip({
         trig = "rageflip",
         name = "ascii rageflip",
         dscr = "rageflip when you have enough",
     }, {
-        text("(╯°□°)╯彡┻━┻")
+        text("(╯°□°)╯彡┻━┻"),
     }),
 })
 
 require("luasnip.loaders.from_vscode").lazy_load()
-
-return ls

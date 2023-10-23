@@ -1,4 +1,5 @@
-local luasnip = require("konrad.cmp.snippets")
+-- register custom and vscode snippets to luasnip
+require("konrad.cmp.snippets")
 
 local lazy = require("konrad.lazy")
 -- load copilot on demand
@@ -29,7 +30,7 @@ end
 cmp.setup({
     snippet = {
         expand = function(args)
-            luasnip.lsp_expand(args.body)
+            vim.snippet.expand(args.body)
         end,
     },
     mapping = cmp.mapping.preset.insert({
@@ -44,8 +45,8 @@ cmp.setup({
         ["<C-n>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-                luasnip.expand_or_jump()
+            elseif vim.snippet.jumpable(1) then
+                vim.snippet.jump(1)
             else
                 fallback()
             end
@@ -53,8 +54,8 @@ cmp.setup({
         ["<C-p>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-                luasnip.jump(-1)
+            elseif vim.snippet.jumpable(-1) then
+                vim.snippet.jump(-1)
             else
                 fallback()
             end
