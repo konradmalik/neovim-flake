@@ -10,10 +10,10 @@ pkgs.writeTextDir "lua/konrad/binaries.lua" ''
       isort = function() return fs.from_path_or_default("isort", "${pkgs.isort}/bin/isort") end,
       nixpkgs_fmt = function() return "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" end,
       prettier = function() return fs.from_path_or_default("prettier", "${pkgs.nodePackages.prettier}/bin/prettier") end,
-      prettier_plugin_toml = function() return "${pkgs.nodePackages.prettier-plugin-toml}/lib" end,
       rustfmt = function() return "${pkgs.rustfmt}/bin/rustfmt" end,
       shfmt = function() return "${pkgs.shfmt}/bin/shfmt" end,
       stylua = function() return fs.from_path_or_default("stylua", "${pkgs.stylua}/bin/stylua") end,
+      taplo = function() return fs.from_path_or_default("taplo", "${pkgs.taplo}/bin/taplo") end,
 
       -- linters
       golangci_lint = function() return fs.from_path_or_default("golangci-lint", "${pkgs.golangci-lint}/bin/golangci-lint") end,

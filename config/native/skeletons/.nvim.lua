@@ -4,6 +4,7 @@ require("konrad.lsp").setup({
     -- efm = {
     --     'black'
     --     'stylua'
+    --     'taplo'
     -- },
     -- "gopls",
     -- "jsonls",
