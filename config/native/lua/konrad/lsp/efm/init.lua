@@ -53,4 +53,49 @@ M.build_lspconfig = function(plugins)
     }
 end
 
+local checkFormattingEnabled = function(languages)
+    for _, entries in pairs(vim.tbl_values(languages)) do
+        for _, entry in ipairs(entries) do
+            for key, _ in pairs(entry) do
+                if vim.startswith(key, "format") then
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+
+---@param name string unique name of this efm instance
+---@param plugins string[] names of plugins to add, ex. 'prettier'
+---@return table config to be put into lspconfig['efm'].setup(config)
+M.build_config = function(name, plugins)
+    local languages = {}
+    for _, v in ipairs(plugins) do
+        local plugin = require("konrad.lsp.efm." .. v)
+        local langages_entry = make_languages_entry_for_plugin(plugin)
+        for key, value in pairs(langages_entry) do
+            if languages[key] then
+                languages[key] = vim.list_extend(languages[key], value)
+            else
+                languages[key] = value
+            end
+        end
+    end
+
+    local formattingEnabled = checkFormattingEnabled(languages)
+    return {
+        name = name,
+        cmd = { binaries.efm() },
+        init_options = {
+            documentFormatting = formattingEnabled,
+            documentRangeFormatting = formattingEnabled,
+        },
+        settings = {
+            rootMarkers = { ".git/" },
+            languages = languages,
+        },
+    }
+end
+
 return M

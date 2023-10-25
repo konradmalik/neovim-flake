@@ -1,4 +1,5 @@
 require("konrad.lsp.borders")
+require("konrad.lsp.commands")
 
 require("konrad.lsp").init_efm()
 
