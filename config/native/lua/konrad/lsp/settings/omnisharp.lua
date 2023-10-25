@@ -9,6 +9,8 @@ return {
     on_init = function(client, initialize_result)
         -- disable codelens for omnisharp because it makes it extremely slow
         client.server_capabilities.codeLensProvider = nil
+        -- inlayHints are broken as well as of 1.39.10
+        client.server_capabilities.inlayHintProvider = nil
         client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
     end,
 
