@@ -6,13 +6,10 @@ vim.cmd("packadd omnisharp-extended-lsp.nvim")
 local binaries = require("konrad.binaries")
 return {
     cmd = { binaries.omnisharp() },
-    on_init = function(client)
+    on_init = function(client, initialize_result)
         -- disable codelens for omnisharp because it makes it extremely slow
         client.server_capabilities.codeLensProvider = nil
-
-        -- omnisharp does not implement semanticTokens properly
-        -- https://github.com/OmniSharp/omnisharp-roslyn/issues/2483
-        client.server_capabilities.semanticTokensProvider = nil
+        client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
     end,
 
     -- decompilation support via omnisharp-extended-lsp
