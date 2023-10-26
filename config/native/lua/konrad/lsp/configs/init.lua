@@ -3,8 +3,10 @@ local M = {}
 ---@param config table
 ---@return table
 M.make_config = function(config)
+    local lspcaps = vim.lsp.protocol.make_client_capabilities()
+    local mycaps = require("konrad.lsp.capabilities")
     local base = {
-        capabilities = require("konrad.lsp.capabilities"),
+        capabilities = vim.tbl_deep_extend("force", lspcaps, mycaps),
     }
 
     return vim.tbl_deep_extend("force", base, config)

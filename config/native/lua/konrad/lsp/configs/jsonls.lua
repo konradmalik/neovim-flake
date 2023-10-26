@@ -1,12 +1,12 @@
 -- https://github.com/hrsh7th/vscode-langservers-extracted
 
-vim.cmd("packadd SchemaStore.nvim")
-local schemastore = require("schemastore")
-local binaries = require("konrad.binaries")
-local configs = require("konrad.lsp.configs")
-
 return {
     config = function()
+        vim.cmd("packadd SchemaStore.nvim")
+        local schemastore = require("schemastore")
+        local binaries = require("konrad.binaries")
+        local configs = require("konrad.lsp.configs")
+
         return {
             cmd = { binaries.jsonls(), "--stdio" },
             init_options = {

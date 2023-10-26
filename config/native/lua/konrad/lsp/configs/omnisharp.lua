@@ -1,16 +1,5 @@
 -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#omnisharp
 
--- https://github.com/Hoffs/omnisharp-extended-lsp.nvim
-vim.cmd("packadd omnisharp-extended-lsp.nvim")
-
-local binaries = require("konrad.binaries")
-local configs = require("konrad.lsp.configs")
-local function register_cap()
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities.workspace.workspaceFolders = false -- https://github.com/OmniSharp/omnisharp-roslyn/issues/909
-    return capabilities
-end
-
 local M = {}
 
 M.options = {
@@ -37,6 +26,12 @@ M.options = {
 }
 
 M.config = function()
+    -- https://github.com/Hoffs/omnisharp-extended-lsp.nvim
+    vim.cmd("packadd omnisharp-extended-lsp.nvim")
+
+    local binaries = require("konrad.binaries")
+    local configs = require("konrad.lsp.configs")
+
     local cmd = { binaries.omnisharp() }
     -- Append hard-coded command arguments
     table.insert(cmd, "-z") -- https://github.com/OmniSharp/omnisharp-vscode/pull/4300
@@ -85,7 +80,11 @@ M.config = function()
             client.server_capabilities.inlayHintProvider = nil
             client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
         end,
-        capabilities = register_cap(),
+        capabilities = {
+            workspace = {
+                workspaceFolders = false, -- https://github.com/OmniSharp/omnisharp-roslyn/issues/909
+            },
+        },
         handlers = {
             ["textDocument/definition"] = require("omnisharp_extended").handler,
         },

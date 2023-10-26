@@ -1,19 +1,14 @@
-local binaries = require("konrad.binaries")
-local configs = require("konrad.lsp.configs")
-
-local function register_cap()
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities.experimental = {
-        serverStatusNotification = true,
-    }
-    return capabilities
-end
-
 return {
     config = function()
+        local binaries = require("konrad.binaries")
+        local configs = require("konrad.lsp.configs")
         return {
             cmd = { binaries.rust_analyzer() },
-            capabilities = register_cap(),
+            capabilities = {
+                experimental = {
+                    serverStatusNotification = true,
+                },
+            },
             settings = {
                 ["rust-analyzer"] = {
                     rustfmt = {

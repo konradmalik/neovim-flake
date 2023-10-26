@@ -1,9 +1,10 @@
 -- https://github.com/microsoft/pyright
 
-local binaries = require("konrad.binaries")
-local configs = require("konrad.lsp.configs")
 return {
     config = function()
+        local binaries = require("konrad.binaries")
+        local configs = require("konrad.lsp.configs")
+
         return {
             cmd = { binaries.pyright(), "--stdio" },
             settings = {

@@ -1,9 +1,9 @@
 -- https://github.com/golang/tools/tree/master/gopls
 
-local binaries = require("konrad.binaries")
-local configs = require("konrad.lsp.configs")
 return {
     config = function()
+        local binaries = require("konrad.binaries")
+        local configs = require("konrad.lsp.configs")
         return {
             cmd = { binaries.gopls() },
             -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md

@@ -1,14 +1,15 @@
 -- https://github.com/sumneko/lua-language-server
-vim.cmd("packadd neodev.nvim")
-require("neodev").setup({
-    lspconfig = false,
-})
-local before_init = require("neodev.lsp").before_init
-local binaries = require("konrad.binaries")
-local configs = require("konrad.lsp.configs")
 
 return {
     config = function()
+        vim.cmd("packadd neodev.nvim")
+        require("neodev").setup({
+            lspconfig = false,
+        })
+        local before_init = require("neodev.lsp").before_init
+        local binaries = require("konrad.binaries")
+        local configs = require("konrad.lsp.configs")
+
         return {
             name = "lua_ls",
             cmd = { binaries.lua_ls() },

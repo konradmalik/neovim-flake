@@ -1,16 +1,9 @@
-local M = {}
+local initialized = false
+local initialize_once = function()
+    if initialized then
+        return
+    end
 
---- Configure DAP by name
----
----Built-in names:
----      - cs
----      - go
----      - python
---- If anything else, a whole configuration function needs to be provided.
----
----@param dap string|function - dap config name or function with no arguments if custom config
----@return nil
-M.initialize = function(dap)
     vim.cmd("packadd nvim-dap")
     vim.cmd("packadd nvim-dap-ui")
     vim.cmd("packadd nvim-dap-virtual-text")
@@ -18,6 +11,24 @@ M.initialize = function(dap)
     require("konrad.dap.ui")
     require("konrad.dap.virtual-text")
     require("konrad.dap.keymaps")
+
+    initialized = true
+end
+
+local M = {}
+
+--- Configure DAP by name
+---
+---Built-in names
+---      - cs
+---      - go
+---      - python
+--- If anything else, a whole configuration function needs to be provided.
+---
+---@param dap string|function - dap config name or a function that configures it
+---@return nil
+M.initialize = function(dap)
+    initialize_once()
 
     if type(dap) == "string" then
         local found, _ = pcall(require, "konrad.dap.configs." .. dap)
