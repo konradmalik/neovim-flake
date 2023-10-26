@@ -75,6 +75,8 @@ M.config = function()
     end
 
     return {
+        -- this concrete name is needed by omnisharp_extended
+        name = "omnisharp",
         cmd = cmd,
         on_init = function(client, initialize_result)
             -- disable codelens for omnisharp because it makes it extremely slow
