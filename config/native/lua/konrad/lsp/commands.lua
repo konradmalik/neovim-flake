@@ -1,15 +1,46 @@
-vim.api.nvim_create_user_command("LspInfo", function()
-    local data = {}
-    for _, client in ipairs(vim.lsp.get_clients()) do
-        data[tostring(client.id)] = {
-            name = client.name,
-            cmd = client.config.cmd,
-            buffers = vim.tbl_keys(client.attached_buffers),
-            root_dir = client.config.root_dir,
-        }
-    end
+local popup = require("plenary.popup")
 
-    vim.print(vim.inspect(data))
+local function create_window()
+    local config = {}
+    local width = config.width or 100
+    local height = config.height or 40
+    local borderchars = config.borderchars or { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
+    local bufnr = vim.api.nvim_create_buf(false, true)
+
+    local win_id, win = popup.create(bufnr, {
+        title = "LspInfo",
+        line = math.floor(((vim.o.lines - height) / 2) - 1),
+        col = math.floor((vim.o.columns - width) / 2),
+        minwidth = width,
+        minheight = height,
+        borderchars = borderchars,
+    })
+
+    return {
+        bufnr = bufnr,
+        win_id = win_id,
+    }
+end
+
+vim.api.nvim_create_user_command("LspInfo", function()
+    local replacement = {}
+    for i, client in ipairs(vim.lsp.get_clients()) do
+        local name = client.name
+        local cmd = table.concat(client.config.cmd, ",")
+        local root_dir = client.config.root_dir
+        local buffers = table.concat(vim.tbl_keys(client.attached_buffers), ",")
+        replacement[i] = string.format(
+            "id: %s, name: %s, cmd: %s, root_dir: %s, buffers: %s",
+            client.id,
+            name,
+            cmd,
+            root_dir,
+            buffers
+        )
+    end
+    local info = create_window()
+    vim.api.nvim_buf_set_lines(info.bufnr, 0, 0, false, replacement)
+    vim.api.nvim_set_option_value("readonly", true, { buf = info.bufnr })
 end, {
     desc = "List LSP clients with their details",
 })
