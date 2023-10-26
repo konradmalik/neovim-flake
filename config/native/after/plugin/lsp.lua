@@ -1,8 +1,6 @@
 require("konrad.lsp.borders")
 require("konrad.lsp.commands")
 
-require("konrad.lsp").init_efm()
-
 ---@param client table
 ---@param bufnr number
 local on_attach = function(client, bufnr)
