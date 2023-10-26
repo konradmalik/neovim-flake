@@ -36,18 +36,12 @@ processMadePlugins (with pkgs.neovimPlugins;[
     ];
   })
   # lsp
+  (makePlugin fidget-nvim)
+  (makePlugin { plugin = neodev-nvim; optional = true; })
+  (makePlugin { plugin = SchemaStore-nvim; optional = true; })
   (makePlugin {
-    plugin = nvim-lspconfig;
-    dependencies = [
-      { plugin = neodev-nvim; optional = true; }
-      fidget-nvim
-      plenary-nvim
-      { plugin = SchemaStore-nvim; optional = true; }
-      {
-        plugin = omnisharp-extended-lsp-nvim;
-        optional = true;
-      }
-    ];
+    plugin = omnisharp-extended-lsp-nvim;
+    optional = true;
   })
   # dap
   (makePlugin {

@@ -22,37 +22,6 @@ end
 
 local M = {}
 
----@param plugins string[] names of plugins to add, ex. 'prettier'
----@return table config to be put into lspconfig['efm'].setup(config)
-M.build_lspconfig = function(plugins)
-    local languages = {}
-    for _, v in ipairs(plugins) do
-        local plugin = require("konrad.lsp.efm." .. v)
-        local langages_entry = make_languages_entry_for_plugin(plugin)
-        for key, value in pairs(langages_entry) do
-            if languages[key] then
-                languages[key] = vim.list_extend(languages[key], value)
-            else
-                languages[key] = value
-            end
-        end
-    end
-
-    return {
-        cmd = { binaries.efm() },
-        single_file_support = true,
-        filetypes = vim.tbl_keys(languages),
-        init_options = {
-            documentFormatting = true,
-            documentRangeFormatting = true,
-        },
-        settings = {
-            rootMarkers = { ".git/" },
-            languages = languages,
-        },
-    }
-end
-
 local checkFormattingEnabled = function(languages)
     for _, entries in pairs(vim.tbl_values(languages)) do
         for _, entry in ipairs(entries) do

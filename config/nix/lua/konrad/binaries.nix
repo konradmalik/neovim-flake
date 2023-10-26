@@ -21,7 +21,7 @@ pkgs.writeTextDir "lua/konrad/binaries.lua" ''
       shellcheck = function() return "${pkgs.shellcheck}/bin/shellcheck" end,
 
       -- lsps
-      ansiblels = function() return "${pkgs.ansible-language-server}/bin/ansible-language-server" end,
+      efm = function() return '${pkgs.efm-langserver}/bin/efm-langserver' end,
       gopls = function() return "${pkgs.gopls}/bin/gopls" end,
       jsonls = function() return "${pkgs.nodePackages.vscode-json-languageserver}/bin/vscode-json-languageserver" end,
       lua_ls = function() return "${pkgs.sumneko-lua-language-server}/bin/lua-language-server" end,
@@ -39,7 +39,6 @@ pkgs.writeTextDir "lua/konrad/binaries.lua" ''
       netcoredbg = function() return '${pkgs.netcoredbg}/bin/netcoredbg' end,
 
       -- other
-      efm = function() return '${pkgs.efm-langserver}/bin/efm-langserver' end,
       node = function() return '${pkgs.nodejs-slim}/bin/node' end,
   }
 ''

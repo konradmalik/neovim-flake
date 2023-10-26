@@ -53,7 +53,6 @@ rec {
   nvim-dap = buildVim "nvim-dap" inputs.nvim-dap;
   nvim-dap-ui = buildVim "nvim-dap-ui" inputs.nvim-dap-ui;
   nvim-dap-virtual-text = buildVim "nvim-dap-virtual-text" inputs.nvim-dap-virtual-text;
-  nvim-lspconfig = buildVim "nvim-lspconfig" inputs.nvim-lspconfig;
   nvim-luaref = buildVim "nvim-luaref" inputs.nvim-luaref;
   nvim-navic = buildVim "nvim-navic" inputs.nvim-navic;
   nvim-treesitter-context = buildVim "nvim-treesitter-context" inputs.nvim-treesitter-context;

@@ -1,4 +1,4 @@
-vim.api.nvim_create_user_command("LspClients", function()
+vim.api.nvim_create_user_command("LspInfo", function()
     local data = {}
     for _, client in ipairs(vim.lsp.get_clients()) do
         data[tostring(client.id)] = {
@@ -14,7 +14,7 @@ end, {
     desc = "List LSP clients with their details",
 })
 
-vim.api.nvim_create_user_command("LspStopClient", function(info)
+vim.api.nvim_create_user_command("LspStop", function(info)
     local server_id
     local arguments = vim.split(info.args, "%s")
     for _, v in pairs(arguments) do
