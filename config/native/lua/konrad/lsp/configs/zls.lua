@@ -1,12 +1,14 @@
 -- https://github.com/zigtools/zls
 
+local binaries = require("konrad.binaries")
+local configs = require("konrad.lsp.configs")
 return {
-    config = function()
-        local binaries = require("konrad.binaries")
-        local configs = require("konrad.lsp.configs")
-        return {
-            cmd = { binaries.zls() },
-            root_dir = configs.root_dir({ "zls.json", ".git" }),
-        }
-    end,
+    config = {
+        cmd = function()
+            return { binaries.zls() }
+        end,
+        root_dir = function()
+            return configs.root_dir({ "zls.json", ".git" })
+        end,
+    },
 }

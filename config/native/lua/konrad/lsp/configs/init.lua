@@ -9,7 +9,17 @@ M.make_config = function(config)
         capabilities = vim.tbl_deep_extend("force", lspcaps, mycaps),
     }
 
-    return vim.tbl_deep_extend("force", base, config)
+    local result = vim.tbl_deep_extend("force", base, config)
+
+    if type(result.cmd) == "function" then
+        result.cmd = result.cmd()
+    end
+
+    if type(result.root_dir) == "function" then
+        result.root_dir = result.root_dir()
+    end
+
+    return result
 end
 
 ---@param names string[]|string
