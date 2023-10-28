@@ -37,18 +37,16 @@ local M = {}
 
 ---starts if needed and attaches to the current buffer
 ---@param config table
----@return integer
-M.start_and_attach = function(config)
+---@param bufnr integer? buffer to attach to
+M.start_and_attach = function(config, bufnr)
     initialize_once()
 
     local made_config = require("konrad.lsp.configs").make_config(config)
-    local client_id = vim.lsp.start(made_config)
+    local target_buf = bufnr or 0
+    local client_id = vim.lsp.start(made_config, { bufnr = target_buf })
     if not client_id then
-        vim.notify("cannot start lsp: " .. config.cmd, vim.log.levels.ERROR)
-        return 0
+        vim.notify("cannot start lsp: " .. config.cmd[1], vim.log.levels.ERROR)
     end
-    vim.lsp.buf_attach_client(vim.api.nvim_get_current_buf(), client_id)
-    return client_id
 end
 
 return M
