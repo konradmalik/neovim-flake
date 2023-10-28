@@ -6,4 +6,3 @@ require("fidget").setup({
         relative = "editor",
     },
 })
-

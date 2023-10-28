@@ -1,6 +1,6 @@
 local conditions = require("heirline.conditions")
 local icons = require("konrad.icons")
-local colors = require('konrad.heirline.colors')
+local colors = require("konrad.heirline.colors")
 
 -- relies on gitsigns
 return {
@@ -14,12 +14,18 @@ return {
 
     hl = { fg = colors.orange },
 
+    on_click = {
+        callback = function()
+            vim.cmd("Git")
+        end,
+        name = "heirline_git",
+    },
 
     { -- git branch name
         provider = function(self)
             return icons.git.Branch .. " " .. self.status_dict.head
         end,
-        hl = { bold = true }
+        hl = { bold = true },
     },
     {
         provider = function(self)
@@ -40,6 +46,6 @@ return {
             local count = self.status_dict.changed or 0
             return count > 0 and (" " .. icons.git.Mod .. " " .. count)
         end,
-        hl = colors.git_change
+        hl = colors.git_change,
     },
 }
