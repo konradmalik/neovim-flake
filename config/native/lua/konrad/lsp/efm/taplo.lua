@@ -5,7 +5,7 @@ return {
         "toml",
     },
     entry = {
-        formatCommand = binaries.taplo() .. " format -",
+        formatCommand = { binaries.taplo(), "format", "-" },
         formatStdin = true,
         formatCanRange = true,
     },

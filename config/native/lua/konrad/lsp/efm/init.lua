@@ -35,6 +35,18 @@ local checkFormattingEnabled = function(languages)
     return false
 end
 
+---@param config table
+---@return table
+local function prepare_config(config)
+    if type(config.entry.formatCommand) == "table" then
+        config.entry.formatCommand = table.concat(config.entry.formatCommand, " ")
+    end
+    if type(config.entry.lintCommand) == "table" then
+        config.entry.lintCommand = table.concat(config.entry.lintCommand, " ")
+    end
+    return config
+end
+
 ---@param name string unique name of this efm instance
 ---@param plugins string[] names of plugins to add, ex. 'prettier'
 ---@return table config to be put into lspconfig['efm'].setup(config)
@@ -42,8 +54,9 @@ M.build_config = function(name, plugins)
     local languages = {}
     for _, v in ipairs(plugins) do
         local plugin = require("konrad.lsp.efm." .. v)
-        local langages_entry = make_languages_entry_for_plugin(plugin)
-        for key, value in pairs(langages_entry) do
+        local plugin_config = prepare_config(plugin)
+        local languages_entry = make_languages_entry_for_plugin(plugin_config)
+        for key, value in pairs(languages_entry) do
             if languages[key] then
                 languages[key] = vim.list_extend(languages[key], value)
             else

@@ -20,9 +20,16 @@ return {
         "handlebars",
     },
     entry = {
-        formatCommand = binaries.prettier()
-            .. " --stdin --stdin-filepath '${INPUT}' ${--range-start:charStart} "
-            .. "${--range-end:charEnd} ${--tab-width:tabSize} ${--use-tabs:!insertSpaces}",
+        formatCommand = {
+            binaries.prettier(),
+            "--stdin",
+            "--stdin-filepath",
+            "'${INPUT}'",
+            "${--range-start:charStart}",
+            "${--range-end:charEnd}",
+            "${--tab-width:tabSize}",
+            "${--use-tabs:!insertSpaces}",
+        },
         formatStdin = true,
         formatCanRange = true,
         rootMarkers = {

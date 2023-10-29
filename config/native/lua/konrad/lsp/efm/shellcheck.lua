@@ -3,7 +3,7 @@ local binaries = require("konrad.binaries")
 return {
     filetypes = { "sh" },
     entry = {
-        lintCommand = binaries.shellcheck() .. " --color=never --format=gcc -",
+        lintCommand = { binaries.shellcheck(), "--color=never", "--format=gcc", "-" },
         lintStdin = true,
         lintFormats = {
             "-:%l:%c: %trror: %m",
