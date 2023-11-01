@@ -83,7 +83,11 @@
             // prev.callPackage ./packages/plugins { inherit inputs; };
         };
         neovim = final: prev: {
-          neovim = neovim.packages.${prev.system}.neovim;
+          neovim = neovim.packages.${prev.system}.neovim.override {
+            # TODO remove on the next staging -> master update
+            inherit ((builtins.getFlake
+              "github:NixOS/nixpkgs/d4758c3f27804693ebb6ddce2e9f6624b3371b08").legacyPackages.${prev.system}) libvterm-neovim;
+          };
         };
       };
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
