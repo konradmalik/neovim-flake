@@ -3,13 +3,22 @@
 -- https://github.com/Hoffs/omnisharp-extended-lsp.nvim
 vim.cmd("packadd omnisharp-extended-lsp.nvim")
 
+local fs = require("konrad.fs")
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
 
 local M = {}
 
 local make_cmd = function()
-    local cmd = { binaries.omnisharp() }
+    local cmd
+    -- something's broken with omnisharp script in nix when dotnet is in path...
+    local local_dotnet = fs.path_executable("dotnet")
+    if local_dotnet then
+        cmd = { local_dotnet, binaries.omnisharp_dll() }
+    else
+        cmd = { binaries.omnisharp() }
+    end
+
     -- Append hard-coded command arguments
     table.insert(cmd, "-z") -- https://github.com/OmniSharp/omnisharp-vscode/pull/4300
     vim.list_extend(cmd, { "--hostPID", tostring(vim.fn.getpid()) })
