@@ -41,6 +41,8 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv", opts_with_desc("move current selection
 vim.keymap.set(
     "n",
     "<leader>ss",
-    [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+    [[viwy:%s/<C-r>0/]],
     opts_with_desc("prepopulate <cmd> to replace the current word", false)
 )
+
+vim.keymap.set("v", "<leader>ss", [[y:%s/<C-r>0/]], opts_with_desc("prepopulate <cmd> to replace the selection", false))
