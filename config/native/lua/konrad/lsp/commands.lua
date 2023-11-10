@@ -116,3 +116,10 @@ end, {
     desc = "Restarts specified LSPs by id",
     nargs = "?",
 })
+
+vim.api.nvim_create_user_command("LspAutostartToggle", function()
+    lsp.toggle_autostart()
+    print("Setting autoformatting to: " .. tostring(lsp.is_autostart_enabled()))
+end, {
+    desc = "Disables autostart of all LSPs",
+})
