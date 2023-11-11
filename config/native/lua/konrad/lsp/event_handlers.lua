@@ -102,8 +102,8 @@ M.attach = function(client, bufnr)
         vim.keymap.set(
             "n",
             "<leader>fws",
-            telescope.lsp_workspace_symbols,
-            opts_with_desc("Telescope [W]orkspace [S]ymbols")
+            telescope.lsp_dynamic_workspace_symbols,
+            opts_with_desc("Telescope Dynamic [W]orkspace [S]ymbols")
         )
     end
 

@@ -3,7 +3,7 @@ local telescope = require("telescope")
 telescope.setup({
     defaults = {
         wrap_results = true,
-        file_ignore_patterns = { "node_modules", "vendor" }
+        file_ignore_patterns = { "node_modules", "vendor" },
     },
 })
 -- To get extensions loaded and working with telescope, you need to call
@@ -15,19 +15,19 @@ local opts_with_desc = function(desc)
     return vim.tbl_extend("error", opts, { desc = "[Telescope] " .. desc })
 end
 
-local builtin = require('telescope.builtin')
-local themes = require('telescope.themes')
+local builtin = require("telescope.builtin")
+local themes = require("telescope.themes")
 
 vim.keymap.set("n", "<leader>ff", builtin.find_files, opts_with_desc("[F]ind [F]iles"))
 vim.keymap.set("n", "<leader>fi", builtin.git_files, opts_with_desc("Find (G[i]t) Files"))
 vim.keymap.set("n", "<leader>fg", builtin.live_grep, opts_with_desc("Live [G]rep"))
-vim.keymap.set('n', '<leader>f/', function()
+vim.keymap.set("n", "<leader>f/", function()
     -- You can pass additional configuration to telescope to change theme, layout, etc.
-    builtin.current_buffer_fuzzy_find(themes.get_dropdown {
+    builtin.current_buffer_fuzzy_find(themes.get_dropdown({
         winblend = 10,
         previewer = false,
-    })
-end, opts_with_desc('[/] Fuzzily search in current buffer'))
+    }))
+end, opts_with_desc("[/] Fuzzily search in current buffer"))
 vim.keymap.set("n", "<leader>fb", builtin.buffers, opts_with_desc("[B]uffers"))
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, opts_with_desc("[H]elp Tags"))
 vim.keymap.set("n", "<leader>fq", builtin.diagnostics, opts_with_desc("Diagnostics"))
