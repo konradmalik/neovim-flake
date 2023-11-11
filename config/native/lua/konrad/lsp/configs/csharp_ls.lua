@@ -7,6 +7,9 @@ M.config = {
     -- this concrete name is needed by csharpls_extended
     name = "csharp_ls",
     cmd = { binaries.csharp_ls() },
+    handlers = {
+        ["textDocument/definition"] = require("csharpls-extended-lsp").handler,
+    },
     init_options = {
         AutomaticWorkspaceInit = true,
     },
