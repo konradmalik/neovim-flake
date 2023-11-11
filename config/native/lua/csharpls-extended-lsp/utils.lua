@@ -28,13 +28,15 @@ U.split = function(str, delimiter)
 end
 
 U.get_or_create_buf = function(name)
+    -- if we are looking for $metadata$ buffer, search for entire string anywhere
+    -- in buffer name. On Windows nvim_buf_set_name might change the buffer name and include some stuff before.
+    local looking_for_metadata = string.find(name, "^/%$metadata%$/.*$")
+
     local buffers = vim.api.nvim_list_bufs()
     for _, buf in pairs(buffers) do
         local bufname = vim.api.nvim_buf_get_name(buf)
 
-        -- if we are looking for $metadata$ buffer, search for entire string anywhere
-        -- in buffer name. On Windows nvim_buf_set_name might change the buffer name and include some stuff before.
-        if string.find(name, "^/%$metadata%$/.*$") then
+        if looking_for_metadata then
             local normalized_bufname = string.gsub(bufname, "\\", "/")
             if string.find(normalized_bufname, name) then
                 return buf
