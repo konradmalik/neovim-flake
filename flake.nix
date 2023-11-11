@@ -62,6 +62,7 @@
               inherit system;
               config.allowUnfree = true;
               overlays = [
+                self.overlays.csharp-ls
                 self.overlays.neovim
                 self.overlays.plugins
               ];
@@ -77,6 +78,9 @@
       });
       overlays = {
         default = final: prev: self.overlays.plugins final prev;
+        csharp-ls = final: prev: {
+          csharp-ls = prev.callPackage ./packages/csharp-ls { };
+        };
         plugins = final: prev: {
           neovimPlugins =
             { inherit (prev.vimPlugins) nvim-treesitter; }
@@ -99,6 +103,7 @@
           default = bundle.nvim;
           neovim = bundle.nvim;
           config = bundle.config;
+          csharp-ls = pkgs.csharp-ls;
           nvim-luaref = pkgs.neovimPlugins.nvim-luaref;
         });
       apps = forAllSystems (pkgs: {

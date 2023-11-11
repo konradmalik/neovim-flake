@@ -12,7 +12,7 @@ let
     src = src;
   };
 in
-# TODO simple ocerrideAttrs does not work here :(
+# TODO simple overrideAttrs does not work here :(
 rec {
   SchemaStore-nvim = buildVim "SchemaStore.nvim" inputs.SchemaStore-nvim;
   boole-nvim = (buildVim "boole.nvim" inputs.boole-nvim).overrideAttrs {
