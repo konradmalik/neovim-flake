@@ -29,7 +29,7 @@ vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>", opts_with_desc("Go to next LL
 
 vim.keymap.set("i", "<C-c>", "<esc>", opts_with_desc("Ctrl-c as ESC in insert mode"))
 
-vim.keymap.set("v", "<leader>p", '"_dp', opts_with_desc("Replace selected by pasting and keep pasted in the register"))
+vim.keymap.set("v", "<leader>p", '"_dP', opts_with_desc("Replace selected by pasting and keep pasted in the register"))
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], opts_with_desc("delete without replacing your register"))
 
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], opts_with_desc("yank to system clipboard"))
