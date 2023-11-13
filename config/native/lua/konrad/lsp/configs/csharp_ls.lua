@@ -1,6 +1,8 @@
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
 
+vim.cmd("packadd csharpls-extended-lsp.nvim")
+
 local M = {}
 
 M.config = {

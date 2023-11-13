@@ -17,6 +17,7 @@
       cmp-path = { url = "github:hrsh7th/cmp-path"; flake = false; };
       cmp_luasnip = { url = "github:saadparwaiz1/cmp_luasnip"; flake = false; };
       comment-nvim = { url = "github:numToStr/Comment.nvim"; flake = false; };
+      csharpls-extended-lsp-nvim = { url = "github:konradmalik/csharpls-extended-lsp.nvim"; flake = false; };
       copilot-cmp = { url = "github:zbirenbaum/copilot-cmp"; flake = false; };
       copilot-lua = { url = "github:zbirenbaum/copilot.lua"; flake = false; };
       dressing-nvim = { url = "github:stevearc/dressing.nvim"; flake = false; };

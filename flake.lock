@@ -144,6 +144,22 @@
         "type": "github"
       }
     },
+    "csharpls-extended-lsp-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1699914474,
+        "narHash": "sha256-htZRBSb2Q5b1imz3FTlH/52yjRHNtLadzu0Zn7+8zqM=",
+        "owner": "konradmalik",
+        "repo": "csharpls-extended-lsp.nvim",
+        "rev": "eb748cc3ad976e68a73cfda3c933c687955ef34a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "konradmalik",
+        "repo": "csharpls-extended-lsp.nvim",
+        "type": "github"
+      }
+    },
     "dressing-nvim": {
       "flake": false,
       "locked": {
@@ -581,6 +597,7 @@
         "comment-nvim": "comment-nvim",
         "copilot-cmp": "copilot-cmp",
         "copilot-lua": "copilot-lua",
+        "csharpls-extended-lsp-nvim": "csharpls-extended-lsp-nvim",
         "dressing-nvim": "dressing-nvim",
         "fidget-nvim": "fidget-nvim",
         "friendly-snippets": "friendly-snippets",
