@@ -82,6 +82,7 @@ processMadePlugins (with pkgs.neovimPlugins;[
   # misc
   (makePlugin boole-nvim)
   (makePlugin comment-nvim)
+  (makePlugin git-conflict-nvim)
   (makePlugin gitsigns-nvim)
   (makePlugin harpoon)
   (makePlugin nvim-luaref)

@@ -22,6 +22,7 @@
       dressing-nvim = { url = "github:stevearc/dressing.nvim"; flake = false; };
       fidget-nvim = { url = "github:j-hui/fidget.nvim/legacy"; flake = false; };
       friendly-snippets = { url = "github:rafamadriz/friendly-snippets"; flake = false; };
+      git-conflict-nvim = { url = "github:konradmalik/git-conflict.nvim"; flake = false; };
       gitsigns-nvim = { url = "github:lewis6991/gitsigns.nvim"; flake = false; };
       harpoon = { url = "github:ThePrimeagen/harpoon"; flake = false; };
       heirline-nvim = { url = "github:rebelot/heirline.nvim"; flake = false; };

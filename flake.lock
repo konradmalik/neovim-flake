@@ -211,6 +211,22 @@
         "type": "github"
       }
     },
+    "git-conflict-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1699911519,
+        "narHash": "sha256-lbKFouehvCf0Xit/xvMok/3TyAUTSuGNhc+vhGiWs/Q=",
+        "owner": "konradmalik",
+        "repo": "git-conflict.nvim",
+        "rev": "7dd39d09ac3570ff2f86388b12a7371447e21b1b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "konradmalik",
+        "repo": "git-conflict.nvim",
+        "type": "github"
+      }
+    },
     "gitsigns-nvim": {
       "flake": false,
       "locked": {
@@ -568,6 +584,7 @@
         "dressing-nvim": "dressing-nvim",
         "fidget-nvim": "fidget-nvim",
         "friendly-snippets": "friendly-snippets",
+        "git-conflict-nvim": "git-conflict-nvim",
         "gitsigns-nvim": "gitsigns-nvim",
         "harpoon": "harpoon",
         "heirline-nvim": "heirline-nvim",
