@@ -1,8 +1,1 @@
-require("fidget").setup({
-    text = {
-        spinner = "dots",
-    },
-    window = {
-        relative = "editor",
-    },
-})
+require("fidget").setup()

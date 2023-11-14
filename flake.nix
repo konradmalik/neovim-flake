@@ -21,7 +21,7 @@
       copilot-cmp = { url = "github:zbirenbaum/copilot-cmp"; flake = false; };
       copilot-lua = { url = "github:zbirenbaum/copilot.lua"; flake = false; };
       dressing-nvim = { url = "github:stevearc/dressing.nvim"; flake = false; };
-      fidget-nvim = { url = "github:j-hui/fidget.nvim/legacy"; flake = false; };
+      fidget-nvim = { url = "github:j-hui/fidget.nvim"; flake = false; };
       friendly-snippets = { url = "github:rafamadriz/friendly-snippets"; flake = false; };
       git-conflict-nvim = { url = "github:konradmalik/git-conflict.nvim"; flake = false; };
       gitsigns-nvim = { url = "github:lewis6991/gitsigns.nvim"; flake = false; };

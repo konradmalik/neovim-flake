@@ -179,16 +179,15 @@
     "fidget-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1699509702,
-        "narHash": "sha256-8Gl2Ck4YJGReSEq1Xeh1dpdRq4eImmrxvIHrfxdem3Q=",
+        "lastModified": 1699935120,
+        "narHash": "sha256-OUq/wwq1qE6nH5VYFaIy/FUY937X9yopw3qst5Z+Mqc=",
         "owner": "j-hui",
         "repo": "fidget.nvim",
-        "rev": "2f7c08f45639a64a5c0abcf67321d52c3f499ae6",
+        "rev": "956c8da3fa4072e6e00a4d8d4e52b88d887b9cfa",
         "type": "github"
       },
       "original": {
         "owner": "j-hui",
-        "ref": "legacy",
         "repo": "fidget.nvim",
         "type": "github"
       }
