@@ -13,7 +13,12 @@ return {
         settings = {
             ["rust-analyzer"] = {
                 rustfmt = {
-                    overrideCommand = { binaries.rustfmt(), "--" },
+                    overrideCommand = {
+                        binaries.rustfmt(),
+                        "--edition",
+                        "2021",
+                        "--",
+                    },
                 },
                 files = {
                     excludeDirs = {
