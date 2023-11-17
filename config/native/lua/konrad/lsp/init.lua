@@ -7,8 +7,7 @@ local initialize_once = function()
     require("konrad.lsp.borders")
     require("konrad.lsp.commands")
 
-    vim.cmd("packadd fidget.nvim")
-    require("konrad.lsp.fidget")
+    require("konrad.lsp.progress")
 
     vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("personal-lsp-attach", { clear = true }),

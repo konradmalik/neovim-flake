@@ -36,7 +36,6 @@ processMadePlugins (with pkgs.neovimPlugins;[
     ];
   })
   # lsp
-  (makePlugin { plugin = fidget-nvim; optional = true; })
   (makePlugin { plugin = neodev-nvim; optional = true; })
   (makePlugin { plugin = SchemaStore-nvim; optional = true; })
   (makePlugin {
