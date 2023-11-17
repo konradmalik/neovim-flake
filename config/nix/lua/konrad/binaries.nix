@@ -29,7 +29,7 @@ pkgs.writeTextDir "lua/konrad/binaries.lua" ''
       nil_ls = function() return "${pkgs.nil}/bin/nil" end,
       omnisharp = function() return "${pkgs.omnisharp-roslyn}/bin/OmniSharp" end,
       omnisharp_dll = function() return "${pkgs.omnisharp-roslyn}/lib/omnisharp-roslyn/OmniSharp.dll" end,
-      pyright = function() return "${pkgs.nodePackages.pyright}/bin/pyright" end,
+      pyright = function() return "${pkgs.nodePackages.pyright}/bin/pyright-langserver" end,
       rust_analyzer = function() return "${pkgs.rust-analyzer}/bin/rust-analyzer" end,
       terraformls = function() return "${pkgs.terraform-ls}/bin/terraform-ls" end,
       yamlls = function() return "${pkgs.nodePackages.yaml-language-server}/bin/yaml-language-server" end,
