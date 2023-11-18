@@ -36,7 +36,7 @@ M.attach = function(client, bufnr)
     }
 
     if client.supports_method(ms.textDocument_codeAction) then
-        vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
+        registry.register_once("CodeAction", register_data, require("konrad.lsp.capability_handlers.codeaction").attach)
     end
 
     if client.supports_method(ms.codeLens_resolve) then

@@ -24,13 +24,14 @@ M.setup = function(data)
         group = augroup,
         buffer = bufnr,
         callback = function()
-            if format_is_enabled then
-                vim.lsp.buf.format({
-                    async = false,
-                    id = client.id,
-                    bufnr = bufnr,
-                })
+            if not format_is_enabled then
+                return
             end
+            vim.lsp.buf.format({
+                async = false,
+                id = client.id,
+                bufnr = bufnr,
+            })
         end,
     })
 

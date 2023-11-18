@@ -9,16 +9,18 @@ M.attach = function(data)
 
     vim.api.nvim_create_autocmd({ "InsertEnter" }, {
         callback = function()
-            if inlayhints_is_enabled then
-                vim.lsp.inlay_hint(bufnr, true)
+            if not inlayhints_is_enabled then
+                return
             end
+            vim.lsp.inlay_hint(bufnr, true)
         end,
     })
     vim.api.nvim_create_autocmd({ "InsertLeave" }, {
         callback = function()
-            if inlayhints_is_enabled then
-                pcall(vim.lsp.inlay_hint, bufnr, false)
+            if not inlayhints_is_enabled then
+                return
             end
+            pcall(vim.lsp.inlay_hint, bufnr, false)
         end,
     })
 

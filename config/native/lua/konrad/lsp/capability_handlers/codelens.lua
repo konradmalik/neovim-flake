@@ -24,9 +24,10 @@ M.attach = function(data)
         group = augroup,
         buffer = bufnr,
         callback = function()
-            if codelens_is_enabled then
-                vim.lsp.codelens.refresh()
+            if not codelens_is_enabled then
+                return
             end
+            vim.lsp.codelens.refresh()
         end,
         desc = "Refresh codelens",
     })
