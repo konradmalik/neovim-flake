@@ -29,7 +29,7 @@ M.attach = function(data)
             if not lightbulb_is_enabled then
                 return
             end
-            require("konrad.lsp.lightbulb").show()
+            vim.schedule(require("konrad.lsp.lightbulb").show)
         end,
         desc = "Show lightbulb",
     })
@@ -41,7 +41,7 @@ M.attach = function(data)
             if not lightbulb_is_enabled then
                 return
             end
-            require("konrad.lsp.lightbulb").hide()
+            vim.schedule(require("konrad.lsp.lightbulb").hide)
         end,
         desc = "Hide lightbulb",
     })

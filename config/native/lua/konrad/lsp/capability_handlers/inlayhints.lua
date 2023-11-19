@@ -8,29 +8,38 @@ M.attach = function(data)
     local bufnr = data.bufnr
     local augroup = data.augroup
 
-    vim.api.nvim_create_autocmd({ "InsertEnter" }, {
+    vim.api.nvim_create_autocmd("InsertEnter", {
         group = augroup,
         buffer = bufnr,
         callback = function()
             if not inlayhints_is_enabled then
                 return
             end
-            vim.lsp.inlay_hint(bufnr, true)
+            vim.schedule(function()
+                vim.lsp.inlay_hint(bufnr, true)
+            end)
         end,
     })
-    vim.api.nvim_create_autocmd({ "InsertLeave" }, {
+    vim.api.nvim_create_autocmd("InsertLeave", {
         group = augroup,
         buffer = bufnr,
         callback = function()
             if not inlayhints_is_enabled then
                 return
             end
-            pcall(vim.lsp.inlay_hint, bufnr, false)
+            vim.schedule(function()
+                pcall(vim.lsp.inlay_hint, bufnr, false)
+            end)
         end,
     })
 
     vim.api.nvim_create_user_command("InlayHintsToggle", function()
         inlayhints_is_enabled = not inlayhints_is_enabled
+        if not inlayhints_is_enabled then
+            for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                pcall(vim.lsp.inlay_hint, buf, false)
+            end
+        end
         print("Setting inlayhints to: " .. tostring(inlayhints_is_enabled))
     end, {
         desc = "Enable/disable inlayhints with lsp",
@@ -39,6 +48,13 @@ M.attach = function(data)
     return {
         commands = { "InlayHintsToggle" },
     }
+end
+
+M.detach = function(data)
+    local bufnr = data.bufnr
+    vim.schedule(function()
+        pcall(vim.lsp.inlay_hint, bufnr, false)
+    end)
 end
 
 return M

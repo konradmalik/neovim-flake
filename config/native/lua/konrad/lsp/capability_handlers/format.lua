@@ -1,5 +1,15 @@
 local format_is_enabled = true
 
+---@param clientid integer
+---@param bufnr integer
+local format = function(clientid, bufnr)
+    vim.lsp.buf.format({
+        async = false,
+        id = clientid,
+        bufnr = bufnr,
+    })
+end
+
 local M = {}
 
 ---@param data table
@@ -8,9 +18,6 @@ M.setup = function(data)
     local augroup = data.augroup
     local bufnr = data.bufnr
     local client = data.client
-
-    -- Use LSP as the handler for formatexpr.
-    vim.bo[bufnr].formatexpr = "v:lua.vim.lsp.formatexpr()"
 
     vim.api.nvim_create_user_command("AutoFormatToggle", function()
         format_is_enabled = not format_is_enabled
@@ -27,20 +34,12 @@ M.setup = function(data)
             if not format_is_enabled then
                 return
             end
-            vim.lsp.buf.format({
-                async = false,
-                id = client.id,
-                bufnr = bufnr,
-            })
+            format(client.id, bufnr)
         end,
     })
 
     vim.api.nvim_buf_create_user_command(bufnr, "Format", function()
-        vim.lsp.buf.format({
-            async = false,
-            id = client.id,
-            bufnr = bufnr,
-        })
+        format(client.id, bufnr)
     end, { desc = "Format current buffer with LSP" })
 
     return {

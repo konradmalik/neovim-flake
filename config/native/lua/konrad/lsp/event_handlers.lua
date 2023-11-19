@@ -12,8 +12,20 @@ local M = {}
 M.detach = function(client, bufnr)
     augroups.del_autocmds_for_buf(client, bufnr)
 
+    if client.supports_method(ms.textDocument_codeAction) then
+        require("konrad.lsp.capability_handlers.codeaction").detach()
+    end
+
     if client.supports_method(ms.textDocument_codeLens) then
         require("konrad.lsp.capability_handlers.codelens").detach()
+    end
+
+    if client.supports_method(ms.textDocument_documentHighlight) then
+        require("konrad.lsp.capability_handlers.documenthighlight").detach()
+    end
+
+    if client.supports_method(ms.textDocument_inlayHint) then
+        require("konrad.lsp.capability_handlers.inlayhints").detach({ bufnr = bufnr })
     end
 
     registry.deregister(client, bufnr)
@@ -60,7 +72,7 @@ M.attach = function(client, bufnr)
         registry.register_once(
             "DocumentHighlighting",
             register_data,
-            require("konrad.lsp.capability_handlers.documenthighlight").setup
+            require("konrad.lsp.capability_handlers.documenthighlight").attach
         )
     end
 
