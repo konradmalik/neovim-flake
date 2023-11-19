@@ -1,6 +1,10 @@
 local bulb_bufnr = nil
 local icon = ""
 
+-- alternative to floating icon
+-- vim.fn.sign_define("bulb", { text = icon })
+-- vim.fn.sign_place(5, "", "bulb", vim.api.nvim_get_current_buf(), { lnum = 6, priority = 100000000000000000 })
+
 --- Get diagnostics (LSP Diagnostic) at the cursor
 ---
 --- Grab the code from https://github.com/neovim/neovim/issues/21985
@@ -10,14 +14,15 @@ local icon = ""
 --- vim.diagnostic.get to return diagnostics at cursor directly and even with
 --- LSP Diagnostic structure. If it gets merged, simplify this funciton (the
 --- code for filter and build can be removed).
+---@param bufnr integer
+---@param winnr integer
 ---@return table A table of LSP Diagnostic
-local function get_diagnostic_at_cursor()
-    local cur_bufnr = vim.api.nvim_get_current_buf()
-    local line, col = unpack(vim.api.nvim_win_get_cursor(0)) -- line is 1-based indexing
+local function get_diagnostic_at_cursor(bufnr, winnr)
+    local line, col = unpack(vim.api.nvim_win_get_cursor(winnr)) -- line is 1-based indexing
     -- Get a table of diagnostics at the current line. The structure of the
     -- diagnostic item is defined by nvim (see :h diagnostic-structure) to
     -- describe the information of a diagnostic.
-    local diagnostics = vim.diagnostic.get(cur_bufnr, { lnum = line - 1 }) -- lnum is 0-based indexing
+    local diagnostics = vim.diagnostic.get(bufnr, { lnum = line - 1 }) -- lnum is 0-based indexing
     -- Filter out the diagnostics at the cursor position. And then use each to
     -- build a LSP Diagnostic (see
     -- https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#diagnostic)
@@ -56,15 +61,17 @@ function M.hide()
 end
 
 ---does not check for codeAction support, assumes you call it on proper client
-function M.show()
+---@param bufnr integer
+---@param winnr integer
+function M.show(bufnr, winnr)
     M.hide()
 
     local params = vim.lsp.util.make_range_params()
     params.context = {
-        diagnostics = get_diagnostic_at_cursor(),
+        diagnostics = get_diagnostic_at_cursor(bufnr, winnr),
     }
 
-    vim.lsp.buf_request_all(0, "textDocument/codeAction", params, function(results)
+    vim.lsp.buf_request_all(bufnr, "textDocument/codeAction", params, function(results)
         local has_actions = false
         for _, result in pairs(results) do
             for _, action in pairs(result.result or {}) do
