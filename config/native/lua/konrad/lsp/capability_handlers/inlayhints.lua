@@ -6,8 +6,11 @@ local M = {}
 ---@return table of commands and buf_commands for this client
 M.attach = function(data)
     local bufnr = data.bufnr
+    local augroup = data.augroup
 
     vim.api.nvim_create_autocmd({ "InsertEnter" }, {
+        group = augroup,
+        buffer = bufnr,
         callback = function()
             if not inlayhints_is_enabled then
                 return
@@ -16,6 +19,8 @@ M.attach = function(data)
         end,
     })
     vim.api.nvim_create_autocmd({ "InsertLeave" }, {
+        group = augroup,
+        buffer = bufnr,
         callback = function()
             if not inlayhints_is_enabled then
                 return

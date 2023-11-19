@@ -117,9 +117,15 @@ end, {
     nargs = "?",
 })
 
+vim.api.nvim_create_user_command("LspLog", function()
+    vim.cmd(string.format("tabnew %s", vim.lsp.get_log_path()))
+end, {
+    desc = "Opens the Nvim LSP client log.",
+})
+
 vim.api.nvim_create_user_command("LspAutostartToggle", function()
     lsp.toggle_autostart()
-    print("Setting autoformatting to: " .. tostring(lsp.is_autostart_enabled()))
+    print("Setting lsp autostart to: " .. tostring(lsp.is_autostart_enabled()))
 end, {
     desc = "Disables autostart of all LSPs",
 })

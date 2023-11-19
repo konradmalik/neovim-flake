@@ -48,8 +48,9 @@ end
 ---respects LspAutostartToggle
 ---@param config table
 ---@param bufnr integer? buffer to attach to
-M.start_and_attach = function(config, bufnr)
-    if not autostart_enabled then
+---@param force boolean? whether to start even if autostart is disabled
+M.start_and_attach = function(config, bufnr, force)
+    if not force and not autostart_enabled then
         vim.notify_once("LSP autostart is disabled", vim.log.levels.INFO)
         return
     end
