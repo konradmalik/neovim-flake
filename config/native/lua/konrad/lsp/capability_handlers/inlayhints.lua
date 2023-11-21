@@ -16,7 +16,7 @@ M.attach = function(data)
                 return
             end
             vim.schedule(function()
-                vim.lsp.inlay_hint(bufnr, true)
+                vim.lsp.inlay_hint.enable(bufnr, true)
             end)
         end,
     })
@@ -28,7 +28,7 @@ M.attach = function(data)
                 return
             end
             vim.schedule(function()
-                pcall(vim.lsp.inlay_hint, bufnr, false)
+                pcall(vim.lsp.inlay_hint.enable, bufnr, false)
             end)
         end,
     })
@@ -37,7 +37,7 @@ M.attach = function(data)
         inlayhints_is_enabled = not inlayhints_is_enabled
         if not inlayhints_is_enabled then
             for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-                pcall(vim.lsp.inlay_hint, buf, false)
+                pcall(vim.lsp.inlay_hint.enable, buf, false)
             end
         end
         print("Setting inlayhints to: " .. tostring(inlayhints_is_enabled))
@@ -53,7 +53,7 @@ end
 M.detach = function(data)
     local bufnr = data.bufnr
     vim.schedule(function()
-        pcall(vim.lsp.inlay_hint, bufnr, false)
+        pcall(vim.lsp.inlay_hint.enable, bufnr, false)
     end)
 end
 
