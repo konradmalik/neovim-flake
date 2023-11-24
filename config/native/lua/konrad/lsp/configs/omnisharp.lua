@@ -18,68 +18,24 @@ local make_cmd = function()
     else
         cmd = { binaries.omnisharp() }
     end
-
-    -- Append hard-coded command arguments
-    table.insert(cmd, "-z") -- https://github.com/OmniSharp/omnisharp-vscode/pull/4300
-    vim.list_extend(cmd, { "--hostPID", tostring(vim.fn.getpid()) })
-    table.insert(cmd, "DotNet:enablePackageRestore=false")
-    vim.list_extend(cmd, { "--encoding", "utf-8" })
-    table.insert(cmd, "--languageserver")
-
-    -- Append configuration-dependent command arguments
-    if M.options.enable_editorconfig_support then
-        table.insert(cmd, "FormattingOptions:EnableEditorConfigSupport=true")
-    end
-
-    if M.options.organize_imports_on_format then
-        table.insert(cmd, "FormattingOptions:OrganizeImports=true")
-    end
-
-    if M.options.enable_ms_build_load_projects_on_demand then
-        table.insert(cmd, "MsBuild:LoadProjectsOnDemand=true")
-    end
-
-    if M.options.enable_roslyn_analyzers then
-        table.insert(cmd, "RoslynExtensionsOptions:EnableAnalyzersSupport=true")
-    end
-
-    if M.options.enable_import_completion then
-        table.insert(cmd, "RoslynExtensionsOptions:EnableImportCompletion=true")
-    end
-
-    if M.options.sdk_include_prereleases then
-        table.insert(cmd, "Sdk:IncludePrereleases=true")
-    end
-
-    if M.options.analyze_open_documents_only then
-        table.insert(cmd, "RoslynExtensionsOptions:AnalyzeOpenDocumentsOnly=true")
-    end
+    vim.list_extend(cmd, {
+        "-z",
+        "--hostPID",
+        tostring(vim.fn.getpid()),
+        "--encoding",
+        "utf-8",
+        "--languageserver",
+        "DotNet:enablePackageRestore=false",
+        "FormattingOptions:EnableEditorConfigSupport=true",
+        "FormattingOptions:OrganizeImports=true",
+        "MsBuild:LoadProjectsOnDemand=true",
+        "RoslynExtensionsOptions:EnableAnalyzersSupport=true",
+        "RoslynExtensionsOptions:EnableImportCompletion=true",
+        "RoslynExtensionsOptions:AnalyzeOpenDocumentsOnly=true",
+    })
 
     return cmd
 end
-
-M.options = {
-    -- Only run analyzers against open files when 'enableRoslynAnalyzers' is
-    -- true
-    analyze_open_documents_only = true,
-    -- decompilation support via omnisharp-extended-lsp
-    enableDecompilationSupport = true,
-    -- Enables support for reading code style, naming convention and analyzer
-    -- settings from .editorconfig.
-    enable_editorconfig_support = true,
-    -- Enables support for roslyn analyzers, code fixes and rulesets.
-    enable_roslyn_analyzers = true,
-    -- Specifies whether 'using' directives should be grouped and sorted during
-    -- document formatting.
-    organize_imports_on_format = true,
-    -- Enables support for showing unimported types and unimported extension
-    -- methods in completion lists. When committed, the appropriate using
-    -- directive will be added at the top of the current file. This option can
-    -- have a negative impact on initial completion responsiveness,
-    -- particularly for the first few completion sessions after opening a
-    -- solution.
-    enable_import_completion = true,
-}
 
 M.config = {
     -- this concrete name is needed by omnisharp_extended

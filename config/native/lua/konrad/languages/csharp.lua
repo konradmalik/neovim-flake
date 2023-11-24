@@ -1,7 +1,7 @@
 --- @class CSharpConfig
 --- @field lsp string
 local current_config = {
-    lsp = "csharp_ls",
+    lsp = "omnisharp",
 }
 
 local M = {}
