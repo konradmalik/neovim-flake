@@ -103,6 +103,23 @@ end, {
     nargs = "?",
 })
 
+vim.api.nvim_create_user_command("LspDetach", function(info)
+    local server_id = parse_int_arg(info.args)
+    if server_id then
+        vim.notify("detaching server with id: " .. server_id .. " from the current buf")
+        vim.lsp.buf_detach_client(0, server_id)
+    else
+        vim.notify("detaching all lsp servers from the current buf")
+        local bufnr = vim.api.nvim_get_current_buf()
+        for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+            vim.lsp.buf_detach_client(0, client.id)
+        end
+    end
+end, {
+    desc = "Stops specified LSP by id",
+    nargs = "?",
+})
+
 vim.api.nvim_create_user_command("LspRestart", function(info)
     local server_id = parse_int_arg(info.args)
     if server_id then
