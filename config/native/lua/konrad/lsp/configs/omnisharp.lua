@@ -46,6 +46,9 @@ M.config = {
         client.server_capabilities.codeLensProvider = nil
         -- inlayHints are broken as well as of 1.39.10
         client.server_capabilities.inlayHintProvider = nil
+        -- disable documentHighlight as it throws errors in buffers that don't correspond to real files
+        -- like $metadata$ or fugitive
+        client.server_capabilities.documentHighlightProvider = nil
         client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
     end,
     capabilities = {
