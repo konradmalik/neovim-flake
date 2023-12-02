@@ -21,6 +21,7 @@ pkgs.writeTextDir "lua/konrad/binaries.lua" ''
       shellcheck = function() return "${pkgs.shellcheck}/bin/shellcheck" end,
 
       -- lsps
+      clangd = function() return "${pkgs.clang-tools}/bin/clangd" end,
       csharp_ls = function() return "${pkgs.csharp-ls}/bin/csharp-ls" end,
       efm = function() return '${pkgs.efm-langserver}/bin/efm-langserver' end,
       gopls = function() return "${pkgs.gopls}/bin/gopls" end,
