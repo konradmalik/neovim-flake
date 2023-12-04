@@ -20,11 +20,3 @@ vim.api.nvim_create_autocmd({ "BufNewFile" }, {
         insert_skeleton(".editorconfig")
     end,
 })
-
-vim.api.nvim_create_autocmd({ "BufNewFile" }, {
-    group = group,
-    pattern = "flake.nix",
-    callback = function()
-        insert_skeleton("flake.nix")
-    end,
-})
