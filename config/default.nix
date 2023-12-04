@@ -1,8 +1,16 @@
 { pkgs, lib, appName, isolated }:
 let
+  fs = lib.fileset;
+  sourceFiles = fs.unions [
+    ./native
+  ];
+
   nativeConfig = pkgs.stdenv.mkDerivation {
     name = "${appName}-native-config";
-    src = ./.;
+    src = fs.toSource {
+      root = ./.;
+      fileset = sourceFiles;
+    };
     installPhase = ''
       mkdir -p $out/
       cp -r $src/native/* $out/
