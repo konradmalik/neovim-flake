@@ -62,7 +62,7 @@ return {
     },
     provider = function(self)
         local name = self.mode_names[self.mode] or self.mode
-        return icons.misc.Vi .. " %2(" .. name .. "%)"
+        return icons.misc.Neovim .. " %2(" .. name .. "%)"
     end,
     hl = function(self)
         local modeone = self.mode:sub(1, 1) -- get only the first mode character

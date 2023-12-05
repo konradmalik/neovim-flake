@@ -117,10 +117,11 @@ return {
         Attention = "",
     },
     misc = {
+        Bsd = "",
+        Neovim = "",
         NullCircle = "",
         Squirrel = " ",
         Tag = "",
-        Vi = "",
         Watch = "",
     },
     languages = {
