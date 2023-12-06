@@ -25,7 +25,17 @@ end
 ---@param names string[]|string
 ---@return string|nil
 M.root_dir = function(names)
-    local found = vim.fs.find(names, {
+    if type(names) == "string" then
+        names = { names }
+    end
+    local found = vim.fs.find(function(name, path)
+        for _, pattern in ipairs(names) do
+            if name:match(pattern) then
+                return true
+            end
+        end
+        return false
+    end, {
         upward = true,
         stop = vim.uv.os_homedir(),
         path = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),

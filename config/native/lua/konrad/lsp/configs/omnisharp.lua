@@ -9,6 +9,10 @@ local configs = require("konrad.lsp.configs")
 
 local M = {}
 
+local root_dir = function()
+    return configs.root_dir(".sln") or configs.root_dir(".csproj")
+end
+
 local make_cmd = function()
     local cmd
     -- something's broken with omnisharp script in nix when dotnet is in path...
@@ -19,19 +23,22 @@ local make_cmd = function()
         cmd = { binaries.omnisharp() }
     end
     vim.list_extend(cmd, {
-        "-z",
+        "--zero-based-indices",
         "--hostPID",
         tostring(vim.fn.getpid()),
         "--encoding",
         "utf-8",
         "--languageserver",
+        "-s",
+        root_dir(),
+        "msbuild:loadProjectsOnDemand=true",
+        "script:enabled=false",
         "DotNet:enablePackageRestore=false",
         "FormattingOptions:EnableEditorConfigSupport=true",
-        "FormattingOptions:OrganizeImports=true",
-        "MsBuild:LoadProjectsOnDemand=true",
-        "RoslynExtensionsOptions:EnableAnalyzersSupport=true",
-        "RoslynExtensionsOptions:EnableImportCompletion=true",
-        "RoslynExtensionsOptions:AnalyzeOpenDocumentsOnly=true",
+        "RoslynExtensionsOptions:analyzeOpenDocumentsOnly=true",
+        "RoslynExtensionsOptions:enableAnalyzersSupport=true",
+        "RoslynExtensionsOptions:enableDecompilationSupport=true",
+        "RoslynExtensionsOptions:enableImportCompletion=true",
     })
 
     return cmd
@@ -59,9 +66,7 @@ M.config = {
     handlers = {
         ["textDocument/definition"] = require("omnisharp_extended").handler,
     },
-    root_dir = function()
-        return configs.root_dir(".sln") or configs.root_dir(".csproj")
-    end,
+    root_dir = root_dir,
 }
 
 return M
