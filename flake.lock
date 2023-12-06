@@ -245,15 +245,16 @@
     "harpoon": {
       "flake": false,
       "locked": {
-        "lastModified": 1701464561,
-        "narHash": "sha256-No26U/bpSzc4GACxNr33aAZoebcWUHx4BNWFQXvlikY=",
+        "lastModified": 1701832872,
+        "narHash": "sha256-w/5YbG9ahyPBmouLxHjiFdZk3sQD8U5cPP0+QOjJ2xg=",
         "owner": "ThePrimeagen",
         "repo": "harpoon",
-        "rev": "867e212ac153e793f95b316d1731f3ca1894625e",
+        "rev": "b66e92d4f56d471630fddfcbe89880e9de783367",
         "type": "github"
       },
       "original": {
         "owner": "ThePrimeagen",
+        "ref": "harpoon2",
         "repo": "harpoon",
         "type": "github"
       }
