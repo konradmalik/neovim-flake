@@ -33,16 +33,6 @@ in
         '';
       };
 
-      simpleDefaultEditor = mkOption {
-        type = types.bool;
-        default = false;
-        description = ''
-          Whether to configure <command>nvim -u NONE</command> as the default
-          editor using the <envar>EDITOR</envar>, <envar>GIT_EDITOR</envar>
-          and <envar>VISUAL</envar> environment variable.
-        '';
-      };
-
       extendGitIgnores = mkOption {
         type = types.bool;
         default = false;
@@ -76,16 +66,13 @@ in
     mkIf cfg.enable {
       home.packages = [ bundle.nvim ];
 
-      home.sessionVariables = mkIf
-        cfg.simpleDefaultEditor
-        {
-          # should be like that but many programs don't respect VISUAL in favor of EDITOR so...
-          # EDITOR = "nvim -u NONE -e";
-          EDITOR = "nvim -u NORC";
-          # no rc makes it start faster than the speed of light
-          VISUAL = "nvim -u NORC";
-          GIT_EDITOR = "nvim -u NONE";
-        };
+      home.sessionVariables = {
+        # should be like that but many programs don't respect VISUAL in favor of EDITOR so...
+        # EDITOR = "nvim -u NONE -e";
+        EDITOR = lib.mkDefault "${bundle.nvim}/bin/nvim";
+        VISUAL = lib.mkDefault "${bundle.nvim}/bin/nvim";
+        GIT_EDITOR = lib.mkDefault "${bundle.nvim}/bin/nvim -u NONE";
+      };
 
       xdg.configFile.${cfg.appName} = {
         enable = !cfg.isolated;
