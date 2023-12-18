@@ -24,8 +24,6 @@ local make_cmd = function()
         "--languageserver",
         "-s",
         root_dir(),
-        "sdk:path=" .. binaries.dotnet6() .. "/sdk/6.0.417/",
-        "sdk:version=6.0.417",
         "msbuild:loadProjectsOnDemand=true",
         "script:enabled=false",
         "DotNet:enablePackageRestore=false",
