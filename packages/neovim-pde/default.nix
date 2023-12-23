@@ -33,9 +33,7 @@ in
   inherit config;
   nvim = (pkgs.wrapNeovimUnstable pkgs.neovim
     (neovimConfig // {
-      # there is a bug in nix and if we provide a list here, then the wrapper will duplicate most of the entries.
-      # see: pkgs/applications/editors/neovim/wrapper.nix#L42 "commonWrapperArgs = (lib.optionals (lib.isList wrapperArgs) wrapperArgs)
-      wrapperArgs = lib.escapeShellArgs (neovimConfig.wrapperArgs ++ extraMakeWrapperArgs);
+      wrapperArgs = neovimConfig.wrapperArgs ++ extraMakeWrapperArgs;
       wrapRc = false;
     }));
 }

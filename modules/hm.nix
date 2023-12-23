@@ -51,8 +51,8 @@ in
         type = types.bool;
         default = false;
         description = ''
-          If true, will work as if run from the flake directly (with -u flag, meaning no exrc files loaded, no local
-          config etc.
+          If true, will work as if run from the flake directly (with -u flag, meaning no exrc files loaded, no
+          init.lua/init.vim config etc.
           If false, will symlink it's config to `$XDG_CONFIG_HOME/$NVIM_APPNAME` and run without -u flag.
         '';
       };
