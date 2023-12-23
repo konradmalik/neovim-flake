@@ -62,8 +62,7 @@
               inherit system;
               config.allowUnfree = true;
               overlays = [
-                self.overlays.neovim
-                self.overlays.plugins
+                self.overlays.default
               ];
             }));
     in
@@ -75,16 +74,11 @@
             packages = [ ];
           };
       });
-      overlays = {
-        default = final: prev: self.overlays.plugins final prev;
-        plugins = final: prev: {
-          neovimPlugins =
-            { inherit (prev.vimPlugins) nvim-treesitter; }
-            // prev.callPackage ./packages/plugins { inherit inputs; };
-        };
-        neovim = final: prev: {
-          neovim = neovim.packages.${prev.system}.neovim;
-        };
+      overlays.default = final: prev: {
+        neovimPlugins =
+          { inherit (prev.vimPlugins) nvim-treesitter; }
+          // prev.callPackage ./packages/plugins { inherit inputs; };
+        neovim = neovim.packages.${prev.system}.neovim;
       };
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
       packages = forAllSystems (pkgs:
