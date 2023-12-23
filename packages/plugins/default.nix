@@ -25,7 +25,6 @@ rec {
   comment-nvim = buildVim "comment.nvim" inputs.comment-nvim;
   copilot-cmp = buildVim "copilot-cmp" inputs.copilot-cmp;
   copilot-lua = buildVim "copilot.lua" inputs.copilot-lua;
-  csharpls-extended-lsp-nvim = buildVim "csharpls-extended-lsp.nvim" inputs.csharpls-extended-lsp-nvim;
   dressing-nvim = buildVim "dressing.nvim" inputs.dressing-nvim;
   friendly-snippets = buildVim "friendly-snippets" inputs.friendly-snippets;
   git-conflict-nvim = buildVim "git-conflict.nvim" inputs.git-conflict-nvim;
