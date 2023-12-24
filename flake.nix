@@ -81,24 +81,17 @@
         neovim = neovim.packages.${prev.system}.neovim;
       };
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
-      packages = forAllSystems (pkgs:
-        let
-          bundle = self.lib.${pkgs.system}.makeNeovimBundle { };
-        in
-        {
-          default = bundle.nvim;
-          neovim = bundle.nvim;
-          config = bundle.config;
-          nvim-luaref = pkgs.neovimPlugins.nvim-luaref;
-        });
+      packages = forAllSystems (pkgs: rec {
+        default = neovim;
+        neovim = pkgs.callPackage ./packages/neovim-pde { };
+        config = neovim.passthru.config;
+        nvim-luaref = pkgs.neovimPlugins.nvim-luaref;
+      });
       apps = forAllSystems (pkgs: {
         default = {
           type = "app";
           program = "${self.packages.${pkgs.system}.neovim}/bin/nvim";
         };
-      });
-      lib = forAllSystems (pkgs: {
-        makeNeovimBundle = args: (pkgs.callPackage ./packages/neovim-pde args);
       });
       homeManagerModules.default = import ./modules/hm.nix self;
     };

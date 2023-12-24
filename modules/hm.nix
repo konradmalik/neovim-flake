@@ -61,22 +61,22 @@ in
 
   config =
     let
-      bundle = self.lib.${pkgs.system}.makeNeovimBundle { inherit (cfg) appName isolated viAlias vimAlias; };
+      nvim = self.packages.${pkgs.system}.neovim.override { inherit (cfg) appName isolated viAlias vimAlias; };
     in
     mkIf cfg.enable {
-      home.packages = [ bundle.nvim ];
+      home.packages = [ nvim ];
 
       home.sessionVariables = {
         # should be like that but many programs don't respect VISUAL in favor of EDITOR so...
         # EDITOR = "nvim -u NONE -e";
-        EDITOR = lib.mkDefault "${bundle.nvim}/bin/nvim";
-        VISUAL = lib.mkDefault "${bundle.nvim}/bin/nvim";
-        GIT_EDITOR = lib.mkDefault "${bundle.nvim}/bin/nvim -u NONE";
+        EDITOR = lib.mkDefault "${nvim}/bin/nvim";
+        VISUAL = lib.mkDefault "${nvim}/bin/nvim";
+        GIT_EDITOR = lib.mkDefault "${nvim}/bin/nvim -u NONE";
       };
 
       xdg.configFile.${cfg.appName} = {
         enable = !cfg.isolated;
-        source = bundle.config;
+        source = nvim.passthru.config;
         recursive = true;
         onChange = ''
           rm -rf ${config.xdg.cacheHome}/${cfg.appName}

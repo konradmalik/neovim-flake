@@ -3,7 +3,7 @@ let
   config = pkgs.callPackage ../../config { inherit appName isolated; };
   plugins = pkgs.callPackage ./plugins.nix { };
   deps = pkgs.callPackage ./deps.nix { };
-  extraMakeWrapperArgs =
+  extraWrapperArgs =
     [ "--set" "NVIM_APPNAME" appName ]
     ++ lib.optionals (deps != [ ])
       [ "--suffix" "PATH" ":" "${lib.makeBinPath deps}" ]
@@ -28,12 +28,11 @@ let
     withNodeJs = false;
     withRuby = false;
   };
-in
-{
-  inherit config;
-  nvim = (pkgs.wrapNeovimUnstable pkgs.neovim
+
+  nvim = pkgs.wrapNeovimUnstable pkgs.neovim
     (neovimConfig // {
-      wrapperArgs = neovimConfig.wrapperArgs ++ extraMakeWrapperArgs;
+      wrapperArgs = neovimConfig.wrapperArgs ++ extraWrapperArgs;
       wrapRc = false;
-    }));
-}
+    });
+in
+lib.attrsets.recursiveUpdate nvim { passthru = { inherit config; }; }
