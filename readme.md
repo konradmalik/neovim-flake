@@ -1,3 +1,6 @@
+[![Actions Status](https://github.com/konradmalik/neovim-flake/actions/workflows/linux.yml/badge.svg)](https://github.com/konradmalik/neovim-flake/actions)
+[![Actions Status](https://github.com/konradmalik/neovim-flake/actions/workflows/darwin.yml/badge.svg)](https://github.com/konradmalik/neovim-flake/actions)
+
 # Neovim Flake
 
 Neovim in nix.

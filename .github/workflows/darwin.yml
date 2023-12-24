@@ -1,0 +1,36 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+name: x86_64-darwin
+jobs:
+  flake:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v24
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
+
+      - name: Flake check
+        env:
+          # workaround for segfaults
+          # https://github.com/NixOS/nix/issues/4246
+          GC_DONT_GC: 1
+        run: nix flake check
+
+      - uses: cachix/cachix-action@v12
+        with:
+          name: konradmalik
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+
+      - name: Shell build
+        run: |
+          nix build .#devShells.x86_64-darwin.default
+
+      - name: Flake build default package
+        run: |
+          nix build .#packages.x86_64-darwin.default
