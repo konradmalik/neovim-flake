@@ -33,7 +33,8 @@ return {
             },
         },
         root_dir = function()
-            return configs.root_dir({ ".luarc.json", "lua", ".git" })
+            return configs.root_dir(".luarc.json", { type = "file" })
+                or configs.root_dir({ "lua", ".git" }, { type = "directory" })
         end,
     },
 }
