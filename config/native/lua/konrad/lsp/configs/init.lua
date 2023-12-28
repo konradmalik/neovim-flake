@@ -28,7 +28,6 @@ end
 M.root_dir = function(names, opts)
     local defaults = {
         upward = true,
-        type = type,
         stop = vim.uv.os_homedir(),
         path = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),
     }

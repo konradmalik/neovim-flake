@@ -1,2 +1,3 @@
 local lsp = require("konrad.lsp")
-lsp.start_and_attach(require("konrad.lsp.configs.nil_ls").config)
+local lspconfig = require("konrad.lsp.configs.nil_ls").config
+lsp.start_and_attach(lspconfig)
