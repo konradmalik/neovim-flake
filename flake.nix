@@ -77,7 +77,7 @@
       overlays.default = final: prev: {
         neovimPlugins =
           { inherit (prev.vimPlugins) nvim-treesitter; }
-          // prev.callPackage ./packages/plugins { inherit inputs; };
+          // prev.callPackage ./packages/vendoredPlugins.nix { inherit inputs; };
         neovim = neovim.packages.${prev.system}.neovim;
       };
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);

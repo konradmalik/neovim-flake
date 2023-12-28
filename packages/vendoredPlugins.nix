@@ -2,17 +2,17 @@
 let
   version = "master";
   buildVim = name: src: vimUtils.buildVimPlugin {
-    inherit version;
+    inherit src version;
     pname = name;
-    src = src;
   };
   buildNeovim = name: src: neovimUtils.buildNeovimPlugin {
-    inherit version;
+    inherit src version;
     pname = name;
-    src = src;
   };
 in
-# TODO simple overrideAttrs does not work here :(
+# why not simple overrideAttrs?
+  # - does not work for src in buildVimPlugin
+  # - plugins internally depend on vimUtils.plenary-nvim and similar either way
 rec {
   SchemaStore-nvim = buildVim "SchemaStore.nvim" inputs.SchemaStore-nvim;
   boole-nvim = (buildVim "boole.nvim" inputs.boole-nvim).overrideAttrs {
@@ -33,16 +33,13 @@ rec {
     nvimRequireCheck = "gitsigns";
   };
   harpoon = (buildVim "harpoon" inputs.harpoon).overrideAttrs {
-    dependencies = [ plenary-nvim ];
-    # fails on missing plenary, why? seems like dependencies above are not available during this check.
-    # so what do they do?
-    # nvimRequireCheck = "harpoon";
+    nativeBuildInputs = [ plenary-nvim ];
+    nvimRequireCheck = "harpoon";
   };
   heirline-nvim = buildVim "heirline.nvim" inputs.heirline-nvim;
   kanagawa-nvim = buildVim "kanagawa.nvim" inputs.kanagawa-nvim;
   luasnip = buildVim "luasnip" inputs.luasnip;
   neo-tree-nvim = (buildVim "neo-tree.nvim" inputs.neo-tree-nvim).overrideAttrs {
-    dependencies = [ plenary-nvim nui-nvim ];
     nvimRequireCheck = "neo-tree";
   };
   neodev-nvim = buildVim "neodev.nvim" inputs.neodev-nvim;
@@ -67,11 +64,9 @@ rec {
     nvimRequireCheck = "plenary";
   };
   telescope-fzf-native-nvim = (buildVim "telescope-fzf-native.nvim" inputs.telescope-fzf-native-nvim).overrideAttrs {
-    dependencies = [ telescope-nvim ];
     buildPhase = "make";
   };
   telescope-nvim = (buildNeovim "telescope.nvim" inputs.telescope-nvim).overrideAttrs {
-    dependencies = [ plenary-nvim ];
     nvimRequireCheck = "telescope";
   };
   undotree = buildVim "undotree" inputs.undotree;
