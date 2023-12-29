@@ -71,7 +71,7 @@
         default = pkgs.mkShell
           {
             name = "neovim-shell";
-            packages = [ ];
+            packages = with pkgs; [ stylua ];
           };
       });
       overlays.default = final: prev: {
