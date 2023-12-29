@@ -1,4 +1,4 @@
-local colors = require('konrad.heirline.colors')
+local colors = require("konrad.heirline.colors")
 
 return {
     -- %l = current line number

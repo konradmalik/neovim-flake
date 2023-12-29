@@ -2,8 +2,8 @@ local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
 local devicons = require("nvim-web-devicons")
 local icons = require("konrad.icons")
-local colors = require('konrad.heirline.colors')
-local primitives = require('konrad.heirline.primitives')
+local colors = require("konrad.heirline.colors")
+local primitives = require("konrad.heirline.primitives")
 
 local M = {}
 
@@ -25,7 +25,7 @@ M.FileIcon = {
     end,
     hl = function(self)
         return { fg = self.icon_color }
-    end
+    end,
 }
 
 M.FileName = {
@@ -33,7 +33,9 @@ M.FileName = {
         -- first, trim the pattern relative to the current directory. For other
         -- options, see :h filename-modifers
         local filename = vim.fn.fnamemodify(self.filename, ":.")
-        if filename == "" then return "[No Name]" end
+        if filename == "" then
+            return "[No Name]"
+        end
         -- now, if the filename would occupy more than 1/4th of the available
         -- space, we trim the file path to its initials
         -- See Flexible Components section for dynamic stuff
@@ -89,7 +91,9 @@ M.HelpFileName = {
 M.FileNameFlexible = {
     init = function(self)
         self.lfilename = vim.fn.fnamemodify(self.filename, ":.")
-        if self.lfilename == "" then self.lfilename = "[No Name]" end
+        if self.lfilename == "" then
+            self.lfilename = "[No Name]"
+        end
     end,
     hl = function()
         if vim.bo.modified then
@@ -112,11 +116,6 @@ M.FileNameFlexible = {
 }
 
 -- let's add the children to our FileNameBlock component
-M.FileNameBlock = utils.insert(M.FileNameBlock,
-    M.FileIcon,
-    M.FileNameFlexible,
-    M.FileFlags,
-    primitives.Cut
-)
+M.FileNameBlock = utils.insert(M.FileNameBlock, M.FileIcon, M.FileNameFlexible, M.FileFlags, primitives.Cut)
 
 return M

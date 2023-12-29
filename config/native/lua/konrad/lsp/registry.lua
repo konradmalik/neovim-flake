@@ -2,9 +2,9 @@
 -- maps bufrn -> { functionality_name -> client }
 local once_per_buffer = {}
 -- client-id -> {command name->true} (global commands)
-local commands = {};
+local commands = {}
 -- client id -> {command name -> true}
-local buf_commands = {};
+local buf_commands = {}
 
 ---@param ttable table
 ---@param key any
@@ -14,7 +14,7 @@ local insert_into_nested = function(ttable, key, value)
         ttable[key] = {}
     end
 
-    local merged = vim.tbl_deep_extend('force', ttable[key], value)
+    local merged = vim.tbl_deep_extend("force", ttable[key], value)
     ttable[key] = merged
 end
 
@@ -52,19 +52,18 @@ M.register_once = function(fname, data, setup)
 
         if registered_client.id ~= client.id and registered_client.name ~= client.name then
             local tmpl = "cannot enable '%s' for '%s (id:%d)' on buf:%d, already taken by '%s (id:%d)'"
-            local msg = string.format(tmpl, fname,
-                client.name, client.id, bufnr,
-                registered_client.name, registered_client.id)
+            local msg =
+                string.format(tmpl, fname, client.name, client.id, bufnr, registered_client.name, registered_client.id)
             vim.notify(msg, vim.log.levels.WARN)
             return
         end
     end
 
-    local registered = setup(vim.tbl_extend('error', data, { name = fname }))
-    if registered['commands'] then
+    local registered = setup(vim.tbl_extend("error", data, { name = fname }))
+    if registered["commands"] then
         insert_into_nested(commands, client.id, list_into_set(registered.commands))
     end
-    if registered['buf_commands'] then
+    if registered["buf_commands"] then
         insert_into_nested(buf_commands, client.id, list_into_set(registered.buf_commands))
     end
     insert_into_nested(once_per_buffer, bufnr, { [fname] = { id = client.id, name = client.name } })

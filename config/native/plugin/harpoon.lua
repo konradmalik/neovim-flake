@@ -24,4 +24,3 @@ end, opts_with_desc("Go to 3"))
 vim.keymap.set("n", "<leader>h;", function()
     harpoon:list():select(4)
 end, opts_with_desc("Go to 4"))
-

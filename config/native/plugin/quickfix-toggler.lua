@@ -1,9 +1,9 @@
 local qf_is_shown = function()
-    return #vim.fn.filter(vim.fn.getwininfo(), 'v:val.quickfix && !v:val.loclist') > 0
+    return #vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix && !v:val.loclist") > 0
 end
 
 local ll_is_shown = function()
-    return #vim.fn.filter(vim.fn.getwininfo(), 'v:val.quickfix && v:val.loclist') > 0
+    return #vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix && v:val.loclist") > 0
 end
 
 local toggle_qf_list = function()
@@ -18,7 +18,9 @@ local toggle_loc_list = function()
     if ll_is_shown() then
         vim.cmd("lclose")
     else
-        if not pcall(function() vim.cmd("lopen") end) then
+        if not pcall(function()
+            vim.cmd("lopen")
+        end) then
             vim.notify("no location list")
         end
     end

@@ -1,6 +1,6 @@
 local utils = require("heirline.utils")
 local icons = require("konrad.icons")
-local colors = require('konrad.heirline.colors')
+local colors = require("konrad.heirline.colors")
 
 return {
     condition = function()
@@ -21,5 +21,5 @@ return {
         callback = vim.schedule_wrap(function()
             vim.cmd("redrawstatus")
         end),
-    }
+    },
 }

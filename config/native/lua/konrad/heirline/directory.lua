@@ -1,6 +1,6 @@
 local conditions = require("heirline.conditions")
-local icons = require('konrad.icons')
-local colors = require('konrad.heirline.colors')
+local icons = require("konrad.icons")
+local colors = require("konrad.heirline.colors")
 
 local M = {}
 M.WorkingDir = {
@@ -11,7 +11,7 @@ M.WorkingDir = {
         if not conditions.width_percent_below(#cwd, 0.25) then
             cwd = vim.fn.pathshorten(cwd)
         end
-        local trail = cwd:sub(-1) == '/' and '' or "/"
+        local trail = cwd:sub(-1) == "/" and "" or "/"
         return icon .. cwd .. trail
     end,
     hl = { fg = colors.blue, bold = true },
@@ -45,6 +45,6 @@ M.WorkingDirFlexible = {
     {
         -- evaluates to "", hiding the component
         provider = "",
-    }
+    },
 }
 return M

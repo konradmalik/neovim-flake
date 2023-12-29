@@ -42,17 +42,17 @@ neo_tree.setup({
         git_status = {
             symbols = {
                 -- Change type
-                added     = git_icons.Add,
-                modified  = git_icons.Mod,
-                deleted   = git_icons.Deleted,
-                renamed   = git_icons.Rename,
+                added = git_icons.Add,
+                modified = git_icons.Mod,
+                deleted = git_icons.Deleted,
+                renamed = git_icons.Rename,
                 -- Status type
                 untracked = git_icons.Untracked,
-                ignored   = git_icons.Ignore,
-                unstaged  = git_icons.Unstaged,
-                staged    = git_icons.Staged,
-                conflict  = git_icons.Unmerged,
-            }
+                ignored = git_icons.Ignore,
+                unstaged = git_icons.Unstaged,
+                staged = git_icons.Staged,
+                conflict = git_icons.Unmerged,
+            },
         },
     },
     filesystem = {

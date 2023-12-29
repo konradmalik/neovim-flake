@@ -7,7 +7,7 @@ dapui.setup({
     icons = {
         expanded = icons.ui.Expanded,
         collapsed = icons.ui.Collapsed,
-        current_frame = icons.ui.FoldClosed
+        current_frame = icons.ui.FoldClosed,
     },
 })
 

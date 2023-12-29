@@ -1,5 +1,5 @@
 local icons = require("konrad.icons")
-local colors = require('konrad.heirline.colors')
+local colors = require("konrad.heirline.colors")
 
 return {
     condition = function()
@@ -10,7 +10,7 @@ return {
         return dap.session() ~= nil
     end,
     provider = function()
-        return icons.ui.Bug .. " " .. require('dap').status()
+        return icons.ui.Bug .. " " .. require("dap").status()
     end,
     hl = { fg = colors.debug },
 }

@@ -1,5 +1,5 @@
 local icons = require("konrad.icons")
-local colors = require('konrad.heirline.colors')
+local colors = require("konrad.heirline.colors")
 
 local M = {}
 
@@ -12,7 +12,7 @@ M.FileType = {
 
 M.FileEncoding = {
     provider = function()
-        local enc = (vim.bo.fenc ~= '' and vim.bo.fenc) or vim.o.enc -- :h 'enc'
+        local enc = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc -- :h 'enc'
         return enc:lower()
     end,
     hl = { fg = colors.gray },
@@ -29,13 +29,13 @@ M.FileFormat = {
     provider = function(self)
         local fmt = vim.bo.fileformat
         return self.format_types[fmt]
-    end
+    end,
 }
 
 M.FileSize = {
     provider = function()
         -- stackoverflow, compute human readable file size
-        local suffix = { 'b', 'k', 'M', 'G', 'T', 'P', 'E' }
+        local suffix = { "b", "k", "M", "G", "T", "P", "E" }
         local fsize = vim.fn.getfsize(vim.api.nvim_buf_get_name(0))
         fsize = (fsize < 0 and 0) or fsize
         if fsize < 1024 then
@@ -43,7 +43,7 @@ M.FileSize = {
         end
         local i = math.floor((math.log(fsize) / math.log(1024)))
         return string.format("%.2g%s", fsize / math.pow(1024, i), suffix[i + 1])
-    end
+    end,
 }
 
 M.FileLastModified = {
@@ -51,7 +51,7 @@ M.FileLastModified = {
     provider = function()
         local ftime = vim.fn.getftime(vim.api.nvim_buf_get_name(0))
         return (ftime > 0) and os.date("%c", ftime)
-    end
+    end,
 }
 
 return M
