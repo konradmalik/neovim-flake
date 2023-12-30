@@ -30,6 +30,7 @@ return {
                 hint = { enable = true },
                 -- use stylua via efm, this formatter is not great and it cleares diagnostic text on save
                 format = { enable = false },
+                workspace = { checkThirdParty = false },
             },
         },
         root_dir = function()
