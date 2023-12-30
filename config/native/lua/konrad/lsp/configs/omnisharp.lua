@@ -13,9 +13,8 @@ local root_dir = function()
 end
 
 local make_cmd = function()
-    local cmd
-    cmd = { binaries.omnisharp() }
-    vim.list_extend(cmd, {
+    return {
+        binaries.omnisharp(),
         "--zero-based-indices",
         "--hostPID",
         tostring(vim.fn.getpid()),
@@ -32,9 +31,7 @@ local make_cmd = function()
         "RoslynExtensionsOptions:enableAnalyzersSupport=true",
         "RoslynExtensionsOptions:enableDecompilationSupport=true",
         "RoslynExtensionsOptions:enableImportCompletion=true",
-    })
-
-    return cmd
+    }
 end
 
 M.config = {

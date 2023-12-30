@@ -26,6 +26,10 @@ end
 ---@param opts table? type='file', 'directory' and more
 ---@return string|nil
 M.root_dir = function(names, opts)
+    if type(names) == "string" then
+        names = { names }
+    end
+
     local defaults = {
         upward = true,
         stop = vim.uv.os_homedir(),
@@ -34,7 +38,14 @@ M.root_dir = function(names, opts)
 
     opts = vim.tbl_deep_extend("force", defaults, opts or {})
 
-    local found = vim.fs.find(names, opts)
+    local found = vim.fs.find(function(name, path)
+        for _, pattern in ipairs(names) do
+            if name:match(pattern) then
+                return true
+            end
+        end
+        return false
+    end, opts)
     if #found == 0 then
         return nil
     end
