@@ -31,6 +31,18 @@ local make_cmd = function()
         "RoslynExtensionsOptions:enableAnalyzersSupport=true",
         "RoslynExtensionsOptions:enableDecompilationSupport=true",
         "RoslynExtensionsOptions:enableImportCompletion=true",
+        "RoslynExtensionsOptions:inlayHintsOptions:enableForParameters=true",
+        "RoslynExtensionsOptions:inlayHintsOptions:forLiteralParameters=true",
+        "RoslynExtensionsOptions:inlayHintsOptions:forIndexerParameters=true",
+        "RoslynExtensionsOptions:inlayHintsOptions:forObjectCreationParameters=true",
+        "RoslynExtensionsOptions:inlayHintsOptions:forOtherParameters=true",
+        "RoslynExtensionsOptions:inlayHintsOptions:suppressForParametersThatDifferOnlyBySuffix=false",
+        "RoslynExtensionsOptions:inlayHintsOptions:suppressForParametersThatMatchMethodIntent=false",
+        "RoslynExtensionsOptions:inlayHintsOptions:suppressForParametersThatMatchArgumentName=false",
+        "RoslynExtensionsOptions:inlayHintsOptions:enableForTypes=true",
+        "RoslynExtensionsOptions:inlayHintsOptions:forImplicitVariableTypes=true",
+        "RoslynExtensionsOptions:inlayHintsOptions:forLambdaParameterTypes=true",
+        "RoslynExtensionsOptions:inlayHintsOptions:forImplicitObjectCreation=true",
     }
 end
 
@@ -41,8 +53,6 @@ M.config = {
     on_init = function(client, initialize_result)
         -- disable codelens for omnisharp because it makes it extremely slow
         client.server_capabilities.codeLensProvider = nil
-        -- inlayHints are broken as well as of 1.39.10
-        client.server_capabilities.inlayHintProvider = nil
         -- disable documentHighlight as it throws errors in buffers that don't correspond to real files
         -- like $metadata$ or fugitive
         client.server_capabilities.documentHighlightProvider = nil
