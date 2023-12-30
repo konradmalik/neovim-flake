@@ -1,3 +1,6 @@
+local autostart_enabled = true
+local skipped_prefixes = { "fugitive://" }
+
 local initialized = false
 local initialize_once = function()
     if initialized then
@@ -32,8 +35,6 @@ local initialize_once = function()
     initialized = true
 end
 
-local autostart_enabled = true
-
 local M = {}
 
 M.toggle_autostart = function()
@@ -55,11 +56,18 @@ M.start_and_attach = function(config, bufnr, force)
         return
     end
 
+    bufnr = bufnr or 0
+    local bufname = vim.api.nvim_buf_get_name(bufnr)
+    for _, prefix in ipairs(skipped_prefixes) do
+        if vim.startswith(bufname, prefix) then
+            return
+        end
+    end
+
     initialize_once()
 
     local made_config = require("konrad.lsp.configs").make_config(config)
-    local target_buf = bufnr or 0
-    local client_id = vim.lsp.start(made_config, { bufnr = target_buf })
+    local client_id = vim.lsp.start(made_config, { bufnr = bufnr })
     if not client_id then
         vim.notify("cannot start lsp: " .. made_config.cmd[1], vim.log.levels.ERROR)
     end
