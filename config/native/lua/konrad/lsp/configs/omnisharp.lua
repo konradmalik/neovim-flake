@@ -5,6 +5,8 @@ vim.cmd("packadd omnisharp-extended-lsp.nvim")
 
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
+local protocol = require("vim.lsp.protocol")
+local ms = protocol.Methods
 
 local M = {}
 
@@ -12,8 +14,13 @@ local root_dir = function()
     return configs.root_dir(".sln") or configs.root_dir(".csproj")
 end
 
+-- disable documentHighlight in buffers that don't correspond to real files
+-- like $metadata$ or fugitive as it throws errors
+local on_documentHighlight = vim.lsp.handlers[ms.textDocument_documentHighlight]
+local non_existent_patterns = { "fugitive://", "%$metadata%$" }
+
 local make_cmd = function()
-    return {
+    local cmd = {
         binaries.omnisharp(),
         "--zero-based-indices",
         "--hostPID",
@@ -21,8 +28,6 @@ local make_cmd = function()
         "--encoding",
         "utf-8",
         "--languageserver",
-        "-s",
-        root_dir(),
         "msbuild:loadProjectsOnDemand=true",
         "script:enabled=false",
         "DotNet:enablePackageRestore=false",
@@ -44,6 +49,13 @@ local make_cmd = function()
         "RoslynExtensionsOptions:inlayHintsOptions:forLambdaParameterTypes=true",
         "RoslynExtensionsOptions:inlayHintsOptions:forImplicitObjectCreation=true",
     }
+    local root = root_dir()
+    -- to avoid passing '-s nil' when attaching to $metadata$
+    if root then
+        table.insert(cmd, "-s")
+        table.insert(cmd, root)
+    end
+    return cmd
 end
 
 M.config = {
@@ -53,9 +65,7 @@ M.config = {
     on_init = function(client, initialize_result)
         -- disable codelens for omnisharp because it makes it extremely slow
         client.server_capabilities.codeLensProvider = nil
-        -- disable documentHighlight as it throws errors in buffers that don't correspond to real files
-        -- like $metadata$ or fugitive
-        client.server_capabilities.documentHighlightProvider = nil
+        -- client.server_capabilities.documentHighlightProvider = nil
         client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
     end,
     capabilities = {
@@ -64,7 +74,19 @@ M.config = {
         },
     },
     handlers = {
-        ["textDocument/definition"] = require("omnisharp_extended").handler,
+        [ms.textDocument_definition] = function(err, result, context, config)
+            return require("omnisharp_extended").handler(err, result, context, config)
+        end,
+        [ms.textDocument_documentHighlight] = vim.lsp.with(function(err, result, context, config)
+            -- skip highlighting for files that do not exist phisically
+            local bufname = vim.api.nvim_buf_get_name(context.bufnr)
+            for _, ignored in ipairs(non_existent_patterns) do
+                if bufname:match(ignored) then
+                    return
+                end
+            end
+            return on_documentHighlight(err, result, context, config)
+        end, {}),
     },
     root_dir = root_dir,
 }
