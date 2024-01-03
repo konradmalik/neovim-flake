@@ -3,7 +3,6 @@ local telescope = require("telescope")
 telescope.setup({
     defaults = {
         wrap_results = true,
-        file_ignore_patterns = { "node_modules", "vendor" },
     },
 })
 -- To get extensions loaded and working with telescope, you need to call
