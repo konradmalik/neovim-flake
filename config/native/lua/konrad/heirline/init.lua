@@ -7,8 +7,6 @@ local utils = require("heirline.utils")
 local icons = require("konrad.icons")
 
 local Align = require("konrad.heirline.primitives").Align
-local Cut = require("konrad.heirline.primitives").Cut
-local SeparatorLine = require("konrad.heirline.primitives").SeparatorLine
 local Space = require("konrad.heirline.primitives").Space
 
 local ViMode = require("konrad.heirline.vimode")
@@ -17,7 +15,6 @@ local FileNameBlock = require("konrad.heirline.filename").FileNameBlock
 local FileName = require("konrad.heirline.filename").FileNameFlexible
 local HelpFileName = require("konrad.heirline.filename").HelpFileName
 local TerminalName = require("konrad.heirline.terminal").TerminalName
-local WorkingDir = require("konrad.heirline.directory").WorkingDirFlexible
 local Git = require("konrad.heirline.git")
 local Diagnostics = require("konrad.heirline.diagnostics")
 local Navic = require("konrad.heirline.navic").NavicFlexible
@@ -54,8 +51,6 @@ local TerminalWinbar = {
 }
 
 local DefaultWinbar = {
-    WorkingDir,
-    Cut,
     FileNameBlock,
     Space,
     Navic,
