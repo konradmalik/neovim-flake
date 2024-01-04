@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ neovimPlugins, lib, ... }:
 let
   makePlugin = plugin:
     let
@@ -12,7 +12,7 @@ let
 
   processMadePlugins = madePlugins: lib.unique (lib.flatten madePlugins);
 in
-processMadePlugins (with pkgs.neovimPlugins;[
+processMadePlugins (with neovimPlugins;[
   # treesitter
   (makePlugin {
     plugin = nvim-treesitter.withAllGrammars;

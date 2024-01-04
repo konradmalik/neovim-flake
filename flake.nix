@@ -48,7 +48,7 @@
       which-key-nvim = { url = "github:folke/which-key.nvim"; flake = false; };
     };
 
-  outputs = { self, nixpkgs, neovim, ... }@inputs:
+  outputs = { self, nixpkgs, ... }@inputs:
     let
       forAllSystems = function:
         nixpkgs.lib.genAttrs [
@@ -57,14 +57,9 @@
           "x86_64-darwin"
           "aarch64-darwin"
         ]
-          (system:
-            function (import nixpkgs {
-              inherit system;
-              config.allowUnfree = true;
-              overlays = [
-                self.overlays.default
-              ];
-            }));
+          (system: function nixpkgs.legacyPackages.${system});
+      neovimPluginsFor = pkgs: { inherit (pkgs.vimPlugins) nvim-treesitter; }
+        // pkgs.callPackage ./packages/vendoredPlugins.nix { inherit inputs; };
     in
     {
       devShells = forAllSystems (pkgs: {
@@ -75,17 +70,17 @@
           };
       });
       overlays.default = final: prev: {
-        neovimPlugins =
-          { inherit (prev.vimPlugins) nvim-treesitter; }
-          // prev.callPackage ./packages/vendoredPlugins.nix { inherit inputs; };
-        neovim = neovim.packages.${prev.system}.neovim;
+        neovimPlugins = neovimPluginsFor final;
+        neovim = self.packages.${prev.system}.neovim;
       };
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
       packages = forAllSystems (pkgs: rec {
+        neovim = pkgs.callPackage ./packages/neovim-pde {
+          neovim = inputs.neovim.packages.${pkgs.system}.neovim;
+          neovimPlugins = neovimPluginsFor pkgs;
+        };
         default = neovim;
-        neovim = pkgs.callPackage ./packages/neovim-pde { };
         config = neovim.passthru.config;
-        nvim-luaref = pkgs.neovimPlugins.nvim-luaref;
       });
       apps = forAllSystems (pkgs: {
         default = {

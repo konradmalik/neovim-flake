@@ -1,8 +1,18 @@
-{ pkgs, lib, appName ? "neovim-pde", viAlias ? false, vimAlias ? false, isolated ? true }:
+{ neovim
+, neovimUtils
+, neovimPlugins
+, wrapNeovimUnstable
+, callPackage
+, lib
+, appName ? "neovim-pde"
+, viAlias ? false
+, vimAlias ? false
+, isolated ? true
+}:
 let
-  config = pkgs.callPackage ../../config { inherit appName isolated; };
-  plugins = pkgs.callPackage ./plugins.nix { };
-  deps = pkgs.callPackage ./deps.nix { };
+  config = callPackage ../../config { inherit appName isolated; };
+  plugins = callPackage ./plugins.nix { inherit neovimPlugins; };
+  deps = callPackage ./deps.nix { };
   extraWrapperArgs =
     [ "--set" "NVIM_APPNAME" appName ]
     ++ lib.optionals (deps != [ ])
@@ -22,14 +32,14 @@ let
         "/tmp/${appName}-cache"
       ];
 
-  neovimConfig = pkgs.neovimUtils.makeNeovimConfig {
+  neovimConfig = neovimUtils.makeNeovimConfig {
     inherit plugins viAlias vimAlias;
     withPython3 = false;
     withNodeJs = false;
     withRuby = false;
   };
 
-  nvim = pkgs.wrapNeovimUnstable pkgs.neovim
+  nvim = wrapNeovimUnstable neovim
     (neovimConfig // {
       wrapperArgs = neovimConfig.wrapperArgs ++ extraWrapperArgs;
       wrapRc = false;
