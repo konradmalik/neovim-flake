@@ -31,11 +31,11 @@ vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts_with_desc("Previous"))
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts_with_desc("Next"))
 vim.keymap.set(
     "n",
-    "<leader>ll",
+    "<leader>dl",
     vim.diagnostic.setloclist,
     opts_with_desc("Send all from current buffer to location list")
 )
-vim.keymap.set("n", "<leader>lq", vim.diagnostic.setqflist, opts_with_desc("Send all to QF list"))
+vim.keymap.set("n", "<leader>dq", vim.diagnostic.setqflist, opts_with_desc("Send all to QF list"))
 
 do
     local diagnostics_are_enabled = true

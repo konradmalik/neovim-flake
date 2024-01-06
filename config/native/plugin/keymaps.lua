@@ -1,3 +1,5 @@
+require("konrad.unimpaired").setup()
+
 local opts_with_desc = function(desc, silent)
     if silent == nil then
         silent = true
@@ -20,12 +22,6 @@ vim.keymap.set("n", "<S-l>", "<cmd>bnext<CR>", opts_with_desc("Next buffer"))
 
 -- quick grep word under the cursor
 vim.keymap.set("n", "<leader>*", "<cmd>grep <cword><CR>", opts_with_desc("Grep word under cursor"))
-
--- quickfix niceness
-vim.keymap.set("n", "<C-k>", "<cmd>cprevious<CR>", opts_with_desc("Go to previous QF element"))
-vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>", opts_with_desc("Go to next QF element"))
-vim.keymap.set("n", "<leader>k", "<cmd>lprevious<CR>", opts_with_desc("Go to previous LL element"))
-vim.keymap.set("n", "<leader>j", "<cmd>lnext<CR>", opts_with_desc("Go to next LL element"))
 
 vim.keymap.set("i", "<C-c>", "<esc>", opts_with_desc("Ctrl-c as ESC in insert mode"))
 

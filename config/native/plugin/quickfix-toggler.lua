@@ -34,5 +34,5 @@ local opts_with_desc = function(desc, silent)
     return vim.tbl_extend("error", opts, { desc = "[konrad] " .. desc })
 end
 
-vim.keymap.set("n", "<C-q>", toggle_qf_list, opts_with_desc("Toggle Quickfix List"))
-vim.keymap.set("n", "<leader>q", toggle_loc_list, opts_with_desc("Toggle Local List"))
+vim.keymap.set("n", "<leader>q", toggle_qf_list, opts_with_desc("Toggle Quickfix List"))
+vim.keymap.set("n", "<leader>l", toggle_loc_list, opts_with_desc("Toggle Local List"))
