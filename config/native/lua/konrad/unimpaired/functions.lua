@@ -2,11 +2,11 @@
 local M = {}
 
 M.previous = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "previous")
+    vim.cmd(vim.v.count1 .. "previous")
 end
 
 M.next = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "next")
+    vim.cmd(vim.v.count1 .. "next")
 end
 
 M.first = function()
@@ -34,12 +34,12 @@ M.blast = function()
 end
 
 M.lprevious = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "lprevious")
+    vim.cmd(vim.v.count1 .. "lprevious")
     vim.cmd.normal("zv")
 end
 
 M.lnext = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "lnext")
+    vim.cmd(vim.v.count1 .. "lnext")
     vim.cmd.normal("zv")
 end
 
@@ -52,20 +52,20 @@ M.llast = function()
 end
 
 M.lpfile = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "lpfile")
+    vim.cmd(vim.v.count1 .. "lpfile")
 end
 
 M.lnfile = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "lnfile")
+    vim.cmd(vim.v.count1 .. "lnfile")
 end
 
 M.cprevious = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "cprevious")
+    vim.cmd(vim.v.count1 .. "cprevious")
     vim.cmd.normal("zv")
 end
 
 M.cnext = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "cnext")
+    vim.cmd(vim.v.count1 .. "cnext")
     vim.cmd.normal("zv")
 end
 
@@ -78,19 +78,19 @@ M.clast = function()
 end
 
 M.cpfile = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "cpfile")
+    vim.cmd(vim.v.count1 .. "cpfile")
 end
 
 M.cnfile = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "cnfile")
+    vim.cmd(vim.v.count1 .. "cnfile")
 end
 
 M.tprevious = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "tprevious")
+    vim.cmd(vim.v.count1 .. "tprevious")
 end
 
 M.tnext = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "tnext")
+    vim.cmd(vim.v.count1 .. "tnext")
 end
 
 M.tfirst = function()
@@ -102,11 +102,11 @@ M.tlast = function()
 end
 
 M.ptprevious = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "ptprevious")
+    vim.cmd(vim.v.count1 .. "ptprevious")
 end
 
 M.ptnext = function()
-    vim.cmd("silent! " .. vim.v.count1 .. "ptnext")
+    vim.cmd(vim.v.count1 .. "ptnext")
 end
 
 local get_current_wininfo = function()
@@ -159,9 +159,9 @@ end
 M.previous_file = function()
     local wininfo = get_current_wininfo()
     if wininfo.loclist == 1 then
-        vim.cmd("silent! lolder " .. vim.v.count1)
+        vim.cmd("lolder " .. vim.v.count1)
     elseif wininfo.quickfix == 1 then
-        vim.cmd("silent! colder " .. vim.v.count1)
+        vim.cmd("colder " .. vim.v.count1)
     else
         local file = file_by_offset(-vim.v.count1)
         if file then
@@ -173,15 +173,51 @@ end
 M.next_file = function()
     local wininfo = get_current_wininfo()
     if wininfo.loclist == 1 then
-        vim.cmd("silent! lnewer " .. vim.v.count1)
+        vim.cmd("lnewer " .. vim.v.count1)
     elseif wininfo.quickfix == 1 then
-        vim.cmd("silent! cnewer " .. vim.v.count1)
+        vim.cmd("cnewer " .. vim.v.count1)
     else
         local file = file_by_offset(vim.v.count1)
         if file then
             vim.cmd("edit " .. file)
         end
     end
+end
+
+local qf_is_shown = function()
+    return #vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix && !v:val.loclist") > 0
+end
+
+local ll_is_shown = function()
+    return #vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix && v:val.loclist") > 0
+end
+
+M.toggle_qflist = function()
+    if qf_is_shown() then
+        vim.cmd("cclose")
+    else
+        vim.cmd("copen")
+    end
+end
+
+M.toggle_llist = function()
+    if ll_is_shown() then
+        vim.cmd("lclose")
+    else
+        if not pcall(function()
+            vim.cmd("lopen")
+        end) then
+            vim.notify("no location list")
+        end
+    end
+end
+
+M.opts_with_desc = function(desc, silent)
+    if silent == nil then
+        silent = true
+    end
+    local opts = { noremap = true, silent = silent }
+    return vim.tbl_extend("error", opts, { desc = "[unimpaired] " .. desc })
 end
 
 return M
