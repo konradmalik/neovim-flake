@@ -1,3 +1,5 @@
 !.github
 flake.lock
 .luarc.json
+files/*.add
+files/*.spl

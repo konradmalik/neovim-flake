@@ -1,3 +1,4 @@
 !flake.lock
 .direnv
 result
+files/*.spl
