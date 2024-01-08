@@ -10,12 +10,11 @@ vim.opt.fillchars = {
     foldsep = icons.ui.Guide,
     foldclose = icons.ui.FoldClosed,
 }
--- TODO [0.9.5] treesitter foldexpr now does not freeze on external file modifications
--- but is unusable with fugitive's Git log command. For some reason it takes ~1 min to open the log
--- when this is set, so for now still use indent
-vim.opt.foldmethod = "indent"
--- vim.opt.foldmethod = "expr"
+vim.opt.foldmethod = "expr"
+-- TODO lua-based treesitter's foldexpr is unusable with fugitive's Git log command.
+-- For some reason it takes 1-2 mins to open the log when this is set.
 -- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
 -- when enabling, start with this level
 vim.opt.foldlevel = 1
