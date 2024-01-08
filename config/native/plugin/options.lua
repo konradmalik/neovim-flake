@@ -4,37 +4,37 @@ local icons = require("konrad.icons")
 -- See `:help vim.o`
 -- use spaces instead of tabs. Mostly useful for new files not in repos/isolated files etc.
 -- Most of the time editorconfig should be used (neovim loads it automatically)
-vim.o.tabstop = 4
-vim.o.softtabstop = 4
-vim.o.shiftwidth = 4
-vim.o.expandtab = true
-vim.o.smartindent = true
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+vim.opt.smartindent = true
 -- Set highlight on search. Use :noh to disable until next search
-vim.o.hlsearch = true
+vim.opt.hlsearch = true
 -- Make line numbers default
-vim.wo.number = true
+vim.opt.number = true
 -- Relative line numbers
-vim.wo.relativenumber = true
+vim.opt.relativenumber = true
 -- incrementally search
-vim.o.incsearch = true
+vim.opt.incsearch = true
 -- Enable mouse mode
-vim.o.mouse = "a"
+vim.opt.mouse = "a"
 -- Enable break indent
-vim.o.breakindent = true
+vim.opt.breakindent = true
 -- don't create a swapfile
-vim.o.swapfile = false
+vim.opt.swapfile = false
 -- don't create a backup file
-vim.o.backup = false
+vim.opt.backup = false
 -- when a file was modified outside of vim and not modified in vim, we can read it automatically
 vim.bo.autoread = true
 -- Save undo history
-vim.o.undofile = true
-vim.o.undodir = vim.fn.stdpath("state") .. "/undodir"
+vim.opt.undofile = true
+vim.opt.undodir = vim.fn.stdpath("state") .. "/undodir"
 -- Case insensitive searching UNLESS /C or capital in search
-vim.o.ignorecase = true
-vim.o.smartcase = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 -- Keep signcolumn on by default
-vim.wo.signcolumn = "yes"
+vim.opt.signcolumn = "yes"
 -- show some hidden chars
 vim.opt.list = true
 vim.opt.listchars = {
@@ -46,19 +46,19 @@ vim.opt.listchars = {
     leadmultispace = icons.ui.Guide .. " ",
 }
 -- Lines of context when scrolling
-vim.o.scrolloff = 10
+vim.opt.scrolloff = 10
 -- Columns of context when scrolling
-vim.o.sidescrolloff = 10
+vim.opt.sidescrolloff = 10
 -- Decrease update time
-vim.o.updatetime = 1000
-vim.o.timeout = true
-vim.o.timeoutlen = 1000
+vim.opt.updatetime = 1000
+vim.opt.timeout = true
+vim.opt.timeoutlen = 1000
 -- Set completeopt to have a better completion experience
-vim.o.completeopt = "menuone,noselect"
+vim.opt.completeopt = "menuone,noselect"
 -- True color support
-vim.o.termguicolors = true
+vim.opt.termguicolors = true
 -- highlight the current line
-vim.o.cursorline = true
+vim.opt.cursorline = true
 -- use ripgrep as grep program if available
 vim.opt.grepprg = "rg --vimgrep --no-heading --smart-case"
 vim.opt.grepformat = "%f:%l:%c:%m,%f:%l:%m"
