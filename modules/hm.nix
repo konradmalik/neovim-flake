@@ -56,6 +56,15 @@ in
           If false, will symlink it's config to `$XDG_CONFIG_HOME/$NVIM_APPNAME` and run without -u flag.
         '';
       };
+
+      cleanLspLog = mkOption {
+        type = types.bool;
+        default = true;
+        description = ''
+          Whether to remove lsp.log file on each config change.
+          Helps to prevent it from growing indefinately without manual interventions.
+        '';
+      };
     };
   };
 
@@ -80,7 +89,12 @@ in
         recursive = true;
         onChange = ''
           rm -rf ${config.xdg.cacheHome}/${cfg.appName}
-        '';
+        '' lib.optionalString
+          cfg.cleanLspLog
+          ''
+            rm -f ${config.xdg.stateHome}/${cfg.appName}/lsp.log
+          '';
+
       };
 
       programs.git.ignores = mkIf
