@@ -8,3 +8,7 @@ LSPs
 backpressure
 GitLab
 versioning
+linters
+formatters
+devops
+namespace
