@@ -3,7 +3,7 @@ require("konrad.loader")
 
 require("konrad.disable_builtin")
 
--- exrc (.nvim.lua), I use it a lot
+-- exrc (.nvim.lua)
 vim.o.exrc = true
 
 -- map leader

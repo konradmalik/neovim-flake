@@ -15,7 +15,7 @@ in
   # - plugins internally depend on vimUtils.plenary-nvim and similar either way
 rec {
   SchemaStore-nvim = buildVim { name = "SchemaStore.nvim"; src = inputs.SchemaStore-nvim; nvimRequireCheck = "schemastore"; };
-  boole-nvim = (buildVim { name = "boole.nvim"; src = inputs.boole-nvim; nvimRequireCheck = "boole"; });
+  boole-nvim = buildVim { name = "boole.nvim"; src = inputs.boole-nvim; nvimRequireCheck = "boole"; };
   comment-nvim = (buildVim { name = "comment.nvim"; src = inputs.comment-nvim; nvimRequireCheck = "Comment"; });
   cmp-buffer = (buildVim { name = "cmp-buffer"; src = inputs.cmp-buffer; }).overrideAttrs {
     nativeBuildInputs = [ nvim-cmp ];
@@ -51,7 +51,7 @@ rec {
   heirline-nvim = buildVim { name = "heirline.nvim"; src = inputs.heirline-nvim; nvimRequireCheck = "heirline"; };
   kanagawa-nvim = buildVim { name = "kanagawa.nvim"; src = inputs.kanagawa-nvim; nvimRequireCheck = "kanagawa"; };
   luasnip = buildVim { name = "luasnip"; src = inputs.luasnip; };
-  neo-tree-nvim = (buildVim { name = "neo-tree.nvim"; src = inputs.neo-tree-nvim; nvimRequireCheck = "neo-tree"; });
+  neo-tree-nvim = buildVim { name = "neo-tree.nvim"; src = inputs.neo-tree-nvim; nvimRequireCheck = "neo-tree"; };
   neodev-nvim = buildVim { name = "neodev.nvim"; src = inputs.neodev-nvim; nvimRequireCheck = "neodev"; };
   nui-nvim = buildNeovim { name = "nui.nvim"; src = inputs.nui-nvim; nvimRequireCheck = "nui.popup"; };
   nvim-cmp = buildNeovim { name = "nvim-cmp"; src = inputs.nvim-cmp; nvimRequireCheck = "cmp"; };
@@ -105,11 +105,11 @@ rec {
       buildPhase = "make";
       nativeBuildInputs = [ telescope-nvim ];
     };
-  telescope-nvim = (buildNeovim {
+  telescope-nvim = buildNeovim {
     name = "telescope.nvim";
     src = inputs.telescope-nvim;
     nvimRequireCheck = "telescope";
-  });
+  };
   undotree = buildVim {
     name = "undotree";
     src = inputs.undotree;

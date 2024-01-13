@@ -1,8 +1,6 @@
 local icons = require("konrad.icons")
 
--- keep foldcolumn on by default
 vim.opt.foldcolumn = "auto"
--- custom icons for foldcolumn
 vim.opt.fillchars = {
     eob = " ",
     fold = " ",

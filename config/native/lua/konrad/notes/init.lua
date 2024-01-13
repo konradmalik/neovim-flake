@@ -3,6 +3,7 @@ local opts_with_desc = function(desc)
 end
 
 local default_config = {
+    -- may be function as well
     base_path = "/tmp/notes",
     names = {
         quicknotes = "notes.md",
@@ -24,6 +25,11 @@ local M = {}
 
 M.setup = function(config_override)
     local config = vim.tbl_deep_extend("force", default_config, config_override)
+
+    if type(config.base_path) == "function" then
+        config.base_path = config.base_path()
+    end
+
     set_keymaps(config)
 end
 
