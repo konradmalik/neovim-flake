@@ -4,12 +4,16 @@ let
   sourceFiles = fs.unions [
     ./native
   ];
+  name = "${appName}-native-config";
 
   nativeConfig = pkgs.stdenv.mkDerivation {
-    name = "${appName}-native-config";
-    src = fs.toSource {
-      root = ./.;
-      fileset = sourceFiles;
+    inherit name;
+    src = builtins.path {
+      inherit name;
+      path = fs.toSource {
+        root = ./.;
+        fileset = sourceFiles;
+      };
     };
     installPhase = ''
       mkdir -p $out/
