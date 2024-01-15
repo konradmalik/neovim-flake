@@ -40,10 +40,10 @@ vim.keymap.set("n", "]f", funs.next_file, funs.opts_with_desc("Next file in dire
 
 -- registers
 vim.keymap.set(
-    "v",
-    "<leader>p",
-    '"_dP',
-    funs.opts_with_desc("Replace selected by pasting and keep pasted in the register")
+	"v",
+	"<leader>p",
+	'"_dP',
+	funs.opts_with_desc("Replace selected by pasting and keep pasted in the register")
 )
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], funs.opts_with_desc("delete without replacing your register"))
 
@@ -52,18 +52,13 @@ vim.keymap.set("n", "<leader>Y", [["+Y]], funs.opts_with_desc("yank to system cl
 
 -- search and replace
 vim.keymap.set(
-    "n",
-    "<leader>ss",
-    [[viwy:%s/<C-r>0/]],
-    funs.opts_with_desc("prepopulate <cmd> to replace the current word", false)
+	"n",
+	"<leader>ss",
+	[[viwy:%s/<C-r>0/]],
+	funs.opts_with_desc("prepopulate <cmd> to replace the current word")
 )
 
-vim.keymap.set(
-    "v",
-    "<leader>ss",
-    [[y:%s/<C-r>0/]],
-    funs.opts_with_desc("prepopulate <cmd> to replace the selection", false)
-)
+vim.keymap.set("v", "<leader>ss", [[y:%s/<C-r>0/]], funs.opts_with_desc("prepopulate <cmd> to replace the selection"))
 
 -- misc
 vim.keymap.set("n", "<leader>*", "<cmd>grep <cword><CR>", funs.opts_with_desc("Grep word under cursor"))

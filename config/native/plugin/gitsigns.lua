@@ -1,24 +1,22 @@
 local gitsigns = require("gitsigns")
 gitsigns.setup({
-    signs = {
-        add = { text = "+" },
-        change = { text = "~" },
-        delete = { text = "-" },
-        topdelete = { text = "‾" },
-        changedelete = { text = "~" },
-    },
-    signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
-    numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
-    linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
-    word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
-    current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+	signs = {
+		add = { text = "+" },
+		change = { text = "~" },
+		delete = { text = "-" },
+		topdelete = { text = "‾" },
+		changedelete = { text = "~" },
+	},
+	signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
+	numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
+	linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
+	word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
+	current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
 })
 
 local keymap = vim.keymap
 local opts = { noremap = true, silent = true }
-local opts_with_desc = function(desc)
-    return vim.tbl_extend("error", opts, { desc = "[Gitsigns] " .. desc })
-end
+local opts_with_desc = function(desc) return vim.tbl_extend("error", opts, { desc = "[Gitsigns] " .. desc }) end
 
 keymap.set("n", "<leader>gj", gitsigns.next_hunk, opts_with_desc("Next Hunk"))
 keymap.set("n", "<leader>gk", gitsigns.prev_hunk, opts_with_desc("Prev Hunk"))

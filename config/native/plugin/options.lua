@@ -38,12 +38,12 @@ vim.opt.signcolumn = "yes"
 -- show some hidden chars
 vim.opt.list = true
 vim.opt.listchars = {
-    trail = icons.characters.Trail,
-    tab = icons.characters.Tab .. "-" .. icons.characters.Tab,
-    nbsp = icons.characters.Nbsp2,
-    extends = icons.characters.SlopeDown,
-    precedes = icons.characters.SlopeUp,
-    leadmultispace = icons.ui.Guide .. " ",
+	trail = icons.characters.Trail,
+	tab = icons.characters.Tab .. "-" .. icons.characters.Tab,
+	nbsp = icons.characters.Nbsp2,
+	extends = icons.characters.SlopeDown,
+	precedes = icons.characters.SlopeUp,
+	leadmultispace = icons.ui.Guide .. " ",
 }
 -- Lines of context when scrolling
 vim.opt.scrolloff = 10
