@@ -8,7 +8,7 @@ M.attach = function(data)
 	local augroup = data.augroup
 	local bufnr = data.bufnr
 
-	vim.api.nvim_create_user_command("DocumentHighlightToggle", function()
+	vim.api.nvim_buf_create_user_command(bufnr, "DocumentHighlightToggle", function()
 		highlight_is_enabled = not highlight_is_enabled
 		if not highlight_is_enabled then vim.lsp.buf.clear_references() end
 		print("Setting document highlight to: " .. tostring(highlight_is_enabled))
@@ -21,7 +21,7 @@ M.attach = function(data)
 		buffer = bufnr,
 		callback = function()
 			if not highlight_is_enabled then return end
-			vim.schedule(vim.lsp.buf.document_highlight)
+			vim.lsp.buf.document_highlight()
 		end,
 		desc = "Highlight references when cursor holds",
 	})
@@ -31,7 +31,7 @@ M.attach = function(data)
 		buffer = bufnr,
 		callback = function()
 			if not highlight_is_enabled then return end
-			vim.schedule(vim.lsp.buf.clear_references)
+			vim.lsp.buf.clear_references()
 		end,
 		desc = "Clear references when cursor moves",
 	})
@@ -41,6 +41,6 @@ M.attach = function(data)
 	}
 end
 
-M.detach = function() vim.schedule(vim.lsp.buf.clear_references) end
+M.detach = vim.lsp.buf.clear_references
 
 return M

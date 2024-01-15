@@ -19,7 +19,7 @@ M.setup = function(data)
 	local bufnr = data.bufnr
 	local client = data.client
 
-	vim.api.nvim_create_user_command("AutoFormatToggle", function()
+	vim.api.nvim_buf_create_user_command(bufnr, "AutoFormatToggle", function()
 		format_is_enabled = not format_is_enabled
 		print("Setting autoformatting to: " .. tostring(format_is_enabled))
 	end, {

@@ -13,7 +13,7 @@ M.attach = function(data)
 		buffer = bufnr,
 		callback = function()
 			if not inlayhints_is_enabled then return end
-			vim.schedule(function() vim.lsp.inlay_hint.enable(bufnr, true) end)
+			vim.lsp.inlay_hint.enable(bufnr, true)
 		end,
 	})
 	vim.api.nvim_create_autocmd("InsertLeave", {
@@ -21,11 +21,11 @@ M.attach = function(data)
 		buffer = bufnr,
 		callback = function()
 			if not inlayhints_is_enabled then return end
-			vim.schedule(function() pcall(vim.lsp.inlay_hint.enable, bufnr, false) end)
+			pcall(vim.lsp.inlay_hint.enable, bufnr, false)
 		end,
 	})
 
-	vim.api.nvim_create_user_command("InlayHintsToggle", function()
+	vim.api.nvim_buf_create_user_command(bufnr, "InlayHintsToggle", function()
 		inlayhints_is_enabled = not inlayhints_is_enabled
 		if not inlayhints_is_enabled then
 			for _, buf in ipairs(vim.api.nvim_list_bufs()) do
@@ -44,7 +44,7 @@ end
 
 M.detach = function(data)
 	local bufnr = data.bufnr
-	vim.schedule(function() pcall(vim.lsp.inlay_hint.enable, bufnr, false) end)
+	pcall(vim.lsp.inlay_hint.enable, bufnr, false)
 end
 
 return M

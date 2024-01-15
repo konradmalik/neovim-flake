@@ -10,9 +10,9 @@ M.attach = function(data)
 	local augroup = data.augroup
 	local bufnr = data.bufnr
 
-	vim.api.nvim_create_user_command("CodeLensToggle", function()
+	vim.api.nvim_buf_create_user_command(bufnr, "CodeLensToggle", function()
 		codelens_is_enabled = not codelens_is_enabled
-		if not codelens_is_enabled then vim.schedule(vim.lsp.codelens.clear) end
+		if not codelens_is_enabled then vim.lsp.codelens.clear() end
 		print("Setting codelens to: " .. tostring(codelens_is_enabled))
 	end, {
 		desc = "Enable/disable codelens with lsp",
@@ -23,7 +23,7 @@ M.attach = function(data)
 		buffer = bufnr,
 		callback = function()
 			if not codelens_is_enabled then return end
-			vim.schedule(vim.lsp.codelens.refresh)
+			vim.lsp.codelens.refresh()
 		end,
 		desc = "Refresh codelens",
 	})
@@ -39,7 +39,7 @@ M.attach = function(data)
 	vim.keymap.set("n", "<leader>cl", vim.lsp.codelens.run, opts_with_desc("CodeLens run"))
 
 	-- refresh manually right now for a start
-	if codelens_is_enabled then vim.schedule(vim.lsp.codelens.refresh) end
+	if codelens_is_enabled then vim.lsp.codelens.refresh() end
 	return {
 		commands = { "CodeLensToggle" },
 		buf_commands = { "CodeLensRefresh" },

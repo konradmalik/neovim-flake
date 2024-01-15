@@ -12,7 +12,7 @@ M.attach = function(data)
 	local opts_with_desc = keymapper.opts_for(bufnr)
 	vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
 
-	vim.api.nvim_create_user_command("LightBulbToggle", function()
+	vim.api.nvim_buf_create_user_command(bufnr, "LightBulbToggle", function()
 		lightbulb_is_enabled = not lightbulb_is_enabled
 		if not lightbulb_is_enabled then require("konrad.lsp.lightbulb").hide() end
 		print("Setting Code Action LightBulb to: " .. tostring(lightbulb_is_enabled))
