@@ -16,7 +16,11 @@ local initialize_once = function()
 			local client_id = args.data.client_id
 			local client = vim.lsp.get_client_by_id(client_id)
 			local bufnr = args.buf
-			require("konrad.lsp.event_handlers").attach(client, bufnr)
+			if client then
+				require("konrad.lsp.event_handlers").attach(client, bufnr)
+			else
+				vim.notify("cannot find client " .. client_id, vim.log.levels.ERROR)
+			end
 		end,
 	})
 
@@ -26,7 +30,11 @@ local initialize_once = function()
 			local client_id = args.data.client_id
 			local client = vim.lsp.get_client_by_id(client_id)
 			local bufnr = args.buf
-			require("konrad.lsp.event_handlers").detach(client, bufnr)
+			if client then
+				require("konrad.lsp.event_handlers").detach(client, bufnr)
+			else
+				vim.notify("cannot find client " .. client_id, vim.log.levels.ERROR)
+			end
 		end,
 	})
 
