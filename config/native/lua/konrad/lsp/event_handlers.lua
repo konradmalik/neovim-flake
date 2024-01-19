@@ -49,7 +49,7 @@ M.attach = function(client, bufnr)
 		registry.register_once("CodeAction", register_data, require("konrad.lsp.capability_handlers.codeaction").attach)
 	end
 
-	if client.supports_method(ms.codeLens_resolve) then
+	if client.supports_method(ms.textDocument_codeLens) then
 		registry.register_once("CodeLens", register_data, require("konrad.lsp.capability_handlers.codelens").attach)
 	end
 
@@ -107,7 +107,7 @@ M.attach = function(client, bufnr)
 		)
 	end
 
-	if client.supports_method(ms.workspaceSymbol_resolve) then
+	if client.supports_method(ms.workspace_symbol) then
 		vim.keymap.set("n", "<leader>ws", vim.lsp.buf.workspace_symbol, opts_with_desc("Search workspace symbols"))
 		vim.keymap.set(
 			"n",
