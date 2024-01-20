@@ -1,5 +1,4 @@
 local autostart_enabled = true
-local skipped_prefixes = { "fugitive://" }
 
 local initialized = false
 local initialize_once = function()
@@ -60,9 +59,7 @@ M.start_and_attach = function(config, bufnr, force)
 
 	bufnr = bufnr or 0
 	local bufname = vim.api.nvim_buf_get_name(bufnr)
-	for _, prefix in ipairs(skipped_prefixes) do
-		if vim.startswith(bufname, prefix) then return end
-	end
+	if vim.fn.filereadable(bufname) == 0 then return end
 
 	initialize_once()
 
