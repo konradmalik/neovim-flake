@@ -16,4 +16,12 @@ end
 ---@return string
 M.from_path_or_default = function(binname, fullpath) return M.path_executable(binname) or fullpath end
 
+---useful for example when deciding if to attach LSP client to that buffer
+---@param bufnr integer buffer to check. 0 for current
+---@return boolean true if the buffer represents a real, readable file
+M.is_buf_readable_file = function(bufnr)
+	local bufname = vim.api.nvim_buf_get_name(bufnr)
+	return vim.fn.filereadable(bufname) == 1
+end
+
 return M

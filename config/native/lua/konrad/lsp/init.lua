@@ -1,3 +1,5 @@
+local fs = require("konrad.fs")
+
 local autostart_enabled = true
 
 local initialized = false
@@ -58,8 +60,7 @@ M.start_and_attach = function(config, bufnr, force)
 	end
 
 	bufnr = bufnr or 0
-	local bufname = vim.api.nvim_buf_get_name(bufnr)
-	if vim.fn.filereadable(bufname) == 0 then return end
+	if not fs.is_buf_readable_file(bufnr) then return end
 
 	initialize_once()
 

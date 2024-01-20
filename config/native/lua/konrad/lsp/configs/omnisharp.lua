@@ -5,6 +5,7 @@ vim.cmd("packadd omnisharp-extended-lsp.nvim")
 
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
+local fs = require("konrad.fs")
 local protocol = require("vim.lsp.protocol")
 local ms = protocol.Methods
 
@@ -75,8 +76,7 @@ M.config = {
 		end,
 		[ms.textDocument_documentHighlight] = vim.lsp.with(function(err, result, context, config)
 			-- skip highlighting for files that do not exist physically
-			local bufname = vim.api.nvim_buf_get_name(context.bufnr)
-			if vim.fn.filereadable(bufname) == 0 then return end
+			if not fs.is_buf_readable_file(context.bufnr) then return end
 			return on_documentHighlight(err, result, context, config)
 		end, {}),
 	},
