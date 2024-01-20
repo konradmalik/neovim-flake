@@ -12,11 +12,6 @@ local M = {}
 
 local root_dir = function() return configs.root_dir(".sln") or configs.root_dir(".csproj") end
 
--- disable documentHighlight in buffers that don't correspond to real files
--- like $metadata$ or fugitive as it throws errors
-local on_documentHighlight = vim.lsp.handlers[ms.textDocument_documentHighlight]
-local non_existent_patterns = { "fugitive://", "%$metadata%$" }
-
 local make_cmd = function()
 	local cmd = {
 		binaries.omnisharp(),
@@ -56,6 +51,9 @@ local make_cmd = function()
 	return cmd
 end
 
+-- disable documentHighlight in buffers that don't correspond to real files
+local on_documentHighlight = vim.lsp.handlers[ms.textDocument_documentHighlight]
+
 M.config = {
 	-- this concrete name is needed by omnisharp_extended
 	name = "omnisharp",
@@ -76,11 +74,9 @@ M.config = {
 			return require("omnisharp_extended").handler(err, result, context, config)
 		end,
 		[ms.textDocument_documentHighlight] = vim.lsp.with(function(err, result, context, config)
-			-- skip highlighting for files that do not exist phisically
+			-- skip highlighting for files that do not exist physically
 			local bufname = vim.api.nvim_buf_get_name(context.bufnr)
-			for _, ignored in ipairs(non_existent_patterns) do
-				if bufname:match(ignored) then return end
-			end
+			if vim.fn.filereadable(bufname) == 0 then return end
 			return on_documentHighlight(err, result, context, config)
 		end, {}),
 	},

@@ -6,5 +6,5 @@ require("kanagawa").setup({
 	},
 })
 
-vim.o.background = "dark"
+vim.opt.background = "dark"
 vim.cmd("colorscheme kanagawa")
