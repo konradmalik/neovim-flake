@@ -24,7 +24,6 @@
       git-conflict-nvim = { url = "github:konradmalik/git-conflict.nvim"; flake = false; };
       gitsigns-nvim = { url = "github:lewis6991/gitsigns.nvim"; flake = false; };
       harpoon = { url = "github:ThePrimeagen/harpoon/harpoon2"; flake = false; };
-      heirline-nvim = { url = "github:rebelot/heirline.nvim"; flake = false; };
       kanagawa-nvim = { url = "github:rebelot/kanagawa.nvim"; flake = false; };
       luasnip = { url = "github:L3MON4D3/LuaSnip"; flake = false; };
       neo-tree-nvim = { url = "github:nvim-neo-tree/neo-tree.nvim"; flake = false; };

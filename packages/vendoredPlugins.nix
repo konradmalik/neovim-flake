@@ -48,7 +48,6 @@ rec {
   harpoon = (buildVim { name = "harpoon"; src = inputs.harpoon; }).overrideAttrs {
     nativeBuildInputs = [ plenary-nvim ];
   };
-  heirline-nvim = buildVim { name = "heirline.nvim"; src = inputs.heirline-nvim; nvimRequireCheck = "heirline"; };
   kanagawa-nvim = buildVim { name = "kanagawa.nvim"; src = inputs.kanagawa-nvim; nvimRequireCheck = "kanagawa"; };
   luasnip = buildVim { name = "luasnip"; src = inputs.luasnip; };
   neo-tree-nvim = buildVim { name = "neo-tree.nvim"; src = inputs.neo-tree-nvim; nvimRequireCheck = "neo-tree"; };

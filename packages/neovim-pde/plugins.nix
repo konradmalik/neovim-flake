@@ -66,10 +66,8 @@ processMadePlugins (with neovimPlugins;[
     ];
   })
   # statusline
-  (makePlugin {
-    plugin = heirline-nvim;
-    dependencies = [ gitsigns-nvim nvim-web-devicons nvim-navic ];
-  })
+  (makePlugin nvim-web-devicons)
+  (makePlugin nvim-navic)
   # ui
   (makePlugin kanagawa-nvim)
   (makePlugin dressing-nvim)
