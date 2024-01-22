@@ -1,6 +1,6 @@
-vim.o.laststatus = 3
-
 local components = require("konrad.statusline.components")
+local conditions = require("konrad.statusline.conditions")
+local utils = require("konrad.statusline.utils")
 
 local config = {
 	special = {
@@ -9,33 +9,9 @@ local config = {
 	},
 }
 
-local function stbufnr() return vim.api.nvim_win_get_buf(vim.g.statusline_winid) or 0 end
-
-local function is_activewin() return vim.api.nvim_get_current_win() == vim.g.statusline_winid end
-
-local function pattern_list_matches(str, pattern_list)
-	for _, pattern in ipairs(pattern_list) do
-		if str:find(pattern) then return true end
-	end
-	return false
-end
-
-local buf_matchers = {
-	filetype = function(bufnr) return vim.bo[bufnr].filetype end,
-	buftype = function(bufnr) return vim.bo[bufnr].buftype end,
-}
-
-local function buffer_matches(patterns, bufnr)
-	bufnr = bufnr or 0
-	for kind, pattern_list in pairs(patterns) do
-		if pattern_list_matches(buf_matchers[kind](bufnr), pattern_list) then return true end
-	end
-	return false
-end
-
 local function setup_statusline()
+	vim.o.laststatus = 3
 	vim.g.qf_disable_statusline = true
-	-- set hl of statusline to be the same as Normal hl by default (makes background nicely blend it)
 	vim.api.nvim_set_hl(0, "StatusLine", { bg = "bg", fg = "fg" })
 	vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "fg", fg = "bg" })
 
@@ -43,7 +19,7 @@ local function setup_statusline()
 end
 
 local function setup_local_winbar_with_autocmd()
-	local function is_special(bufnr) return buffer_matches(config.special, bufnr) end
+	local function is_special(bufnr) return conditions.buffer_matches(config.special, bufnr) end
 
 	local winbar = "%!v:lua.require('konrad.statusline').winbar()"
 	local group = vim.api.nvim_create_augroup("personal-winbar", { clear = true })
@@ -75,7 +51,7 @@ end
 local M = {}
 
 M.statusline = function()
-	if buffer_matches(config.special, stbufnr()) then return components.filetype() end
+	if conditions.buffer_matches(config.special, utils.stbufnr()) then return components.filetype() end
 
 	return table.concat({
 		components.mode(),
@@ -104,7 +80,7 @@ M.statusline = function()
 end
 
 M.winbar = function()
-	if not is_activewin() then return table.concat({
+	if not conditions.is_activewin() then return table.concat({
 		components.fileinfo(false),
 	}) end
 

@@ -1,9 +1,6 @@
 local devicons = require("nvim-web-devicons")
 local icons = require("konrad.icons")
-
-local function stwinnr() return vim.g.statusline_winid end
-
-local function stbufnr() return vim.api.nvim_win_get_buf(vim.g.statusline_winid) end
+local utils = require("konrad.statusline.utils")
 
 local function wrap_hl(hl, s) return string.format("%%#%s#%s%%*", hl, s) end
 
@@ -107,9 +104,10 @@ M.mode = function()
 end
 
 M.fileinfo = function(active)
+	local bufnr = utils.stbufnr()
 	local text = {}
 
-	local bufname = vim.api.nvim_buf_get_name(stbufnr())
+	local bufname = vim.api.nvim_buf_get_name(bufnr)
 	local extension = vim.fn.fnamemodify(bufname, ":e")
 	local icon, color = devicons.get_icon_color(bufname, extension, { default = true })
 	vim.api.nvim_set_hl(0, "StFileInfo", { fg = color })
@@ -118,7 +116,7 @@ M.fileinfo = function(active)
 	local filename = nil
 	if bufname == "" then
 		filename = "[No Name]"
-	elseif vim.bo[stbufnr()].filetype == "help" then
+	elseif vim.bo[bufnr].filetype == "help" then
 		filename = vim.fn.fnamemodify(bufname, ":t")
 	else
 		filename = vim.fn.fnamemodify(bufname, ":.")
@@ -127,9 +125,9 @@ M.fileinfo = function(active)
 	if vim.o.columns <= 85 then filename = vim.fn.pathshorten(filename) end
 	table.insert(text, filename)
 
-	if vim.bo[stbufnr()].modified then table.insert(text, wrap_hl(colors.diag_info, icons.ui.Square)) end
-	if vim.bo[stbufnr()].readonly then table.insert(text, wrap_hl(colors.diag_warn, icons.ui.Lock)) end
-	if not vim.bo[stbufnr()].modifiable then table.insert(text, wrap_hl(colors.diag_error, icons.ui.FilledLock)) end
+	if vim.bo[bufnr].modified then table.insert(text, wrap_hl(colors.diag_info, icons.ui.Square)) end
+	if vim.bo[bufnr].readonly then table.insert(text, wrap_hl(colors.diag_warn, icons.ui.Lock)) end
+	if not vim.bo[bufnr].modifiable then table.insert(text, wrap_hl(colors.diag_error, icons.ui.FilledLock)) end
 
 	local hl = ""
 	if active then
@@ -140,20 +138,20 @@ M.fileinfo = function(active)
 	return wrap_hl(hl, table.concat(text))
 end
 
-M.fileformat = function() return wrap_hl(colors.gray, format_types[vim.bo[stbufnr()].fileformat]) end
+M.fileformat = function() return wrap_hl(colors.gray, format_types[vim.bo[utils.stbufnr()].fileformat]) end
 
 M.git = function()
-	if not vim.b[stbufnr()].gitsigns_head or vim.b[stbufnr()].gitsigns_git_status then return "" end
+	local bufnr = utils.stbufnr()
+	if not vim.b[bufnr].gitsigns_head or vim.b[bufnr].gitsigns_git_status then return "" end
 
-	return wrap_hl(colors.orange, string.format("%s %s", icons.git.Branch, vim.b[stbufnr()].gitsigns_status_dict.head))
+	return wrap_hl(colors.orange, string.format("%s %s", icons.git.Branch, vim.b[bufnr].gitsigns_status_dict.head))
 end
 
 M.gitchanges = function()
-	if not vim.b[stbufnr()].gitsigns_head or vim.b[stbufnr()].gitsigns_git_status or vim.o.columns < 120 then
-		return ""
-	end
+	local bufnr = utils.stbufnr()
+	if not vim.b[bufnr].gitsigns_head or vim.b[bufnr].gitsigns_git_status or vim.o.columns < 120 then return "" end
 
-	local git_status = vim.b[stbufnr()].gitsigns_status_dict
+	local git_status = vim.b[bufnr].gitsigns_status_dict
 
 	local added = (git_status.added and git_status.added ~= 0)
 			and wrap_hl(colors.git_add, string.format("%s %s ", icons.git.Add, git_status.added))
@@ -169,10 +167,11 @@ M.gitchanges = function()
 end
 
 M.diagnostics = function()
-	local numErrors = #vim.diagnostic.get(stbufnr(), { severity = vim.diagnostic.severity.ERROR }) or 0
-	local numWarnings = #vim.diagnostic.get(stbufnr(), { severity = vim.diagnostic.severity.WARN }) or 0
-	local numHints = #vim.diagnostic.get(stbufnr(), { severity = vim.diagnostic.severity.HINT }) or 0
-	local numInfo = #vim.diagnostic.get(stbufnr(), { severity = vim.diagnostic.severity.INFO }) or 0
+	local bufnr = utils.stbufnr()
+	local numErrors = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.ERROR }) or 0
+	local numWarnings = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.WARN }) or 0
+	local numHints = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.HINT }) or 0
+	local numInfo = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.INFO }) or 0
 
 	local errors = wrap_hl(colors.diag_error, string.format("%s %s ", icons.diagnostics.Error, numErrors))
 	local warnings = wrap_hl(colors.diag_warn, string.format("%s %s ", icons.diagnostics.Warning, numWarnings))
@@ -188,20 +187,22 @@ M.diagnostics = function()
 end
 
 M.filetype = function()
-	local ft = vim.bo[stbufnr()].filetype
+	local bufnr = utils.stbufnr()
+	local ft = vim.bo[bufnr].filetype
 	if ft == "" then ft = "plain text" end
 	return wrap_hl(colors.filetype, string.format("%s %s", icons.documents.FileContents, ft))
 end
 
 M.file_encoding = function()
-	local encode = vim.bo[stbufnr()].fileencoding
+	local bufnr = utils.stbufnr()
+	local encode = vim.bo[bufnr].fileencoding
 	if encode == "" then encode = "none" end
 	return wrap_hl(colors.gray, encode:lower())
 end
 
 M.LSP_status = function()
 	local names = {}
-	local clients = vim.lsp.get_clients({ bufnr = stbufnr() })
+	local clients = vim.lsp.get_clients({ bufnr = utils.stbufnr() })
 	if #clients == 0 then return "" end
 
 	local icon = #clients > 1 and icons.ui.CheckAll or icons.ui.Check
@@ -238,8 +239,8 @@ end
 M.ruler = function() return wrap_hl(colors.purple, "[%7(%l/%3L%):%2c %P]") end
 
 M.scrollbar = function()
-	local curr_line = vim.api.nvim_win_get_cursor(stwinnr())[1]
-	local lines = vim.api.nvim_buf_line_count(stbufnr())
+	local curr_line = vim.api.nvim_win_get_cursor(utils.stwinnr())[1]
+	local lines = vim.api.nvim_buf_line_count(utils.stbufnr())
 	local i = math.floor((curr_line - 1) / lines * #sbar) + 1
 	return wrap_hl(colors.blue, string.rep(sbar[i], 2))
 end
