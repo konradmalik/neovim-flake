@@ -1,3 +1,4 @@
+local conditions = require("konrad.statusline.conditions")
 local devicons = require("nvim-web-devicons")
 local icons = require("konrad.icons")
 local utils = require("konrad.statusline.utils")
@@ -103,17 +104,24 @@ M.mode = function()
 	return string.format("%s%s%s", left, mode, right)
 end
 
-M.fileinfo = function(active)
+M.fileinfo = function(active, is_winbar)
 	local bufnr = utils.stbufnr()
 	local text = {}
 
 	local bufname = vim.api.nvim_buf_get_name(bufnr)
 	local extension = vim.fn.fnamemodify(bufname, ":e")
 	local icon, color = devicons.get_icon_color(bufname, extension, { default = true })
-	vim.api.nvim_set_hl(0, "StFileInfo", { fg = color })
-	table.insert(text, wrap_hl("StFileInfo", string.format("%s ", icon)))
 
-	local filename = nil
+	local ihl
+	if not active then
+		ihl = colors.gray
+	else
+		ihl = "StFileInfo"
+		vim.api.nvim_set_hl(0, ihl, { fg = color })
+	end
+	table.insert(text, wrap_hl(ihl, string.format("%s ", icon)))
+
+	local filename
 	if bufname == "" then
 		filename = "[No Name]"
 	elseif vim.bo[bufnr].filetype == "help" then
@@ -122,20 +130,20 @@ M.fileinfo = function(active)
 		filename = vim.fn.fnamemodify(bufname, ":.")
 	end
 
-	if vim.o.columns <= 85 then filename = vim.fn.pathshorten(filename) end
-	table.insert(text, filename)
+	if not conditions.width_percent_below(#filename, 0.4, is_winbar) then filename = vim.fn.pathshorten(filename) end
+	local hl
+	if not active then
+		hl = colors.gray
+	else
+		hl = colors.text
+	end
+	table.insert(text, wrap_hl(hl, filename))
 
 	if vim.bo[bufnr].modified then table.insert(text, wrap_hl(colors.diag_info, icons.ui.Square)) end
 	if vim.bo[bufnr].readonly then table.insert(text, wrap_hl(colors.diag_warn, icons.ui.Lock)) end
 	if not vim.bo[bufnr].modifiable then table.insert(text, wrap_hl(colors.diag_error, icons.ui.FilledLock)) end
 
-	local hl = ""
-	if active then
-		hl = colors.text
-	else
-		hl = colors.gray
-	end
-	return wrap_hl(hl, table.concat(text))
+	return table.concat(text)
 end
 
 M.fileformat = function() return wrap_hl(colors.gray, format_types[vim.bo[utils.stbufnr()].fileformat]) end
@@ -149,7 +157,7 @@ end
 
 M.gitchanges = function()
 	local bufnr = utils.stbufnr()
-	if not vim.b[bufnr].gitsigns_head or vim.b[bufnr].gitsigns_git_status or vim.o.columns < 120 then return "" end
+	if not vim.b[bufnr].gitsigns_head or vim.b[bufnr].gitsigns_git_status then return "" end
 
 	local git_status = vim.b[bufnr].gitsigns_status_dict
 
@@ -183,7 +191,7 @@ M.diagnostics = function()
 	hints = numHints > 0 and hints or ""
 	info = numInfo > 0 and info or ""
 
-	return vim.o.columns > 140 and string.format("%s%s%s%s", errors, warnings, hints, info) or ""
+	return string.format("%s%s%s%s", errors, warnings, hints, info)
 end
 
 M.filetype = function()
@@ -206,7 +214,7 @@ M.LSP_status = function()
 	if #clients == 0 then return "" end
 
 	local icon = #clients > 1 and icons.ui.CheckAll or icons.ui.Check
-	if vim.o.columns <= 100 then return wrap_hl(colors.green, string.format("%s %s LSPs", icon, #clients)) end
+	if #clients > 3 then return wrap_hl(colors.green, string.format("%s %s LSPs", icon, #clients)) end
 
 	for _, server in pairs(clients) do
 		table.insert(names, server.name)
@@ -220,11 +228,11 @@ M.DAP_status = function()
 	return wrap_hl(colors.debug, string.format("%s %s", icons.ui.Bug, require("dap").status()))
 end
 
-M.cwd = function()
+M.cwd = function(is_winbar)
 	local cwd = vim.fn.getcwd()
 	cwd = vim.fn.fnamemodify(cwd, ":t")
-	if vim.o.columns <= 85 then cwd = vim.fn.pathshorten(cwd) end
 	cwd = string.format("%s %s %s", (vim.fn.haslocaldir(0) == 1 and "l" or "g"), icons.documents.Folder, cwd)
+	if not conditions.width_percent_below(#cwd, 0.15, is_winbar) then return "" end
 	return wrap_hl(colors.directory, cwd)
 end
 
@@ -233,7 +241,8 @@ M.hostname = function() return wrap_hl(colors.blue, string.format("%s %s", icons
 M.navic = function()
 	local ok, navic = pcall(require, "nvim-navic")
 	if not ok or not navic.is_available() then return "" end
-	return wrap_hl("Tag", require("nvim-navic").get_location({ highlight = false, click = true, safe_output = true }))
+	local loc = require("nvim-navic").get_location({ highlight = false, click = true, safe_output = true })
+	return wrap_hl("Tag", loc)
 end
 
 M.ruler = function() return wrap_hl(colors.purple, "[%7(%l/%3L%):%2c %P]") end

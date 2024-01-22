@@ -10,17 +10,17 @@ local config = {
 }
 
 local function setup_statusline()
-	vim.o.laststatus = 3
 	vim.g.qf_disable_statusline = true
+	vim.o.laststatus = 3
 	vim.api.nvim_set_hl(0, "StatusLine", { bg = "bg", fg = "fg" })
 	vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "fg", fg = "bg" })
 
 	vim.o.statusline = "%!v:lua.require('konrad.statusline').statusline()"
 end
 
-local function setup_local_winbar_with_autocmd()
-	local function is_special(bufnr) return conditions.buffer_matches(config.special, bufnr) end
+local function is_special(bufnr) return conditions.buffer_matches(config.special, bufnr) end
 
+local function setup_local_winbar_with_autocmd()
 	local winbar = "%!v:lua.require('konrad.statusline').winbar()"
 	local group = vim.api.nvim_create_augroup("personal-winbar", { clear = true })
 	vim.api.nvim_create_autocmd({ "VimEnter", "UIEnter", "BufWinEnter", "FileType", "TermOpen" }, {
@@ -51,7 +51,7 @@ end
 local M = {}
 
 M.statusline = function()
-	if conditions.buffer_matches(config.special, utils.stbufnr()) then return components.filetype() end
+	if is_special(utils.stbufnr()) then return components.filetype() end
 
 	return table.concat({
 		components.mode(),
@@ -80,14 +80,12 @@ M.statusline = function()
 end
 
 M.winbar = function()
-	if not conditions.is_activewin() then return table.concat({
-		components.fileinfo(false),
-	}) end
+	if not conditions.is_activewin() then return components.fileinfo(false, true) end
 
 	return table.concat({
-		components.cwd(),
+		components.cwd(true),
 		components.space,
-		components.fileinfo(true),
+		components.fileinfo(true, true),
 		components.space,
 		components.navic(),
 	})
