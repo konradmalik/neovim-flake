@@ -41,7 +41,7 @@ neo_tree.setup({
 				-- Change type
 				added = git_icons.Add,
 				modified = git_icons.Mod,
-				deleted = git_icons.Deleted,
+				deleted = git_icons.Remove,
 				renamed = git_icons.Rename,
 				-- Status type
 				untracked = git_icons.Untracked,

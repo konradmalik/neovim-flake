@@ -127,7 +127,7 @@ M.fileinfo = function(active)
 	if vim.o.columns <= 85 then filename = vim.fn.pathshorten(filename) end
 	table.insert(text, filename)
 
-	if vim.bo[stbufnr()].modified then table.insert(text, wrap_hl(colors.diag_info, icons.ui.SmallCircle)) end
+	if vim.bo[stbufnr()].modified then table.insert(text, wrap_hl(colors.diag_info, icons.ui.Square)) end
 	if vim.bo[stbufnr()].readonly then table.insert(text, wrap_hl(colors.diag_warn, icons.ui.Lock)) end
 	if not vim.bo[stbufnr()].modifiable then table.insert(text, wrap_hl(colors.diag_error, icons.ui.FilledLock)) end
 
