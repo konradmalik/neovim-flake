@@ -80,6 +80,10 @@ local modes = {
 
 local M = {}
 
+M.space = " "
+
+M.align = "%="
+
 M.mode = function()
 	local m = vim.api.nvim_get_mode().mode
 	return wrap_hl(modes[m][2], string.format("%s %s", icons.misc.Neovim, modes[m][1]))

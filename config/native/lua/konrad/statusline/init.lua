@@ -34,25 +34,25 @@ M.statusline_special = function() return components.filetype() end
 M.statusline = function()
 	return table.concat({
 		components.mode(),
-		" ",
+		components.space,
 		components.git(),
-		" ",
+		components.space,
 		components.gitchanges(),
-		"%=",
+		components.align,
 		components.diagnostics(),
-		"  ",
+		components.space,
 		components.LSP_status(),
-		"  ",
+		components.space,
 		components.filetype(),
-		" ",
+		components.space,
 		components.fileformat(),
-		" ",
+		components.space,
 		components.file_encoding(),
-		" ",
+		components.space,
 		components.hostname(),
-		" ",
+		components.space,
 		components.ruler(),
-		" ",
+		components.space,
 		components.scrollbar(),
 	})
 end
@@ -64,9 +64,9 @@ M.winbar = function()
 
 	return table.concat({
 		components.cwd(),
-		" ",
+		components.space,
 		components.fileinfo(true),
-		" ",
+		components.space,
 		components.navic(),
 	})
 end
