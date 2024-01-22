@@ -3,11 +3,11 @@ vim.o.laststatus = 3
 local components = require("konrad.statusline.components")
 
 local config = {
-	special_filetype = { "^git.*", "fugitive", "harpoon", "undotree", "diff", "qf" },
+	special_filetype = { "^git.*", "fugitive", "harpoon", "undotree", "diff" },
 	special_buftype = { "nofile", "prompt", "help", "quickfix" },
 }
 
-local M = {}
+local function is_activewin() return vim.api.nvim_get_current_win() == vim.g.statusline_winid end
 
 local is_special = function(bufnr)
 	local filetype = vim.bo[bufnr].filetype
@@ -26,6 +26,8 @@ local is_special = function(bufnr)
 
 	return false
 end
+
+local M = {}
 
 M.statusline_special = function() return components.filetype() end
 
@@ -55,19 +57,17 @@ M.statusline = function()
 	})
 end
 
-M.winbar_active = function()
+M.winbar = function()
+	if not is_activewin() then return table.concat({
+		components.fileinfo(false),
+	}) end
+
 	return table.concat({
 		components.cwd(),
 		" ",
 		components.fileinfo(true),
 		" ",
 		components.navic(),
-	})
-end
-
-M.winbar_inactive = function()
-	return table.concat({
-		components.fileinfo(false),
 	})
 end
 
@@ -81,27 +81,13 @@ M.setup = function(conf)
 		callback = function(event)
 			local bufnr = event.buf
 			if is_special(bufnr) then
-				vim.opt_local.winbar = ""
+				vim.opt_local.winbar = nil
 				vim.opt_local.statusline = "%!v:lua.require('konrad.statusline').statusline_special()"
 				return
 			end
 
-			vim.opt_local.winbar = "%!v:lua.require('konrad.statusline').winbar_active()"
+			vim.opt_local.winbar = "%!v:lua.require('konrad.statusline').winbar()"
 			vim.opt_local.statusline = "%!v:lua.require('konrad.statusline').statusline()"
-		end,
-	})
-
-	vim.api.nvim_create_autocmd({ "WinLeave" }, {
-		group = group,
-		pattern = "*",
-		callback = function(event)
-			local bufnr = event.buf
-			if is_special(bufnr) then
-				vim.opt_local.winbar = ""
-				return
-			end
-
-			vim.opt_local.winbar = "%!v:lua.require('konrad.statusline').winbar_inactive()"
 		end,
 	})
 end

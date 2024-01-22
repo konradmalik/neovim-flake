@@ -5,11 +5,7 @@ local function stwinnr() return vim.g.statusline_winid end
 
 local function stbufnr() return vim.api.nvim_win_get_buf(vim.g.statusline_winid) end
 
-local function is_activewin() return vim.api.nvim_get_current_win() == stwinnr() end
-
 local function wrap_hl(hl, s) return string.format("%%#%s#%s%%*", hl, s) end
-
-local M = {}
 
 local colors = {
 	green = "String",
@@ -82,9 +78,9 @@ local modes = {
 	["!"] = { "SHELL", colors.directory },
 }
 
-M.mode = function()
-	if not is_activewin() then return "" end
+local M = {}
 
+M.mode = function()
 	local m = vim.api.nvim_get_mode().mode
 	return wrap_hl(modes[m][2], string.format("%s %s", icons.misc.Neovim, modes[m][1]))
 end
@@ -165,12 +161,14 @@ M.diagnostics = function()
 end
 
 M.filetype = function()
-	local ft = vim.bo[stbufnr()].ft or "plain text"
+	local ft = vim.bo[stbufnr()].filetype
+	if ft == "" then ft = "plain text" end
 	return wrap_hl(colors.filetype, string.format("{} %s", ft))
 end
 
 M.file_encoding = function()
 	local encode = vim.bo[stbufnr()].fileencoding
+	if encode == "" then encode = "none" end
 	return wrap_hl(colors.gray, encode:lower())
 end
 
