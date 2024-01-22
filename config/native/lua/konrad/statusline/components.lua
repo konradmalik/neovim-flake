@@ -93,7 +93,17 @@ M.cut = "%<"
 
 M.mode = function()
 	local m = vim.api.nvim_get_mode().mode
-	return wrap_hl(modes[m][2], string.format(" %s %s ", icons.misc.Neovim, modes[m][1]))
+	local mname = modes[m][1]
+	local mhl = modes[m][2]
+	local hl = vim.api.nvim_get_hl(0, { name = mhl })
+
+	local left = wrap_hl(mhl, icons.ui.LeftHalf)
+	local right = wrap_hl(mhl, icons.ui.RightHalf)
+
+	vim.api.nvim_set_hl(0, "StMode", { bold = true, bg = hl.fg, fg = "bg" })
+	local mode = wrap_hl("StMode", string.format("%s %s", icons.misc.Neovim, mname))
+
+	return string.format("%s%s%s", left, mode, right)
 end
 
 M.fileinfo = function(active)
@@ -101,8 +111,9 @@ M.fileinfo = function(active)
 
 	local bufname = vim.api.nvim_buf_get_name(stbufnr())
 	local extension = vim.fn.fnamemodify(bufname, ":e")
-	local icon = devicons.get_icon(bufname, extension, { default = true })
-	table.insert(text, string.format("%s ", icon))
+	local icon, color = devicons.get_icon_color(bufname, extension, { default = true })
+	vim.api.nvim_set_hl(0, "StFileInfo", { fg = color })
+	table.insert(text, wrap_hl("StFileInfo", string.format("%s ", icon)))
 
 	local filename = nil
 	if bufname == "" then

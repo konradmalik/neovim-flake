@@ -75,6 +75,10 @@ end
 M.setup = function(conf)
 	config = vim.tbl_deep_extend("force", config, conf or {})
 
+	-- set hl of statusline to be the same as Normal hl by default (makes background nicely blend it)
+	vim.api.nvim_set_hl(0, "StatusLine", { bg = "bg", fg = "fg" })
+	vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "fg", fg = "bg" })
+
 	local group = vim.api.nvim_create_augroup("personal-statusbar-winbar", { clear = true })
 	vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter", "FileType" }, {
 		group = group,
