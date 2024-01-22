@@ -179,6 +179,11 @@ M.diagnostics = function()
 	local hints = wrap_hl(colors.diag_hint, string.format("%s %s ", icons.diagnostics.Hint, numHints))
 	local info = wrap_hl(colors.diag_info, string.format("%s %s ", icons.diagnostics.Information, numInfo))
 
+	errors = numErrors > 0 and errors or ""
+	warnings = numWarnings > 0 and warnings or ""
+	hints = numHints > 0 and hints or ""
+	info = numInfo > 0 and info or ""
+
 	return vim.o.columns > 140 and string.format("%s%s%s%s", errors, warnings, hints, info) or ""
 end
 
