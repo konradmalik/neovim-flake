@@ -15,8 +15,7 @@ gitsigns.setup({
 
 	on_attach = function(bufnr)
 		vim.cmd("redrawstatus")
-		local opts = { noremap = true, buffer = bufnr }
-		local opts_with_desc = function(desc) return vim.tbl_extend("error", opts, { desc = "[Gitsigns] " .. desc }) end
+		local opts_with_desc = function(desc) return { desc = "[Gitsigns] " .. desc, buffer = bufnr } end
 
 		vim.keymap.set("n", "<leader>gj", gitsigns.next_hunk, opts_with_desc("Next Hunk"))
 		vim.keymap.set("n", "<leader>gk", gitsigns.prev_hunk, opts_with_desc("Prev Hunk"))

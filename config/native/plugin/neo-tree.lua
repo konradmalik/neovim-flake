@@ -1,6 +1,5 @@
 local keymap = vim.keymap
-local opts = { noremap = true, silent = true }
-local opts_with_desc = function(desc) return vim.tbl_extend("error", opts, { desc = "[NeoTree] " .. desc }) end
+local opts_with_desc = function(desc) return { desc = "[NeoTree] " .. desc } end
 
 keymap.set("n", "<leader>tt", "<cmd>Neotree focus filesystem left toggle<cr>", opts_with_desc("Toggle"))
 
