@@ -3,35 +3,80 @@ vim.o.laststatus = 3
 local components = require("konrad.statusline.components")
 
 local config = {
-	special_filetype = { "^git.*", "fugitive", "harpoon", "undotree", "diff" },
-	special_buftype = { "nofile", "prompt", "help", "quickfix" },
+	special = {
+		filetype = { "^git.*", "fugitive", "harpoon", "undotree", "diff" },
+		buftype = { "nofile", "prompt", "help", "quickfix" },
+	},
 }
+
+local function stbufnr() return vim.api.nvim_win_get_buf(vim.g.statusline_winid) or 0 end
 
 local function is_activewin() return vim.api.nvim_get_current_win() == vim.g.statusline_winid end
 
-local is_special = function(bufnr)
-	local filetype = vim.bo[bufnr].filetype
-	if filetype then
-		for _, ex in ipairs(config.special_filetype) do
-			if filetype:match(ex) then return true end
-		end
+local function pattern_list_matches(str, pattern_list)
+	for _, pattern in ipairs(pattern_list) do
+		if str:find(pattern) then return true end
 	end
-
-	local buftype = vim.bo[bufnr].buftype
-	if buftype then
-		for _, ex in ipairs(config.special_buftype) do
-			if buftype:match(ex) then return true end
-		end
-	end
-
 	return false
+end
+
+local buf_matchers = {
+	filetype = function(bufnr) return vim.bo[bufnr].filetype end,
+	buftype = function(bufnr) return vim.bo[bufnr].buftype end,
+}
+
+local function buffer_matches(patterns, bufnr)
+	bufnr = bufnr or 0
+	for kind, pattern_list in pairs(patterns) do
+		if pattern_list_matches(buf_matchers[kind](bufnr), pattern_list) then return true end
+	end
+	return false
+end
+
+local function setup_statusline()
+	vim.g.qf_disable_statusline = true
+	-- set hl of statusline to be the same as Normal hl by default (makes background nicely blend it)
+	vim.api.nvim_set_hl(0, "StatusLine", { bg = "bg", fg = "fg" })
+	vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "fg", fg = "bg" })
+
+	vim.o.statusline = "%!v:lua.require('konrad.statusline').statusline()"
+end
+
+local function setup_local_winbar_with_autocmd()
+	local function is_special(bufnr) return buffer_matches(config.special, bufnr) end
+
+	local winbar = "%!v:lua.require('konrad.statusline').winbar()"
+	local group = vim.api.nvim_create_augroup("personal-winbar", { clear = true })
+	vim.api.nvim_create_autocmd({ "VimEnter", "UIEnter", "BufWinEnter", "FileType", "TermOpen" }, {
+		group = group,
+		callback = function(event)
+			if event.event == "VimEnter" or event.event == "UIEnter" then
+				for _, win in ipairs(vim.api.nvim_list_wins()) do
+					local winbuf = vim.api.nvim_win_get_buf(win)
+					if is_special(winbuf) then
+						if vim.wo[win].winbar == winbar then vim.wo[win].winbar = nil end
+					else
+						vim.wo[win].winbar = winbar
+					end
+				end
+			end
+
+			if is_special(event.buf) then
+				if vim.wo.winbar == winbar then vim.wo.winbar = nil end
+				return
+			end
+
+			vim.wo.winbar = winbar
+		end,
+		desc = "Personal: set window-local winbar",
+	})
 end
 
 local M = {}
 
-M.statusline_special = function() return components.filetype() end
-
 M.statusline = function()
+	if buffer_matches(config.special, stbufnr()) then return components.filetype() end
+
 	return table.concat({
 		components.mode(),
 		components.space,
@@ -75,26 +120,8 @@ end
 M.setup = function(conf)
 	config = vim.tbl_deep_extend("force", config, conf or {})
 
-	-- set hl of statusline to be the same as Normal hl by default (makes background nicely blend it)
-	vim.api.nvim_set_hl(0, "StatusLine", { bg = "bg", fg = "fg" })
-	vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "fg", fg = "bg" })
-
-	local group = vim.api.nvim_create_augroup("personal-statusbar-winbar", { clear = true })
-	vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter", "FileType" }, {
-		group = group,
-		pattern = "*",
-		callback = function(event)
-			local bufnr = event.buf
-			if is_special(bufnr) then
-				vim.opt_local.winbar = nil
-				vim.opt_local.statusline = "%!v:lua.require('konrad.statusline').statusline_special()"
-				return
-			end
-
-			vim.opt_local.winbar = "%!v:lua.require('konrad.statusline').winbar()"
-			vim.opt_local.statusline = "%!v:lua.require('konrad.statusline').statusline()"
-		end,
-	})
+	setup_statusline()
+	setup_local_winbar_with_autocmd()
 end
 
 return M
