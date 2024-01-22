@@ -190,7 +190,7 @@ end
 M.filetype = function()
 	local ft = vim.bo[stbufnr()].filetype
 	if ft == "" then ft = "plain text" end
-	return wrap_hl(colors.filetype, string.format("{} %s", ft))
+	return wrap_hl(colors.filetype, string.format("%s %s", icons.documents.FileContents, ft))
 end
 
 M.file_encoding = function()
