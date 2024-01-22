@@ -24,6 +24,7 @@ local colors = {
 	directory = "Directory",
 	filetype = "Type",
 	text = "Normal",
+	debug = "Debug",
 }
 
 local sbar = icons.ui.Animations.ThinFill
@@ -35,47 +36,50 @@ local format_types = {
 }
 
 local modes = {
-	["n"] = { "NORMAL", colors.directory },
-	["no"] = { "NORMAL (no)", colors.directory },
-	["nov"] = { "NORMAL (nov)", colors.directory },
-	["noV"] = { "NORMAL (noV)", colors.directory },
-	["noCTRL-V"] = { "NORMAL", colors.directory },
-	["niI"] = { "NORMAL i", colors.directory },
-	["niR"] = { "NORMAL r", colors.directory },
-	["niV"] = { "NORMAL v", colors.directory },
-	["nt"] = { "NTERMINAL", colors.directory },
-	["ntT"] = { "NTERMINAL (ntT)", colors.directory },
+	["n"] = { "N", colors.blue },
+	["no"] = { "N?", colors.blue },
+	["nov"] = { "N?", colors.blue },
+	["noV"] = { "N?", colors.blue },
+	["no\22"] = { "N?", colors.blue },
+	["niI"] = { "Ni", colors.blue },
+	["niR"] = { "Nr", colors.blue },
+	["niV"] = { "Nv", colors.blue },
+	["nt"] = { "Nt", colors.blue },
+	["ntT"] = { "Nt", colors.blue },
 
-	["v"] = { "VISUAL", colors.cyan },
-	["vs"] = { "V-CHAR (Ctrl O)", colors.cyan },
-	["V"] = { "V-LINE", colors.cyan },
-	["Vs"] = { "V-LINE", colors.cyan },
-	[""] = { "V-BLOCK", colors.cyan },
+	["v"] = { "V", colors.cyan },
+	["vs"] = { "Vs", colors.cyan },
+	["V"] = { "V_", colors.cyan },
+	["Vs"] = { "Vs", colors.cyan },
+	[""] = { "^V", colors.cyan },
+	["s"] = { "^V", colors.cyan },
 
-	["i"] = { "INSERT", colors.blue },
-	["ic"] = { "INSERT (completion)", colors.blue },
-	["ix"] = { "INSERT completion", colors.blue },
+	["s"] = { "S", colors.purple },
+	["S"] = { "S_", colors.purple },
+	[""] = { "^S", colors.purple },
 
-	["t"] = { "TERMINAL", colors.blue },
+	["i"] = { "I", colors.green },
+	["ic"] = { "Ic", colors.green },
+	["ix"] = { "Ix", colors.green },
 
-	["R"] = { "REPLACE", colors.orange },
-	["Rc"] = { "REPLACE (Rc)", colors.orange },
-	["Rx"] = { "REPLACEa (Rx)", colors.orange },
-	["Rv"] = { "V-REPLACE", colors.orange },
-	["Rvc"] = { "V-REPLACE (Rvc)", colors.orange },
-	["Rvx"] = { "V-REPLACE (Rvx)", colors.orange },
+	["R"] = { "R", colors.orange },
+	["Rc"] = { "Rc", colors.orange },
+	["Rx"] = { "Rx", colors.orange },
+	["Rv"] = { "Rv", colors.orange },
+	["Rvc"] = { "Rv", colors.orange },
+	["Rvx"] = { "Rv", colors.orange },
 
-	["s"] = { "SELECT", colors.purple },
-	["S"] = { "S-LINE", colors.purple },
-	[""] = { "S-BLOCK", colors.purple },
-	["c"] = { "COMMAND", colors.orange },
-	["cv"] = { "COMMAND", colors.orange },
-	["ce"] = { "COMMAND", colors.orange },
-	["r"] = { "PROMPT", colors.orange },
-	["rm"] = { "MORE", colors.orange },
-	["r?"] = { "CONFIRM", colors.orange },
-	["x"] = { "CONFIRM", colors.purple },
-	["!"] = { "SHELL", colors.directory },
+	["c"] = { "c", colors.orange },
+	["cv"] = { "Ex", colors.orange },
+	["ce"] = { "Ex", colors.orange },
+	["r"] = { "...", colors.orange },
+	["rm"] = { "M", colors.orange },
+	["r?"] = { "?", colors.orange },
+	["!"] = { "!", colors.orange },
+
+	["x"] = { "X", colors.purple },
+
+	["t"] = { "T", colors.blue },
 }
 
 local M = {}
@@ -84,9 +88,12 @@ M.space = " "
 
 M.align = "%="
 
+-- this means that the statusline is cut here when there's not enough space
+M.cut = "%<"
+
 M.mode = function()
 	local m = vim.api.nvim_get_mode().mode
-	return wrap_hl(modes[m][2], string.format("%s %s", icons.misc.Neovim, modes[m][1]))
+	return wrap_hl(modes[m][2], string.format(" %s %s ", icons.misc.Neovim, modes[m][1]))
 end
 
 M.fileinfo = function(active)
@@ -190,6 +197,12 @@ M.LSP_status = function()
 	return wrap_hl(colors.green, string.format("%s %s", icon, table.concat(names, " ")))
 end
 
+M.DAP_status = function()
+	local ok, dap = pcall(require, "dap")
+	if not ok or not dap.session() then return "" end
+	return wrap_hl(colors.debug, string.format("%s %s", icons.ui.Bug, require("dap").status()))
+end
+
 M.cwd = function()
 	local cwd = vim.fn.getcwd()
 	cwd = vim.fn.fnamemodify(cwd, ":t")
@@ -202,8 +215,7 @@ M.hostname = function() return wrap_hl(colors.blue, string.format("%s %s", icons
 
 M.navic = function()
 	local ok, navic = pcall(require, "nvim-navic")
-	if not ok then return "" end
-	if not navic.is_available() then return "" end
+	if not ok or not navic.is_available() then return "" end
 	return require("nvim-navic").get_location({ highlight = false, click = true, safe_output = true })
 end
 

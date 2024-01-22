@@ -35,6 +35,7 @@ M.statusline = function()
 	return table.concat({
 		components.mode(),
 		components.space,
+		components.space,
 		components.git(),
 		components.space,
 		components.gitchanges(),
