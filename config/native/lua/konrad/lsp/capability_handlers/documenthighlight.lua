@@ -41,6 +41,6 @@ M.attach = function(data)
 	}
 end
 
-M.detach = vim.lsp.buf.clear_references
+M.detach = function() pcall(vim.lsp.buf.clear_references) end
 
 return M

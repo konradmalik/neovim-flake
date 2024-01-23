@@ -5,7 +5,7 @@ local M = {}
 M.prefix = keymap_prefix
 
 M.opts_for = function(bufnr)
-	return function(desc) return { buffer = bufnr, desc = keymap_prefix .. " " .. desc } end
+	return function(desc) return { buffer = bufnr, desc = string.format("%s %s", keymap_prefix, desc) } end
 end
 
 M.clear = function(bufnr)

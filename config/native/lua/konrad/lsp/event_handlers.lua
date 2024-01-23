@@ -36,6 +36,8 @@ M.detach = function(client, bufnr)
 	if #clients <= 1 then keymapper.clear(bufnr) end
 end
 
+---@param client table
+---@param bufnr integer
 M.attach = function(client, bufnr)
 	local augroup = augroups.get_augroup(client)
 	local opts_with_desc = keymapper.opts_for(bufnr)

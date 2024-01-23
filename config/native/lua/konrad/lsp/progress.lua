@@ -22,13 +22,9 @@ end
 
 ---@param kind string begin, report or end
 ---@return boolean
-local function check_is_done(kind)
-	if kind == "end" then return true end
-	return false
-end
+local function check_is_done(kind) return kind == "end" end
 
 vim.api.nvim_create_autocmd({ "LspProgress" }, {
-	pattern = "*",
 	callback = function(ev)
 		local kind = ev.file
 		local isDone = check_is_done(kind)

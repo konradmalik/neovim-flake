@@ -29,7 +29,7 @@ end
 local M = {}
 
 ---Useful for functionalities that should be registered only once per buffer
----in the case of multiple lsps attaching to the same buffer.
+---in the case of multiple LSPs attaching to the same buffer.
 ---An example can be formatting.
 ---@param fname string name of the functionality
 ---@param data table of
@@ -55,7 +55,7 @@ M.register_once = function(fname, data, setup)
 		end
 	end
 
-	local registered = setup(vim.tbl_extend("error", data, { name = fname }))
+	local registered = setup(data)
 	if registered["commands"] then insert_into_nested(commands, client.id, list_into_set(registered.commands)) end
 	if registered["buf_commands"] then
 		insert_into_nested(buf_commands, client.id, list_into_set(registered.buf_commands))
