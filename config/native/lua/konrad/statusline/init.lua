@@ -1,5 +1,6 @@
 local components = require("konrad.statusline.components")
 local conditions = require("konrad.statusline.conditions")
+local updates = require("konrad.statusline.updates")
 local utils = require("konrad.statusline.utils")
 
 local config = {
@@ -8,6 +9,11 @@ local config = {
 		buftype = { "nofile", "prompt", "help", "quickfix" },
 	},
 }
+
+local function setup_updates()
+	updates.git()
+	updates.diagnostics()
+end
 
 local function setup_statusline()
 	vim.g.qf_disable_statusline = true
@@ -94,6 +100,7 @@ end
 M.setup = function(conf)
 	config = vim.tbl_deep_extend("force", config, conf or {})
 
+	setup_updates()
 	setup_statusline()
 	setup_local_winbar_with_autocmd()
 end

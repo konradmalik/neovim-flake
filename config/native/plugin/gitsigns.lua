@@ -1,9 +1,3 @@
-vim.api.nvim_create_autocmd("User", {
-	group = vim.api.nvim_create_augroup("StGitUpdate", { clear = true }),
-	pattern = "GitSignsUpdate",
-	callback = vim.schedule_wrap(function() vim.cmd("redrawstatus") end),
-})
-
 local gitsigns = require("gitsigns")
 
 gitsigns.setup({
