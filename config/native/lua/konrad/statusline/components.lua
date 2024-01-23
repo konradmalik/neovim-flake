@@ -16,6 +16,7 @@ local colors = {
 	diag_error = "DiagnosticError",
 	diag_hint = "DiagnosticHint",
 	diag_info = "DiagnosticInfo",
+	diag_ok = "DiagnosticOk",
 	git_del = "diffDeleted",
 	git_add = "diffAdded",
 	git_change = "diffChanged",
@@ -139,7 +140,7 @@ M.fileinfo = function(active, is_winbar)
 	end
 	table.insert(text, wrap_hl(hl, filename))
 
-	if vim.bo[bufnr].modified then table.insert(text, wrap_hl(colors.diag_info, icons.ui.Square)) end
+	if vim.bo[bufnr].modified then table.insert(text, wrap_hl(colors.diag_ok, icons.ui.Square)) end
 	if vim.bo[bufnr].readonly then table.insert(text, wrap_hl(colors.diag_warn, icons.ui.Lock)) end
 	if not vim.bo[bufnr].modifiable then table.insert(text, wrap_hl(colors.diag_error, icons.ui.FilledLock)) end
 
@@ -242,7 +243,7 @@ M.navic = function()
 	local ok, navic = pcall(require, "nvim-navic")
 	if not ok or not navic.is_available() then return "" end
 	local loc = require("nvim-navic").get_location({ highlight = false, click = true, safe_output = true })
-	return wrap_hl("Tag", loc)
+	return wrap_hl(colors.cyan, loc)
 end
 
 M.ruler = function() return wrap_hl(colors.purple, "[%7(%l/%3L%):%2c %P]") end
