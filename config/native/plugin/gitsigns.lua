@@ -1,4 +1,11 @@
+vim.api.nvim_create_autocmd("User", {
+	group = vim.api.nvim_create_augroup("StGitUpdate", { clear = true }),
+	pattern = "GitSignsUpdate",
+	callback = vim.schedule_wrap(function() vim.cmd("redrawstatus") end),
+})
+
 local gitsigns = require("gitsigns")
+
 gitsigns.setup({
 	signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
 	numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
@@ -7,7 +14,6 @@ gitsigns.setup({
 	current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
 
 	on_attach = function(bufnr)
-		vim.cmd("redrawstatus")
 		local opts_with_desc = function(desc) return { desc = "[Gitsigns] " .. desc, buffer = bufnr } end
 
 		vim.keymap.set("n", "<leader>gj", gitsigns.next_hunk, opts_with_desc("Next Hunk"))
