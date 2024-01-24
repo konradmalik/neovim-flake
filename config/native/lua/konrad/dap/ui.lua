@@ -4,11 +4,11 @@ local dapui = require("dapui")
 local icons = require("konrad.icons")
 
 dapui.setup({
-	icons = {
-		expanded = icons.ui.Expanded,
-		collapsed = icons.ui.Collapsed,
-		current_frame = icons.ui.FoldClosed,
-	},
+    icons = {
+        expanded = icons.ui.Expanded,
+        collapsed = icons.ui.Collapsed,
+        current_frame = icons.ui.FoldClosed,
+    },
 })
 
 -- automatic open/close

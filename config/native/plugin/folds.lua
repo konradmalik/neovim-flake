@@ -2,11 +2,11 @@ local icons = require("konrad.icons")
 
 vim.opt.foldcolumn = "auto"
 vim.opt.fillchars = {
-	eob = " ",
-	fold = " ",
-	foldopen = icons.ui.FoldOpen,
-	foldsep = icons.ui.Guide,
-	foldclose = icons.ui.FoldClosed,
+    eob = " ",
+    fold = " ",
+    foldopen = icons.ui.FoldOpen,
+    foldsep = icons.ui.Guide,
+    foldclose = icons.ui.FoldClosed,
 }
 vim.opt.foldmethod = "expr"
 -- TODO lua-based treesitter's foldexpr is unusable with fugitive's Git log command.

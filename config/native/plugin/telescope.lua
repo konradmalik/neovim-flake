@@ -1,9 +1,9 @@
 local telescope = require("telescope")
 
 telescope.setup({
-	defaults = {
-		wrap_results = true,
-	},
+    defaults = {
+        wrap_results = true,
+    },
 })
 -- To get extensions loaded and working with telescope, you need to call
 -- load_extension, somewhere after setup function:
@@ -18,11 +18,11 @@ vim.keymap.set("n", "<leader>ff", builtin.find_files, opts_with_desc("[F]ind [F]
 vim.keymap.set("n", "<leader>fi", builtin.git_files, opts_with_desc("Find (G[i]t) Files"))
 vim.keymap.set("n", "<leader>fg", builtin.live_grep, opts_with_desc("Live [G]rep"))
 vim.keymap.set("n", "<leader>f/", function()
-	-- You can pass additional configuration to telescope to change theme, layout, etc.
-	builtin.current_buffer_fuzzy_find(themes.get_dropdown({
-		winblend = 10,
-		previewer = false,
-	}))
+    -- You can pass additional configuration to telescope to change theme, layout, etc.
+    builtin.current_buffer_fuzzy_find(themes.get_dropdown({
+        winblend = 10,
+        previewer = false,
+    }))
 end, opts_with_desc("[/] Fuzzily search in current buffer"))
 vim.keymap.set("n", "<leader>fb", builtin.buffers, opts_with_desc("[B]uffers"))
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, opts_with_desc("[H]elp Tags"))

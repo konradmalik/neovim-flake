@@ -1,16 +1,16 @@
 local initialized = false
 local initialize_once = function()
-	if initialized then return end
+    if initialized then return end
 
-	vim.cmd("packadd nvim-dap")
-	vim.cmd("packadd nvim-dap-ui")
-	vim.cmd("packadd nvim-dap-virtual-text")
+    vim.cmd("packadd nvim-dap")
+    vim.cmd("packadd nvim-dap-ui")
+    vim.cmd("packadd nvim-dap-virtual-text")
 
-	require("konrad.dap.ui")
-	require("konrad.dap.virtual-text")
-	require("konrad.dap.keymaps")
+    require("konrad.dap.ui")
+    require("konrad.dap.virtual-text")
+    require("konrad.dap.keymaps")
 
-	initialized = true
+    initialized = true
 end
 
 local M = {}
@@ -26,16 +26,16 @@ local M = {}
 ---@param dap string|function - dap config name or a function that configures it
 ---@return nil
 M.initialize = function(dap)
-	initialize_once()
+    initialize_once()
 
-	if type(dap) == "string" then
-		local found, _ = pcall(require, "konrad.dap.configs." .. dap)
-		if not found then vim.notify("could not find DAP config for " .. dap) end
-	elseif type(dap) == "function" then
-		dap()
-	else
-		vim.notify("bad type for dap config: " .. vim.inspect(dap), vim.log.levels.ERROR)
-	end
+    if type(dap) == "string" then
+        local found, _ = pcall(require, "konrad.dap.configs." .. dap)
+        if not found then vim.notify("could not find DAP config for " .. dap) end
+    elseif type(dap) == "function" then
+        dap()
+    else
+        vim.notify("bad type for dap config: " .. vim.inspect(dap), vim.log.levels.ERROR)
+    end
 end
 
 return M

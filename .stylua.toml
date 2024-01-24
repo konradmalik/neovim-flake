@@ -1,3 +1,5 @@
+column_width = 100
+indent_type = 'Spaces'
 collapse_simple_statement = "Always"
 
 [sort_requires]
