@@ -1,6 +1,7 @@
 local highlight_is_enabled = true
 
 local M = {}
+M.name = "DocumentHighlight"
 
 ---@param data table
 ---@return table of commands and buf_commands for this client

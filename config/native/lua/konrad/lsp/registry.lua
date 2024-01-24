@@ -36,7 +36,8 @@ local M = {}
 ---augroup integer
 ---bufnr integer
 ---client table
----@param setup function takes a table containing all above params
+---@param setup function takes no parameters and sets up the functionality.
+---Must return a table which can have optional fields: commands and buf_commands that it registered
 M.register_once = function(fname, data, setup)
 	local bufnr = data.bufnr
 	local client = data.client
@@ -55,7 +56,8 @@ M.register_once = function(fname, data, setup)
 		end
 	end
 
-	local registered = setup(data)
+	local registered = setup()
+
 	if registered["commands"] then insert_into_nested(commands, client.id, list_into_set(registered.commands)) end
 	if registered["buf_commands"] then
 		insert_into_nested(buf_commands, client.id, list_into_set(registered.buf_commands))

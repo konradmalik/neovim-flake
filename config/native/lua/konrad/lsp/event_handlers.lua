@@ -48,15 +48,18 @@ M.attach = function(client, bufnr)
 	}
 
 	if client.supports_method(ms.textDocument_codeAction) then
-		registry.register_once("CodeAction", register_data, require("konrad.lsp.capability_handlers.codeaction").attach)
+		local handler = require("konrad.lsp.capability_handlers.codeaction")
+		registry.register_once(handler.name, register_data, function() return handler.attach(register_data) end)
 	end
 
 	if client.supports_method(ms.textDocument_codeLens) then
-		registry.register_once("CodeLens", register_data, require("konrad.lsp.capability_handlers.codelens").attach)
+		local handler = require("konrad.lsp.capability_handlers.codelens")
+		registry.register_once(handler.name, register_data, function() return handler.attach(register_data) end)
 	end
 
 	if client.supports_method(ms.textDocument_formatting) then
-		registry.register_once("Formatting", register_data, require("konrad.lsp.capability_handlers.format").setup)
+		local handler = require("konrad.lsp.capability_handlers.format")
+		registry.register_once(handler.name, register_data, function() return handler.setup(register_data) end)
 	end
 
 	if client.supports_method(ms.textDocument_declaration) then
@@ -69,15 +72,13 @@ M.attach = function(client, bufnr)
 	end
 
 	if client.supports_method(ms.textDocument_documentHighlight) then
-		registry.register_once(
-			"DocumentHighlighting",
-			register_data,
-			require("konrad.lsp.capability_handlers.documenthighlight").attach
-		)
+		local handler = require("konrad.lsp.capability_handlers.documenthighlight")
+		registry.register_once(handler.name, register_data, function() return handler.attach(register_data) end)
 	end
 
 	if client.supports_method(ms.textDocument_documentSymbol) then
-		registry.register_once("Navic", register_data, require("konrad.lsp.capability_handlers.navic").setup)
+		local handler = require("konrad.lsp.capability_handlers.navic")
+		registry.register_once(handler.name, register_data, function() return handler.setup(register_data) end)
 	end
 
 	if client.supports_method(ms.textDocument_implementation) then
@@ -120,7 +121,8 @@ M.attach = function(client, bufnr)
 	end
 
 	if client.supports_method(ms.textDocument_inlayHint) then
-		registry.register_once("InlayHints", register_data, require("konrad.lsp.capability_handlers.inlayhints").attach)
+		local handler = require("konrad.lsp.capability_handlers.navic")
+		registry.register_once(handler.name, register_data, function() return handler.setup(register_data) end)
 	end
 
 	vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts_with_desc("Add Workspace Folder"))

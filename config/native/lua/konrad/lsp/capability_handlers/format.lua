@@ -11,6 +11,7 @@ local format = function(clientid, bufnr)
 end
 
 local M = {}
+M.name = "Format"
 
 ---@param data table
 ---@return table of commands and buf_commands for this client

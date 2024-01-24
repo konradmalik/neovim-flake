@@ -1,4 +1,5 @@
 local M = {}
+M.name = "Navic"
 
 ---@param data table
 ---@return table of commands and buf_commands for this client

@@ -1,6 +1,7 @@
 local inlayhints_is_enabled = true
 
 local M = {}
+M.name = "InlayHints"
 
 ---@param data table
 ---@return table of commands and buf_commands for this client

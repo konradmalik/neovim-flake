@@ -1,6 +1,7 @@
 local codelens_is_enabled = true
 
 local M = {}
+M.name = "CodeLens"
 
 ---@param data table
 ---@return table of commands and buf_commands for this client

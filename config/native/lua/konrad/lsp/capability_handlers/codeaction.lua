@@ -1,6 +1,7 @@
 local lightbulb_is_enabled = false
 
 local M = {}
+M.name = "CodeActions"
 
 ---@param data table
 ---@return table of commands and buf_commands for this client
