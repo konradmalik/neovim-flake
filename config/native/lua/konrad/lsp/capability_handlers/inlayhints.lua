@@ -12,17 +12,17 @@ M.attach = function(data)
     vim.api.nvim_create_autocmd("InsertEnter", {
         group = augroup,
         buffer = bufnr,
-        callback = function()
+        callback = function(args)
             if not inlayhints_is_enabled then return end
-            vim.lsp.inlay_hint.enable(bufnr, true)
+            vim.lsp.inlay_hint.enable(args.bufnr, true)
         end,
     })
     vim.api.nvim_create_autocmd("InsertLeave", {
         group = augroup,
         buffer = bufnr,
-        callback = function()
+        callback = function(args)
             if not inlayhints_is_enabled then return end
-            pcall(vim.lsp.inlay_hint.enable, bufnr, false)
+            pcall(vim.lsp.inlay_hint.enable, args.bufnr, false)
         end,
     })
 

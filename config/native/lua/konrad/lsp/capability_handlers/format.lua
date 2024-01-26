@@ -31,9 +31,9 @@ M.setup = function(data)
         desc = "AutoFormat on save",
         group = augroup,
         buffer = bufnr,
-        callback = function()
+        callback = function(args)
             if not format_is_enabled then return end
-            format(client.id, bufnr)
+            format(client.id, args.buf)
         end,
     })
 

@@ -24,9 +24,9 @@ M.attach = function(data)
     vim.api.nvim_create_autocmd("CursorHold", {
         group = augroup,
         buffer = bufnr,
-        callback = function()
+        callback = function(args)
             if not lightbulb_is_enabled then return end
-            vim.schedule(function() require("konrad.lsp.lightbulb").show(bufnr, 0) end)
+            vim.schedule(function() require("konrad.lsp.lightbulb").show(args.buf, 0) end)
         end,
         desc = "Show lightbulb",
     })
