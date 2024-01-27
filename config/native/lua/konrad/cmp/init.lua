@@ -1,4 +1,13 @@
+local cmp = require("cmp")
+
 local M = {}
+
+M.default_sources = cmp.config.sources({
+    { name = "copilot" },
+    { name = "luasnip" },
+    { name = "buffer" },
+    { name = "path" },
+})
 
 M.setup = function()
     -- register custom and vscode snippets to luasnip
@@ -14,8 +23,6 @@ M.setup = function()
             desc = "Initialize Copilot server and cmp source",
         }
     )
-
-    local cmp = require("cmp")
 
     local kind_icons = require("konrad.icons").kind
     local menu_entries = {
@@ -34,6 +41,9 @@ M.setup = function()
     end
 
     cmp.setup({
+        -- completion = {
+        --     autocomplete = false,
+        -- },
         snippet = {
             expand = function(args) vim.snippet.expand(args.body) end,
         },
@@ -43,8 +53,12 @@ M.setup = function()
             ["<C-Space>"] = cmp.mapping.complete(),
             ["<C-e>"] = cmp.mapping.abort(),
             ["<C-y>"] = cmp.mapping.confirm({
-                behavior = cmp.ConfirmBehavior.Replace,
+                behavior = cmp.ConfirmBehavior.Insert,
                 select = true,
+            }),
+            ["<M-y>"] = cmp.mapping.confirm({
+                behavior = cmp.ConfirmBehavior.Replace,
+                select = false,
             }),
             ["<C-n>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
@@ -64,6 +78,7 @@ M.setup = function()
                     fallback()
                 end
             end, { "i", "s" }),
+            ["<tab>"] = cmp.config.disable,
         }),
         formatting = {
             fields = { "kind", "abbr", "menu" },
@@ -78,13 +93,7 @@ M.setup = function()
                 return vim_item
             end,
         },
-        sources = cmp.config.sources({
-            { name = "copilot" },
-            { name = "nvim_lsp" },
-            { name = "luasnip" },
-            { name = "buffer" },
-            { name = "path" },
-        }),
+        sources = M.default_sources,
         window = {
             completion = cmp.config.window.bordered(),
             documentation = cmp.config.window.bordered(),

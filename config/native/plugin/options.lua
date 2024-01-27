@@ -52,12 +52,10 @@ vim.opt.sidescrolloff = 10
 -- Decrease update time
 vim.opt.updatetime = 1000
 vim.opt.timeoutlen = 1000
--- Set completeopt to have a better completion experience
-vim.opt.completeopt = "menuone,noselect"
 -- True color support
 vim.opt.termguicolors = true
 -- highlight the current line
 vim.opt.cursorline = true
--- use ripgrep as grep program if available
+-- use ripgrep as grep program
 vim.opt.grepprg = "rg --vimgrep --no-heading --smart-case"
-vim.opt.grepformat = "%f:%l:%c:%m,%f:%l:%m"
+vim.opt.grepformat = { "%f:%l:%c:%m", "%f:%l:%m" }

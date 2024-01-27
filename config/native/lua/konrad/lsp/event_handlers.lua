@@ -47,6 +47,15 @@ M.attach = function(client, bufnr)
         client = client,
     }
 
+    if client.supports_method(ms.textDocument_completion) then
+        local sources = require("konrad.cmp").default_sources
+        sources[#sources + 1] = { name = "nvim_lsp" }
+
+        require("cmp").setup.buffer({
+            sources = sources,
+        })
+    end
+
     if client.supports_method(ms.textDocument_codeAction) then
         local handler = require("konrad.lsp.capability_handlers.codeaction")
         registry.register_once(
