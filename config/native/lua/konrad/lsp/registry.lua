@@ -1,9 +1,14 @@
 -- track items that should be registered only once per buffer
 -- maps bufrn -> { functionality_name -> client }
+---@type table<integer, table<string, lsp.Client>>
 local once_per_buffer = {}
+
 -- client-id -> {command name->true} (global commands)
+---@type table<integer, table<string, true>>
 local commands = {}
+
 -- client id -> {command name -> true}
+---@type table<integer, table<string, true>>
 local buf_commands = {}
 
 ---@param ttable table
@@ -17,7 +22,7 @@ local insert_into_nested = function(ttable, key, value)
 end
 
 ---@param list any[]
----@return table
+---@return table<any,true>
 local list_into_set = function(list)
     local r = {}
     for _, value in ipairs(list) do
@@ -32,11 +37,8 @@ local M = {}
 ---in the case of multiple LSPs attaching to the same buffer.
 ---An example can be formatting.
 ---@param fname string name of the functionality
----@param data table of
----augroup integer
----bufnr integer
----client table
----@param setup function takes no parameters and sets up the functionality.
+---@param data {augroup: integer, bufnr: integer, client: lsp.Client}
+---@param setup fun(): table<"buf_commands"|"commands", table<string>>
 ---Must return a table which can have optional fields: commands and buf_commands that it registered
 M.register_once = function(fname, data, setup)
     local bufnr = data.bufnr
@@ -66,10 +68,10 @@ M.register_once = function(fname, data, setup)
 
     local registered = setup()
 
-    if registered["commands"] then
+    if registered.commands then
         insert_into_nested(commands, client.id, list_into_set(registered.commands))
     end
-    if registered["buf_commands"] then
+    if registered.buf_commands then
         insert_into_nested(buf_commands, client.id, list_into_set(registered.buf_commands))
     end
     insert_into_nested(once_per_buffer, bufnr, { [fname] = { id = client.id, name = client.name } })
@@ -77,8 +79,8 @@ end
 
 ---Call this to clean-up after any generic lsp.
 ---Stuff like codelens clearing or other specific functionalities is not handled here.
----@param client any
----@param bufnr any
+---@param client lsp.Client
+---@param bufnr integer
 M.deregister = function(client, bufnr)
     -- commands
     local client_commands = commands[client.id]

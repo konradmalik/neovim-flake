@@ -8,7 +8,7 @@ local bufnr
 local winid
 
 ---Get the progress message for all clients
----@param kind string begin, report or end
+---@param kind "begin"|"report"|"end"
 ---@return string
 local function get_lsp_progress_msg(kind)
     local prefix = ""
@@ -20,7 +20,7 @@ local function get_lsp_progress_msg(kind)
     return prefix .. vim.lsp.status()
 end
 
----@param kind string begin, report or end
+---@param kind "begin"|"report"|"end"
 ---@return boolean
 local function check_is_done(kind) return kind == "end" end
 
