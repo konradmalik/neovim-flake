@@ -47,7 +47,7 @@ do
             vim.diagnostic.disable()
             diagnostics_are_enabled = false
         else
-            _, _ = pcall(vim.diagnostic.enable)
+            pcall(vim.diagnostic.enable)
             diagnostics_are_enabled = true
         end
         print("Setting diagnostics to: " .. tostring(diagnostics_are_enabled))

@@ -1,13 +1,11 @@
-local reloader = require("plenary.reload").reload_module
+local function reload(...) return require("plenary.reload").reload_module(...) end
 
 P = function(v)
     print(vim.inspect(v))
     return v
 end
 
-RELOAD = function(...) return reloader(...) end
-
 R = function(name)
-    RELOAD(name)
+    reload(name)
     return require(name)
 end

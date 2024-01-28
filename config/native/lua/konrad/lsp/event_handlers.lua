@@ -203,7 +203,7 @@ M.attach = function(client, bufnr)
     vim.keymap.set(
         "n",
         "<leader>wl",
-        function() P(vim.lsp.buf.list_workspace_folders()) end,
+        function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
         opts_with_desc("List Workspace Folders")
     )
 end

@@ -59,7 +59,7 @@ M.config = {
     -- this concrete name is needed by omnisharp_extended
     name = "omnisharp",
     cmd = make_cmd,
-    on_init = function(client, initialize_result)
+    on_init = function(client, _)
         -- disable codelens for omnisharp because it makes it extremely slow
         client.server_capabilities.codeLensProvider = nil
         -- client.server_capabilities.documentHighlightProvider = nil

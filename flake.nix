@@ -65,13 +65,47 @@
         default = pkgs.mkShell
           {
             name = "neovim-shell";
-            packages = with pkgs; [ stylua ];
+            packages = with pkgs; [ stylua lua.pkgs.luacheck ];
           };
       });
       overlays.default = final: prev: {
         neovimPlugins = neovimPluginsFor final;
         neovim = self.packages.${prev.system}.neovim;
       };
+
+
+      checks = forAllSystems
+        (pkgs: {
+          luacheck =
+            let
+              fs = pkgs.lib.fileset;
+              sourceFiles = fs.unions [
+                ./config/native
+                ./.luacheckrc
+              ];
+              name = "luacheck";
+            in
+            pkgs.stdenvNoCC.mkDerivation {
+              inherit name;
+              dontBuild = true;
+              src = builtins.path {
+                inherit name;
+                path = fs.toSource {
+                  root = ./.;
+                  fileset = sourceFiles;
+                };
+              };
+              doCheck = true;
+              nativeBuildInputs = with pkgs; [ lua.pkgs.luacheck ];
+              checkPhase = ''
+                luacheck --codes --no-cache ./config/native
+              '';
+              installPhase = ''
+                touch "$out"
+              '';
+            };
+        });
+
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
       packages = forAllSystems (pkgs: rec {
         neovim = pkgs.callPackage ./packages/neovim-pde {

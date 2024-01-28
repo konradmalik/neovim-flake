@@ -32,7 +32,7 @@ M.root_dir = function(names, opts)
 
     opts = vim.tbl_deep_extend("force", defaults, opts or {})
 
-    local found = vim.fs.find(function(name, path)
+    local found = vim.fs.find(function(name, _)
         for _, pattern in ipairs(names) do
             if name:match(pattern) then return true end
         end

@@ -15,6 +15,7 @@ let
         fileset = sourceFiles;
       };
     };
+    dontBuild = true;
     installPhase = ''
       mkdir -p $out/
       cp -r $src/native/* $out/
@@ -31,6 +32,7 @@ pkgs.symlinkJoin {
     binaries-lua
     skeletons-lua
   ];
+
   # config structure:
   # - if isolated is false, then $out/init.lua. This is for home-manager
   # - if isolated is true, then $out/${appName}/init.lua. This is for 'nix run .' etc where we override XDG_CONFIG_HOME

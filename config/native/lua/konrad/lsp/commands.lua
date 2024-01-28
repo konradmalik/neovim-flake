@@ -50,7 +50,7 @@ local function create_window(config)
         or { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
     local bufnr = vim.api.nvim_create_buf(false, true)
 
-    local win_id, win = popup.create(bufnr, {
+    local win_id, _ = popup.create(bufnr, {
         title = "LspInfo",
         line = math.floor(((vim.o.lines - height) / 2) - 1),
         col = math.floor((vim.o.columns - width) / 2),
