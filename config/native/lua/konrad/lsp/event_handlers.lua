@@ -36,7 +36,7 @@ M.detach = function(client, bufnr)
     if #clients <= 1 then keymapper.clear(bufnr) end
 end
 
----@param client table
+---@param client lsp.Client
 ---@param bufnr integer
 M.attach = function(client, bufnr)
     local augroup = augroups.get_augroup(client)
@@ -48,11 +48,12 @@ M.attach = function(client, bufnr)
     }
 
     if client.supports_method(ms.textDocument_completion) then
-        local sources = require("konrad.cmp").default_sources
-        sources[#sources + 1] = { name = "nvim_lsp" }
+        local default_sources = require("konrad.cmp").default_sources
+        local sources = vim.list_extend({ { name = "nvim_lsp" } }, default_sources)
 
-        require("cmp").setup.buffer({
-            sources = sources,
+        local cmp = require("cmp")
+        cmp.setup.buffer({
+            sources = cmp.config.sources(sources),
         })
     end
 

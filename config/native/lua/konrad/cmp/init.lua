@@ -2,20 +2,19 @@ local cmp = require("cmp")
 
 local M = {}
 
-M.default_sources = cmp.config.sources({
+M.default_sources = {
     { name = "copilot" },
     { name = "luasnip" },
     { name = "buffer" },
     { name = "path" },
-})
+}
 
 M.setup = function()
     -- register custom and vscode snippets to luasnip
     require("konrad.cmp.snippets")
 
-    local lazy = require("konrad.lazy")
     -- load copilot on demand
-    lazy.make_enable_command(
+    require("konrad.lazy").make_enable_command(
         "CopilotEnable",
         { "copilot.lua", "copilot-cmp" },
         function() require("konrad.cmp.copilot") end,
@@ -93,7 +92,7 @@ M.setup = function()
                 return vim_item
             end,
         },
-        sources = M.default_sources,
+        sources = cmp.config.sources(M.default_sources),
         window = {
             completion = cmp.config.window.bordered(),
             documentation = cmp.config.window.bordered(),
