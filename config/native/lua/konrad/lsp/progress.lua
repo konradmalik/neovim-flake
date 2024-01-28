@@ -4,74 +4,110 @@ local highlight = "Normal:NonText"
 local keep_done_message_ms = 2000
 local timer = vim.loop.new_timer()
 -- Buffer number and window id for the floating window
-local bufnr
-local winid
+---@type integer? bufnr of the progress window
+local float_bufnr
+---@type integer? winid of the progress window
+local float_winid
+
+---@alias LspProgress lsp.WorkDoneProgressBegin|lsp.WorkDoneProgressReport|lsp.WorkDoneProgressEnd
 
 ---Get the progress message for all clients
----@param kind "begin"|"report"|"end"
+---@param progress LspProgress
 ---@return string
-local function get_lsp_progress_msg(kind)
-    local prefix = ""
-    if kind == "begin" then
-        prefix = "Starting: "
-    elseif kind == "end" then
-        prefix = "Finished: "
+local function get_lsp_progress_msg(progress)
+    local percentage = progress.percentage
+    if not percentage and progress.kind == "begin" then
+        percentage = 0
+    elseif not percentage and progress.kind == "end" then
+        percentage = 100
     end
-    return prefix .. vim.lsp.status()
+
+    local message = progress.message
+    if not message and progress.kind == "begin" then
+        message = "starting"
+    elseif not message and progress.kind == "end" then
+        message = "finished"
+    end
+
+    return string.format("[%s%%] %s: %s", percentage, progress.title, message)
 end
 
----@param kind "begin"|"report"|"end"
+---@param progress LspProgress
 ---@return boolean
-local function check_is_done(kind) return kind == "end" end
+local function check_is_done(progress) return progress.kind == "end" end
+
+---@param winid integer
+---@return boolean
+local function is_win_valid(winid)
+    return vim.api.nvim_win_is_valid(winid)
+        and vim.api.nvim_win_get_tabpage(winid) == vim.api.nvim_get_current_tabpage()
+end
+
+---@param message string
+---@param win_row integer
+local function create_floating_win(message, win_row)
+    float_bufnr = vim.api.nvim_create_buf(false, true)
+    float_winid = vim.api.nvim_open_win(float_bufnr, false, {
+        relative = "editor",
+        width = #message,
+        height = 1,
+        row = win_row,
+        col = vim.o.columns - #message,
+        style = "minimal",
+        noautocmd = true,
+        border = vim.g.border_style,
+    })
+end
+
+---@param winid integer
+---@param message string
+---@param win_row integer
+local function update_floating_win(winid, message, win_row)
+    vim.api.nvim_win_set_config(winid, {
+        relative = "editor",
+        width = #message,
+        row = win_row,
+        col = vim.o.columns - #message,
+    })
+end
+
+local function cleanup_floating_win()
+    if float_winid and vim.api.nvim_win_is_valid(float_winid) then
+        vim.api.nvim_win_close(float_winid, true)
+    end
+    if float_bufnr and vim.api.nvim_buf_is_valid(float_bufnr) then
+        vim.api.nvim_buf_delete(float_bufnr, { force = true })
+    end
+    float_winid = nil
+end
 
 vim.api.nvim_create_autocmd({ "LspProgress" }, {
     callback = function(ev)
-        local kind = ev.file
-        local isDone = check_is_done(kind)
-        local message = get_lsp_progress_msg(kind)
+        ---@type LspProgress
+        local progress = ev.data.result.value
+        local message = get_lsp_progress_msg(progress)
         -- The row position of the floating window. Just right above the status line.
         local win_row = vim.o.lines - vim.o.cmdheight - 4
-        if
-            winid == nil
-            or not vim.api.nvim_win_is_valid(winid)
-            or vim.api.nvim_win_get_tabpage(winid) ~= vim.api.nvim_get_current_tabpage()
-        then
-            bufnr = vim.api.nvim_create_buf(false, true)
-            winid = vim.api.nvim_open_win(bufnr, false, {
-                relative = "editor",
-                width = #message,
-                height = 1,
-                row = win_row,
-                col = vim.o.columns - #message,
-                style = "minimal",
-                noautocmd = true,
-                border = vim.g.border_style,
-            })
+        if not float_winid or not is_win_valid(float_winid) then
+            create_floating_win(message, win_row)
         else
-            vim.api.nvim_win_set_config(winid, {
-                relative = "editor",
-                width = #message,
-                row = win_row,
-                col = vim.o.columns - #message,
-            })
+            update_floating_win(float_winid, message, win_row)
         end
-        vim.wo[winid].winhl = highlight
-        vim.api.nvim_buf_set_lines(bufnr, 0, 1, false, { message })
+        vim.wo[float_winid].winhl = highlight
+        if float_bufnr ~= nil then
+            vim.api.nvim_buf_set_lines(float_bufnr, 0, 1, false, { message })
+        else
+            vim.notify("progress: float_bufnr was nil", vim.log.levels.ERROR)
+        end
+
+        local isDone = check_is_done(progress)
         if not isDone then
             timer:stop()
         elseif isDone then
             -- schedule to keep the done message for a while
             timer:start(keep_done_message_ms, 0, function()
                 timer:stop()
-                vim.schedule(function()
-                    if winid and vim.api.nvim_win_is_valid(winid) then
-                        vim.api.nvim_win_close(winid, true)
-                    end
-                    if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
-                        vim.api.nvim_buf_delete(bufnr, { force = true })
-                    end
-                    winid = nil
-                end)
+                vim.schedule(cleanup_floating_win)
             end)
         end
     end,
