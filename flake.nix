@@ -62,11 +62,10 @@
     in
     {
       devShells = forAllSystems (pkgs: {
-        default = pkgs.mkShell
-          {
-            name = "neovim-shell";
-            packages = with pkgs; [ stylua lua.pkgs.luacheck ];
-          };
+        default = pkgs.mkShell {
+          name = "neovim-shell";
+          packages = with pkgs; [ stylua lua.pkgs.luacheck ];
+        };
       });
       overlays.default = final: prev: {
         neovimPlugins = neovimPluginsFor final;

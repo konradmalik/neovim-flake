@@ -1,5 +1,6 @@
 local binaries = require("konrad.binaries")
 
+---@type EfmPlugin
 return {
     filetypes = {
         "toml",

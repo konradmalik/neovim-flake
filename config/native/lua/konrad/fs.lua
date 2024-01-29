@@ -11,8 +11,8 @@ end
 
 ---Returns a full path to exec from PATH if found,
 ---if not found, then returns the provided one
----@param binname any
----@param fullpath any
+---@param binname string
+---@param fullpath string
 ---@return string
 M.from_path_or_default = function(binname, fullpath) return M.path_executable(binname) or fullpath end
 

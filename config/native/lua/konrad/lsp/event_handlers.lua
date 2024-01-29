@@ -7,7 +7,7 @@ local ms = protocol.Methods
 
 local M = {}
 
----@param client table
+---@param client lsp.Client
 ---@param bufnr integer
 M.detach = function(client, bufnr)
     augroups.del_autocmds_for_buf(client, bufnr)
@@ -59,29 +59,17 @@ M.attach = function(client, bufnr)
 
     if client.supports_method(ms.textDocument_codeAction) then
         local handler = require("konrad.lsp.capability_handlers.codeaction")
-        registry.register_once(
-            handler.name,
-            register_data,
-            function() return handler.attach(register_data) end
-        )
+        registry.register_once(handler.name, register_data, handler)
     end
 
     if client.supports_method(ms.textDocument_codeLens) then
         local handler = require("konrad.lsp.capability_handlers.codelens")
-        registry.register_once(
-            handler.name,
-            register_data,
-            function() return handler.attach(register_data) end
-        )
+        registry.register_once(handler.name, register_data, handler)
     end
 
     if client.supports_method(ms.textDocument_formatting) then
         local handler = require("konrad.lsp.capability_handlers.format")
-        registry.register_once(
-            handler.name,
-            register_data,
-            function() return handler.setup(register_data) end
-        )
+        registry.register_once(handler.name, register_data, handler)
     end
 
     if client.supports_method(ms.textDocument_declaration) then
@@ -100,20 +88,12 @@ M.attach = function(client, bufnr)
 
     if client.supports_method(ms.textDocument_documentHighlight) then
         local handler = require("konrad.lsp.capability_handlers.documenthighlight")
-        registry.register_once(
-            handler.name,
-            register_data,
-            function() return handler.attach(register_data) end
-        )
+        registry.register_once(handler.name, register_data, handler)
     end
 
     if client.supports_method(ms.textDocument_documentSymbol) then
         local handler = require("konrad.lsp.capability_handlers.navic")
-        registry.register_once(
-            handler.name,
-            register_data,
-            function() return handler.setup(register_data) end
-        )
+        registry.register_once(handler.name, register_data, handler)
     end
 
     if client.supports_method(ms.textDocument_implementation) then
@@ -182,11 +162,7 @@ M.attach = function(client, bufnr)
 
     if client.supports_method(ms.textDocument_inlayHint) then
         local handler = require("konrad.lsp.capability_handlers.navic")
-        registry.register_once(
-            handler.name,
-            register_data,
-            function() return handler.setup(register_data) end
-        )
+        registry.register_once(handler.name, register_data, handler)
     end
 
     vim.keymap.set(

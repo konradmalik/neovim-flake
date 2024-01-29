@@ -3,6 +3,9 @@ local devicons = require("nvim-web-devicons")
 local icons = require("konrad.icons")
 local utils = require("konrad.statusline.utils")
 
+---@param hl string
+---@param s string
+---@return string
 local function wrap_hl(hl, s) return string.format("%%#%s#%s%%*", hl, s) end
 
 local colors = {

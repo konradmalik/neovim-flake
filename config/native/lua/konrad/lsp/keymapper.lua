@@ -4,12 +4,15 @@ local M = {}
 
 M.prefix = keymap_prefix
 
+---@param bufnr integer
+---@return fun(string): table
 M.opts_for = function(bufnr)
     return function(desc)
         return { buffer = bufnr, desc = string.format("%s %s", keymap_prefix, desc) }
     end
 end
 
+---@param bufnr integer
 M.clear = function(bufnr)
     for _, mode in ipairs({ "n", "i", "v" }) do
         local keymaps = vim.api.nvim_buf_get_keymap(bufnr, mode)

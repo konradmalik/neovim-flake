@@ -1,5 +1,6 @@
 -- url: https://github.com/johnnymorganz/stylua
 local binaries = require("konrad.binaries")
+---@type EfmPlugin
 return {
     filetypes = { "lua" },
     entry = {

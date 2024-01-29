@@ -1,3 +1,10 @@
+---@alias RegistryData {augroup: integer, bufnr: integer, client: lsp.Client}
+---@alias RegisteredCommands {buf_commands?: string[], commands?: string[]}
+
+---@class CapabilityHandler
+---@field name string unique name of the handler
+---@field attach fun(RegistryData): RegisteredCommands
+
 -- track items that should be registered only once per buffer
 -- maps bufrn -> { functionality_name -> client }
 ---@type table<integer, table<string, lsp.Client>>
@@ -37,10 +44,9 @@ local M = {}
 ---in the case of multiple LSPs attaching to the same buffer.
 ---An example can be formatting.
 ---@param fname string name of the functionality
----@param data {augroup: integer, bufnr: integer, client: lsp.Client}
----@param setup fun(): table<"buf_commands"|"commands", table<string>>
----Must return a table which can have optional fields: commands and buf_commands that it registered
-M.register_once = function(fname, data, setup)
+---@param data RegistryData
+---@param handler CapabilityHandler
+M.register_once = function(fname, data, handler)
     local bufnr = data.bufnr
     local client = data.client
     local buf_functionalities = once_per_buffer[bufnr] or {}
@@ -66,7 +72,7 @@ M.register_once = function(fname, data, setup)
         end
     end
 
-    local registered = setup()
+    local registered = handler.attach(handler)
 
     if registered.commands then
         insert_into_nested(commands, client.id, list_into_set(registered.commands))

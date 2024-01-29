@@ -24,6 +24,7 @@ local function setup_statusline()
     vim.o.statusline = "%!v:lua.require('konrad.statusline').statusline()"
 end
 
+---@param bufnr integer
 local function is_special(bufnr) return conditions.buffer_matches(config.special, bufnr) end
 
 local function setup_local_winbar_with_autocmd()
