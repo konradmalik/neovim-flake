@@ -3,7 +3,7 @@
 
 ---@class CapabilityHandler
 ---@field name string unique name of the handler
----@field attach fun(RegistryData): RegisteredCommands
+---@field attach fun(data: RegistryData): RegisteredCommands
 
 -- track items that should be registered only once per buffer
 -- maps bufrn -> { functionality_name -> client }
@@ -72,7 +72,7 @@ M.register_once = function(fname, data, handler)
         end
     end
 
-    local registered = handler.attach(handler)
+    local registered = handler.attach(data)
 
     if registered.commands then
         insert_into_nested(commands, client.id, list_into_set(registered.commands))
