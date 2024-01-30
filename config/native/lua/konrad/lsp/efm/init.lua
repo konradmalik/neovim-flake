@@ -1,9 +1,26 @@
 -- https://github.com/mattn/efm-langserver
-local binaries = require("konrad.binaries")
 
---- @class EfmPlugin
---- @field filetypes string[]
---- @field entry table
+---@class EfmEntry
+---@field formatCommand? string[]|string
+---@field formatStdin? boolean
+---@field formatCanRange? boolean
+---@field lintCommand? string[]|string
+---@field lintStdin? boolean
+---@field lintFormats? string[]
+---@field lintSource? string
+---@field lintIgnoreExitCode? boolean
+---@field lintDebounce? string time spec like 2s
+---@field lintOffset? integer
+---@field hoverCommand? string[]|string
+---@field hoverStdin? boolean
+---@field lintCategoryMap? { I: string, R: string, C: string, W: string, E: string, F: string }
+---@field rootMarkers? string[]
+
+---@class EfmPlugin
+---@field filetypes string[]
+---@field entry EfmEntry
+
+local binaries = require("konrad.binaries")
 
 ---@param plugin EfmPlugin
 ---@return table
