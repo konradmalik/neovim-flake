@@ -48,8 +48,8 @@ local checkFormattingEnabled = function(languages)
     return false
 end
 
----@param config table
----@return table
+---@param config EfmPlugin
+---@return EfmPlugin
 local function prepare_config(config)
     if type(config.entry.formatCommand) == "table" then
         config.entry.formatCommand = table.concat(config.entry.formatCommand, " ")
@@ -60,11 +60,22 @@ local function prepare_config(config)
     return config
 end
 
+---@param list any[]
+---@return any[]
+local unique_list = function(list)
+    local r = {}
+    for _, value in ipairs(list) do
+        if not r[value] then r[value] = true end
+    end
+    return vim.tbl_flatten(r)
+end
+
 ---@param name string unique name of this efm instance
 ---@param plugins string[] names of plugins to add, ex. 'prettier'
 ---@return table config to be put into lspconfig['efm'].setup(config)
 M.build_config = function(name, plugins)
     local languages = {}
+    local allRootMarkers = { ".git/" }
     for _, v in ipairs(plugins) do
         local plugin = require("konrad.lsp.efm." .. v)
         local plugin_config = prepare_config(plugin)
@@ -76,7 +87,13 @@ M.build_config = function(name, plugins)
                 languages[key] = value
             end
         end
+
+        if plugin_config.entry.rootMarkers then
+            vim.list_extend(allRootMarkers, plugin_config.entry.rootMarkers)
+        end
     end
+
+    local rootMarkers = unique_list(allRootMarkers)
 
     local formattingEnabled = checkFormattingEnabled(languages)
     return {
@@ -87,7 +104,7 @@ M.build_config = function(name, plugins)
             documentRangeFormatting = formattingEnabled,
         },
         settings = {
-            rootMarkers = { ".git/" },
+            rootMarkers = rootMarkers,
             languages = languages,
         },
     }
