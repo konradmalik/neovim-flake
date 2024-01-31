@@ -237,7 +237,7 @@ M.LSP_status = function()
     if #clients == 0 then return "" end
 
     local icon = #clients > 1 and icons.ui.CheckAll or icons.ui.Check
-    if #clients > 3 then
+    if #clients >= 3 then
         return wrap_hl(colors.green, string.format("%s %s LSPs", icon, #clients))
     end
 

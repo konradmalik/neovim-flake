@@ -71,10 +71,13 @@ vim.api.nvim_create_user_command("LspInfo", function()
         if i > 1 then table.insert(replacement, "---------------") end
         table.insert(replacement, string.format("Client: %s (%s)", client.name, client.id))
         table.insert(replacement, string.format("Root Dir: %s", client.config.root_dir))
-        table.insert(
-            replacement,
-            string.format("Command: %s", table.concat(client.config.cmd, " "))
-        )
+        local cmd_str
+        if type(client.config.cmd) == "function" then
+            cmd_str = "fun(dispatchers)"
+        else
+            cmd_str = table.concat(client.config.cmd, " ")
+        end
+        table.insert(replacement, cmd_str)
         table.insert(
             replacement,
             string.format(
