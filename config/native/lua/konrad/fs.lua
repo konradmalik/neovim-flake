@@ -24,4 +24,29 @@ M.is_buf_readable_file = function(bufnr)
     return vim.fn.filereadable(bufname) == 1
 end
 
+---Finds a file or directory
+---@param names string[]|string will be matched against with :match(name)
+---@param opts table? type='file', 'directory' and more
+---@return string|nil
+M.find = function(names, opts)
+    if type(names) == "string" then names = { names } end
+
+    local defaults = {
+        upward = true,
+        stop = vim.uv.os_homedir(),
+        path = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),
+    }
+
+    opts = vim.tbl_deep_extend("force", defaults, opts or {})
+
+    local found = vim.fs.find(function(name, _)
+        for _, pattern in ipairs(names) do
+            if name:match(pattern) then return true end
+        end
+        return false
+    end, opts)
+    if #found == 0 then return nil end
+    return found[1]
+end
+
 return M
