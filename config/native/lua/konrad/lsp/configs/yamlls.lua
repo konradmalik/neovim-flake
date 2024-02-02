@@ -1,13 +1,15 @@
 -- https://github.com/redhat-developer/yaml-language-server
-
-vim.cmd("packadd SchemaStore.nvim")
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
-local schemastore = require("schemastore")
 
-return {
-    config = {
-        cmd = function() return { binaries.yamlls(), "--stdio" } end,
+local M = {}
+
+function M.config()
+    vim.cmd("packadd SchemaStore.nvim")
+    local schemastore = require("schemastore")
+
+    return {
+        cmd = { binaries.yamlls(), "--stdio" },
         settings = {
             redhat = {
                 telemetry = {
@@ -35,6 +37,8 @@ return {
                 },
             },
         },
-        root_dir = function() return configs.root_dir(".git") end,
-    },
-}
+        root_dir = configs.root_dir(".git"),
+    }
+end
+
+return M

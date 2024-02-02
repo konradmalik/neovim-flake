@@ -1,8 +1,11 @@
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
-return {
-    config = {
-        cmd = function() return { binaries.rust_analyzer() } end,
+
+local M = {}
+
+function M.config()
+    return {
+        cmd = { binaries.rust_analyzer() },
         capabilities = {
             experimental = {
                 serverStatusNotification = true,
@@ -40,6 +43,7 @@ return {
                 },
             },
         },
-        root_dir = function() return configs.root_dir({ "Cargo.toml", "rust-project.json" }) end,
-    },
-}
+        root_dir = configs.root_dir({ "Cargo.toml", "rust-project.json" }),
+    }
+end
+return M

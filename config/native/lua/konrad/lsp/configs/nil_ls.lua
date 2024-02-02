@@ -2,9 +2,12 @@
 
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
-return {
-    config = {
-        cmd = function() return { binaries.nil_ls() } end,
+
+local M = {}
+
+function M.config()
+    return {
+        cmd = { binaries.nil_ls() },
         settings = {
             ["nil"] = {
                 formatting = {
@@ -18,6 +21,8 @@ return {
                 },
             },
         },
-        root_dir = function() return configs.root_dir({ "flake.nix", ".git" }) end,
-    },
-}
+        root_dir = configs.root_dir({ "flake.nix", ".git" }),
+    }
+end
+
+return M

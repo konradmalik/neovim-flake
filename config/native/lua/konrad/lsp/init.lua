@@ -50,10 +50,10 @@ function M.is_autostart_enabled() return autostart_enabled end
 
 ---starts if needed and attaches to the current buffer
 ---respects LspAutostartToggle
----@param config table
+---@param fconfig fun(): lsp.ClientConfig
 ---@param bufnr integer? buffer to attach to
 ---@param force boolean? whether to start even if autostart is disabled
-M.start_and_attach = function(config, bufnr, force)
+M.start_and_attach = function(fconfig, bufnr, force)
     if not force and not autostart_enabled then
         vim.notify_once("LSP autostart is disabled", vim.log.levels.INFO)
         return
@@ -64,7 +64,7 @@ M.start_and_attach = function(config, bufnr, force)
 
     initialize_once()
 
-    local made_config = require("konrad.lsp.configs").make_config(config)
+    local made_config = require("konrad.lsp.configs").make_config(fconfig)
     local client_id = vim.lsp.start(made_config, { bufnr = bufnr })
     if not client_id then
         vim.notify("cannot start lsp: " .. made_config.cmd[1], vim.log.levels.ERROR)

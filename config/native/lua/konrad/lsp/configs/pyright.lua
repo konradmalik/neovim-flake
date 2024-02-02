@@ -3,9 +3,11 @@
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
 
-return {
-    config = {
-        cmd = function() return { binaries.pyright(), "--stdio" } end,
+local M = {}
+
+function M.config()
+    return {
+        cmd = { binaries.pyright(), "--stdio" },
         settings = {
             python = {
                 analysis = {
@@ -15,16 +17,16 @@ return {
                 },
             },
         },
-        root_dir = function()
-            return configs.root_dir({
-                "pyproject.toml",
-                "setup.py",
-                "setup.cfg",
-                "requirements.txt",
-                "Pipfile",
-                "pyrightconfig.json",
-                ".git",
-            })
-        end,
-    },
-}
+        root_dir = configs.root_dir({
+            "pyproject.toml",
+            "setup.py",
+            "setup.cfg",
+            "requirements.txt",
+            "Pipfile",
+            "pyrightconfig.json",
+            ".git",
+        }),
+    }
+end
+
+return M

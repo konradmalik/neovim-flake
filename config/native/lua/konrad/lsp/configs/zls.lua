@@ -2,9 +2,14 @@
 
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
-return {
-    config = {
-        cmd = function() return { binaries.zls() } end,
-        root_dir = function() return configs.root_dir({ "zls.json", ".git" }) end,
-    },
-}
+
+local M = {}
+
+function M.config()
+    return {
+        cmd = { binaries.zls() },
+        root_dir = configs.root_dir({ "zls.json", ".git" }),
+    }
+end
+
+return M

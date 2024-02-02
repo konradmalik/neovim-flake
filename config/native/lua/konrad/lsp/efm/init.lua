@@ -72,7 +72,7 @@ end
 
 ---@param name string unique name of this efm instance
 ---@param plugins string[] names of plugins to add, ex. 'prettier'
----@return table config to be put into lspconfig['efm'].setup(config)
+---@return lsp.ClientConfig config to be put into lspconfig['efm'].setup(config)
 M.build_config = function(name, plugins)
     local languages = {}
     local allRootMarkers = { ".git/" }
