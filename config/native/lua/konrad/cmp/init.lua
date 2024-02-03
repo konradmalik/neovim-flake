@@ -3,7 +3,6 @@ local cmp = require("cmp")
 local M = {}
 
 M.default_sources = {
-    { name = "copilot" },
     { name = "luasnip" },
     { name = "buffer" },
     { name = "path" },
@@ -13,20 +12,9 @@ M.setup = function()
     -- register custom and vscode snippets to luasnip
     require("konrad.cmp.snippets")
 
-    -- load copilot on demand
-    require("konrad.lazy").make_enable_command(
-        "CopilotEnable",
-        { "copilot.lua", "copilot-cmp" },
-        function() require("konrad.cmp.copilot") end,
-        {
-            desc = "Initialize Copilot server and cmp source",
-        }
-    )
-
     local kind_icons = require("konrad.icons").kind
     local menu_entries = {
         -- lsp gets lsp server name via client.name
-        copilot = "[Copilot]",
         luasnip = "[Snippet]",
         buffer = "[Buffer]",
         path = "[Path]",

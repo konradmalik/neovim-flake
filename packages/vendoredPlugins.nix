@@ -29,8 +29,6 @@ rec {
   cmp_luasnip = (buildVim { name = "cmp_luasnip"; src = inputs.cmp_luasnip; }).overrideAttrs {
     nativeBuildInputs = [ nvim-cmp ];
   };
-  copilot-cmp = buildVim { name = "copilot-cmp"; src = inputs.copilot-cmp; nvimRequireCheck = "copilot_cmp"; };
-  copilot-lua = buildVim { name = "copilot.lua"; src = inputs.copilot-lua; nvimRequireCheck = "copilot"; };
   dressing-nvim = buildVim { name = "dressing.nvim"; src = inputs.dressing-nvim; nvimRequireCheck = "dressing"; };
   friendly-snippets = (buildVim {
     name = "friendly-snippets";

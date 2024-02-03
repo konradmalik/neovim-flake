@@ -29,8 +29,6 @@ processMadePlugins (with neovimPlugins;[
       cmp-nvim-lsp
       cmp-path
       cmp_luasnip
-      { plugin = copilot-cmp; optional = true; }
-      { plugin = copilot-lua; optional = true; }
       luasnip
       friendly-snippets
     ];
