@@ -10,7 +10,10 @@ function M.config()
         return
     end
 
-    return require("roslyn").config(binaries.roslyn_ls(), solution)
+    return require("roslyn").config({
+        cmd = binaries.roslyn_ls(),
+        solution = solution,
+    })
 end
 
 return M

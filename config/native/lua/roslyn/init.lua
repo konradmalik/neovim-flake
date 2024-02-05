@@ -1,15 +1,20 @@
 -- NOTE: this is a vastly simplified https://github.com/jmederosalvarado/roslyn.nvim
 local hacks = require("roslyn.hacks")
-local roslyn_lsp_rpc = require("roslyn.lsp")
+local rpc = require("roslyn.rpc")
 
 local M = {}
 
+---@class RoslynConfig
+---@field cmd string
+---@field solution string
+---@field logLevel? "Critical"|"Debug"|"Error"|"Information"|"None"|"Trace"|"Warning"
+
 ---Creates a new Roslyn lsp server configuration
 ---Should be passed to eg. start_client
----@param cmd string
----@param solution string must be a sln file
+---@param config RoslynConfig
 ---@return lsp.ClientConfig?
-function M.config(cmd, solution)
+function M.config(config)
+    local solution = config.solution
     if solution:sub(-4) ~= ".sln" then
         vim.notify(
             "Roslyn target should be a `.sln` file but was: " .. solution,
@@ -18,14 +23,17 @@ function M.config(cmd, solution)
         return
     end
 
-    local server_args = {
-        "--logLevel=Information",
+    config.logLevel = config.logLevel or "Information"
+    local cmd_args = {
+        "--logLevel=" .. config.logLevel,
         "--extensionLogDirectory=" .. vim.fs.dirname(vim.lsp.get_log_path()),
     }
 
     return {
         name = "roslyn",
-        cmd = hacks.wrap_server_cmd(roslyn_lsp_rpc.start_uds(cmd, server_args)),
+        cmd = function(dispatchers)
+            return rpc.start_dynamic_socket(config.cmd, cmd_args, dispatchers)
+        end,
         root_dir = vim.fs.dirname(solution),
         on_init = function(client)
             vim.notify(
