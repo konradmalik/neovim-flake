@@ -2,16 +2,16 @@ local fs = require("konrad.fs")
 
 local M = {}
 
----@param fconfig fun():lsp.ClientConfig
+---@param config lsp.ClientConfig
 ---@return lsp.ClientConfig
-M.make_config = function(fconfig)
+M.make_config = function(config)
     local lspcaps = vim.lsp.protocol.make_client_capabilities()
     local mycaps = require("konrad.lsp.capabilities")
     local base = {
         capabilities = vim.tbl_deep_extend("force", lspcaps, mycaps),
     }
 
-    return vim.tbl_deep_extend("force", base, fconfig())
+    return vim.tbl_deep_extend("force", base, config)
 end
 
 ---@param names string[]|string

@@ -4,9 +4,9 @@ local fs = require("konrad.fs")
 local M = {}
 
 function M.config()
-    local solution = fs.find(".sln")
+    local solution = fs.find(".sln$")
     if not solution then
-        vim.notify("cannot find solution file", vim.log.levels.ERROR)
+        vim.notify("cannot find solution file", vim.log.levels.WARN)
         return
     end
 

@@ -18,7 +18,7 @@ function M.config(config)
     if solution:sub(-4) ~= ".sln" then
         vim.notify(
             "Roslyn target should be a `.sln` file but was: " .. solution,
-            vim.log.levels.ERROR
+            vim.log.levels.WARN
         )
         return
     end
