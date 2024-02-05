@@ -475,22 +475,6 @@
         "type": "github"
       }
     },
-    "omnisharp-extended-lsp-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1703496723,
-        "narHash": "sha256-vn3LExMNCBYTgR9q0Gy2hvUoJcMFsBMvjaeBcMv369c=",
-        "owner": "Hoffs",
-        "repo": "omnisharp-extended-lsp.nvim",
-        "rev": "4be2e8689067494ed7e5a4f1221adc31d1a07783",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Hoffs",
-        "repo": "omnisharp-extended-lsp.nvim",
-        "type": "github"
-      }
-    },
     "plenary-nvim": {
       "flake": false,
       "locked": {
@@ -537,7 +521,6 @@
         "nvim-treesitter-context": "nvim-treesitter-context",
         "nvim-treesitter-textobjects": "nvim-treesitter-textobjects",
         "nvim-web-devicons": "nvim-web-devicons",
-        "omnisharp-extended-lsp-nvim": "omnisharp-extended-lsp-nvim",
         "plenary-nvim": "plenary-nvim",
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
         "telescope-nvim": "telescope-nvim",

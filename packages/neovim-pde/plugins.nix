@@ -36,10 +36,6 @@ processMadePlugins (with neovimPlugins;[
   # lsp
   (makePlugin { plugin = neodev-nvim; optional = true; })
   (makePlugin { plugin = SchemaStore-nvim; optional = true; })
-  (makePlugin {
-    plugin = omnisharp-extended-lsp-nvim;
-    optional = true;
-  })
   # dap
   (makePlugin {
     plugin = nvim-dap;

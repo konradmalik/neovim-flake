@@ -27,7 +27,6 @@ pkgs.writeTextDir "lua/konrad/binaries.lua" ''
       jsonls = function() return "${pkgs.nodePackages.vscode-json-languageserver}/bin/vscode-json-languageserver" end,
       lua_ls = function() return "${pkgs.sumneko-lua-language-server}/bin/lua-language-server" end,
       nil_ls = function() return "${pkgs.nil}/bin/nil" end,
-      omnisharp = function() return "${pkgs.omnisharp-roslyn}/bin/OmniSharp" end,
       pyright = function() return "${pkgs.nodePackages.pyright}/bin/pyright-langserver" end,
       roslyn_ls = function() return "${pkgs.roslyn-ls}/bin/Microsoft.CodeAnalysis.LanguageServer" end,
       rust_analyzer = function() return "${pkgs.rust-analyzer}/bin/rust-analyzer" end,

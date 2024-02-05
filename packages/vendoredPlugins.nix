@@ -82,11 +82,6 @@ rec {
     nativeBuildInputs = [ vimPlugins.nvim-treesitter ];
   };
   nvim-web-devicons = buildVim { name = "nvim-web-devicons"; src = inputs.nvim-web-devicons; };
-  omnisharp-extended-lsp-nvim = buildVim {
-    name = "omnisharp-extended-lsp.nvim";
-    src = inputs.omnisharp-extended-lsp-nvim;
-    nvimRequireCheck = "omnisharp_extended";
-  };
   plenary-nvim = (buildNeovim { name = "plenary.nvim"; src = inputs.plenary-nvim; nvimRequireCheck = "plenary"; }).overrideAttrs {
     postPatch = ''
       sed -Ei lua/plenary/curl.lua \

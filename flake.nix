@@ -38,7 +38,6 @@
       nvim-treesitter-context = { url = "github:nvim-treesitter/nvim-treesitter-context"; flake = false; };
       nvim-treesitter-textobjects = { url = "github:nvim-treesitter/nvim-treesitter-textobjects"; flake = false; };
       nvim-web-devicons = { url = "github:kyazdani42/nvim-web-devicons"; flake = false; };
-      omnisharp-extended-lsp-nvim = { url = "github:Hoffs/omnisharp-extended-lsp.nvim"; flake = false; };
       plenary-nvim = { url = "github:nvim-lua/plenary.nvim"; flake = false; };
       telescope-fzf-native-nvim = { url = "github:nvim-telescope/telescope-fzf-native.nvim"; flake = false; };
       telescope-nvim = { url = "github:nvim-telescope/telescope.nvim"; flake = false; };
