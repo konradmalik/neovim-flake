@@ -3,13 +3,12 @@
 
   inputs =
     {
-      # TODO
-      nixpkgs.url = "github:konradmalik/nixpkgs/roslyn-ls";
-      # nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+      nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
       neovim = {
         url = "github:neovim/neovim/89a9745a1a55dc9ffd0f8292735e45bae6c7b01e?dir=contrib";
         inputs.nixpkgs.follows = "nixpkgs";
       };
+      roslyn.url = "github:konradmalik/nixpkgs/roslyn-ls";
 
       # plugins
       SchemaStore-nvim = { url = "github:b0o/SchemaStore.nvim"; flake = false; };
@@ -48,14 +47,24 @@
 
   outputs = { self, nixpkgs, ... }@inputs:
     let
-      forAllSystems = function:
+
+      forAllSystems = funcOfPkgs:
         nixpkgs.lib.genAttrs [
           "x86_64-linux"
           "aarch64-linux"
           "x86_64-darwin"
           "aarch64-darwin"
         ]
-          (system: function nixpkgs.legacyPackages.${system});
+          (system:
+            funcOfPkgs (import nixpkgs {
+              inherit system;
+              overlays = [
+                (final: prev: {
+                  inherit (inputs.roslyn.legacyPackages.${prev.system}) roslyn-ls;
+                })
+              ];
+            }));
+
       neovimPluginsFor = pkgs: { inherit (pkgs.vimPlugins) nvim-treesitter; }
         // pkgs.callPackage ./packages/vendoredPlugins.nix { inherit inputs; };
     in
