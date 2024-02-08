@@ -40,6 +40,14 @@ vim.api.nvim_create_autocmd("User", {
     callback = function(args)
         local buf = args.buf
 
+        vim.api.nvim_buf_create_user_command(
+            buf,
+            "ConflictChooseOurs",
+            function() cmd.buf_conflict_choose_current(buf) end,
+            {
+                desc = opts_with_desc("Choose ours (current/HEAD/LOCAL)"),
+            }
+        )
         vim.keymap.set(
             "n",
             "<leader>co",
@@ -47,6 +55,14 @@ vim.api.nvim_create_autocmd("User", {
             buf_opts_with_desc(buf, "Choose ours (current/HEAD/LOCAL)")
         )
 
+        vim.api.nvim_buf_create_user_command(
+            buf,
+            "ConflictChooseTheirs",
+            function() cmd.buf_conflict_choose_incoming(buf) end,
+            {
+                desc = opts_with_desc("Choose theirs (incoming/REMOTE)"),
+            }
+        )
         vim.keymap.set(
             "n",
             "<leader>ct",
@@ -54,6 +70,14 @@ vim.api.nvim_create_autocmd("User", {
             buf_opts_with_desc(buf, "Choose theirs (incoming/REMOTE)")
         )
 
+        vim.api.nvim_buf_create_user_command(
+            buf,
+            "ConflictChooseBoth",
+            function() cmd.buf_conflict_choose_both(buf) end,
+            {
+                desc = opts_with_desc("Choose both"),
+            }
+        )
         vim.keymap.set(
             "n",
             "<leader>cb",
@@ -61,6 +85,14 @@ vim.api.nvim_create_autocmd("User", {
             buf_opts_with_desc(buf, "Choose both")
         )
 
+        vim.api.nvim_buf_create_user_command(
+            buf,
+            "ConflictChooseNone",
+            function() cmd.buf_conflict_choose_none(buf) end,
+            {
+                desc = opts_with_desc("Choose none"),
+            }
+        )
         vim.keymap.set(
             "n",
             "<leader>cn",
