@@ -1,5 +1,4 @@
 -- NOTE: this is a vastly simplified https://github.com/jmederosalvarado/roslyn.nvim
-local hacks = require("roslyn.hacks")
 local rpc = require("roslyn.rpc")
 
 local M = {}
@@ -46,15 +45,6 @@ function M.config(config)
             })
         end,
         handlers = {
-            [vim.lsp.protocol.Methods.textDocument_publishDiagnostics] = hacks.with_fixed_diagnostics_tags(
-                vim.lsp.handlers[vim.lsp.protocol.Methods.textDocument_publishDiagnostics]
-            ),
-            [vim.lsp.protocol.Methods.textDocument_diagnostic] = hacks.with_fixed_diagnostics_tags(
-                vim.lsp.handlers[vim.lsp.protocol.Methods.textDocument_diagnostic]
-            ),
-            [vim.lsp.protocol.Methods.client_registerCapability] = hacks.with_filtered_watchers(
-                vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
-            ),
             ["workspace/projectInitializationComplete"] = function()
                 vim.notify("Roslyn project initialization complete", vim.log.levels.INFO)
             end,
