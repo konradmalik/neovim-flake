@@ -1,8 +1,6 @@
 -- a simplified https://github.com/LunarVim/bigfile.nvim
 local M = {}
 
-local features = require("bigfile.features")
-
 ---@class config
 ---@field filesize integer size in MiB
 ---@field pattern string|string[] an |autocmd-pattern| to override detection of big files
@@ -40,6 +38,7 @@ local function pre_bufread_callback(bufnr, config)
 
     vim.api.nvim_buf_set_var(bufnr, "bigfile_detected", 1)
 
+    local features = require("bigfile.features")
     local matched_features =
         { features.lsp, features.treesitter, features.syntax, features.vimopts, features.filetype }
 
