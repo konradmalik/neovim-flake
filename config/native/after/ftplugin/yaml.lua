@@ -1,3 +1,5 @@
+vim.opt.shiftwidth = 2
+
 local efm = require("konrad.lsp.efm")
 local lsp = require("konrad.lsp")
 

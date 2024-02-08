@@ -17,11 +17,11 @@ end
 
 local function setup_statusline()
     vim.g.qf_disable_statusline = true
-    vim.o.laststatus = 3
+    vim.opt.laststatus = 3
     vim.api.nvim_set_hl(0, "StatusLine", { bg = "bg", fg = "fg" })
     vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "fg", fg = "bg" })
 
-    vim.o.statusline = "%!v:lua.require('konrad.statusline').statusline()"
+    vim.opt.statusline = "%!v:lua.require('konrad.statusline').statusline()"
 end
 
 ---@param bufnr integer

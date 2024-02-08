@@ -4,7 +4,7 @@ require("konrad.loader")
 require("konrad.disable_builtin")
 
 -- exrc (.nvim.lua)
-vim.o.exrc = true
+vim.opt.exrc = true
 
 -- map leader
 vim.g.mapleader = " "

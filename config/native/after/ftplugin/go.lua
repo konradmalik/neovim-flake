@@ -1,3 +1,5 @@
+vim.opt.expandtab = false
+
 local dap = require("konrad.dap")
 local efm = require("konrad.lsp.efm")
 local lsp = require("konrad.lsp")

@@ -4,8 +4,8 @@ local icons = require("konrad.icons")
 -- See `:help vim.o`
 -- use spaces instead of tabs. Mostly useful for new files not in repos/isolated files etc.
 -- Most of the time editorconfig should be used (neovim loads it automatically)
-vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
+vim.opt.softtabstop = -1 -- negative means just use shiftwidth
 vim.opt.expandtab = true
 -- indenting
 vim.opt.smartindent = true
