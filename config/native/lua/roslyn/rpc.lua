@@ -877,8 +877,8 @@ function M.start_dynamic_socket(cmd, cmd_args, dispatchers, extra_spawn_params)
             vim.schedule(
                 function()
                     vim.notify(
-                        string.format("data evaluates: (%s, %s) ", #data, data[1]),
-                        vim.log.levels.INFO
+                        string.format("could not read data: %s", vim.inspect(data)),
+                        vim.log.levels.WARN
                     )
                 end
             )
