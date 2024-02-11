@@ -20,7 +20,10 @@ M.detach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_codeLens) then
-        require("konrad.lsp.capability_handlers.codelens").detach()
+        require("konrad.lsp.capability_handlers.codelens").detach({
+            client_id = client.id,
+            bufnr = bufnr,
+        })
     end
 
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
