@@ -18,7 +18,9 @@ end
 local function setup_statusline()
     vim.g.qf_disable_statusline = true
     vim.opt.laststatus = 3
+    -- highlight group of the active window statusline
     vim.api.nvim_set_hl(0, "StatusLine", { bg = "bg", fg = "fg" })
+    -- nc -> non-active
     vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "fg", fg = "bg" })
 
     vim.opt.statusline = "%!v:lua.require('konrad.statusline').statusline()"
@@ -67,6 +69,8 @@ M.statusline = function()
         components.git(),
         components.space,
         components.gitchanges(),
+        components.space,
+        components.DAP_status(),
         components.align,
         components.diagnostics(),
         components.space,
