@@ -11,20 +11,23 @@ local M = {}
 ---@param bufnr integer
 M.detach = function(client, bufnr)
     augroups.del_autocmds_for_buf(client, bufnr)
+    local function client_buf_supports_method(method)
+        return client.supports_method(method, { bufnr = bufnr })
+    end
 
-    if client.supports_method(ms.textDocument_codeAction) then
+    if client_buf_supports_method(ms.textDocument_codeAction) then
         require("konrad.lsp.capability_handlers.codeaction").detach()
     end
 
-    if client.supports_method(ms.textDocument_codeLens) then
+    if client_buf_supports_method(ms.textDocument_codeLens) then
         require("konrad.lsp.capability_handlers.codelens").detach()
     end
 
-    if client.supports_method(ms.textDocument_documentHighlight) then
+    if client_buf_supports_method(ms.textDocument_documentHighlight) then
         require("konrad.lsp.capability_handlers.documenthighlight").detach()
     end
 
-    if client.supports_method(ms.textDocument_inlayHint) then
+    if client_buf_supports_method(ms.textDocument_inlayHint) then
         require("konrad.lsp.capability_handlers.inlayhints").detach({ bufnr = bufnr })
     end
 
@@ -41,13 +44,17 @@ end
 M.attach = function(client, bufnr)
     local augroup = augroups.get_augroup(client)
     local opts_with_desc = keymapper.opts_for(bufnr)
+    local function client_buf_supports_method(method)
+        return client.supports_method(method, { bufnr = bufnr })
+    end
+
     local register_data = {
         augroup = augroup,
         bufnr = bufnr,
         client = client,
     }
 
-    if client.supports_method(ms.textDocument_completion) then
+    if client_buf_supports_method(ms.textDocument_completion) then
         local default_sources = require("konrad.cmp").default_sources
         local sources = vim.list_extend({ { name = "nvim_lsp" } }, default_sources)
 
@@ -57,26 +64,26 @@ M.attach = function(client, bufnr)
         })
     end
 
-    if client.supports_method(ms.textDocument_codeAction) then
+    if client_buf_supports_method(ms.textDocument_codeAction) then
         local handler = require("konrad.lsp.capability_handlers.codeaction")
         registry.register_once(handler.name, register_data, handler)
     end
 
-    if client.supports_method(ms.textDocument_codeLens) then
+    if client_buf_supports_method(ms.textDocument_codeLens) then
         local handler = require("konrad.lsp.capability_handlers.codelens")
         registry.register_once(handler.name, register_data, handler)
     end
 
-    if client.supports_method(ms.textDocument_formatting) then
+    if client_buf_supports_method(ms.textDocument_formatting) then
         local handler = require("konrad.lsp.capability_handlers.format")
         registry.register_once(handler.name, register_data, handler)
     end
 
-    if client.supports_method(ms.textDocument_declaration) then
+    if client_buf_supports_method(ms.textDocument_declaration) then
         vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts_with_desc("Go To Declaration"))
     end
 
-    if client.supports_method(ms.textDocument_definition) then
+    if client_buf_supports_method(ms.textDocument_definition) then
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts_with_desc("Go To Definition"))
         vim.keymap.set(
             "n",
@@ -86,17 +93,17 @@ M.attach = function(client, bufnr)
         )
     end
 
-    if client.supports_method(ms.textDocument_documentHighlight) then
+    if client_buf_supports_method(ms.textDocument_documentHighlight) then
         local handler = require("konrad.lsp.capability_handlers.documenthighlight")
         registry.register_once(handler.name, register_data, handler)
     end
 
-    if client.supports_method(ms.textDocument_documentSymbol) then
+    if client_buf_supports_method(ms.textDocument_documentSymbol) then
         local handler = require("konrad.lsp.capability_handlers.navic")
         registry.register_once(handler.name, register_data, handler)
     end
 
-    if client.supports_method(ms.textDocument_implementation) then
+    if client_buf_supports_method(ms.textDocument_implementation) then
         vim.keymap.set(
             "n",
             "gp",
@@ -111,7 +118,7 @@ M.attach = function(client, bufnr)
         )
     end
 
-    if client.supports_method(ms.textDocument_references) then
+    if client_buf_supports_method(ms.textDocument_references) then
         vim.keymap.set("n", "gr", vim.lsp.buf.references, opts_with_desc("References"))
         vim.keymap.set(
             "n",
@@ -121,16 +128,16 @@ M.attach = function(client, bufnr)
         )
     end
 
-    if client.supports_method(ms.textDocument_rename) then
+    if client_buf_supports_method(ms.textDocument_rename) then
         vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts_with_desc("Rename"))
     end
 
-    if client.supports_method(ms.textDocument_signatureHelp) then
+    if client_buf_supports_method(ms.textDocument_signatureHelp) then
         vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
         vim.keymap.set("i", "<c-s>", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
     end
 
-    if client.supports_method(ms.textDocument_typeDefinition) then
+    if client_buf_supports_method(ms.textDocument_typeDefinition) then
         vim.keymap.set(
             "n",
             "gT",
@@ -145,7 +152,7 @@ M.attach = function(client, bufnr)
         )
     end
 
-    if client.supports_method(ms.workspace_symbol) then
+    if client_buf_supports_method(ms.workspace_symbol) then
         vim.keymap.set(
             "n",
             "<leader>ws",
@@ -160,7 +167,7 @@ M.attach = function(client, bufnr)
         )
     end
 
-    if client.supports_method(ms.textDocument_inlayHint) then
+    if client_buf_supports_method(ms.textDocument_inlayHint) then
         local handler = require("konrad.lsp.capability_handlers.navic")
         registry.register_once(handler.name, register_data, handler)
     end
