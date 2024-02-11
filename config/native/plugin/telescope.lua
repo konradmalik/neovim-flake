@@ -17,6 +17,7 @@ local themes = require("telescope.themes")
 vim.keymap.set("n", "<leader>ff", builtin.find_files, opts_with_desc("[F]ind [F]iles"))
 vim.keymap.set("n", "<leader>fi", builtin.git_files, opts_with_desc("Find (G[i]t) Files"))
 vim.keymap.set("n", "<leader>fg", builtin.live_grep, opts_with_desc("Live [G]rep"))
+vim.keymap.set("n", "<leader>f*", builtin.grep_string, opts_with_desc("Grep word under cursor"))
 vim.keymap.set("n", "<leader>f/", function()
     -- You can pass additional configuration to telescope to change theme, layout, etc.
     builtin.current_buffer_fuzzy_find(themes.get_dropdown({
