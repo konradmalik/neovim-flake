@@ -5,7 +5,7 @@
     {
       nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
       neovim = {
-        url = "github:neovim/neovim/89a9745a1a55dc9ffd0f8292735e45bae6c7b01e?dir=contrib";
+        url = "github:neovim/neovim?dir=contrib";
         inputs.nixpkgs.follows = "nixpkgs";
       };
       roslyn.url = "github:konradmalik/nixpkgs/roslyn-ls";
@@ -115,7 +115,10 @@
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
       packages = forAllSystems (pkgs: rec {
         neovim = pkgs.callPackage ./packages/neovim-pde {
-          neovim = inputs.neovim.packages.${pkgs.system}.neovim;
+          neovim = inputs.neovim.packages.${pkgs.system}.neovim.override {
+            # TODO remove once 0.20.9 gets merged to unstable
+            inherit ((builtins.getFlake "github:nixos/nixpkgs/494e53c2578f80e25ac95774402beb4ca137e17b").legacyPackages.${pkgs.system}) tree-sitter;
+          };
           neovimPlugins = neovimPluginsFor pkgs;
         };
         default = neovim;
