@@ -62,44 +62,42 @@ local M = {}
 M.statusline = function()
     if is_special(utils.stbufnr()) then return components.filetype() end
 
-    return table.concat({
-        components.mode(),
-        components.space,
-        components.space,
-        components.git(),
-        components.space,
-        components.gitchanges(),
-        components.space,
-        components.DAP_status(),
-        components.align,
-        components.diagnostics(),
-        components.space,
-        components.LSP_status(),
-        components.space,
-        components.filetype(),
-        components.space,
-        components.fileformat(),
-        components.space,
-        components.file_encoding(),
-        components.space,
-        components.hostname(),
-        components.space,
-        components.ruler(),
-        components.space,
-        components.scrollbar(),
-    })
+    return components.mode()
+        .. components.space
+        .. components.space
+        .. components.git()
+        .. components.space
+        .. components.gitchanges()
+        .. components.cut
+        .. components.align
+        .. components.DAP_status()
+        .. components.align
+        .. components.diagnostics()
+        .. components.space
+        .. components.LSP_status()
+        .. components.space
+        .. components.filetype()
+        .. components.space
+        .. components.fileformat()
+        .. components.space
+        .. components.file_encoding()
+        .. components.space
+        .. components.hostname()
+        .. components.space
+        .. components.ruler()
+        .. components.space
+        .. components.scrollbar()
 end
 
 M.winbar = function()
-    if not conditions.is_activewin() then return components.fileinfo(false, true) end
+    if not conditions.is_activewin() then return components.cut .. components.fileinfo(false) end
 
-    return table.concat({
-        components.cwd(true),
-        components.space,
-        components.fileinfo(true, true),
-        components.space,
-        components.navic(),
-    })
+    return components.cut
+        .. components.cwd()
+        .. components.space
+        .. components.fileinfo(true)
+        .. components.space
+        .. components.navic()
 end
 
 M.setup = function(conf)

@@ -1,20 +1,4 @@
-local utils = require("konrad.statusline.utils")
 local M = {}
-
----@param n integer
----@param thresh float
----@param is_winbar boolean?
----@return boolean
-function M.width_percent_below(n, thresh, is_winbar)
-    local winwidth
-    if vim.o.laststatus == 3 and not is_winbar then
-        winwidth = vim.o.columns
-    else
-        winwidth = vim.api.nvim_win_get_width(utils.stwinnr())
-    end
-
-    return n / winwidth <= thresh
-end
 
 ---@return boolean
 function M.is_activewin() return vim.api.nvim_get_current_win() == vim.g.statusline_winid end

@@ -1,4 +1,3 @@
-local conditions = require("konrad.statusline.conditions")
 local devicons = require("nvim-web-devicons")
 local icons = require("konrad.icons")
 local utils = require("konrad.statusline.utils")
@@ -6,7 +5,7 @@ local utils = require("konrad.statusline.utils")
 ---@param hl string
 ---@param s string
 ---@return string
-local function wrap_hl(hl, s) return string.format("%%#%s#%s%%*", hl, s) end
+local function wrap_hl(hl, s) return "%#" .. hl .. "#" .. s .. "%*" end
 
 local colors = {
     green = "String",
@@ -90,40 +89,27 @@ M.space = " "
 
 M.align = "%="
 
--- this means that the statusline is cut here when there's not enough space
 M.cut = "%<"
 
 M.mode = function()
-    local m = vim.api.nvim_get_mode().mode
-    local mname = modes[m][1]
-    local mhl = modes[m][2]
+    local m = modes[vim.api.nvim_get_mode().mode]
+
+    local mname = m[1]
+    local mhl = m[2]
     local hl = vim.api.nvim_get_hl(0, { name = mhl })
 
     local left = wrap_hl(mhl, icons.ui.LeftHalf)
     local right = wrap_hl(mhl, icons.ui.RightHalf)
 
     vim.api.nvim_set_hl(0, "StMode", { bold = true, bg = hl.fg, fg = "bg" })
-    local mode = wrap_hl("StMode", string.format("%s %s", icons.misc.Neovim, mname))
+    local mode = wrap_hl("StMode", icons.misc.Neovim .. " " .. mname)
 
-    return string.format("%s%s%s", left, mode, right)
+    return left .. mode .. right
 end
 
-M.fileinfo = function(active, is_winbar)
+M.fileinfo = function(active)
     local bufnr = utils.stbufnr()
-    local text = {}
-
     local bufname = vim.api.nvim_buf_get_name(bufnr)
-    local extension = vim.fn.fnamemodify(bufname, ":e")
-    local icon, color = devicons.get_icon_color(bufname, extension, { default = true })
-
-    local ihl
-    if not active then
-        ihl = colors.gray
-    else
-        ihl = "StFileInfo"
-        vim.api.nvim_set_hl(0, ihl, { fg = color })
-    end
-    table.insert(text, wrap_hl(ihl, string.format("%s ", icon)))
 
     local filename
     if bufname == "" then
@@ -133,25 +119,31 @@ M.fileinfo = function(active, is_winbar)
     else
         filename = vim.fn.fnamemodify(bufname, ":.")
     end
+    if not filename then return "" end
 
-    if not conditions.width_percent_below(#filename, 0.4, is_winbar) then
-        filename = vim.fn.pathshorten(filename)
-    end
+    local extension = vim.fn.fnamemodify(bufname, ":e")
+    local icon, color = devicons.get_icon_color(bufname, extension, { default = true })
+
+    local ihl
     local hl
     if not active then
+        ihl = colors.gray
         hl = colors.gray
     else
+        ihl = "StFileInfo"
+        vim.api.nvim_set_hl(0, ihl, { fg = color })
         hl = colors.text
     end
-    table.insert(text, wrap_hl(hl, filename))
 
-    if vim.bo[bufnr].modified then table.insert(text, wrap_hl(colors.diag_ok, icons.ui.Square)) end
-    if vim.bo[bufnr].readonly then table.insert(text, wrap_hl(colors.diag_warn, icons.ui.Lock)) end
+    local text = wrap_hl(ihl, icon) .. " " .. wrap_hl(hl, filename)
+
+    if vim.bo[bufnr].modified then text = text .. wrap_hl(colors.diag_ok, icons.ui.Square) end
+    if vim.bo[bufnr].readonly then text = text .. wrap_hl(colors.diag_warn, icons.ui.Lock) end
     if not vim.bo[bufnr].modifiable then
-        table.insert(text, wrap_hl(colors.diag_error, icons.ui.FilledLock))
+        text = text .. wrap_hl(colors.diag_error, icons.ui.FilledLock)
     end
 
-    return table.concat(text)
+    return text
 end
 
 M.fileformat = function()
@@ -162,10 +154,7 @@ M.git = function()
     local bufnr = utils.stbufnr()
     if not vim.b[bufnr].gitsigns_head or vim.b[bufnr].gitsigns_git_status then return "" end
 
-    return wrap_hl(
-        colors.orange,
-        string.format("%s %s", icons.git.Branch, vim.b[bufnr].gitsigns_status_dict.head)
-    )
+    return wrap_hl(colors.orange, icons.git.Branch .. " " .. vim.b[bufnr].gitsigns_status_dict.head)
 end
 
 M.gitchanges = function()
@@ -175,22 +164,16 @@ M.gitchanges = function()
     local git_status = vim.b[bufnr].gitsigns_status_dict
 
     local added = (git_status.added and git_status.added ~= 0)
-            and wrap_hl(colors.git_add, string.format("%s %s ", icons.git.Add, git_status.added))
+            and wrap_hl(colors.git_add, icons.git.Add .. " " .. git_status.added .. " ")
         or ""
     local changed = (git_status.changed and git_status.changed ~= 0)
-            and wrap_hl(
-                colors.git_change,
-                string.format("%s %s ", icons.git.Mod, git_status.changed)
-            )
+            and wrap_hl(colors.git_change, icons.git.Mod .. " " .. git_status.changed .. " ")
         or ""
     local removed = (git_status.removed and git_status.removed ~= 0)
-            and wrap_hl(
-                colors.git_del,
-                string.format("%s %s ", icons.git.Remove, git_status.removed)
-            )
+            and wrap_hl(colors.git_del, icons.git.Remove .. " " .. git_status.removed .. " ")
         or ""
 
-    return string.format("%s%s%s", added, changed, removed)
+    return added .. changed .. removed
 end
 
 M.diagnostics = function()
@@ -200,28 +183,25 @@ M.diagnostics = function()
     local numHints = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.HINT }) or 0
     local numInfo = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.INFO }) or 0
 
-    local errors =
-        wrap_hl(colors.diag_error, string.format("%s %s ", icons.diagnostics.Error, numErrors))
+    local errors = wrap_hl(colors.diag_error, icons.diagnostics.Error .. " " .. numErrors .. " ")
     local warnings =
-        wrap_hl(colors.diag_warn, string.format("%s %s ", icons.diagnostics.Warning, numWarnings))
-    local hints =
-        wrap_hl(colors.diag_hint, string.format("%s %s ", icons.diagnostics.Hint, numHints))
-    local info =
-        wrap_hl(colors.diag_info, string.format("%s %s ", icons.diagnostics.Information, numInfo))
+        wrap_hl(colors.diag_warn, icons.diagnostics.Warning .. " " .. numWarnings .. " ")
+    local hints = wrap_hl(colors.diag_hint, icons.diagnostics.Hint .. " " .. numHints .. " ")
+    local info = wrap_hl(colors.diag_info, icons.diagnostics.Information .. " " .. numInfo .. " ")
 
     errors = numErrors > 0 and errors or ""
     warnings = numWarnings > 0 and warnings or ""
     hints = numHints > 0 and hints or ""
     info = numInfo > 0 and info or ""
 
-    return string.format("%s%s%s%s", errors, warnings, hints, info)
+    return errors .. warnings .. hints .. info
 end
 
 M.filetype = function()
     local bufnr = utils.stbufnr()
     local ft = vim.bo[bufnr].filetype
     if ft == "" then ft = "plain text" end
-    return wrap_hl(colors.filetype, string.format("%s %s", icons.documents.FileContents, ft))
+    return wrap_hl(colors.filetype, icons.documents.FileContents .. " " .. ft)
 end
 
 M.file_encoding = function()
@@ -237,44 +217,33 @@ M.LSP_status = function()
     if #clients == 0 then return "" end
 
     local icon = #clients > 1 and icons.ui.CheckAll or icons.ui.Check
-    if #clients >= 3 then
-        return wrap_hl(colors.green, string.format("%s %s LSPs", icon, #clients))
-    end
+    if #clients >= 3 then return wrap_hl(colors.green, icon .. " " .. #clients .. "LSPs") end
 
     for _, server in pairs(clients) do
         table.insert(names, server.name)
     end
-    return wrap_hl(colors.green, string.format("%s %s", icon, table.concat(names, " ")))
+    return wrap_hl(colors.green, icon .. " " .. table.concat(names, " "))
 end
 
 M.DAP_status = function()
     local ok, dap = pcall(require, "dap")
     if not ok or not dap.session() then return "" end
-    return wrap_hl(colors.debug, string.format("%s %s", icons.ui.Bug, require("dap").status()))
+    return wrap_hl(colors.debug, icons.ui.Bug .. " " .. dap.status())
 end
 
-M.cwd = function(is_winbar)
+M.cwd = function()
     local cwd = vim.fn.getcwd()
     cwd = vim.fn.fnamemodify(cwd, ":t")
-    cwd = string.format(
-        "%s %s %s",
-        (vim.fn.haslocaldir(0) == 1 and "l" or "g"),
-        icons.documents.Folder,
-        cwd
-    )
-    if not conditions.width_percent_below(#cwd, 0.15, is_winbar) then return "" end
+    cwd = (vim.fn.haslocaldir(0) == 1 and "l" or "g") .. " " .. icons.documents.Folder .. " " .. cwd
     return wrap_hl(colors.directory, cwd)
 end
 
-M.hostname = function()
-    return wrap_hl(colors.blue, string.format("%s %s", icons.ui.Laptop, vim.fn.hostname()))
-end
+M.hostname = function() return wrap_hl(colors.blue, icons.ui.Laptop .. " " .. vim.fn.hostname()) end
 
 M.navic = function()
     local ok, navic = pcall(require, "nvim-navic")
     if not ok or not navic.is_available() then return "" end
-    local loc =
-        require("nvim-navic").get_location({ highlight = false, click = true, safe_output = true })
+    local loc = navic.get_location({ highlight = false, click = true, safe_output = true })
     return wrap_hl(colors.cyan, loc)
 end
 
