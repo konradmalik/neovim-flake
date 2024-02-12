@@ -531,11 +531,11 @@
     },
     "roslyn": {
       "locked": {
-        "lastModified": 1707240621,
-        "narHash": "sha256-dPJAgvz6UNnAfJ7+nRymLog3A1dcij847KmHHSwhnMs=",
+        "lastModified": 1707761392,
+        "narHash": "sha256-8yF/ULfLoFu9FSo9XwnnVQbaEXj67fPRIHvLyqcBvXY=",
         "owner": "konradmalik",
         "repo": "nixpkgs",
-        "rev": "18569d9e13a68e791ad3d9178a6bb293549ca409",
+        "rev": "c6f4ab4b5440d80bc55254fc1f6396ea7203ae44",
         "type": "github"
       },
       "original": {
