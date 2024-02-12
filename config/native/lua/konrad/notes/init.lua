@@ -15,7 +15,7 @@ local set_keymaps = function(config)
     vim.keymap.set(
         "n",
         "<leader>nq",
-        function() open_quicknotes(config.base_path .. "/" .. config.names.quicknotes) end,
+        function() open_quicknotes(config.base_path() .. "/" .. config.names.quicknotes) end,
         opts_with_desc("Open quick-notes file")
     )
 end
@@ -25,7 +25,9 @@ local M = {}
 M.setup = function(config_override)
     local config = vim.tbl_deep_extend("force", default_config, config_override)
 
-    if type(config.base_path) == "function" then config.base_path = config.base_path() end
+    if type(config.base_path) == "string" then
+        config.base_path = function() return config.base_path end
+    end
 
     set_keymaps(config)
 end
