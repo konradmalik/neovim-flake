@@ -115,10 +115,7 @@
       formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
       packages = forAllSystems (pkgs: rec {
         neovim = pkgs.callPackage ./packages/neovim-pde {
-          neovim = inputs.neovim.packages.${pkgs.system}.neovim.override {
-            # TODO remove once 0.20.9 gets merged to unstable
-            inherit ((builtins.getFlake "github:nixos/nixpkgs/494e53c2578f80e25ac95774402beb4ca137e17b").legacyPackages.${pkgs.system}) tree-sitter;
-          };
+          neovim = inputs.neovim.packages.${pkgs.system}.neovim;
           neovimPlugins = neovimPluginsFor pkgs;
         };
         default = neovim;
