@@ -112,16 +112,15 @@ M.fileinfo = function(active)
     local bufname = vim.api.nvim_buf_get_name(bufnr)
 
     local filename
+    local extension
     if bufname == "" then
         filename = "[No Name]"
-    elseif vim.bo[bufnr].filetype == "help" then
-        filename = vim.fn.fnamemodify(bufname, ":t")
+        extension = ""
     else
-        filename = vim.fn.fnamemodify(bufname, ":.")
+        filename = vim.fn.fnamemodify(bufname, ":.") or ""
+        extension = vim.fn.fnamemodify(bufname, ":e") or ""
     end
-    if not filename then return "" end
 
-    local extension = vim.fn.fnamemodify(bufname, ":e")
     local icon, color = devicons.get_icon_color(bufname, extension, { default = true })
 
     local ihl
@@ -137,7 +136,8 @@ M.fileinfo = function(active)
 
     local text = wrap_hl(ihl, icon) .. " " .. wrap_hl(hl, filename)
 
-    if vim.bo[bufnr].modified then text = text .. wrap_hl(colors.diag_ok, icons.ui.Square) end
+    if vim.bo[bufnr].modified then return text .. wrap_hl(colors.diag_ok, icons.ui.Square) end
+
     if vim.bo[bufnr].readonly then text = text .. wrap_hl(colors.diag_warn, icons.ui.Lock) end
     if not vim.bo[bufnr].modifiable then
         text = text .. wrap_hl(colors.diag_error, icons.ui.FilledLock)
@@ -152,16 +152,15 @@ end
 
 M.git = function()
     local bufnr = utils.stbufnr()
-    if not vim.b[bufnr].gitsigns_head or vim.b[bufnr].gitsigns_git_status then return "" end
-
-    return wrap_hl(colors.orange, icons.git.Branch .. " " .. vim.b[bufnr].gitsigns_status_dict.head)
+    local head = vim.b[bufnr].gitsigns_head
+    if not head then return "" end
+    return wrap_hl(colors.orange, icons.git.Branch .. " " .. head)
 end
 
 M.gitchanges = function()
     local bufnr = utils.stbufnr()
-    if not vim.b[bufnr].gitsigns_head or vim.b[bufnr].gitsigns_git_status then return "" end
-
     local git_status = vim.b[bufnr].gitsigns_status_dict
+    if not git_status then return "" end
 
     local added = (git_status.added and git_status.added ~= 0)
             and wrap_hl(colors.git_add, icons.git.Add .. " " .. git_status.added .. " ")
@@ -178,10 +177,11 @@ end
 
 M.diagnostics = function()
     local bufnr = utils.stbufnr()
-    local numErrors = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.ERROR }) or 0
-    local numWarnings = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.WARN }) or 0
-    local numHints = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.HINT }) or 0
-    local numInfo = #vim.diagnostic.get(bufnr, { severity = vim.diagnostic.severity.INFO }) or 0
+    local counts = vim.diagnostic.count(bufnr)
+    local numErrors = counts[vim.diagnostic.severity.ERROR] or 0
+    local numWarnings = counts[vim.diagnostic.severity.WARN] or 0
+    local numHints = counts[vim.diagnostic.severity.HINT] or 0
+    local numInfo = counts[vim.diagnostic.severity.INFO] or 0
 
     local errors = wrap_hl(colors.diag_error, icons.diagnostics.Error .. " " .. numErrors .. " ")
     local warnings =
@@ -214,10 +214,11 @@ end
 M.LSP_status = function()
     local names = {}
     local clients = vim.lsp.get_clients({ bufnr = utils.stbufnr() })
-    if #clients == 0 then return "" end
+    local numClients = #clients
+    if numClients == 0 then return "" end
 
-    local icon = #clients > 1 and icons.ui.CheckAll or icons.ui.Check
-    if #clients >= 3 then return wrap_hl(colors.green, icon .. " " .. #clients .. "LSPs") end
+    local icon = numClients > 1 and icons.ui.CheckAll or icons.ui.Check
+    if numClients >= 3 then return wrap_hl(colors.green, icon .. " " .. numClients .. "LSPs") end
 
     for _, server in pairs(clients) do
         table.insert(names, server.name)

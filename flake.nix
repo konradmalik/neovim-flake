@@ -47,7 +47,6 @@
 
   outputs = { self, nixpkgs, ... }@inputs:
     let
-
       forAllSystems = funcOfPkgs:
         nixpkgs.lib.genAttrs [
           "x86_64-linux"
