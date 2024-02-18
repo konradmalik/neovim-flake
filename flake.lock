@@ -300,11 +300,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1708001613,
-        "narHash": "sha256-woOmAXW05XnqlLn7dKzCkRAEOSOdA/Z2ndVvKcjid94=",
+        "lastModified": 1708214945,
+        "narHash": "sha256-LwP/lKuPasVLqUX+XFf6DbW4BWmM7o5K5unx/dXCJWY=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "085589047343aad800c4d305cf7b98e8a3d51ae2",
+        "rev": "e015f24e508c549ab2ab2ad74dcdad3ae07513fe",
         "type": "github"
       },
       "original": {
@@ -521,28 +521,11 @@
         "nvim-treesitter-textobjects": "nvim-treesitter-textobjects",
         "nvim-web-devicons": "nvim-web-devicons",
         "plenary-nvim": "plenary-nvim",
-        "roslyn": "roslyn",
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
         "telescope-nvim": "telescope-nvim",
         "undotree": "undotree",
         "vim-fugitive": "vim-fugitive",
         "which-key-nvim": "which-key-nvim"
-      }
-    },
-    "roslyn": {
-      "locked": {
-        "lastModified": 1707761392,
-        "narHash": "sha256-8yF/ULfLoFu9FSo9XwnnVQbaEXj67fPRIHvLyqcBvXY=",
-        "owner": "konradmalik",
-        "repo": "nixpkgs",
-        "rev": "c6f4ab4b5440d80bc55254fc1f6396ea7203ae44",
-        "type": "github"
-      },
-      "original": {
-        "owner": "konradmalik",
-        "ref": "roslyn-ls",
-        "repo": "nixpkgs",
-        "type": "github"
       }
     },
     "systems": {

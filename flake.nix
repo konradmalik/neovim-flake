@@ -8,7 +8,6 @@
         url = "github:neovim/neovim?dir=contrib";
         inputs.nixpkgs.follows = "nixpkgs";
       };
-      roslyn.url = "github:konradmalik/nixpkgs/roslyn-ls";
 
       # plugins
       SchemaStore-nvim = { url = "github:b0o/SchemaStore.nvim"; flake = false; };
@@ -54,15 +53,7 @@
           "x86_64-darwin"
           "aarch64-darwin"
         ]
-          (system:
-            funcOfPkgs (import nixpkgs {
-              inherit system;
-              overlays = [
-                (final: prev: {
-                  inherit (inputs.roslyn.legacyPackages.${prev.system}) roslyn-ls;
-                })
-              ];
-            }));
+          (system: funcOfPkgs nixpkgs.legacyPackages.${system});
 
       neovimPluginsFor = pkgs: { inherit (pkgs.vimPlugins) nvim-treesitter; }
         // pkgs.callPackage ./packages/vendoredPlugins.nix { inherit inputs; };
