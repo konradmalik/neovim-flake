@@ -218,7 +218,7 @@ M.LSP_status = function()
     if numClients == 0 then return "" end
 
     local icon = numClients > 1 and icons.ui.CheckAll or icons.ui.Check
-    if numClients >= 3 then return wrap_hl(colors.green, icon .. " " .. numClients .. "LSPs") end
+    if numClients >= 3 then return wrap_hl(colors.green, icon .. " " .. numClients .. " LSPs") end
 
     for _, server in pairs(clients) do
         table.insert(names, server.name)
