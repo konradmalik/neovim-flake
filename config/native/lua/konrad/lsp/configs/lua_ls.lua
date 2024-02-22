@@ -2,6 +2,11 @@
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
 
+vim.cmd("packadd neodev.nvim")
+require("neodev").setup({
+    lspconfig = false,
+})
+
 local M = {}
 
 function M.config()
@@ -30,11 +35,6 @@ function M.config()
         root_dir = configs.root_dir(".luarc.json", { type = "file" })
             or configs.root_dir({ "lua", ".git" }, { type = "directory" }),
     }
-
-    vim.cmd("packadd neodev.nvim")
-    require("neodev").setup({
-        lspconfig = false,
-    })
 
     -- this mutates config, so we cannot return a new one each time
     require("neodev.lsp").on_new_config(config, config.root_dir)

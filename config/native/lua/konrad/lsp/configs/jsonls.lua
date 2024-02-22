@@ -2,13 +2,12 @@
 
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
+vim.cmd("packadd SchemaStore.nvim")
+local schemastore = require("schemastore")
 
 local M = {}
 
 function M.config()
-    vim.cmd("packadd SchemaStore.nvim")
-    local schemastore = require("schemastore")
-
     return {
         cmd = { binaries.jsonls(), "--stdio" },
         init_options = {

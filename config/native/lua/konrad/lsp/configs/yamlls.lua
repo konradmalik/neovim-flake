@@ -2,12 +2,17 @@
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
 
+vim.cmd("packadd SchemaStore.nvim")
+local schemastore = require("schemastore")
+local schemas = vim.tbl_extend("error", schemastore.yaml.schemas(), {
+    ["kubernetes"] = { "k8s/**/*.yml", "k8s/**/*.yaml" },
+    -- or use:
+    -- # yaml-language-server: $schema=<urlToTheSchema>
+})
+
 local M = {}
 
 function M.config()
-    vim.cmd("packadd SchemaStore.nvim")
-    local schemastore = require("schemastore")
-
     return {
         cmd = { binaries.yamlls(), "--stdio" },
         settings = {
@@ -23,11 +28,7 @@ function M.config()
                 completion = true,
                 hover = true,
                 validate = true,
-                schemas = vim.tbl_extend("error", schemastore.yaml.schemas(), {
-                    ["kubernetes"] = { "k8s/**/*.yml", "k8s/**/*.yaml" },
-                    -- or use:
-                    -- # yaml-language-server: $schema=<urlToTheSchema>
-                }),
+                schemas = schemas,
                 schemaStore = {
                     -- we use above
                     enable = false,
