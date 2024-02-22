@@ -5,8 +5,19 @@
 
 Neovim in nix.
 
+Try it out:
+
+```bash
+$ nix run github:konradmalik/neovim-flake
+```
+
+## Assumptions
+
 -   keeps all Neovim config in lua as it's supposed to be
 -   uses nix for system dependencies, plugins and packaging
+
+That way nix is a layer on top, just used for packaging and repoducibility. It does not interfere with the standard way
+to configure Neovim.
 
 ## Things to note
 
