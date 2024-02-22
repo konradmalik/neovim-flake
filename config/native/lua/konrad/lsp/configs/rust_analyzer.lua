@@ -5,6 +5,7 @@ local M = {}
 
 function M.config()
     return {
+        name = "rust_analyzer",
         cmd = { binaries.rust_analyzer() },
         capabilities = {
             experimental = {

@@ -7,6 +7,7 @@ local M = {}
 
 function M.config()
     return {
+        name = "terraform-ls",
         cmd = { binaries.terraformls(), "serve" },
         root_dir = configs.root_dir({ ".terraform", ".git" }),
     }

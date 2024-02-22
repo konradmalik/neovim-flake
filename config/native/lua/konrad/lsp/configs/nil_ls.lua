@@ -7,6 +7,7 @@ local M = {}
 
 function M.config()
     return {
+        name = "nil",
         cmd = { binaries.nil_ls() },
         settings = {
             ["nil"] = {

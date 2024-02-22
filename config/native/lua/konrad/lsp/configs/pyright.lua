@@ -7,6 +7,7 @@ local M = {}
 
 function M.config()
     return {
+        name = "pyright",
         cmd = { binaries.pyright(), "--stdio" },
         settings = {
             python = {

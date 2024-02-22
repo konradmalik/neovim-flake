@@ -6,6 +6,7 @@ local M = {}
 
 function M.config()
     return {
+        name = "gopls",
         cmd = { binaries.gopls() },
         -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md
         settings = {

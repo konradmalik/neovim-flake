@@ -9,6 +9,7 @@ local M = {}
 
 function M.config()
     return {
+        name = "jsonls",
         cmd = { binaries.jsonls(), "--stdio" },
         init_options = {
             provideFormatter = false, -- use prettier instead

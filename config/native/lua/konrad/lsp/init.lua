@@ -76,7 +76,12 @@ M.start_and_attach = function(fconfig, bufnr, force)
     end
 
     local made_config = require("konrad.lsp.configs").make_config(config)
-    local client_id = vim.lsp.start(made_config, { bufnr = bufnr })
+    local client_id = vim.lsp.start(made_config, {
+        bufnr = bufnr,
+        reuse_client = function(client, conf)
+            return client.name == conf.name and client.root_dir == conf.root_dir
+        end,
+    })
     if not client_id then
         vim.notify("cannot start lsp: " .. made_config.cmd[1], vim.log.levels.WARN)
     end

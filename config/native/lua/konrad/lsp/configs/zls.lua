@@ -7,6 +7,7 @@ local M = {}
 
 function M.config()
     return {
+        name = "zls",
         cmd = { binaries.zls() },
         root_dir = configs.root_dir({ "zls.json", ".git" }),
     }

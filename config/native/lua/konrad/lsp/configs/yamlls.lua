@@ -14,6 +14,7 @@ local M = {}
 
 function M.config()
     return {
+        name = "yamlls",
         cmd = { binaries.yamlls(), "--stdio" },
         settings = {
             redhat = {
