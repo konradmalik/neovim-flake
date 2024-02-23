@@ -8,7 +8,7 @@ M.make_config = function(config)
     local lspcaps = vim.lsp.protocol.make_client_capabilities()
     local mycaps = require("konrad.lsp.capabilities")
     local base = {
-        capabilities = vim.tbl_deep_extend("force", lspcaps, mycaps),
+        capabilities = vim.tbl_deep_extend("force", mycaps, lspcaps),
     }
 
     return vim.tbl_deep_extend("force", base, config)
