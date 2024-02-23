@@ -15,13 +15,6 @@ local float_winid
 ---@param progress LspProgress
 ---@return string
 local function get_lsp_progress_msg(progress)
-    local percentage = progress.percentage
-    if not percentage and progress.kind == "begin" then
-        percentage = 0
-    elseif not percentage and progress.kind == "end" then
-        percentage = 100
-    end
-
     local message = progress.message
     if not message and progress.kind == "begin" then
         message = "starting"
@@ -29,7 +22,18 @@ local function get_lsp_progress_msg(progress)
         message = "finished"
     end
 
-    return string.format("[%s%%] %s: %s", percentage, progress.title, message)
+    local intermediate = progress.title .. ": " .. message
+
+    local percentage = progress.percentage
+    if not percentage and progress.kind == "begin" then
+        percentage = 0
+    elseif not percentage and progress.kind == "end" then
+        percentage = 100
+    elseif not percentage then
+        return intermediate
+    end
+
+    return "[" .. percentage .. "%] " .. intermediate
 end
 
 ---@param progress LspProgress
