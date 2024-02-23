@@ -8,6 +8,8 @@ local timer = vim.loop.new_timer()
 local float_bufnr
 ---@type integer? winid of the progress window
 local float_winid
+---@type string? last received message. If progress message is nil, then the last one is still valid
+local last_message
 
 ---@alias LspProgress lsp.WorkDoneProgressBegin|lsp.WorkDoneProgressReport|lsp.WorkDoneProgressEnd
 
@@ -15,25 +17,13 @@ local float_winid
 ---@param progress LspProgress
 ---@return string
 local function get_lsp_progress_msg(progress)
-    local message = progress.message
-    if not message and progress.kind == "begin" then
-        message = "starting"
-    elseif not message and progress.kind == "end" then
-        message = "finished"
-    end
+    local message = progress.message or last_message or ""
+    last_message = message
 
-    local intermediate = progress.title .. ": " .. message
+    if progress.title then message = progress.title .. ": " .. message end
+    if progress.percentage then message = "[" .. progress.percentage .. "%] " .. message end
 
-    local percentage = progress.percentage
-    if not percentage and progress.kind == "begin" then
-        percentage = 0
-    elseif not percentage and progress.kind == "end" then
-        percentage = 100
-    elseif not percentage then
-        return intermediate
-    end
-
-    return "[" .. percentage .. "%] " .. intermediate
+    return message
 end
 
 ---@param progress LspProgress
@@ -107,12 +97,9 @@ vim.api.nvim_create_autocmd({ "LspProgress" }, {
         local isDone = check_is_done(progress)
         if not isDone then
             timer:stop()
-        elseif isDone then
+        else
             -- schedule to keep the done message for a while
-            timer:start(keep_done_message_ms, 0, function()
-                timer:stop()
-                vim.schedule(cleanup_floating_win)
-            end)
+            timer:start(keep_done_message_ms, 0, vim.schedule_wrap(cleanup_floating_win))
         end
     end,
 })
