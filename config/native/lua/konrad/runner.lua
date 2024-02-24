@@ -56,10 +56,8 @@ local function run(cmd, opts)
         "",
     })
 
-    ---@param jobid integer
     ---@param data string[]
-    ---@param event "stdout"|"stderr"|"exit"
-    local on_event = function(jobid, data, event)
+    local on_event = function(_, data)
         if data then
             filter_out_trailing_empty_string(data)
             vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, data)
