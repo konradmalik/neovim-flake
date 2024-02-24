@@ -15,13 +15,20 @@ local last_message
 
 ---Get the progress message for all clients
 ---@param progress LspProgress
----@return string
+---@return string?
 local function get_lsp_progress_msg(progress)
-    local message = progress.message or last_message or ""
+    local message = progress.message or last_message
     last_message = message
 
-    if progress.title then message = progress.title .. ": " .. message end
-    if progress.percentage then message = "[" .. progress.percentage .. "%] " .. message end
+    if progress.title and message then
+        message = progress.title .. ": " .. message
+    elseif progress.title then
+        message = progress.title
+    end
+
+    if progress.percentage and message then
+        message = "[" .. progress.percentage .. "%] " .. message
+    end
 
     return message
 end
@@ -80,6 +87,8 @@ vim.api.nvim_create_autocmd({ "LspProgress" }, {
         ---@type LspProgress
         local progress = ev.data.result.value
         local message = get_lsp_progress_msg(progress)
+        if not message then return end
+
         -- The row position of the floating window. Just right above the status line.
         local win_row = vim.o.lines - vim.o.cmdheight - 4
         if not float_winid or not is_win_valid(float_winid) then
