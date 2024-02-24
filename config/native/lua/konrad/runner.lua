@@ -1,13 +1,13 @@
-local runner_winid
 local runner_bufnr
 
 local function create_buf_and_win_if_needed()
     if not runner_bufnr or not vim.api.nvim_buf_is_valid(runner_bufnr) then
         runner_bufnr = vim.api.nvim_create_buf(false, true)
-    end
 
-    if not runner_winid or not vim.api.nvim_win_is_valid(runner_winid) then
-        runner_winid = vim.api.nvim_open_win(runner_bufnr, false, {
+        -- create window only of buffer does not exist
+        -- this allows to eg. move the window to a new tab
+        -- and still reuse it on subsequent runs (winid changes when moved to a tab)
+        vim.api.nvim_open_win(runner_bufnr, false, {
             win = 0,
             split = "right",
             noautocmd = true,
@@ -57,7 +57,13 @@ local function run(cmd, opts)
     })
 
     ---@param data string[]
-    local on_event = function(_, data)
+    ---@param event "stdout"|"stderr"|"exit"
+    local on_event = function(_, data, event)
+        if event == "exit" then
+            vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, { "Exit code: " .. data })
+            return
+        end
+
         if data then
             filter_out_trailing_empty_string(data)
             vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, data)
