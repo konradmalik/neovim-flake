@@ -1,5 +1,6 @@
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
+local runner = require("konrad.runner")
 local name = "rust_analyzer"
 
 local function reload_workspace(bufnr)
@@ -11,6 +12,31 @@ local function reload_workspace(bufnr)
             vim.notify("Cargo workspace reloaded")
         end, 0)
     end
+end
+
+local function runSingle(args)
+    if #args.arguments ~= 1 then
+        vim.notify("unexpected arguments: " .. vim.inspect(args.arguments), vim.log.levels.ERROR)
+    end
+
+    local task = args.arguments[1]
+    if task.kind ~= "cargo" then
+        vim.notify("unexpected kind: " .. task.kind, vim.log.levels.ERROR)
+    end
+
+    local cmd = {
+        task.kind,
+        task.args.cargoArgs,
+        task.args.cargoExtraArgs,
+    }
+    if not vim.tbl_isempty(task.args.executableArgs) then
+        table.insert(cmd, { "--" })
+        table.insert(cmd, task.args.executableArgs)
+    end
+
+    local cwd = task.args.workspaceRoot
+
+    runner.run(vim.tbl_flatten(cmd), { cwd = cwd })
 end
 
 local M = {}
@@ -65,7 +91,7 @@ function M.config()
             },
         },
         commands = {
-            ["rust-analyzer.runSingle"] = function(args) P(args) end,
+            ["rust-analyzer.runSingle"] = runSingle,
             ["rust-analyzer.debugSingle"] = function(args) P(args) end,
             ["rust-analyzer.showReferences"] = function(args) P(args) end,
             ["rust-analyzer.gotoLocation"] = function(args) P(args) end,
