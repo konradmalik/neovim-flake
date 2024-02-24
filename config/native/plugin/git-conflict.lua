@@ -44,9 +44,7 @@ vim.api.nvim_create_autocmd("User", {
             buf,
             "ConflictChooseOurs",
             function() cmd.buf_conflict_choose_current(buf) end,
-            {
-                desc = opts_with_desc("Choose ours (current/HEAD/LOCAL)"),
-            }
+            opts_with_desc("Choose ours (current/HEAD/LOCAL)")
         )
         vim.keymap.set(
             "n",
@@ -59,9 +57,7 @@ vim.api.nvim_create_autocmd("User", {
             buf,
             "ConflictChooseTheirs",
             function() cmd.buf_conflict_choose_incoming(buf) end,
-            {
-                desc = opts_with_desc("Choose theirs (incoming/REMOTE)"),
-            }
+            opts_with_desc("Choose theirs (incoming/REMOTE)")
         )
         vim.keymap.set(
             "n",
@@ -74,9 +70,7 @@ vim.api.nvim_create_autocmd("User", {
             buf,
             "ConflictChooseBoth",
             function() cmd.buf_conflict_choose_both(buf) end,
-            {
-                desc = opts_with_desc("Choose both"),
-            }
+            opts_with_desc("Choose both")
         )
         vim.keymap.set(
             "n",
@@ -89,9 +83,7 @@ vim.api.nvim_create_autocmd("User", {
             buf,
             "ConflictChooseNone",
             function() cmd.buf_conflict_choose_none(buf) end,
-            {
-                desc = opts_with_desc("Choose none"),
-            }
+            opts_with_desc("Choose none")
         )
         vim.keymap.set(
             "n",
