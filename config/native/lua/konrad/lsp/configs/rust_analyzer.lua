@@ -15,6 +15,14 @@ end
 
 local M = {}
 
+--TODO use this
+M.buf_commands = {
+    CargoReload = {
+        cmd = function() reload_workspace(0) end,
+        opts = { desc = "[rust-analyzer] Reload current cargo workspace" },
+    },
+}
+
 function M.config()
     return {
         name = name,
@@ -57,10 +65,10 @@ function M.config()
             },
         },
         commands = {
-            CargoReload = {
-                function() reload_workspace(0) end,
-                description = "Reload current cargo workspace",
-            },
+            ["rust-analyzer.runSingle"] = function(args) P(args) end,
+            ["rust-analyzer.debugSingle"] = function(args) P(args) end,
+            ["rust-analyzer.showReferences"] = function(args) P(args) end,
+            ["rust-analyzer.gotoLocation"] = function(args) P(args) end,
         },
         root_dir = configs.root_dir({ "Cargo.toml", "rust-project.json" }),
     }
