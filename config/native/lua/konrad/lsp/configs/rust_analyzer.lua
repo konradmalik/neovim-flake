@@ -14,16 +14,31 @@ local function reload_workspace(bufnr)
     end
 end
 
-local function runSingle(args)
-    if #args.arguments ~= 1 then
-        vim.notify("unexpected arguments: " .. vim.inspect(args.arguments), vim.log.levels.ERROR)
+---@param command lsp.Command
+---@return boolean
+local function validate_command(command)
+    if #command.arguments ~= 1 then
+        vim.notify("unexpected arguments: " .. vim.inspect(command.arguments), vim.log.levels.ERROR)
+        return false
     end
 
-    local task = args.arguments[1]
-    if task.kind ~= "cargo" then
-        vim.notify("unexpected kind: " .. task.kind, vim.log.levels.ERROR)
+    local task = command.arguments[1]
+    if not task or task.kind ~= "cargo" then
+        vim.notify("unexpected kind: " .. vim.inspec(task), vim.log.levels.ERROR)
+        return false
     end
 
+    return true
+end
+
+local function runSingle(command)
+    if not validate_command(command) then return end
+
+    local task = command.arguments[1]
+    if not task then
+        vim.notify("no command arguments", vim.log.levels.ERROR)
+        return
+    end
     local cmd = {
         task.kind,
         task.args.cargoArgs,
@@ -92,9 +107,6 @@ function M.config()
         },
         commands = {
             ["rust-analyzer.runSingle"] = runSingle,
-            ["rust-analyzer.debugSingle"] = function(args) P(args) end,
-            ["rust-analyzer.showReferences"] = function(args) P(args) end,
-            ["rust-analyzer.gotoLocation"] = function(args) P(args) end,
         },
         root_dir = configs.root_dir({ "Cargo.toml", "rust-project.json" }),
     }
