@@ -109,7 +109,7 @@ M.deregister = function(client, bufnr)
     -- once-per-buffer functionalities
     local buf_functionalities = once_per_buffer[bufnr]
     if buf_functionalities then
-        for fname, registered_client in pairs(once_per_buffer) do
+        for fname, registered_client in pairs(buf_functionalities) do
             if registered_client.id == client.id then buf_functionalities[fname] = nil end
         end
     end
