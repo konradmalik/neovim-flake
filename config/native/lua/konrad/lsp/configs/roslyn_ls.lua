@@ -37,32 +37,31 @@ local function getNameFromRange(range, bufnr)
     )[1]
 end
 
-local M = {}
+---@type LspConfig
+return {
+    config = function()
+        local solution = fs.find(".sln$")
+        if not solution then
+            vim.notify("cannot find solution file", vim.log.levels.WARN)
+            return
+        end
 
-function M.config()
-    local solution = fs.find(".sln$")
-    if not solution then
-        vim.notify("cannot find solution file", vim.log.levels.WARN)
-        return
-    end
+        local config = require("roslyn").config({
+            cmd = binaries.roslyn_ls(),
+            solution = solution,
+        })
+        if not config then return end
 
-    local config = require("roslyn").config({
-        cmd = binaries.roslyn_ls(),
-        solution = solution,
-    })
-    if not config then return end
+        local root_dir = config.root_dir
+        config.commands = {
+            ["dotnet.test.run"] = function(command, ctx)
+                if not validate_command(command) then return end
 
-    local root_dir = config.root_dir
-    config.commands = {
-        ["dotnet.test.run"] = function(command, ctx)
-            if not validate_command(command) then return end
-
-            local range = command.arguments[1].range
-            local name = getNameFromRange(range, ctx.bufnr)
-            testRun(root_dir, name)
-        end,
-    }
-    return config
-end
-
-return M
+                local range = command.arguments[1].range
+                local name = getNameFromRange(range, ctx.bufnr)
+                testRun(root_dir, name)
+            end,
+        }
+        return config
+    end,
+}

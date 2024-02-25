@@ -48,6 +48,9 @@ M.toggle_autostart = function() autostart_enabled = not autostart_enabled end
 
 function M.is_autostart_enabled() return autostart_enabled end
 
+---@param lsp_config LspConfig
+function M.init(lsp_config) M.start_and_attach(lsp_config.config) end
+
 ---starts if needed and attaches to the current buffer
 ---respects LspAutostartToggle
 ---@param fconfig lsp.ClientConfig | fun(): lsp.ClientConfig?

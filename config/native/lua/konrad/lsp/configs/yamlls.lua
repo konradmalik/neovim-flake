@@ -10,37 +10,36 @@ local schemas = vim.tbl_extend("error", schemastore.yaml.schemas(), {
     -- # yaml-language-server: $schema=<urlToTheSchema>
 })
 
-local M = {}
-
-function M.config()
-    return {
-        name = "yamlls",
-        cmd = { binaries.yamlls(), "--stdio" },
-        settings = {
-            redhat = {
-                telemetry = {
-                    enabled = false,
+---@type LspConfig
+return {
+    config = function()
+        return {
+            name = "yamlls",
+            cmd = { binaries.yamlls(), "--stdio" },
+            settings = {
+                redhat = {
+                    telemetry = {
+                        enabled = false,
+                    },
+                },
+                yaml = {
+                    format = {
+                        enable = false, -- use prettier instead
+                    },
+                    completion = true,
+                    hover = true,
+                    validate = true,
+                    schemas = schemas,
+                    schemaStore = {
+                        -- we use above
+                        enable = false,
+                        -- https://github.com/dmitmel/dotfiles/blob/master/nvim/dotfiles/lspconfigs/yaml.lua
+                        -- yamlls won't work if we disable schemaStore but don't specify url ¯\_(ツ)_/¯
+                        url = "",
+                    },
                 },
             },
-            yaml = {
-                format = {
-                    enable = false, -- use prettier instead
-                },
-                completion = true,
-                hover = true,
-                validate = true,
-                schemas = schemas,
-                schemaStore = {
-                    -- we use above
-                    enable = false,
-                    -- https://github.com/dmitmel/dotfiles/blob/master/nvim/dotfiles/lspconfigs/yaml.lua
-                    -- yamlls won't work if we disable schemaStore but don't specify url ¯\_(ツ)_/¯
-                    url = "",
-                },
-            },
-        },
-        root_dir = configs.root_dir(".git"),
-    }
-end
-
-return M
+            root_dir = configs.root_dir(".git"),
+        }
+    end,
+}

@@ -54,61 +54,61 @@ local function runSingle(command)
     runner.run(vim.tbl_flatten(cmd), { cwd = cwd })
 end
 
-local M = {}
-
---TODO use this
-M.buf_commands = {
-    CargoReload = {
-        cmd = function() reload_workspace(0) end,
-        opts = { desc = "[rust-analyzer] Reload current cargo workspace" },
-    },
-}
-
-function M.config()
-    return {
-        name = name,
-        cmd = { binaries.rust_analyzer() },
-        capabilities = {
-            experimental = {
-                serverStatusNotification = true,
+---@type LspConfig
+return {
+    config = function()
+        return {
+            name = name,
+            cmd = { binaries.rust_analyzer() },
+            capabilities = {
+                experimental = {
+                    serverStatusNotification = true,
+                },
             },
-        },
-        settings = {
-            ["rust-analyzer"] = {
-                rustfmt = {
-                    overrideCommand = {
-                        binaries.rustfmt(),
-                        "--edition",
-                        "2021",
-                        "--",
+            settings = {
+                ["rust-analyzer"] = {
+                    rustfmt = {
+                        overrideCommand = {
+                            binaries.rustfmt(),
+                            "--edition",
+                            "2021",
+                            "--",
+                        },
                     },
-                },
-                files = {
-                    excludeDirs = {
-                        "./.direnv/",
-                        "./.git/",
-                        "./.github/",
-                        "./.gitlab/",
-                        "./node_modules/",
-                        "./ci/",
-                        "./docs/",
+                    files = {
+                        excludeDirs = {
+                            "./.direnv/",
+                            "./.git/",
+                            "./.github/",
+                            "./.gitlab/",
+                            "./node_modules/",
+                            "./ci/",
+                            "./docs/",
+                        },
                     },
-                },
-                checkOnSave = {
-                    enable = true,
-                },
-                diagnostics = {
-                    enable = true,
-                    experimental = {
+                    checkOnSave = {
                         enable = true,
                     },
+                    diagnostics = {
+                        enable = true,
+                        experimental = {
+                            enable = true,
+                        },
+                    },
                 },
             },
+            commands = {
+                ["rust-analyzer.runSingle"] = runSingle,
+            },
+            root_dir = configs.root_dir({ "Cargo.toml", "rust-project.json" }),
+        }
+    end,
+
+    --TODO use this
+    buf_commands = {
+        CargoReload = {
+            cmd = function() reload_workspace(0) end,
+            opts = { desc = "[rust-analyzer] Reload current cargo workspace" },
         },
-        commands = {
-            ["rust-analyzer.runSingle"] = runSingle,
-        },
-        root_dir = configs.root_dir({ "Cargo.toml", "rust-project.json" }),
-    }
-end
-return M
+    },
+}
