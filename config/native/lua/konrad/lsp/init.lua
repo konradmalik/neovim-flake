@@ -10,9 +10,10 @@ local initialize_once = function()
     require("konrad.lsp.commands")
 
     require("konrad.lsp.progress")
+    local group = vim.api.nvim_create_augroup("personal-lsp", { clear = true })
 
     vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("personal-lsp-attach", { clear = true }),
+        group = group,
         callback = function(args)
             local client_id = args.data.client_id
             local client = vim.lsp.get_client_by_id(client_id)
@@ -26,7 +27,7 @@ local initialize_once = function()
     })
 
     vim.api.nvim_create_autocmd("LspDetach", {
-        group = vim.api.nvim_create_augroup("personal-lsp-detach", { clear = true }),
+        group = group,
         callback = function(args)
             local client_id = args.data.client_id
             local client = vim.lsp.get_client_by_id(client_id)
@@ -49,15 +50,44 @@ M.toggle_autostart = function() autostart_enabled = not autostart_enabled end
 function M.is_autostart_enabled() return autostart_enabled end
 
 ---@param lsp_config LspConfig
-function M.init(lsp_config) M.start_and_attach(lsp_config.config) end
+---@param bufnr integer|nil
+function M.init(lsp_config, bufnr)
+    bufnr = bufnr or vim.api.nvim_get_current_buf()
+    local group = vim.api.nvim_create_augroup("personal-lsp-buf-" .. bufnr, { clear = true })
+
+    if lsp_config.buf_commands then
+        vim.api.nvim_create_autocmd("LspAttach", {
+            group = group,
+            once = true,
+            buffer = bufnr,
+            callback = function()
+                for name, value in pairs(lsp_config.buf_commands) do
+                    vim.api.nvim_buf_create_user_command(bufnr, name, value.cmd, value.opts)
+                end
+            end,
+        })
+
+        vim.api.nvim_create_autocmd("LspDetach", {
+            group = group,
+            once = true,
+            buffer = bufnr,
+            callback = function()
+                for name, _ in pairs(lsp_config.buf_commands) do
+                    vim.api.nvim_buf_del_user_command(bufnr, name)
+                end
+            end,
+        })
+    end
+
+    M.start_and_attach(lsp_config.config, bufnr)
+end
 
 ---starts if needed and attaches to the current buffer
 ---respects LspAutostartToggle
 ---@param fconfig lsp.ClientConfig | fun(): lsp.ClientConfig?
 ---@param bufnr integer? buffer to attach to
----@param force boolean? whether to start even if autostart is disabled
-M.start_and_attach = function(fconfig, bufnr, force)
-    if not force and not autostart_enabled then
+M.start_and_attach = function(fconfig, bufnr)
+    if not autostart_enabled then
         vim.notify_once("LSP autostart is disabled", vim.log.levels.INFO)
         return
     end

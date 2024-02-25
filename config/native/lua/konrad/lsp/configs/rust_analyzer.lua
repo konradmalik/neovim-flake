@@ -104,7 +104,6 @@ return {
         }
     end,
 
-    --TODO use this
     buf_commands = {
         CargoReload = {
             cmd = function() reload_workspace(0) end,
