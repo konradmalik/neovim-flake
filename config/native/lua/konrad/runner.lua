@@ -24,14 +24,14 @@ local function filter_out_trailing_empty_string(data)
     if last == "" then table.remove(data, count) end
 end
 
----@class runOpts
+---@class RunOpts
 ---@field bufnr integer? buffer to save the output it. If not provided, will use a dedicated runner's buffer.
 ---@field cwd string? working directory. Current if nil.
 
 ---Runs a given command and saves it's output in the provided buffer.
 ---The buffer contents will be entirely replaced.
 ---@param cmd string|string[] if string, runs in a shell, else runs without shell
----@param opts runOpts optional configuration
+---@param opts RunOpts optional configuration
 local function run(cmd, opts)
     local bufnr = opts.bufnr
     local cwd = opts.cwd
