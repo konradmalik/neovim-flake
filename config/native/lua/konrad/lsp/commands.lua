@@ -1,5 +1,4 @@
 local lsp = require("konrad.lsp")
-local popup = require("plenary.popup")
 
 ---@param args string
 ---@return number?
@@ -40,23 +39,22 @@ local function restart_servers(filter)
     )
 end
 
----@param config table?
 ---@return table
-local function create_window(config)
-    config = config or {}
-    local width = config.width or 100
-    local height = config.height or 40
-    local borderchars = config.borderchars
-        or { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
-    local bufnr = vim.api.nvim_create_buf(false, true)
+local function create_window()
+    local width = 100
+    local height = 40
 
-    local win_id, _ = popup.create(bufnr, {
+    local bufnr = vim.api.nvim_create_buf(false, true)
+    local win_id = vim.api.nvim_open_win(bufnr, true, {
         title = "LspInfo",
-        line = math.floor(((vim.o.lines - height) / 2) - 1),
+        relative = "editor",
+        row = math.floor(((vim.o.lines - height) / 2) - 1),
         col = math.floor((vim.o.columns - width) / 2),
-        minwidth = width,
-        minheight = height,
-        borderchars = borderchars,
+        width = width,
+        height = height,
+        border = "rounded",
+        style = "minimal",
+        noautocmd = true,
     })
 
     return {
