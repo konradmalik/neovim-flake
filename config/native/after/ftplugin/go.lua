@@ -7,8 +7,5 @@ local efm = require("konrad.lsp.efm")
 local lsp = require("konrad.lsp")
 
 lsp.init(require("konrad.lsp.configs.gopls"), bufnr)
-lsp.start_and_attach(
-    function() return efm.build_config("golangci-lint", { "golangci_lint" }) end,
-    bufnr
-)
+lsp.init(efm.build_config("golangci-lint", { "golangci_lint" }), bufnr)
 dap.initialize("go")

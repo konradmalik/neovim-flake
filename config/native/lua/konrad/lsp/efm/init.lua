@@ -35,8 +35,6 @@ local make_languages_entry_for_plugin = function(plugin)
     return vim.tbl_extend("error", unpack(nested))
 end
 
-local M = {}
-
 local checkFormattingEnabled = function(languages)
     for _, entries in pairs(vim.tbl_values(languages)) do
         for _, entry in ipairs(entries) do
@@ -67,47 +65,52 @@ local unique_list = function(list)
     for _, value in ipairs(list) do
         if not r[value] then r[value] = true end
     end
-    return vim.tbl_flatten(r)
+    return vim.tbl_keys(r)
 end
 
----@param name string unique name of this efm instance
----@param plugins string[] names of plugins to add, ex. 'prettier'
----@return lsp.ClientConfig
-M.build_config = function(name, plugins)
-    local languages = {}
-    local allRootMarkers = { ".git/" }
-    for _, v in ipairs(plugins) do
-        local plugin = require("konrad.lsp.efm." .. v)
-        local plugin_config = prepare_config(plugin)
-        local languages_entry = make_languages_entry_for_plugin(plugin_config)
-        for key, value in pairs(languages_entry) do
-            if languages[key] then
-                languages[key] = vim.list_extend(languages[key], value)
-            else
-                languages[key] = value
-            end
-        end
+return {
+    ---Build an LspConfig table from the specified EFM plugins
+    ---@param name string unique name of this efm instance
+    ---@param plugins string[] names of plugins to add, ex. 'prettier'
+    ---@return LspConfig
+    build_config = function(name, plugins)
+        return {
+            config = function()
+                local languages = {}
+                local allRootMarkers = { ".git/" }
+                for _, v in ipairs(plugins) do
+                    local plugin = require("konrad.lsp.efm." .. v)
+                    local plugin_config = prepare_config(plugin)
+                    local languages_entry = make_languages_entry_for_plugin(plugin_config)
+                    for key, value in pairs(languages_entry) do
+                        if languages[key] then
+                            languages[key] = vim.list_extend(languages[key], value)
+                        else
+                            languages[key] = value
+                        end
+                    end
 
-        if plugin_config.entry.rootMarkers then
-            vim.list_extend(allRootMarkers, plugin_config.entry.rootMarkers)
-        end
-    end
+                    if plugin_config.entry.rootMarkers then
+                        vim.list_extend(allRootMarkers, plugin_config.entry.rootMarkers)
+                    end
+                end
 
-    local rootMarkers = unique_list(allRootMarkers)
+                local rootMarkers = unique_list(allRootMarkers)
 
-    local formattingEnabled = checkFormattingEnabled(languages)
-    return {
-        name = name,
-        cmd = { binaries.efm() },
-        init_options = {
-            documentFormatting = formattingEnabled,
-            documentRangeFormatting = formattingEnabled,
-        },
-        settings = {
-            rootMarkers = rootMarkers,
-            languages = languages,
-        },
-    }
-end
-
-return M
+                local formattingEnabled = checkFormattingEnabled(languages)
+                return {
+                    name = name,
+                    cmd = { binaries.efm() },
+                    init_options = {
+                        documentFormatting = formattingEnabled,
+                        documentRangeFormatting = formattingEnabled,
+                    },
+                    settings = {
+                        rootMarkers = rootMarkers,
+                        languages = languages,
+                    },
+                }
+            end,
+        }
+    end,
+}
