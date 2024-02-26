@@ -4,6 +4,7 @@ local configs = require("konrad.lsp.configs")
 
 ---@type LspConfig
 return {
+    name = "gopls",
     config = function()
         return {
             name = "gopls",

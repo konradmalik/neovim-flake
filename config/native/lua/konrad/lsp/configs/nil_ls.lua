@@ -5,6 +5,7 @@ local configs = require("konrad.lsp.configs")
 
 ---@type LspConfig
 return {
+    name = "nil",
     config = function()
         return {
             name = "nil",

@@ -9,6 +9,7 @@ require("neodev").setup({
 
 ---@type LspConfig
 return {
+    name = "lua_ls",
     config = function()
         local config = {
             name = "lua_ls",

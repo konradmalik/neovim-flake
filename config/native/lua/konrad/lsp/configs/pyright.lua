@@ -5,6 +5,7 @@ local configs = require("konrad.lsp.configs")
 
 ---@type LspConfig
 return {
+    name = "pyright",
     config = function()
         return {
             name = "pyright",

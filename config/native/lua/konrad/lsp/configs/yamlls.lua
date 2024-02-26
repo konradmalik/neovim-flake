@@ -12,6 +12,7 @@ local schemas = vim.tbl_extend("error", schemastore.yaml.schemas(), {
 
 ---@type LspConfig
 return {
+    name = "yamlls",
     config = function()
         return {
             name = "yamlls",

@@ -56,6 +56,7 @@ end
 
 ---@type LspConfig
 return {
+    name = name,
     config = function()
         return {
             name = name,

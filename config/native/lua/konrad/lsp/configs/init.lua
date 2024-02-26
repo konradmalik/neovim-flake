@@ -5,6 +5,7 @@ local fs = require("konrad.fs")
 ---@field opts vim.api.keyset.user_command options
 
 ---@class LspConfig
+---@field name string unique name
 ---@field config fun(): lsp.ClientConfig? function to generate the config
 ---@field buf_commands table<string,LspConfigBufCommand>|nil optional buf commands to be registered on LspAttach
 

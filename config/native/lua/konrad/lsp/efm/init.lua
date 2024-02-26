@@ -75,6 +75,7 @@ return {
     ---@return LspConfig
     build_config = function(name, plugins)
         return {
+            name = name,
             config = function()
                 local languages = {}
                 local allRootMarkers = { ".git/" }

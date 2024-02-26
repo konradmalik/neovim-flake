@@ -39,6 +39,7 @@ end
 
 ---@type LspConfig
 return {
+    name = "roslyn",
     config = function()
         local solution = fs.find(".sln$")
         if not solution then

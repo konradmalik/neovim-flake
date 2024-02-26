@@ -5,6 +5,7 @@ local configs = require("konrad.lsp.configs")
 
 ---@type LspConfig
 return {
+    name = "terraform-ls",
     config = function()
         return {
             name = "terraform-ls",

@@ -7,6 +7,7 @@ local schemastore = require("schemastore")
 
 ---@type LspConfig
 return {
+    name = "jsonls",
     config = function()
         return {
             name = "jsonls",
