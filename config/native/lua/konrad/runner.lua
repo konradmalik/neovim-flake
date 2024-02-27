@@ -4,6 +4,8 @@ local function scroll_to_bottom(winid)
     vim.api.nvim_win_set_cursor(winid, { last_line, 0 })
 end
 
+local function is_active_win(winid) return vim.api.nvim_get_current_win() == winid end
+
 ---tries to find among current windows
 ---@param bufnr integer
 ---@return integer?
@@ -84,7 +86,7 @@ local function run(cmd, opts)
         if event == "exit" then
             vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, { "Exit code: " .. data })
             local winid = get_or_create_window(bufnr)
-            if winid then scroll_to_bottom(winid) end
+            if winid and not is_active_win(winid) then scroll_to_bottom(winid) end
             return
         end
 
@@ -92,7 +94,7 @@ local function run(cmd, opts)
             filter_out_trailing_empty_string(data)
             vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, data)
             local winid = get_or_create_window(bufnr)
-            if winid then scroll_to_bottom(winid) end
+            if winid and not is_active_win(winid) then scroll_to_bottom(winid) end
         end
     end
 

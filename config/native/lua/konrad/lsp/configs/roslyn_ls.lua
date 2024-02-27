@@ -55,11 +55,14 @@ return {
 
         local root_dir = config.root_dir
         config.commands = {
+            ["roslyn.client.peekReferences"] = function() vim.lsp.buf.references() end,
             ["dotnet.test.run"] = function(command, ctx)
                 if not validate_command(command) then return end
 
                 local range = command.arguments[1].range
                 local name = getNameFromRange(range, ctx.bufnr)
+                -- TODO use treesitter to narrow down filter to namespace, class, method if found
+                -- https://cj.rs/blog/luasnip-and-treesitter-for-smarter-snippets/
                 testRun(root_dir, name)
             end,
         }
