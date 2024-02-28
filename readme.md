@@ -26,7 +26,7 @@ to configure Neovim.
 
 ### Home Manager
 
-The provided home-manager module, which links the configuration to your `XDG_CONFIG_HOME` folder and loads it from there.
+There is a home-manager module provided, which links the configuration to your `XDG_CONFIG_HOME` folder and loads it from there.
 
 This is the recommended way to use this flake "day-to-day" in your NixOS system.
 
@@ -52,11 +52,6 @@ Alternatively, one can just copy the whole config to a new $NVIM_APPNAME, modify
 ## Notes
 
 > composed from my reddit posts
-
-As a home-manager module - it's a great idea and it works as I expect.
-
-For `nix run .` type of usage (isolated and fully configured Neovim that I can run wherever) has some minor problems
-like: because `-u` is used, Neovim does not load .nvim.lua (or anything mentioned in exrc)
 
 What's great in using Neovim through nix is a way to generate lua files from nix. It allows to configure LSP to use binaries directly from nix store as opposed to getting them from PATH, especially useful for the most common LSPs that I always expect to have.
 
