@@ -100,9 +100,13 @@ function M.init(lsp_config, bufnr)
         vim.api.nvim_create_autocmd("LspAttach", {
             group = group,
             buffer = bufnr,
-            callback = function()
-                for name, value in pairs(lsp_config.buf_commands) do
-                    vim.api.nvim_buf_create_user_command(bufnr, name, value.cmd, value.opts)
+            callback = function(args)
+                local client_id = args.data.client_id
+                local client = assert(vim.lsp.get_client_by_id(client_id))
+                if client.name == lsp_config.name then
+                    for name, value in pairs(lsp_config.buf_commands) do
+                        vim.api.nvim_buf_create_user_command(bufnr, name, value.cmd, value.opts)
+                    end
                 end
             end,
         })
@@ -110,9 +114,13 @@ function M.init(lsp_config, bufnr)
         vim.api.nvim_create_autocmd("LspDetach", {
             group = group,
             buffer = bufnr,
-            callback = function()
-                for name, _ in pairs(lsp_config.buf_commands) do
-                    vim.api.nvim_buf_del_user_command(bufnr, name)
+            callback = function(args)
+                local client_id = args.data.client_id
+                local client = assert(vim.lsp.get_client_by_id(client_id))
+                if client.name == lsp_config.name then
+                    for name, _ in pairs(lsp_config.buf_commands) do
+                        vim.api.nvim_buf_del_user_command(bufnr, name)
+                    end
                 end
             end,
         })
