@@ -1,5 +1,7 @@
 local binaries = require("konrad.binaries")
+local configs = require("konrad.dap.configs")
 local dap = require("dap")
+
 dap.adapters.coreclr = {
     type = "executable",
     command = binaries.netcoredbg(),
@@ -11,29 +13,35 @@ dap.configurations.cs = {
         type = "coreclr",
         name = "Launch netcoredbg",
         request = "launch",
-        program = coroutine.create(function(dap_run_co)
-            local dlls = vim.fn.glob("./**/Debug/*/*.dll", true, true)
-            vim.ui.select(dlls, {
-                prompt = "Select dll to debug:",
-                format_item = function(item) return "debugee > " .. item end,
-            }, function(choice) coroutine.resume(dap_run_co, choice) end)
-        end),
+        program = configs.telescope_select("Path to dll", {
+            "fd",
+            "--hidden",
+            "--no-ignore",
+            "--type",
+            "f",
+            "--full-path",
+            "bin/Debug/.+\\.dll",
+        }),
     },
     {
         type = "coreclr",
         name = "Launch netcoredbg (with args)",
         request = "launch",
-        program = coroutine.create(function(dap_run_co)
-            local dlls = vim.fn.glob("./**/Debug/*/*.dll", true, true)
-            vim.ui.select(dlls, {
-                prompt = "Select dll to debug:",
-                format_item = function(item) return "debugee > " .. item end,
-            }, function(choice) coroutine.resume(dap_run_co, choice) end)
-        end),
-        args = coroutine.create(function(dap_run_co)
-            vim.ui.input({
-                prompt = "Args:",
-            }, function(input) coroutine.resume(dap_run_co, input) end)
-        end),
+        program = configs.telescope_select("Path to dll", {
+            "fd",
+            "--hidden",
+            "--no-ignore",
+            "--type",
+            "f",
+            "--full-path",
+            "bin/Debug/.+\\.dll",
+        }),
+        args = function() return vim.fn.input("Args:", "") end,
+    },
+    {
+        type = "coreclr",
+        name = "Attach netcoredbg (use VSTEST_HOST_DEBUG=1 for tests)",
+        request = "attach",
+        processId = require("dap.utils").pick_process,
     },
 }
