@@ -25,7 +25,7 @@ local M = {}
 ---
 ---@param dap string|function - dap config name or a function that configures it
 ---@return nil
-M.initialize = function(dap)
+M.init = function(dap)
     initialize_once()
 
     if type(dap) == "string" then

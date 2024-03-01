@@ -6,4 +6,4 @@ local lsp = require("konrad.lsp")
 
 lsp.init(efm.build_config("pyefm", { "black", "isort" }), bufnr)
 lsp.init(require("konrad.lsp.configs.pyright"), bufnr)
-dap.initialize("python")
+dap.init("python")
