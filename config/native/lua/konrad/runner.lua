@@ -76,7 +76,7 @@ local function run(cmd, opts)
 
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
         "Command: '" .. cmd_str .. "'",
-        "Working dir: '" .. vim.loop.cwd() .. "'",
+        "Working dir: '" .. vim.uv.cwd() .. "'",
         "",
     })
 

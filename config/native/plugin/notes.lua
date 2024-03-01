@@ -1,6 +1,6 @@
 local get_notes_path = function()
     local notes_path
-    if vim.loop.os_uname().sysname == "Darwin" then
+    if vim.uv.os_uname().sysname == "Darwin" then
         notes_path = "/Users/konrad/Library/Mobile Documents/iCloud~md~obsidian/Documents"
     else
         notes_path = "/home/konrad/obsidian"

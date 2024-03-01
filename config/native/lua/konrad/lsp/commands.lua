@@ -19,7 +19,7 @@ local function restart_servers(filter)
         vim.lsp.stop_client(client.id)
     end
 
-    local timer = vim.loop.new_timer()
+    local timer = vim.uv.new_timer()
     timer:start(
         500,
         100,

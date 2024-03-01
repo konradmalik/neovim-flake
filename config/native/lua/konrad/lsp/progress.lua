@@ -2,7 +2,7 @@
 local highlight = "Normal:NonText"
 -- how long to keep done message for until closing
 local keep_done_message_ms = 2000
-local timer = vim.loop.new_timer()
+local timer = vim.uv.new_timer()
 -- Buffer number and window id for the floating window
 ---@type integer? bufnr of the progress window
 local float_bufnr
