@@ -108,8 +108,6 @@ local function run(cmd, opts)
     })
 end
 
-local M = {}
-
-M.run = run
-
-return M
+return {
+    run = run,
+}

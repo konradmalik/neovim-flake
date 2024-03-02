@@ -19,7 +19,6 @@ local buf_matchers = {
 ---@param bufnr integer
 ---@return boolean
 function M.buffer_matches(patterns, bufnr)
-    bufnr = bufnr or 0
     for kind, pattern_list in pairs(patterns) do
         if pattern_list_matches(buf_matchers[kind](bufnr), pattern_list) then return true end
     end

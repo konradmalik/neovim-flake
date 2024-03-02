@@ -7,9 +7,7 @@ M.prefix = keymap_prefix
 ---@param bufnr integer
 ---@return fun(string): table
 M.opts_for = function(bufnr)
-    return function(desc)
-        return { buffer = bufnr, desc = string.format("%s %s", keymap_prefix, desc) }
-    end
+    return function(desc) return { buffer = bufnr, desc = keymap_prefix .. " " .. desc } end
 end
 
 ---@param bufnr integer

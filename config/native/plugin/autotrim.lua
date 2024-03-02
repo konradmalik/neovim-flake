@@ -34,6 +34,7 @@ end
 local group = vim.api.nvim_create_augroup("personal-autotrim", { clear = true })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
+    group = group,
     callback = function()
         if not trim_is_enabled then return end
         if trim_is_enabled_in_editorconfig() then
@@ -42,5 +43,4 @@ vim.api.nvim_create_autocmd("BufWritePre", {
         end
         trim_trailing_whitespace()
     end,
-    group = group,
 })
