@@ -7,13 +7,7 @@ local function buf_opts_with_desc(bufnr, desc)
     return opts
 end
 
-gc.setup({
-    highlights = {
-        current = "diffAdded",
-        incoming = "diffChanged",
-        ancestor = "diffDeleted",
-    },
-})
+gc.setup()
 
 local group = vim.api.nvim_create_augroup("GitConflict", { clear = true })
 
