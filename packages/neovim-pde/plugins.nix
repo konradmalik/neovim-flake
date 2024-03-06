@@ -63,7 +63,7 @@ processMadePlugins (with neovimPlugins;[
   (makePlugin nvim-web-devicons)
   (makePlugin nvim-navic)
   # ui
-  (makePlugin kanagawa-nvim)
+  (makePlugin tokyonight-nvim)
   (makePlugin dressing-nvim)
   (makePlugin
     {

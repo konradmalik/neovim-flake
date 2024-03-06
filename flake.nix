@@ -22,7 +22,6 @@
       git-conflict-nvim = { url = "github:konradmalik/git-conflict.nvim"; flake = false; };
       gitsigns-nvim = { url = "github:lewis6991/gitsigns.nvim"; flake = false; };
       harpoon = { url = "github:ThePrimeagen/harpoon/harpoon2"; flake = false; };
-      kanagawa-nvim = { url = "github:rebelot/kanagawa.nvim"; flake = false; };
       luasnip = { url = "github:L3MON4D3/LuaSnip"; flake = false; };
       neo-tree-nvim = { url = "github:nvim-neo-tree/neo-tree.nvim"; flake = false; };
       neodev-nvim = { url = "github:folke/neodev.nvim"; flake = false; };
@@ -39,6 +38,7 @@
       plenary-nvim = { url = "github:nvim-lua/plenary.nvim"; flake = false; };
       telescope-fzf-native-nvim = { url = "github:nvim-telescope/telescope-fzf-native.nvim"; flake = false; };
       telescope-nvim = { url = "github:nvim-telescope/telescope.nvim"; flake = false; };
+      tokyonight-nvim = { url = "github:folke/tokyonight.nvim"; flake = false; };
       undotree = { url = "github:mbbill/undotree"; flake = false; };
       vim-fugitive = { url = "github:tpope/vim-fugitive"; flake = false; };
       which-key-nvim = { url = "github:folke/which-key.nvim"; flake = false; };
