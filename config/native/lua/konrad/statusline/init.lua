@@ -21,7 +21,7 @@ local function setup_statusline()
     -- highlight group of the active window statusline
     vim.api.nvim_set_hl(0, "StatusLine", { bg = "bg", fg = "fg" })
     -- nc -> non-active
-    vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "fg", fg = "bg" })
+    vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "bg", fg = "fg" })
 
     vim.opt.statusline = "%!v:lua.require('konrad.statusline').statusline()"
 end
