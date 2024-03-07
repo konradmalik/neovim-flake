@@ -57,6 +57,10 @@ M.attach = function(client, bufnr)
         client = client,
     }
 
+    if client_buf_supports_method(ms.textDocument_hover) then
+        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts_with_desc("Hover Documentation"))
+    end
+
     if client_buf_supports_method(ms.textDocument_completion) then
         local default_sources = require("konrad.cmp").default_sources
         local sources = vim.list_extend({ { name = "nvim_lsp" } }, default_sources)
@@ -87,13 +91,7 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_definition) then
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts_with_desc("Go To Definition"))
-        vim.keymap.set(
-            "n",
-            "<leader>fd",
-            telescope.lsp_definitions,
-            opts_with_desc("Telescope [D]efinitions")
-        )
+        vim.keymap.set("n", "gd", telescope.lsp_definitions, opts_with_desc("Go To Definition"))
     end
 
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
@@ -104,31 +102,26 @@ M.attach = function(client, bufnr)
     if client_buf_supports_method(ms.textDocument_documentSymbol) then
         local handler = require("konrad.lsp.capability_handlers.navic")
         registry.register_once(handler.name, register_data, handler)
+
+        vim.keymap.set(
+            "n",
+            "<leader>ds",
+            telescope.lsp_document_symbols,
+            opts_with_desc("Document Symbols")
+        )
     end
 
     if client_buf_supports_method(ms.textDocument_implementation) then
         vim.keymap.set(
             "n",
-            "gp",
-            vim.lsp.buf.implementation,
-            opts_with_desc("Go To Implementation")
-        )
-        vim.keymap.set(
-            "n",
-            "<leader>fp",
+            "gI",
             telescope.lsp_implementations,
-            opts_with_desc("Telescope Im[p]lementations")
+            opts_with_desc("Go To Implementation")
         )
     end
 
     if client_buf_supports_method(ms.textDocument_references) then
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts_with_desc("References"))
-        vim.keymap.set(
-            "n",
-            "<leader>fr",
-            telescope.lsp_references,
-            opts_with_desc("Telescope [R]eferences")
-        )
+        vim.keymap.set("n", "gr", telescope.lsp_references, opts_with_desc("Go To References"))
     end
 
     if client_buf_supports_method(ms.textDocument_rename) then
@@ -143,15 +136,9 @@ M.attach = function(client, bufnr)
     if client_buf_supports_method(ms.textDocument_typeDefinition) then
         vim.keymap.set(
             "n",
-            "gT",
-            vim.lsp.buf.type_definition,
-            opts_with_desc("Go To Type Definition")
-        )
-        vim.keymap.set(
-            "n",
-            "<leader>fT",
+            "<leader>T",
             telescope.lsp_type_definitions,
-            opts_with_desc("Telescope [T]ype Definitions")
+            opts_with_desc("Type Definition")
         )
     end
 
@@ -159,14 +146,8 @@ M.attach = function(client, bufnr)
         vim.keymap.set(
             "n",
             "<leader>ws",
-            vim.lsp.buf.workspace_symbol,
-            opts_with_desc("Search workspace symbols")
-        )
-        vim.keymap.set(
-            "n",
-            "<leader>fws",
             telescope.lsp_dynamic_workspace_symbols,
-            opts_with_desc("Telescope Dynamic [W]orkspace [S]ymbols")
+            opts_with_desc("Workspace Symbols")
         )
     end
 
