@@ -28,9 +28,6 @@ M.setup = function()
     end
 
     cmp.setup({
-        -- completion = {
-        --     autocomplete = false,
-        -- },
         snippet = {
             expand = function(args) vim.snippet.expand(args.body) end,
         },
@@ -39,33 +36,15 @@ M.setup = function()
             ["<C-f>"] = cmp.mapping.scroll_docs(4),
             ["<C-Space>"] = cmp.mapping.complete(),
             ["<C-e>"] = cmp.mapping.abort(),
-            ["<C-y>"] = cmp.mapping.confirm({
-                behavior = cmp.ConfirmBehavior.Insert,
-                select = true,
-            }),
-            ["<M-y>"] = cmp.mapping.confirm({
-                behavior = cmp.ConfirmBehavior.Replace,
-                select = false,
-            }),
-            ["<C-n>"] = cmp.mapping(function(fallback)
-                if cmp.visible() then
-                    cmp.select_next_item()
-                elseif vim.snippet.jumpable(1) then
-                    vim.snippet.jump(1)
-                else
-                    fallback()
-                end
+            ["<C-y>"] = cmp.mapping.confirm({ select = true }),
+            ["<C-n>"] = cmp.mapping.select_next_item(),
+            ["<C-p>"] = cmp.mapping.select_prev_item(),
+            ["<C-l>"] = cmp.mapping(function()
+                if vim.snippet.jumpable(1) then vim.snippet.jump(1) end
             end, { "i", "s" }),
-            ["<C-p>"] = cmp.mapping(function(fallback)
-                if cmp.visible() then
-                    cmp.select_prev_item()
-                elseif vim.snippet.jumpable(-1) then
-                    vim.snippet.jump(-1)
-                else
-                    fallback()
-                end
+            ["<C-h>"] = cmp.mapping(function()
+                if vim.snippet.jumpable(-1) then vim.snippet.jump(-1) end
             end, { "i", "s" }),
-            ["<tab>"] = cmp.config.disable,
         }),
         formatting = {
             fields = { "kind", "abbr", "menu" },
