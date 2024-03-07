@@ -12,3 +12,7 @@ linters
 formatters
 devops
 namespace
+UI
+treesitter
+statusline
+DAP

@@ -38,6 +38,7 @@
       plenary-nvim = { url = "github:nvim-lua/plenary.nvim"; flake = false; };
       telescope-fzf-native-nvim = { url = "github:nvim-telescope/telescope-fzf-native.nvim"; flake = false; };
       telescope-nvim = { url = "github:nvim-telescope/telescope.nvim"; flake = false; };
+      todo-comments-nvim = { url = "github:folke/todo-comments.nvim"; flake = false; };
       tokyonight-nvim = { url = "github:folke/tokyonight.nvim"; flake = false; };
       undotree = { url = "github:mbbill/undotree"; flake = false; };
       vim-fugitive = { url = "github:tpope/vim-fugitive"; flake = false; };

@@ -101,6 +101,7 @@ rec {
     src = inputs.telescope-nvim;
     nvimRequireCheck = "telescope";
   };
+  todo-comments-nvim = buildVim { name = "todo-comments-nvim"; src = inputs.todo-comments-nvim; nvimRequireCheck = "todo-comments"; };
   tokyonight-nvim = buildVim { name = "tokyonight.nvim"; src = inputs.tokyonight-nvim; nvimRequireCheck = "tokyonight"; };
   undotree = buildVim {
     name = "undotree";

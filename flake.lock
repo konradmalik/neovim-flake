@@ -506,6 +506,7 @@
         "plenary-nvim": "plenary-nvim",
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
         "telescope-nvim": "telescope-nvim",
+        "todo-comments-nvim": "todo-comments-nvim",
         "tokyonight-nvim": "tokyonight-nvim",
         "undotree": "undotree",
         "vim-fugitive": "vim-fugitive",
@@ -556,6 +557,22 @@
       "original": {
         "owner": "nvim-telescope",
         "repo": "telescope.nvim",
+        "type": "github"
+      }
+    },
+    "todo-comments-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1705847650,
+        "narHash": "sha256-DiyieXXx7iYGWkpeOvduJf0n7dnpaQ7rXmaWvZQaCyE=",
+        "owner": "folke",
+        "repo": "todo-comments.nvim",
+        "rev": "833d8dd8b07eeda37a09e99460f72a02616935cb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "folke",
+        "repo": "todo-comments.nvim",
         "type": "github"
       }
     },

@@ -33,10 +33,10 @@ processMadePlugins (with neovimPlugins;[
       friendly-snippets
     ];
   })
-  # lsp
+  # LSP
   (makePlugin { plugin = neodev-nvim; optional = true; })
   (makePlugin { plugin = SchemaStore-nvim; optional = true; })
-  # dap
+  # DAP
   (makePlugin {
     plugin = nvim-dap;
     optional = true;
@@ -62,14 +62,18 @@ processMadePlugins (with neovimPlugins;[
   # statusline
   (makePlugin nvim-web-devicons)
   (makePlugin nvim-navic)
-  # ui
-  (makePlugin tokyonight-nvim)
+  # UI
   (makePlugin dressing-nvim)
   (makePlugin
     {
       plugin = neo-tree-nvim;
       dependencies = [ nvim-web-devicons plenary-nvim nui-nvim ];
     })
+  (makePlugin {
+    plugin = todo-comments-nvim;
+    dependencies = [ plenary-nvim ];
+  })
+  (makePlugin tokyonight-nvim)
   # misc
   (makePlugin boole-nvim)
   (makePlugin comment-nvim)

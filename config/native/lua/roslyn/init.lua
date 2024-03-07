@@ -9,7 +9,7 @@ local M = {}
 ---@field solution string
 ---@field logLevel? "Critical"|"Debug"|"Error"|"Information"|"None"|"Trace"|"Warning"
 
----Creates a new Roslyn lsp server configuration
+---Creates a new Roslyn LSP server configuration
 ---Should be passed to eg. start_client
 ---@param config RoslynConfig
 ---@return lsp.ClientConfig?

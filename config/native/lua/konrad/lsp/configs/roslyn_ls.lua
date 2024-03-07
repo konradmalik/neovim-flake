@@ -61,7 +61,7 @@ return {
 
                 local range = command.arguments[1].range
                 local name = getNameFromRange(range, ctx.bufnr)
-                -- TODO use treesitter to narrow down filter to namespace, class, method if found
+                -- TODO: use treesitter to narrow down filter to namespace, class, method if found
                 -- https://cj.rs/blog/luasnip-and-treesitter-for-smarter-snippets/
                 testRun(root_dir, name)
             end,
