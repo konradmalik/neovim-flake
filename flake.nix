@@ -24,7 +24,6 @@
       harpoon = { url = "github:ThePrimeagen/harpoon/harpoon2"; flake = false; };
       luasnip = { url = "github:L3MON4D3/LuaSnip"; flake = false; };
       neo-tree-nvim = { url = "github:nvim-neo-tree/neo-tree.nvim"; flake = false; };
-      neodev-nvim = { url = "github:folke/neodev.nvim"; flake = false; };
       nui-nvim = { url = "github:MunifTanjim/nui.nvim"; flake = false; };
       nvim-cmp = { url = "github:hrsh7th/nvim-cmp"; flake = false; };
       nvim-dap = { url = "github:mfussenegger/nvim-dap"; flake = false; };

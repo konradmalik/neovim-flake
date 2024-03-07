@@ -48,7 +48,6 @@ rec {
   };
   luasnip = buildVim { name = "luasnip"; src = inputs.luasnip; };
   neo-tree-nvim = buildVim { name = "neo-tree.nvim"; src = inputs.neo-tree-nvim; nvimRequireCheck = "neo-tree"; };
-  neodev-nvim = buildVim { name = "neodev.nvim"; src = inputs.neodev-nvim; nvimRequireCheck = "neodev"; };
   nui-nvim = buildNeovim { name = "nui.nvim"; src = inputs.nui-nvim; nvimRequireCheck = "nui.popup"; };
   nvim-cmp = buildNeovim { name = "nvim-cmp"; src = inputs.nvim-cmp; nvimRequireCheck = "cmp"; };
   nvim-dap = buildVim { name = "nvim-dap"; src = inputs.nvim-dap; nvimRequireCheck = "dap"; };

@@ -243,22 +243,6 @@
         "type": "github"
       }
     },
-    "neodev-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1709144748,
-        "narHash": "sha256-VyJTGbWBzGmuEkotKwTxAVpznfrrQ26aaBc31n6ZjlE=",
-        "owner": "folke",
-        "repo": "neodev.nvim",
-        "rev": "84e0290f5600e8b89c0dfcafc864f45496a53400",
-        "type": "github"
-      },
-      "original": {
-        "owner": "folke",
-        "repo": "neodev.nvim",
-        "type": "github"
-      }
-    },
     "neovim": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -490,7 +474,6 @@
         "harpoon": "harpoon",
         "luasnip": "luasnip",
         "neo-tree-nvim": "neo-tree-nvim",
-        "neodev-nvim": "neodev-nvim",
         "neovim": "neovim",
         "nixpkgs": "nixpkgs",
         "nui-nvim": "nui-nvim",
