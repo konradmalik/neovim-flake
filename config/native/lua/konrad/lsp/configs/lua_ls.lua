@@ -31,9 +31,9 @@ return {
                         -- nvim
                         library = {
                             "${3rd}/luv/library",
-                            unpack(vim.api.nvim_get_runtime_file("", true)),
+                            -- unpack(vim.api.nvim_get_runtime_file("", true)),
                             -- this does not include plugins but is much smaller and faster
-                            -- vim.env.VIMRUNTIME,
+                            vim.env.VIMRUNTIME,
                         },
                     },
                 },

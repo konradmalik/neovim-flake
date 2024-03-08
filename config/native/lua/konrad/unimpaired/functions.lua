@@ -75,11 +75,8 @@ local get_files = function(dir)
             table.insert(files, vim.fn.fnamemodify(entry, ":t"))
         end
     end
-    if vim.tbl_isempty(files) then
-        return
-    else
-        return files
-    end
+    if vim.tbl_isempty(files) then return end
+    return files
 end
 
 local file_by_offset = function(offset)
@@ -88,11 +85,8 @@ local file_by_offset = function(offset)
     if not files then return end
     local current = vim.fn.expand("%:t")
     if current == "" then
-        if offset < 0 then
-            return dir .. "/" .. files[1]
-        else
-            return dir .. "/" .. files[#files]
-        end
+        if offset < 0 then return dir .. "/" .. files[1] end
+        return dir .. "/" .. files[#files]
     else
         local index = vim.fn.index(files, current) + 1
         if index == 0 then return end
