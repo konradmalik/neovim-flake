@@ -81,15 +81,7 @@ local function run(cmd, opts)
     })
 
     ---@param data string[]
-    ---@param event "stdout"|"stderr"|"exit"
-    local on_event = function(_, data, event)
-        if event == "exit" then
-            vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, { "Exit code: " .. data })
-            local winid = get_or_create_window(bufnr)
-            if winid and not is_active_win(winid) then scroll_to_bottom(winid) end
-            return
-        end
-
+    local on_data = function(_, data)
         if data then
             filter_out_trailing_empty_string(data)
             vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, data)
@@ -98,11 +90,18 @@ local function run(cmd, opts)
         end
     end
 
+    ---@param data integer exit code
+    local on_exit = function(_, data)
+        vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, { "Exit code: " .. data })
+        local winid = get_or_create_window(bufnr)
+        if winid and not is_active_win(winid) then scroll_to_bottom(winid) end
+    end
+
     vim.fn.jobstart(cmd, {
         cwd = cwd,
-        on_stdout = on_event,
-        on_stderr = on_event,
-        on_exit = on_event,
+        on_stdout = on_data,
+        on_stderr = on_data,
+        on_exit = on_exit,
         stdout_buffered = false,
         stderr_buffered = false,
     })
