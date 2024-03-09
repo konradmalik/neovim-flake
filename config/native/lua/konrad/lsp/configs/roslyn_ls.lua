@@ -26,17 +26,6 @@ local function testRun(cwd, filter)
     runner.run(cmd, { cwd = cwd })
 end
 
-local function getNameFromRange(range, bufnr)
-    return vim.api.nvim_buf_get_text(
-        bufnr,
-        range["start"].line,
-        range["start"].character,
-        range["end"].line,
-        range["end"].character,
-        {}
-    )[1]
-end
-
 ---@type LspConfig
 return {
     name = "roslyn",
@@ -56,13 +45,55 @@ return {
         local root_dir = config.root_dir
         config.commands = {
             ["roslyn.client.peekReferences"] = function() vim.lsp.buf.references() end,
+            -- TODO: refactor nicely
             ["dotnet.test.run"] = function(command, ctx)
                 if not validate_command(command) then return end
 
                 local range = command.arguments[1].range
-                local name = getNameFromRange(range, ctx.bufnr)
-                -- TODO: use treesitter to narrow down filter to namespace, class, method if found
-                -- https://cj.rs/blog/luasnip-and-treesitter-for-smarter-snippets/
+                local bufnr = ctx.bufnr
+
+                local root_node = vim.treesitter.get_node({
+                    bufnr = bufnr,
+                    pos = { range["start"].line, range["start"].character },
+                })
+                if not root_node then
+                    vim.notify(
+                        "cannot find root node " .. vim.inspect(range["start"]),
+                        vim.log.levels.ERROR
+                    )
+                    return
+                end
+
+                local name = vim.treesitter.get_node_text(root_node, bufnr)
+
+                ---@type TSNode?
+                local class_node = root_node
+                while class_node and class_node:type() ~= "class_declaration" do
+                    class_node = class_node:parent()
+                end
+
+                if class_node then
+                    local class_name_node = class_node:field("name")[1]
+                    if class_name_node:id() ~= root_node:id() then
+                        local class_name = vim.treesitter.get_node_text(class_name_node, bufnr)
+                        name = class_name .. "." .. name
+                    end
+                end
+
+                local ns_node = class_node
+                while
+                    ns_node
+                    and ns_node:type() ~= "namespace_declaration"
+                    and ns_node:type() ~= "file_scoped_namespace_declaration"
+                do
+                    ns_node = ns_node:parent()
+                end
+
+                if ns_node then
+                    local ns_name = vim.treesitter.get_node_text(ns_node:field("name")[1], bufnr)
+                    name = ns_name .. "." .. name
+                end
+
                 testRun(root_dir, name)
             end,
         }
