@@ -1,7 +1,7 @@
 -- https://github.com/sumneko/lua-language-server
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
-local my_repo_name = "neovim-flake"
+local system = require("konrad.system")
 
 ---@type LspConfig
 return {
@@ -9,7 +9,7 @@ return {
     config = function()
         local neovim_paths = { vim.env.VIMRUNTIME }
         local cwd = vim.uv.cwd()
-        if cwd and not string.find(cwd, my_repo_name, nil, true) then
+        if cwd and not string.find(cwd, system.repository_name, nil, true) then
             table.insert(neovim_paths, vim.fn.stdpath("config"))
             ---@diagnostic disable-next-line: param-type-mismatch
             for _, dir in ipairs(vim.fn.stdpath("config_dirs")) do
