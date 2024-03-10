@@ -1,33 +1,33 @@
 local opts_with_desc = function(desc) return { desc = "[notes] " .. desc } end
 
+---@class NotesConfig
+---@field base_path fun(): string
+---@field quicknotes string
+
+---@type NotesConfig
 local default_config = {
-    -- may be function as well
-    base_path = "/tmp/notes",
-    names = {
-        quicknotes = "notes.md",
-    },
+    base_path = function() return vim.uv.os_tmpdir() .. "/notes" end,
+    quicknotes = "notes.md",
 }
 
 ---@param path string
 local open_quicknotes = function(path) vim.cmd("botright vsplit + " .. path) end
 
+---@param config NotesConfig
 local set_keymaps = function(config)
     vim.keymap.set(
         "n",
         "<leader>nq",
-        function() open_quicknotes(config.base_path() .. "/" .. config.names.quicknotes) end,
+        function() open_quicknotes(config.base_path() .. "/" .. config.quicknotes) end,
         opts_with_desc("Open quick-notes file")
     )
 end
 
 local M = {}
 
-M.setup = function(config_override)
-    local config = vim.tbl_deep_extend("force", default_config, config_override)
-
-    if type(config.base_path) == "string" then
-        config.base_path = function() return config.base_path end
-    end
+---@param config table
+M.setup = function(config)
+    config = vim.tbl_deep_extend("force", default_config, config)
 
     set_keymaps(config)
 end
