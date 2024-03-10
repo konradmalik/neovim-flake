@@ -1,11 +1,22 @@
 -- https://github.com/sumneko/lua-language-server
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
+local my_repo_name = "neovim-flake"
 
 ---@type LspConfig
 return {
     name = "lua_ls",
     config = function()
+        local neovim_paths = { vim.env.VIMRUNTIME }
+        local cwd = vim.uv.cwd()
+        if cwd and not string.find(cwd, my_repo_name, nil, true) then
+            table.insert(neovim_paths, vim.fn.stdpath("config"))
+            ---@diagnostic disable-next-line: param-type-mismatch
+            for _, dir in ipairs(vim.fn.stdpath("config_dirs")) do
+                table.insert(neovim_paths, dir)
+            end
+        end
+
         return {
             name = "lua_ls",
             cmd = { binaries.lua_ls() },
@@ -31,9 +42,7 @@ return {
                         -- nvim
                         library = {
                             "${3rd}/luv/library",
-                            -- unpack(vim.api.nvim_get_runtime_file("", true)),
-                            -- this does not include plugins but is much smaller and faster
-                            vim.env.VIMRUNTIME,
+                            unpack(neovim_paths),
                         },
                     },
                 },

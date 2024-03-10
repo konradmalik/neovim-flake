@@ -10,7 +10,7 @@ local function parse_int_arg(args)
     return nil
 end
 
----@param filter vim.lsp.get_clients.filter?
+---@param filter vim.lsp.get_clients.Filter?
 local function restart_servers(filter)
     local clients = vim.lsp.get_clients(filter)
     local detach_clients = {}

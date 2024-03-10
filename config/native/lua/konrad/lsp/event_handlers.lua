@@ -7,7 +7,7 @@ local ms = protocol.Methods
 
 local M = {}
 
----@param client lsp.Client
+---@param client vim.lsp.Client
 ---@param bufnr integer
 M.detach = function(client, bufnr)
     augroups.del_autocmds_for_buf(client, bufnr)
@@ -42,7 +42,7 @@ M.detach = function(client, bufnr)
     if #clients <= 1 then keymapper.clear(bufnr) end
 end
 
----@param client lsp.Client
+---@param client vim.lsp.Client
 ---@param bufnr integer
 M.attach = function(client, bufnr)
     local augroup = augroups.get_augroup(client)

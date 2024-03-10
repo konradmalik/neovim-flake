@@ -3,7 +3,7 @@ local M = {}
 -- client id to group id mapping
 local augroups = {}
 
----@param client lsp.Client
+---@param client vim.lsp.Client
 ---@return integer
 M.get_augroup = function(client)
     if not augroups[client.id] then
@@ -27,7 +27,7 @@ local del_autocmds_for_buf = function(augroup, bufnr)
     end
 end
 
----@param client lsp.Client
+---@param client vim.lsp.Client
 ---@param bufnr integer
 M.del_autocmds_for_buf = function(client, bufnr)
     local augroup = M.get_augroup(client)

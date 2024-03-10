@@ -45,7 +45,7 @@ end
 
 ---starts if needed and attaches to the current buffer
 ---respects LspAutostartToggle
----@param fconfig lsp.ClientConfig | fun(): lsp.ClientConfig?
+---@param fconfig vim.lsp.ClientConfig | fun(): vim.lsp.ClientConfig?
 ---@param bufnr integer buffer to attach to
 local function start_and_attach(fconfig, bufnr)
     if not autostart_enabled then

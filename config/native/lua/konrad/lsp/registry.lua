@@ -1,4 +1,4 @@
----@alias RegistryData {augroup: integer, bufnr: integer, client: lsp.Client}
+---@alias RegistryData {augroup: integer, bufnr: integer, client: vim.lsp.Client}
 ---@alias RegisteredCommands {buf_commands?: string[], commands?: string[]}
 
 ---@class CapabilityHandler
@@ -7,7 +7,7 @@
 
 -- track items that should be registered only once per buffer
 -- maps bufrn -> { functionality_name -> client }
----@type table<integer, table<string, lsp.Client>>
+---@type table<integer, table<string, vim.lsp.Client>>
 local once_per_buffer = {}
 
 -- client-id -> {command name->true} (global commands)
@@ -85,7 +85,7 @@ end
 
 ---Call this to clean-up after any generic lsp.
 ---Stuff like codelens clearing or other specific functionalities is not handled here.
----@param client lsp.Client
+---@param client vim.lsp.Client
 ---@param bufnr integer
 M.deregister = function(client, bufnr)
     -- commands

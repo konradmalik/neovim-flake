@@ -12,7 +12,7 @@ local M = {}
 ---Creates a new Roslyn LSP server configuration
 ---Should be passed to eg. start_client
 ---@param config RoslynConfig
----@return lsp.ClientConfig?
+---@return vim.lsp.ClientConfig?
 function M.config(config)
     local solution = config.solution
     if solution:sub(-4) ~= ".sln" then

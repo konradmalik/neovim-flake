@@ -6,13 +6,13 @@ local fs = require("konrad.fs")
 
 ---@class LspConfig
 ---@field name string unique name
----@field config fun(): lsp.ClientConfig? function to generate the config
+---@field config fun(): vim.lsp.ClientConfig? function to generate the config
 ---@field buf_commands table<string,LspConfigBufCommand>|nil optional buf commands to be registered on LspAttach
 
 local M = {}
 
----@param config lsp.ClientConfig
----@return lsp.ClientConfig
+---@param config vim.lsp.ClientConfig
+---@return vim.lsp.ClientConfig
 M.make_config = function(config)
     local lspcaps = vim.lsp.protocol.make_client_capabilities()
     local mycaps = require("konrad.lsp.capabilities")
