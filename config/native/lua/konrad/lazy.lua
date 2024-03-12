@@ -14,4 +14,19 @@ function M.make_enable_command(name, packadds, fun, opts)
     end, opts or {})
 end
 
+---@param name string unique
+---@param event string|string[] as in nvim_create_autocmd
+---@param callback function|string as in nvim_create_autocmd
+function M.make_lazy_load(name, event, callback)
+    local group = vim.api.nvim_create_augroup("todo-comments", { clear = true })
+    vim.api.nvim_create_autocmd(event, {
+        group = group,
+        -- this plugin creates hl groups which forces a redraw,
+        -- which makes intro screen flicker
+        desc = name .. " deferred load",
+        once = true,
+        callback = callback,
+    })
+end
+
 return M
