@@ -1,5 +1,6 @@
 require("konrad.lazy").make_lazy_load("todo-comments", { "BufNew", "BufRead" }, function()
-    local todo = require("todo-comments").setup()
+    local todo = require("todo-comments")
+    todo.setup({ signs = false })
 
     local opts_with_desc = function(desc) return { desc = "[todo-comments] " .. desc } end
 

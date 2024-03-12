@@ -9,4 +9,3 @@ require("kanagawa").setup({
 vim.opt.background = "dark"
 vim.cmd("colorscheme kanagawa")
 require("konrad.loader").add_to_on_reset(function() vim.cmd("KanagawaCompile") end)
-

@@ -36,8 +36,14 @@ require("nvim-treesitter.configs").setup({
                 ["al"] = { query = "@loop.outer", desc = "Select outer part of a loop" },
                 ["il"] = { query = "@loop.inner", desc = "Select inner part of a loop" },
 
-                ["af"] = { query = "@call.outer", desc = "Select outer part of a function call" },
-                ["if"] = { query = "@call.inner", desc = "Select inner part of a function call" },
+                ["af"] = {
+                    query = "@call.outer",
+                    desc = "Select outer part of a function call",
+                },
+                ["if"] = {
+                    query = "@call.inner",
+                    desc = "Select inner part of a function call",
+                },
 
                 ["am"] = {
                     query = "@function.outer",
@@ -62,7 +68,10 @@ require("nvim-treesitter.configs").setup({
                     desc = "Next method/function def start",
                 },
                 ["<leader>]c"] = { query = "@class.outer", desc = "Next class start" },
-                ["<leader>]i"] = { query = "@conditional.outer", desc = "Next conditional start" },
+                ["<leader>]i"] = {
+                    query = "@conditional.outer",
+                    desc = "Next conditional start",
+                },
                 ["<leader>]l"] = { query = "@loop.outer", desc = "Next loop start" },
             },
             goto_next_end = {
@@ -82,7 +91,10 @@ require("nvim-treesitter.configs").setup({
                     desc = "Prev method/function def start",
                 },
                 ["<leader>[c"] = { query = "@class.outer", desc = "Prev class start" },
-                ["<leader>[i"] = { query = "@conditional.outer", desc = "Prev conditional start" },
+                ["<leader>[i"] = {
+                    query = "@conditional.outer",
+                    desc = "Prev conditional start",
+                },
                 ["<leader>[l"] = { query = "@loop.outer", desc = "Prev loop start" },
             },
             goto_previous_end = {
@@ -110,7 +122,10 @@ require("nvim-treesitter.configs").setup({
                     query = "@parameter.inner",
                     desc = "Swap parameters/argument with prev",
                 },
-                ["<leader>pm"] = { query = "@function.outer", desc = "swap function with previous" },
+                ["<leader>pm"] = {
+                    query = "@function.outer",
+                    desc = "swap function with previous",
+                },
             },
         },
     },

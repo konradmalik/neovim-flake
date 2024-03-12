@@ -1,5 +1,3 @@
-local cmp = require("cmp")
-
 local M = {}
 
 M.default_sources = {
@@ -9,6 +7,7 @@ M.default_sources = {
 }
 
 M.setup = function()
+    local cmp = require("cmp")
     -- register custom and vscode snippets to luasnip
     require("konrad.cmp.snippets")
 
