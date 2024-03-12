@@ -46,6 +46,7 @@ rec {
   harpoon = (buildVim { name = "harpoon"; src = inputs.harpoon; }).overrideAttrs {
     nativeBuildInputs = [ plenary-nvim ];
   };
+  kanagawa-nvim = buildVim { name = "kanagawa.nvim"; src = inputs.kanagawa-nvim; nvimRequireCheck = "kanagawa"; };
   luasnip = buildVim { name = "luasnip"; src = inputs.luasnip; };
   neo-tree-nvim = buildVim { name = "neo-tree.nvim"; src = inputs.neo-tree-nvim; nvimRequireCheck = "neo-tree"; };
   nui-nvim = buildNeovim { name = "nui.nvim"; src = inputs.nui-nvim; nvimRequireCheck = "nui.popup"; };
@@ -101,7 +102,6 @@ rec {
     nvimRequireCheck = "telescope";
   };
   todo-comments-nvim = buildVim { name = "todo-comments-nvim"; src = inputs.todo-comments-nvim; nvimRequireCheck = "todo-comments"; };
-  tokyonight-nvim = buildVim { name = "tokyonight.nvim"; src = inputs.tokyonight-nvim; nvimRequireCheck = "tokyonight"; };
   undotree = buildVim {
     name = "undotree";
     src = inputs.undotree;

@@ -63,6 +63,7 @@ processMadePlugins (with neovimPlugins;[
   (makePlugin nvim-navic)
   # UI
   (makePlugin dressing-nvim)
+  (makePlugin kanagawa-nvim)
   (makePlugin
     {
       plugin = neo-tree-nvim;
@@ -72,7 +73,6 @@ processMadePlugins (with neovimPlugins;[
     plugin = todo-comments-nvim;
     dependencies = [ plenary-nvim ];
   })
-  (makePlugin tokyonight-nvim)
   # misc
   (makePlugin boole-nvim)
   (makePlugin comment-nvim)

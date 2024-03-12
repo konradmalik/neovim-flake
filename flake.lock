@@ -211,6 +211,22 @@
         "type": "github"
       }
     },
+    "kanagawa-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1709127321,
+        "narHash": "sha256-eSrng/h+hN8iSu2nLLfqSMvnOmBXE2Rwwil4KWSZWU4=",
+        "owner": "rebelot",
+        "repo": "kanagawa.nvim",
+        "rev": "bfa818c7bf6259152f1d89cf9fbfba3554c93695",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rebelot",
+        "repo": "kanagawa.nvim",
+        "type": "github"
+      }
+    },
     "luasnip": {
       "flake": false,
       "locked": {
@@ -472,6 +488,7 @@
         "git-conflict-nvim": "git-conflict-nvim",
         "gitsigns-nvim": "gitsigns-nvim",
         "harpoon": "harpoon",
+        "kanagawa-nvim": "kanagawa-nvim",
         "luasnip": "luasnip",
         "neo-tree-nvim": "neo-tree-nvim",
         "neovim": "neovim",
@@ -490,7 +507,6 @@
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
         "telescope-nvim": "telescope-nvim",
         "todo-comments-nvim": "todo-comments-nvim",
-        "tokyonight-nvim": "tokyonight-nvim",
         "undotree": "undotree",
         "vim-fugitive": "vim-fugitive",
         "which-key-nvim": "which-key-nvim"
@@ -556,22 +572,6 @@
       "original": {
         "owner": "folke",
         "repo": "todo-comments.nvim",
-        "type": "github"
-      }
-    },
-    "tokyonight-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1706697570,
-        "narHash": "sha256-mzCdcf7FINhhVLUIPv/eLohm4qMG9ndRJ5H4sFU2vO0=",
-        "owner": "folke",
-        "repo": "tokyonight.nvim",
-        "rev": "610179f7f12db3d08540b6cc61434db2eaecbcff",
-        "type": "github"
-      },
-      "original": {
-        "owner": "folke",
-        "repo": "tokyonight.nvim",
         "type": "github"
       }
     },
