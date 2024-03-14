@@ -1,7 +1,6 @@
 local trim_is_enabled = true
 
 local trim_is_enabled_in_editorconfig = function()
-    ---@diagnostic disable-next-line: undefined-field
     local ed = vim.b.editorconfig
     if ed then return ed.trim_trailing_whitespace end
     return false
@@ -21,7 +20,7 @@ end, {
     desc = "Enable/disable autotrimming whitespace on buffer save",
 })
 
--- Deletes all trailing whitespaces in a file if it's not binary nor a diff.
+-- Deletes all trailing whitespace in a file if it's not binary nor a diff.
 local trim_trailing_whitespace = function()
     if not vim.bo.binary and vim.bo.filetype ~= "diff" then
         local current_view = vim.fn.winsaveview()
