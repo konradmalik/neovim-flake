@@ -1,20 +1,17 @@
-local spellfile_path = function()
-    local repo = vim.uv.os_homedir() .. "/Code/github.com/konradmalik/neovim-flake"
-    if vim.fn.isdirectory(repo) == 0 then
-        return vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
-    end
+local system = require("konrad.system")
 
-    return repo .. "/files/spell/en.utf-8.add"
-end
-
-vim.opt.spelllang = { "en_us" }
+local lang = "en"
+local spellfile = system.spellfile_path(lang)
+vim.opt.spelllang = { lang }
+vim.opt.spellfile = spellfile
 vim.opt.spell = true
-vim.opt.spellfile = spellfile_path()
 
-vim.api.nvim_create_user_command(
-    "MkSpell",
-    function() vim.cmd("mkspell! " .. spellfile_path()) end,
-    {
-        desc = "Regenerates spellfile for " .. spellfile_path(),
-    }
-)
+vim.api.nvim_create_user_command("MkSpell", function()
+    local path = system.spellfile_path(nil)
+    local entries = vim.fn.split(vim.fn.glob(path .. "/*.add"), "\n")
+    for _, entry in pairs(entries) do
+        vim.cmd("mkspell! " .. entry)
+    end
+end, {
+    desc = "Regenerates spellfiles for all languages",
+})
