@@ -25,6 +25,7 @@ pkgs.writeTextDir "lua/konrad/binaries.lua" ''
       efm = function() return '${pkgs.efm-langserver}/bin/efm-langserver' end,
       gopls = function() return "${pkgs.gopls}/bin/gopls" end,
       jsonls = function() return "${pkgs.nodePackages.vscode-json-languageserver}/bin/vscode-json-languageserver" end,
+      ltex_ls = function() return "${pkgs.ltex-ls}/bin/ltex-ls" end,
       lua_ls = function() return "${pkgs.sumneko-lua-language-server}/bin/lua-language-server" end,
       nil_ls = function() return "${pkgs.nil}/bin/nil" end,
       pyright = function() return "${pkgs.nodePackages.pyright}/bin/pyright-langserver" end,
