@@ -71,21 +71,15 @@ local function ensure_tree_is_parsed(bufnr)
     end
 end
 
----@type LspConfig
 return {
-    name = "roslyn",
     config = function()
         local solution = fs.find(".sln$")
-        if not solution then
-            vim.notify("cannot find solution file", vim.log.levels.WARN)
-            return
-        end
+        if not solution then error("cannot find solution file", vim.log.levels.WARN) end
 
-        local config = require("roslyn").config({
+        local config = assert(require("roslyn").config({
             cmd = binaries.roslyn_ls(),
             solution = solution,
-        })
-        if not config then return end
+        }))
 
         local root_dir = config.root_dir
         config.commands = {

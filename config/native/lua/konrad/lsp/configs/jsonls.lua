@@ -5,10 +5,9 @@ local configs = require("konrad.lsp.configs")
 vim.cmd("packadd SchemaStore.nvim")
 local schemastore = require("schemastore")
 
----@type LspConfig
 return {
-    name = "jsonls",
     config = function()
+        ---@type vim.lsp.ClientConfig
         return {
             name = "jsonls",
             cmd = { binaries.jsonls(), "--stdio" },

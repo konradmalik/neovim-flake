@@ -3,9 +3,7 @@ local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
 local system = require("konrad.system")
 
----@type LspConfig
 return {
-    name = "lua_ls",
     config = function()
         local neovim_paths = { vim.env.VIMRUNTIME }
         local cwd = vim.uv.cwd()
@@ -17,6 +15,7 @@ return {
             end
         end
 
+        ---@type vim.lsp.ClientConfig
         return {
             name = "lua_ls",
             cmd = { binaries.lua_ls() },

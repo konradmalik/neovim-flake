@@ -72,10 +72,8 @@ return {
     ---Build an LspConfig table from the specified EFM plugins
     ---@param name string unique name of this efm instance
     ---@param plugins string[] names of plugins to add, ex. 'prettier'
-    ---@return LspConfig
     build_config = function(name, plugins)
         return {
-            name = name,
             config = function()
                 local languages = {}
                 local allRootMarkers = { ".git/" }
@@ -99,6 +97,8 @@ return {
                 local rootMarkers = unique_list(allRootMarkers)
 
                 local formattingEnabled = checkFormattingEnabled(languages)
+
+                ---@type vim.lsp.ClientConfig
                 return {
                     name = name,
                     cmd = { binaries.efm() },

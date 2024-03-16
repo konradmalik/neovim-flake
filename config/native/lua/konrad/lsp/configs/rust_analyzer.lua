@@ -54,10 +54,9 @@ local function runSingle(command)
     runner.run(vim.tbl_flatten(cmd), { cwd = cwd })
 end
 
----@type LspConfig
 return {
-    name = name,
     config = function()
+        ---@type vim.lsp.ClientConfig
         return {
             name = name,
             cmd = { binaries.rust_analyzer() },
@@ -102,13 +101,23 @@ return {
                 ["rust-analyzer.runSingle"] = runSingle,
             },
             root_dir = configs.root_dir({ "Cargo.toml", "rust-project.json" }),
+            on_attach = function(_, bufnr)
+                vim.api.nvim_buf_create_user_command(
+                    bufnr,
+                    "CargoReload",
+                    function() reload_workspace(bufnr) end,
+                    { desc = "[" .. name .. "] Reload current cargo workspace" }
+                )
+
+                vim.api.nvim_create_autocmd("LspDetach", {
+                    group = vim.api.nvim_create_augroup(
+                        "personal-lsp-" .. name .. "-buf-" .. bufnr,
+                        { clear = true }
+                    ),
+                    buffer = bufnr,
+                    callback = function() vim.api.nvim_buf_del_user_command(bufnr, "CargoReload") end,
+                })
+            end,
         }
     end,
-
-    buf_commands = {
-        CargoReload = {
-            cmd = function() reload_workspace(0) end,
-            opts = { desc = "[rust-analyzer] Reload current cargo workspace" },
-        },
-    },
 }

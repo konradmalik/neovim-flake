@@ -2,10 +2,9 @@
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
 
----@type LspConfig
 return {
-    name = "gopls",
     config = function()
+        ---@type vim.lsp.ClientConfig
         return {
             name = "gopls",
             cmd = { binaries.gopls() },

@@ -45,7 +45,7 @@ end
 
 ---starts if needed and attaches to the current buffer
 ---respects LspAutostartToggle
----@param fconfig vim.lsp.ClientConfig | fun(): vim.lsp.ClientConfig?
+---@param fconfig vim.lsp.ClientConfig | fun(): vim.lsp.ClientConfig
 ---@param bufnr integer buffer to attach to
 local function start_and_attach(fconfig, bufnr)
     if not autostart_enabled then
@@ -60,10 +60,6 @@ local function start_and_attach(fconfig, bufnr)
     local config
     if type(fconfig) == "function" then
         config = fconfig()
-        if not config then
-            vim.notify("cannot start lsp, config was nil", vim.log.levels.WARN)
-            return
-        end
     else
         config = fconfig
     end
@@ -86,45 +82,10 @@ M.toggle_autostart = function() autostart_enabled = not autostart_enabled end
 
 function M.is_autostart_enabled() return autostart_enabled end
 
----@param lsp_config LspConfig
+---@param lsp_config {["config"]: fun(): vim.lsp.ClientConfig}
 ---@param bufnr integer|nil
 function M.init(lsp_config, bufnr)
     bufnr = bufnr or vim.api.nvim_get_current_buf()
-    if lsp_config.buf_commands then
-        local group = vim.api.nvim_create_augroup(
-            "personal-lsp-" .. lsp_config.name .. "-buf-" .. bufnr,
-            { clear = true }
-        )
-
-        vim.api.nvim_create_autocmd("LspAttach", {
-            group = group,
-            buffer = bufnr,
-            callback = function(args)
-                local client_id = args.data.client_id
-                local client = assert(vim.lsp.get_client_by_id(client_id))
-                if client.name == lsp_config.name then
-                    for name, value in pairs(lsp_config.buf_commands) do
-                        vim.api.nvim_buf_create_user_command(bufnr, name, value.cmd, value.opts)
-                    end
-                end
-            end,
-        })
-
-        vim.api.nvim_create_autocmd("LspDetach", {
-            group = group,
-            buffer = bufnr,
-            callback = function(args)
-                local client_id = args.data.client_id
-                local client = assert(vim.lsp.get_client_by_id(client_id))
-                if client.name == lsp_config.name then
-                    for name, _ in pairs(lsp_config.buf_commands) do
-                        vim.api.nvim_buf_del_user_command(bufnr, name)
-                    end
-                end
-            end,
-        })
-    end
-
     start_and_attach(lsp_config.config, bufnr)
 end
 

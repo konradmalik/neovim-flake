@@ -3,10 +3,9 @@
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
 
----@type LspConfig
 return {
-    name = "zls",
     config = function()
+        ---@type vim.lsp.ClientConfig
         return {
             name = "zls",
             cmd = { binaries.zls() },

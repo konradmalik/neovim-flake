@@ -80,80 +80,79 @@ local function get_disabled_rules_file(language)
     return system.spellfile_path(nil) .. "/ltex_disabled-rules_" .. language .. ".txt"
 end
 
-local function config()
-    ---@type vim.lsp.ClientConfig
-    return {
-        name = name,
-        cmd = { binaries.ltex_ls() },
-        on_init = function()
-            if not dictionary[current_language] then
-                dictionary[current_language] = {}
-                read_lines_into(get_dictionary_file(current_language), dictionary[current_language])
-            end
-
-            if not hiddenFalsePositives[current_language] then
-                hiddenFalsePositives[current_language] = {}
-                read_lines_into(
-                    get_false_positives_file(current_language),
-                    hiddenFalsePositives[current_language]
-                )
-            end
-
-            if not disabledRules[current_language] then
-                disabledRules[current_language] = {}
-                read_lines_into(
-                    get_disabled_rules_file(current_language),
-                    disabledRules[current_language]
-                )
-            end
-        end,
-        settings = {
-            ltex = {
-                enabled = { "html", "markdown" },
-                language = current_language,
-                checkFrequency = "save",
-                dictionary = dictionary,
-                disabledRules = disabledRules,
-                hiddenFalsePositives = hiddenFalsePositives,
-            },
-        },
-        root_dir = configs.root_dir(".git"),
-        on_attach = function(_, bufnr)
-            vim.api.nvim_buf_call(bufnr, function() vim.opt_local.spell = false end)
-            -- TODO: buf_command for changing the language
-        end,
-        commands = {
-            ["_ltex.addToDictionary"] = function(command)
-                local new = handle_action(command, "words", dictionary)
-                update_client_with({ ltex = { dictionary = dictionary } })
-                for lang, entries in pairs(new) do
-                    local path = get_dictionary_file(lang)
-                    append_to_file(path, entries)
-                end
-                vim.cmd("MkSpell")
-            end,
-            ["_ltex.hideFalsePositives"] = function(command)
-                local new = handle_action(command, "falsePositives", hiddenFalsePositives)
-                update_client_with({ ltex = { hiddenFalsePositives = hiddenFalsePositives } })
-                for lang, entries in pairs(new) do
-                    local path = get_false_positives_file(lang)
-                    append_to_file(path, entries)
-                end
-            end,
-            ["_ltex.disableRules"] = function(command)
-                local new = handle_action(command, "ruleIds", disabledRules)
-                update_client_with({ ltex = { disabledRules = disabledRules } })
-                for lang, entries in pairs(new) do
-                    local path = get_disabled_rules_file(lang)
-                    append_to_file(path, entries)
-                end
-            end,
-        },
-    }
-end
-
----@type LspConfig
 return {
-    name = name,
-    config = config,
+    config = function()
+        ---@type vim.lsp.ClientConfig
+        return {
+            name = name,
+            cmd = { binaries.ltex_ls() },
+            on_init = function()
+                if not dictionary[current_language] then
+                    dictionary[current_language] = {}
+                    read_lines_into(
+                        get_dictionary_file(current_language),
+                        dictionary[current_language]
+                    )
+                end
+
+                if not hiddenFalsePositives[current_language] then
+                    hiddenFalsePositives[current_language] = {}
+                    read_lines_into(
+                        get_false_positives_file(current_language),
+                        hiddenFalsePositives[current_language]
+                    )
+                end
+
+                if not disabledRules[current_language] then
+                    disabledRules[current_language] = {}
+                    read_lines_into(
+                        get_disabled_rules_file(current_language),
+                        disabledRules[current_language]
+                    )
+                end
+            end,
+            settings = {
+                ltex = {
+                    enabled = { "html", "markdown" },
+                    language = current_language,
+                    checkFrequency = "save",
+                    dictionary = dictionary,
+                    disabledRules = disabledRules,
+                    hiddenFalsePositives = hiddenFalsePositives,
+                },
+            },
+            root_dir = configs.root_dir(".git"),
+            on_attach = function(_, bufnr)
+                vim.api.nvim_buf_call(bufnr, function() vim.opt_local.spell = false end)
+                -- TODO: buf_command for changing the language
+            end,
+            commands = {
+                ["_ltex.addToDictionary"] = function(command)
+                    local new = handle_action(command, "words", dictionary)
+                    update_client_with({ ltex = { dictionary = dictionary } })
+                    for lang, entries in pairs(new) do
+                        local path = get_dictionary_file(lang)
+                        append_to_file(path, entries)
+                    end
+                    vim.cmd("MkSpell")
+                end,
+                ["_ltex.hideFalsePositives"] = function(command)
+                    local new = handle_action(command, "falsePositives", hiddenFalsePositives)
+                    update_client_with({ ltex = { hiddenFalsePositives = hiddenFalsePositives } })
+                    for lang, entries in pairs(new) do
+                        local path = get_false_positives_file(lang)
+                        append_to_file(path, entries)
+                    end
+                end,
+                ["_ltex.disableRules"] = function(command)
+                    local new = handle_action(command, "ruleIds", disabledRules)
+                    update_client_with({ ltex = { disabledRules = disabledRules } })
+                    for lang, entries in pairs(new) do
+                        local path = get_disabled_rules_file(lang)
+                        append_to_file(path, entries)
+                    end
+                end,
+            },
+        }
+    end,
 }

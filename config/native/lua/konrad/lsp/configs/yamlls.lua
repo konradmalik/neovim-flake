@@ -10,10 +10,9 @@ local schemas = vim.tbl_extend("error", schemastore.yaml.schemas(), {
     -- # yaml-language-server: $schema=<urlToTheSchema>
 })
 
----@type LspConfig
 return {
-    name = "yamlls",
     config = function()
+        ---@type vim.lsp.ClientConfig
         return {
             name = "yamlls",
             cmd = { binaries.yamlls(), "--stdio" },
