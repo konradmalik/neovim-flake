@@ -2,19 +2,10 @@
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
 local system = require("konrad.system")
+local nvim_library = {}
 
 return {
     config = function()
-        local neovim_paths = { vim.env.VIMRUNTIME }
-        local cwd = vim.uv.cwd()
-        if cwd and not string.find(cwd, system.repository_name, nil, true) then
-            table.insert(neovim_paths, vim.fn.stdpath("config"))
-            ---@diagnostic disable-next-line: param-type-mismatch
-            for _, dir in ipairs(vim.fn.stdpath("config_dirs")) do
-                table.insert(neovim_paths, dir)
-            end
-        end
-
         ---@type vim.lsp.ClientConfig
         return {
             name = "lua_ls",
@@ -27,6 +18,17 @@ return {
                 -- use stylua via efm, this formatter is not great and it clears diagnostic text on save
                 client.server_capabilities.documentFormattingProvider = nil
                 client.server_capabilities.documentRangeFormattingProvider = nil
+
+                table.insert(nvim_library, "${3rd}/luv/library")
+                table.insert(nvim_library, vim.env.VIMRUNTIME)
+                local cwd = vim.uv.cwd()
+                if cwd and not string.find(cwd, system.repository_name, nil, true) then
+                    table.insert(nvim_library, vim.fn.stdpath("config"))
+                    ---@diagnostic disable-next-line: param-type-mismatch
+                    for _, dir in ipairs(vim.fn.stdpath("config_dirs")) do
+                        table.insert(nvim_library, dir)
+                    end
+                end
             end,
             settings = {
                 Lua = {
@@ -38,11 +40,7 @@ return {
                     telemetry = { enable = false },
                     workspace = {
                         checkThirdParty = false,
-                        -- nvim
-                        library = {
-                            "${3rd}/luv/library",
-                            unpack(neovim_paths),
-                        },
+                        library = nvim_library,
                     },
                 },
             },
