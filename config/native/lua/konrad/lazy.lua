@@ -18,7 +18,7 @@ end
 ---@param event string|string[] as in nvim_create_autocmd
 ---@param callback function|string as in nvim_create_autocmd
 function M.make_lazy_load(name, event, callback)
-    local group = vim.api.nvim_create_augroup("todo-comments", { clear = true })
+    local group = vim.api.nvim_create_augroup(name, { clear = true })
     vim.api.nvim_create_autocmd(event, {
         group = group,
         -- this plugin creates hl groups which forces a redraw,
