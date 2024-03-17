@@ -10,7 +10,7 @@ vim.api.nvim_create_user_command("MkSpell", function()
     local path = system.spellfile_path(nil)
     local entries = vim.fn.split(vim.fn.glob(path .. "/*.add"), "\n")
     for _, entry in pairs(entries) do
-        vim.cmd("mkspell! " .. entry)
+        vim.cmd.mkspell({ entry, bang = true })
     end
 end, {
     desc = "Regenerates spellfiles for all languages",

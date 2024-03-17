@@ -5,7 +5,7 @@ return {
         local bufnr = data.bufnr
         local client = data.client
 
-        vim.cmd("packadd nvim-navic")
+        vim.cmd.packadd("nvim-navic")
         require("nvim-navic").attach(client, bufnr)
 
         return {}

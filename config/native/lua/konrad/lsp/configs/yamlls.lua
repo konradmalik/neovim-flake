@@ -2,7 +2,7 @@
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
 
-vim.cmd("packadd SchemaStore.nvim")
+vim.cmd.packadd("SchemaStore.nvim")
 local schemastore = require("schemastore")
 local schemas = vim.tbl_extend("error", schemastore.yaml.schemas(), {
     ["kubernetes"] = { "k8s/**/*.yml", "k8s/**/*.yaml" },

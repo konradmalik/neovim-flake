@@ -2,9 +2,9 @@ local initialized = false
 local initialize_once = function()
     if initialized then return end
 
-    vim.cmd("packadd nvim-dap")
-    vim.cmd("packadd nvim-dap-ui")
-    vim.cmd("packadd nvim-dap-virtual-text")
+    vim.cmd.packadd("nvim-dap")
+    vim.cmd.packadd("nvim-dap-ui")
+    vim.cmd.packadd("nvim-dap-virtual-text")
 
     require("konrad.dap.ui")
     require("konrad.dap.virtual-text")
