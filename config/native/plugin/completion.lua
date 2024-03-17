@@ -1,3 +1,12 @@
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
-require("konrad.lazy").make_lazy_load("cmp", "InsertEnter", require("konrad.cmp").setup)
+local lazy = require("konrad.lazy")
+lazy.make_lazy_load("cmp", "InsertEnter", function()
+    local plugs = { "luasnip", "nvim-cmp", "cmp_luasnip", "cmp-buffer", "cmp-path", "cmp-nvim-lsp" }
+    for _, plug in ipairs(plugs) do
+        vim.cmd.packadd(plug)
+    end
+    lazy.load_after_plugin("cmp*.lua")
+
+    require("konrad.cmp").setup()
+end)

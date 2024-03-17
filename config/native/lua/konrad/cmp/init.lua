@@ -1,11 +1,9 @@
 local M = {}
 
 M.setup = function()
-    local cmp = require("cmp")
     -- register custom and vscode snippets to luasnip
     require("konrad.cmp.snippets")
 
-    local kind_icons = require("konrad.icons").kind
     local menu_entries = {
         -- lsp gets lsp server name via client.name
         luasnip = "[Snippet]",
@@ -16,10 +14,12 @@ M.setup = function()
     -- fill native LSP completion_item_kind
     -- cmp is filled below in format
     local kinds = vim.lsp.protocol.CompletionItemKind
+    local kind_icons = require("konrad.icons").kind
     for i, kind in ipairs(kinds) do
         kinds[i] = kind_icons[kind] or kind
     end
 
+    local cmp = require("cmp")
     cmp.setup({
         snippet = {
             expand = function(args) vim.snippet.expand(args.body) end,

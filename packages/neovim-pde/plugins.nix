@@ -17,19 +17,20 @@ processMadePlugins (with neovimPlugins;[
   (makePlugin {
     plugin = nvim-treesitter.withAllGrammars;
     dependencies = [
-      nvim-treesitter-context
+      { plugin = nvim-treesitter-context; optional = true; }
       nvim-treesitter-textobjects
     ];
   })
   # completion
   (makePlugin {
     plugin = nvim-cmp;
+    optional = true;
     dependencies = [
-      cmp-buffer
-      cmp-nvim-lsp
-      cmp-path
-      cmp_luasnip
-      luasnip
+      { plugin = cmp-buffer; optional = true; }
+      { plugin = cmp-nvim-lsp; optional = true; }
+      { plugin = cmp-path; optional = true; }
+      { plugin = cmp_luasnip; optional = true; }
+      { plugin = luasnip; optional = true; }
       friendly-snippets
     ];
   })
@@ -60,7 +61,11 @@ processMadePlugins (with neovimPlugins;[
   })
   # statusline
   (makePlugin nvim-web-devicons)
-  (makePlugin nvim-navic)
+  (makePlugin {
+    plugin = nvim-navic;
+    optional = true;
+  })
+
   # UI
   (makePlugin dressing-nvim)
   (makePlugin kanagawa-nvim)
@@ -71,13 +76,26 @@ processMadePlugins (with neovimPlugins;[
     })
   (makePlugin {
     plugin = todo-comments-nvim;
+    optional = true;
     dependencies = [ plenary-nvim ];
   })
   # misc
-  (makePlugin boole-nvim)
-  (makePlugin comment-nvim)
-  (makePlugin git-conflict-nvim)
-  (makePlugin gitsigns-nvim)
+  (makePlugin {
+    plugin = boole-nvim;
+    optional = true;
+  })
+  (makePlugin {
+    plugin = comment-nvim;
+    optional = true;
+  })
+  (makePlugin {
+    plugin = git-conflict-nvim;
+    optional = true;
+  })
+  (makePlugin {
+    plugin = gitsigns-nvim;
+    optional = true;
+  })
   (makePlugin harpoon)
   (makePlugin nvim-luaref)
   (makePlugin { plugin = undotree; optional = true; })
