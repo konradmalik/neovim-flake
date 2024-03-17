@@ -1,11 +1,5 @@
 local M = {}
 
-M.default_sources = {
-    { name = "luasnip" },
-    { name = "buffer" },
-    { name = "path" },
-}
-
 M.setup = function()
     local cmp = require("cmp")
     -- register custom and vscode snippets to luasnip
@@ -58,7 +52,12 @@ M.setup = function()
                 return vim_item
             end,
         },
-        sources = cmp.config.sources(M.default_sources),
+        sources = {
+            { name = "luasnip" },
+            { name = "buffer" },
+            { name = "path" },
+            { name = "nvim_lsp" },
+        },
         window = {
             completion = cmp.config.window.bordered(),
             documentation = cmp.config.window.bordered(),

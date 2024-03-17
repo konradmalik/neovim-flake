@@ -61,16 +61,6 @@ M.attach = function(client, bufnr)
         vim.keymap.set("n", "K", vim.lsp.buf.hover, opts_with_desc("Hover Documentation"))
     end
 
-    if client_buf_supports_method(ms.textDocument_completion) then
-        local default_sources = require("konrad.cmp").default_sources
-        local sources = vim.list_extend({ { name = "nvim_lsp" } }, default_sources)
-
-        local cmp = require("cmp")
-        cmp.setup.buffer({
-            sources = cmp.config.sources(sources),
-        })
-    end
-
     if client_buf_supports_method(ms.textDocument_codeAction) then
         local handler = require("konrad.lsp.capability_handlers.codeaction")
         registry.register_once(handler.name, register_data, handler)
