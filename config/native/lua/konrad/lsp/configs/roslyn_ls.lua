@@ -74,7 +74,13 @@ end
 return {
     config = function()
         local solution = fs.find(".sln$")
-        if not solution then error("cannot find solution file", vim.log.levels.WARN) end
+        if not solution then
+            -- most probably decompilation from already running server, so reuse it
+            for _, client in ipairs(vim.lsp.get_clients({ name = "roslyn" })) do
+                return client.config
+            end
+            error("cannot find solution file, nor reuse existing client", vim.log.levels.ERROR)
+        end
 
         local config = assert(require("roslyn").config({
             cmd = binaries.roslyn_ls(),
