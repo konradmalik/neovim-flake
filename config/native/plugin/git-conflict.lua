@@ -1,4 +1,4 @@
-require("konrad.lazy").make_lazy_load("git-conflict", { "BufNew", "BufRead" }, function()
+require("konrad.lazy").make_lazy_load("git-conflict", { "BufNew", "BufReadPre" }, function()
     vim.cmd.packadd("git-conflict.nvim")
 
     local cmd = require("git-conflict.commands")
