@@ -45,7 +45,7 @@ end
 
 ---starts if needed and attaches to the current buffer
 ---respects LspAutostartToggle
----@param fconfig vim.lsp.ClientConfig | fun(): vim.lsp.ClientConfig
+---@param fconfig fun(): vim.lsp.ClientConfig
 ---@param bufnr integer buffer to attach to
 local function start_and_attach(fconfig, bufnr)
     if not autostart_enabled then
@@ -57,14 +57,7 @@ local function start_and_attach(fconfig, bufnr)
 
     initialize_once()
 
-    local config
-    if type(fconfig) == "function" then
-        config = fconfig()
-    else
-        config = fconfig
-    end
-
-    local made_config = require("konrad.lsp.configs").make_config(config)
+    local made_config = require("konrad.lsp.configs").make_config(fconfig())
     local client_id = vim.lsp.start(made_config, {
         bufnr = bufnr,
         reuse_client = function(client, conf)

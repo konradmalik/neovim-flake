@@ -13,22 +13,25 @@ end
 ---@param filter vim.lsp.get_clients.Filter?
 local function restart_servers(filter)
     local clients = vim.lsp.get_clients(filter)
+    ---@type table<integer, {[1]: vim.lsp.Client, [2]: integer[]}>
     local detach_clients = {}
     for _, client in ipairs(clients) do
-        detach_clients[client.id] = { client, client.attached_buffers }
-        vim.lsp.stop_client(client.id)
+        detach_clients[client.id] = { client, vim.lsp.get_buffers_by_client_id(client.id) }
+        client.stop()
     end
 
     local timer = vim.uv.new_timer()
+    if not timer then error("cannot create timer", vim.log.levels.ERROR) end
     timer:start(
         500,
         100,
         vim.schedule_wrap(function()
             for old_client_id, tuple in pairs(detach_clients) do
-                local client, attached_buffers = unpack(tuple)
+                local client = tuple[1]
+                local attached_buffers = tuple[2]
                 if client.is_stopped() then
-                    for buf in pairs(attached_buffers) do
-                        lsp.init({ name = client.name, config = client.config }, buf)
+                    for _, buf in ipairs(attached_buffers) do
+                        lsp.init({ config = function() return client.config end }, buf)
                     end
                     detach_clients[old_client_id] = nil
                 end
@@ -63,11 +66,11 @@ local function create_window()
     }
 end
 
-vim.api.nvim_create_user_command("LspInfo", function()
+local function lsp_info()
     local replacement = {}
     for i, client in ipairs(vim.lsp.get_clients()) do
         if i > 1 then table.insert(replacement, "---------------") end
-        table.insert(replacement, string.format("Client: %s (%s)", client.name, client.id))
+        table.insert(replacement, string.format("Client: %s (id: %s)", client.name, client.id))
         table.insert(replacement, string.format("Root Dir: %s", client.config.root_dir))
         local cmd_str
         if type(client.config.cmd) == "function" then
@@ -87,7 +90,9 @@ vim.api.nvim_create_user_command("LspInfo", function()
     local info = create_window()
     vim.api.nvim_buf_set_lines(info.bufnr, 0, 0, false, replacement)
     vim.api.nvim_set_option_value("readonly", true, { buf = info.bufnr })
-end, {
+end
+
+vim.api.nvim_create_user_command("LspInfo", lsp_info, {
     desc = "List LSP clients with their details",
 })
 
@@ -106,15 +111,15 @@ end, {
 })
 
 vim.api.nvim_create_user_command("LspDetach", function(info)
+    local bufnr = vim.api.nvim_get_current_buf()
     local server_id = parse_int_arg(info.args)
     if server_id then
         vim.notify("detaching server with id: " .. server_id .. " from the current buf")
-        vim.lsp.buf_detach_client(0, server_id)
+        vim.lsp.buf_detach_client(bufnr, server_id)
     else
         vim.notify("detaching all lsp servers from the current buf")
-        local bufnr = vim.api.nvim_get_current_buf()
         for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
-            vim.lsp.buf_detach_client(0, client.id)
+            vim.lsp.buf_detach_client(bufnr, client.id)
         end
     end
 end, {
