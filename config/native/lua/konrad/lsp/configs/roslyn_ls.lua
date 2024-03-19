@@ -76,6 +76,7 @@ return {
         local solution = fs.find(".sln$")
         if not solution then
             -- most probably decompilation from already running server, so reuse it
+            -- luacheck: ignore 512
             for _, client in ipairs(vim.lsp.get_clients({ name = "roslyn" })) do
                 return client.config
             end
