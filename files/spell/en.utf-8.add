@@ -19,3 +19,5 @@ statusline
 treesitter
 versioning
 filesystem
+XSS
+CVE
