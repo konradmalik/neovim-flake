@@ -6,7 +6,6 @@ local initialized = false
 local initialize_once = function()
     if initialized then return end
 
-    require("konrad.lsp.borders")
     require("konrad.lsp.commands")
 
     require("konrad.lsp.progress")

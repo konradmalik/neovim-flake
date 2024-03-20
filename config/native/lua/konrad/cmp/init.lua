@@ -58,10 +58,6 @@ M.setup = function()
             { name = "path" },
             { name = "nvim_lsp" },
         },
-        window = {
-            completion = cmp.config.window.bordered(),
-            documentation = cmp.config.window.bordered(),
-        },
     })
 end
 

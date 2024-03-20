@@ -1,5 +1,7 @@
 -- caching needs to be first
 require("konrad.loader")
+-- colorscheme as soon as possible
+require("konrad.colorscheme")
 
 require("konrad.disable_builtin")
 
