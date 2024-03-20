@@ -16,10 +16,10 @@ require("kanagawa").setup({
     overrides = function(colors)
         local theme = colors.theme
         return {
-            -- Transparent Floating Windows
-            NormalFloat = { bg = "none" },
-            FloatBorder = { bg = "none" },
-            FloatTitle = { bg = "none" },
+            -- Better Matching Floating Windows
+            FloatTitle = { fg = theme.ui.special, bold = true },
+            FloatBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
+            NormalFloat = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
             NormalDark = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m3 },
 
             -- Borderless Telescope
@@ -32,8 +32,8 @@ require("kanagawa").setup({
             TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
 
             -- Dark completion (popup) menu
-            Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 }, -- add `blend = vim.o.pumblend` to enable transparency
-            PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
+            Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },
+            PmenuSel = { fg = "none", bg = theme.ui.bg_p2 },
             PmenuSbar = { bg = theme.ui.bg_m1 },
             PmenuThumb = { bg = theme.ui.bg_p2 },
         }
