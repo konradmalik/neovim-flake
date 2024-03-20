@@ -85,6 +85,7 @@ function M.show(bufnr, winnr)
             style = "minimal",
             noautocmd = true,
         })
+        vim.api.nvim_set_option_value("winfixbuf", true, { win = winid })
         vim.wo[winid].winhl = highlight
         vim.api.nvim_buf_set_lines(bulb_bufnr, 0, 1, false, { icon })
     end)

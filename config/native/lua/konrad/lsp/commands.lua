@@ -60,6 +60,8 @@ local function create_window()
         noautocmd = true,
     })
 
+    vim.api.nvim_set_option_value("winfixbuf", true, { win = win_id })
+
     return {
         bufnr = bufnr,
         win_id = win_id,

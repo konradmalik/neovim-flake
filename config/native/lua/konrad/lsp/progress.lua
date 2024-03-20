@@ -58,6 +58,7 @@ local function create_floating_win(message, win_row)
         noautocmd = true,
         border = vim.g.border_style,
     })
+    vim.api.nvim_set_option_value("winfixbuf", true, { win = float_winid })
 end
 
 ---@param winid integer
