@@ -13,6 +13,7 @@ in
 # why not simple overrideAttrs?
   # - does not work for src in buildVimPlugin
   # - plugins internally depend on vimUtils.plenary-nvim and similar either way
+  # TODO: try dependencies after https://github.com/NixOS/nixpkgs/pull/29705
 rec {
   SchemaStore-nvim = buildVim { name = "SchemaStore.nvim"; src = inputs.SchemaStore-nvim; nvimRequireCheck = "schemastore"; };
   boole-nvim = buildVim { name = "boole.nvim"; src = inputs.boole-nvim; nvimRequireCheck = "boole"; };
