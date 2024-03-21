@@ -1,7 +1,7 @@
 local M = {}
 
 ---@class featureOpts
----@field defer boolean|nil If true the feature will be disabled in vim.schedule
+---@field defer boolean|nil If true the feature will be disabled BufReadPost
 
 ---@class feature
 ---@field disable fun(buf: integer) Disables the feature

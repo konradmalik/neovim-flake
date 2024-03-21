@@ -6,8 +6,8 @@
 ---@field attach fun(data: RegistryData): RegisteredCommands
 
 -- track items that should be registered only once per buffer
--- maps bufrn -> { functionality_name -> client }
----@type table<integer, table<string, vim.lsp.Client>>
+-- maps bufrn -> { functionality_name -> client data }
+---@type table<integer, table<string, {id: integer, name: string}>>
 local once_per_buffer = {}
 
 -- client-id -> {command name->true} (global commands)
@@ -22,10 +22,7 @@ local buf_commands = {}
 ---@param key any
 ---@param value table
 local insert_into_nested = function(ttable, key, value)
-    if not ttable[key] then ttable[key] = {} end
-
-    local merged = vim.tbl_deep_extend("force", ttable[key], value)
-    ttable[key] = merged
+    ttable[key] = vim.tbl_deep_extend("force", ttable[key] or {}, value)
 end
 
 ---@param list any[]

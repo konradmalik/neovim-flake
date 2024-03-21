@@ -23,7 +23,8 @@ end
 local function pre_bufread_callback(bufnr, config)
     local status_ok, _ = pcall(vim.api.nvim_buf_get_var, bufnr, "bigfile_detected")
     if status_ok then
-        return -- buffer has already been processed
+        -- buffer has already been processed
+        return
     end
 
     local filesize = get_buf_size(bufnr) or 0
