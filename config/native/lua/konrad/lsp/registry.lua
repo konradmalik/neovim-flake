@@ -37,6 +37,16 @@ end
 
 local M = {}
 
+---useful for debugging
+---@return table
+M.current_state = function()
+    return {
+        once_per_buffer = once_per_buffer,
+        commands = commands,
+        buf_commands = buf_commands,
+    }
+end
+
 ---Useful for functionalities that should be registered only once per buffer
 ---in the case of multiple LSPs attaching to the same buffer.
 ---An example can be formatting.
