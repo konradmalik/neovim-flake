@@ -3,6 +3,8 @@ local initialize_once = function()
     if initialized then return end
 
     vim.cmd.packadd("nvim-dap")
+    -- nio is a dependency of nvim-dap-ui
+    vim.cmd.packadd("nvim-nio")
     vim.cmd.packadd("nvim-dap-ui")
     vim.cmd.packadd("nvim-dap-virtual-text")
 

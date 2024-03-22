@@ -68,6 +68,7 @@ rec {
     nvimRequireCheck = null;
   };
   nvim-navic = buildVim { name = "nvim-navic"; src = inputs.nvim-navic; };
+  nvim-nio = buildVim { name = "nvim-nio"; src = inputs.nvim-nio; nvimRequireCheck = "nio"; };
   nvim-treesitter-context = buildVim {
     name = "nvim-treesitter-context";
     src = inputs.nvim-treesitter-context;

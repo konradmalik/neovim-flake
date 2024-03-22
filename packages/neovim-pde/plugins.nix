@@ -46,6 +46,16 @@ processMadePlugins (with neovimPlugins;[
         optional = true;
       }
       {
+        plugin = nvim-dap-ui;
+        optional = true;
+        dependencies = [
+          {
+            plugin = nvim-nio;
+            optional = true;
+          }
+        ];
+      }
+      {
         plugin = nvim-dap-virtual-text;
         optional = true;
       }

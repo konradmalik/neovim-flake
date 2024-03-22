@@ -410,6 +410,22 @@
         "type": "github"
       }
     },
+    "nvim-nio": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1711042103,
+        "narHash": "sha256-p/BH31SllMYdb3rrKEJb9thfYLJBqzsrHgAGF6/BPlY=",
+        "owner": "nvim-neotest",
+        "repo": "nvim-nio",
+        "rev": "7054695117581bdb0183b8d27d8d82b4a2ac8958",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-neotest",
+        "repo": "nvim-nio",
+        "type": "github"
+      }
+    },
     "nvim-treesitter-context": {
       "flake": false,
       "locked": {
@@ -500,6 +516,7 @@
         "nvim-dap-virtual-text": "nvim-dap-virtual-text",
         "nvim-luaref": "nvim-luaref",
         "nvim-navic": "nvim-navic",
+        "nvim-nio": "nvim-nio",
         "nvim-treesitter-context": "nvim-treesitter-context",
         "nvim-treesitter-textobjects": "nvim-treesitter-textobjects",
         "nvim-web-devicons": "nvim-web-devicons",
