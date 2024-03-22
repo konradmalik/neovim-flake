@@ -6,7 +6,7 @@ let
       hasDeps = s: builtins.hasAttr "dependencies" s;
       pluginAttrset = makeAttrset plugin;
       dependencies = if hasDeps pluginAttrset then pluginAttrset.dependencies else [ ];
-      dependenciesAttrsets = builtins.map makeAttrset dependencies;
+      dependenciesAttrsets = builtins.map makePlugin dependencies;
     in
     dependenciesAttrsets ++ [ (lib.filterAttrs (n: v: n != "dependencies") pluginAttrset) ];
 
