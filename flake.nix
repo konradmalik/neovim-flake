@@ -31,7 +31,6 @@
       nvim-dap-ui = { url = "github:rcarriga/nvim-dap-ui"; flake = false; };
       nvim-dap-virtual-text = { url = "github:theHamsta/nvim-dap-virtual-text"; flake = false; };
       nvim-luaref = { url = "github:milisims/nvim-luaref"; flake = false; };
-      nvim-navic = { url = "github:SmiteshP/nvim-navic"; flake = false; };
       nvim-nio = { url = "github:nvim-neotest/nvim-nio"; flake = false; };
       nvim-treesitter-context = { url = "github:nvim-treesitter/nvim-treesitter-context"; flake = false; };
       nvim-treesitter-textobjects = { url = "github:nvim-treesitter/nvim-treesitter-textobjects"; flake = false; };

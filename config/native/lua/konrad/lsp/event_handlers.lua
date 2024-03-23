@@ -90,9 +90,6 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_documentSymbol) then
-        local handler = require("konrad.lsp.capability_handlers.navic")
-        registry.register_once(handler.name, register_data, handler)
-
         vim.keymap.set(
             "n",
             "<leader>ds",

@@ -71,10 +71,6 @@ processMadePlugins (with neovimPlugins;[
   })
   # statusline
   (makePlugin nvim-web-devicons)
-  (makePlugin {
-    plugin = nvim-navic;
-    optional = true;
-  })
 
   # UI
   (makePlugin dressing-nvim)

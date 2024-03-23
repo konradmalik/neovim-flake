@@ -99,13 +99,7 @@ end
 
 M.winbar = function()
     if not conditions.is_activewin() then return components.cut .. components.fileinfo(false) end
-
-    return components.cut
-        .. components.cwd()
-        .. components.space
-        .. components.fileinfo(true)
-        .. components.space
-        .. components.navic()
+    return components.cut .. components.cwd() .. components.space .. components.fileinfo(true)
 end
 
 M.setup = function(conf)

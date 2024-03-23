@@ -241,13 +241,6 @@ end
 
 M.hostname = function() return wrap_hl(colors.blue, icons.ui.Laptop .. " " .. vim.fn.hostname()) end
 
-M.navic = function()
-    local ok, navic = pcall(require, "nvim-navic")
-    if not ok or not navic.is_available() then return "" end
-    local loc = navic.get_location({ highlight = false, click = true, safe_output = true })
-    return wrap_hl(colors.cyan, loc)
-end
-
 M.ruler = function() return wrap_hl(colors.purple, "[%7(%l/%3L%):%2c %P]") end
 
 M.scrollbar = function()
