@@ -142,7 +142,7 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_inlayHint) then
-        local handler = require("konrad.lsp.capability_handlers.navic")
+        local handler = require("konrad.lsp.capability_handlers.inlayhints")
         registry.register_once(handler.name, register_data, handler)
     end
 
