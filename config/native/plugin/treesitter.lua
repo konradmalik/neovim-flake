@@ -17,114 +17,120 @@ require("nvim-treesitter.configs").setup({
                 -- You can use the capture groups defined in textobjects.scm
                 ["aa"] = {
                     query = "@parameter.outer",
-                    desc = "Select outer part of a parameter/argument",
+                    desc = "Select outer part of an [a]rgument",
                 },
                 ["ia"] = {
                     query = "@parameter.inner",
-                    desc = "Select inner part of a parameter/argument",
+                    desc = "Select inner part of an [a]rgument",
+                },
+
+                ["ak"] = {
+                    query = "@conditional.outer",
+                    desc = "Select outer part of a [k]onditional",
+                },
+                ["ik"] = {
+                    query = "@conditional.inner",
+                    desc = "Select inner part of a [k]onditional",
                 },
 
                 ["ai"] = {
-                    query = "@conditional.outer",
-                    desc = "Select outer part of a conditional",
+                    query = "@loop.outer",
+                    desc = "Select outer part of an [i]teration/loop",
                 },
-                ["ii"] = {
-                    query = "@conditional.inner",
-                    desc = "Select inner part of a conditional",
-                },
+                ["ii"] = { query = "@loop.inner", desc = "Select inner part of a [i]teration/loop" },
 
-                ["al"] = { query = "@loop.outer", desc = "Select outer part of a loop" },
-                ["il"] = { query = "@loop.inner", desc = "Select inner part of a loop" },
-
-                ["af"] = {
+                ["ac"] = {
                     query = "@call.outer",
-                    desc = "Select outer part of a function call",
+                    desc = "Select outer part of a function [c]all",
                 },
-                ["if"] = {
+                ["ic"] = {
                     query = "@call.inner",
-                    desc = "Select inner part of a function call",
+                    desc = "Select inner part of a function [c]all",
                 },
 
                 ["am"] = {
                     query = "@function.outer",
-                    desc = "Select outer part of a method/function definition",
+                    desc = "Select outer part of a [m]ethod/function definition",
                 },
                 ["im"] = {
                     query = "@function.inner",
-                    desc = "Select inner part of a method/function definition",
+                    desc = "Select inner part of a [m]ethod/function definition",
                 },
 
-                ["ac"] = { query = "@class.outer", desc = "Select outer part of a class" },
-                ["ic"] = { query = "@class.inner", desc = "Select inner part of a class" },
+                ["ao"] = { query = "@class.outer", desc = "Select outer part of an [o]bject/class" },
+                ["io"] = { query = "@class.inner", desc = "Select inner part of an [o]bject/class" },
             },
         },
         move = {
             enable = true,
             set_jumps = true, -- whether to set jumps in the jumplist
             goto_next_start = {
-                ["<leader>]f"] = { query = "@call.outer", desc = "Next function call start" },
-                ["<leader>]m"] = {
+                ["]c"] = { query = "@call.outer", desc = "Next function [c]all" },
+                ["]m"] = {
                     query = "@function.outer",
-                    desc = "Next method/function def start",
+                    desc = "Next [m]ethod/function definition start",
                 },
-                ["<leader>]c"] = { query = "@class.outer", desc = "Next class start" },
-                ["<leader>]i"] = {
+                ["]o"] = { query = "@class.outer", desc = "Next [o]bject/class start" },
+                ["]k"] = {
                     query = "@conditional.outer",
-                    desc = "Next conditional start",
+                    desc = "Next [k]onditional start",
                 },
-                ["<leader>]l"] = { query = "@loop.outer", desc = "Next loop start" },
+                ["]i"] = { query = "@loop.outer", desc = "Next [i]teration/loop start" },
             },
             goto_next_end = {
-                ["<leader>]F"] = { query = "@call.outer", desc = "Next function call end" },
-                ["<leader>]M"] = {
+                ["]C"] = { query = "@call.outer", desc = "Next function [c]all end" },
+                ["]M"] = {
                     query = "@function.outer",
-                    desc = "Next method/function def end",
+                    desc = "Next [m]ethod/function definition end",
                 },
-                ["<leader>]C"] = { query = "@class.outer", desc = "Next class end" },
-                ["<leader>]I"] = { query = "@conditional.outer", desc = "Next conditional end" },
-                ["<leader>]L"] = { query = "@loop.outer", desc = "Next loop end" },
+                ["]O"] = { query = "@class.outer", desc = "Next [o]bject/class end" },
+                ["]K"] = { query = "@conditional.outer", desc = "Next [k]onditional end" },
+                ["]I"] = { query = "@loop.outer", desc = "Next [i]teration/loop end" },
             },
             goto_previous_start = {
-                ["<leader>[f"] = { query = "@call.outer", desc = "Prev function call start" },
-                ["<leader>[m"] = {
+                ["[c"] = { query = "@call.outer", desc = "Previous function [c]all start" },
+                ["[m"] = {
                     query = "@function.outer",
-                    desc = "Prev method/function def start",
+                    desc = "Previous [m]ethod/function definition start",
                 },
-                ["<leader>[c"] = { query = "@class.outer", desc = "Prev class start" },
-                ["<leader>[i"] = {
+                ["[o"] = { query = "@class.outer", desc = "Previous [o]bject/class start" },
+                ["[k"] = {
                     query = "@conditional.outer",
-                    desc = "Prev conditional start",
+                    desc = "Previous [k]onditional start",
                 },
-                ["<leader>[l"] = { query = "@loop.outer", desc = "Prev loop start" },
+                ["[i"] = { query = "@loop.outer", desc = "Previous [i]teration/loop start" },
             },
             goto_previous_end = {
-                ["<leader>[F"] = { query = "@call.outer", desc = "Prev function call end" },
-                ["<leader>[M"] = {
+                ["[C"] = { query = "@call.outer", desc = "Previous function [c]all end" },
+                ["[M"] = {
                     query = "@function.outer",
-                    desc = "Prev method/function def end",
+                    desc = "Previous [m]ethod/function definition end",
                 },
-                ["<leader>[C"] = { query = "@class.outer", desc = "Prev class end" },
-                ["<leader>[I"] = { query = "@conditional.outer", desc = "Prev conditional end" },
-                ["<leader>[L"] = { query = "@loop.outer", desc = "Prev loop end" },
+                ["[O"] = { query = "@class.outer", desc = "Previous [o]bject/class end" },
+                ["[K"] = { query = "@conditional.outer", desc = "Previous [k]onditional end" },
+                ["[I"] = { query = "@loop.outer", desc = "Previous [i]teration/loop end" },
             },
         },
         swap = {
             enable = true,
             swap_next = {
-                ["<leader>na"] = {
+                ["<leader>sna"] = {
                     query = "@parameter.inner",
                     desc = "swap parameters/argument with next",
                 },
-                ["<leader>nm"] = { query = "@function.outer", desc = "swap function with next" },
+                ["<leader>snm"] = {
+                    query = "@function.outer",
+                    desc = "swap [m]ethod/function with next",
+                },
             },
             swap_previous = {
-                ["<leader>pa"] = {
+                ["<leader>spa"] = {
                     query = "@parameter.inner",
-                    desc = "Swap parameters/argument with prev",
+                    desc = "Swap [a]rgument with previous",
                 },
-                ["<leader>pm"] = {
+                ["<leader>spm"] = {
                     query = "@function.outer",
-                    desc = "swap function with previous",
+                    desc = "Swap [m]ethod/function with previous",
                 },
             },
         },
