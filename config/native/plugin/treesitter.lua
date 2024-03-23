@@ -9,9 +9,23 @@ require("nvim-treesitter.configs").setup({
         enable = true,
     },
     textobjects = {
+        lsp_interop = {
+            enable = true,
+            peek_definition_code = {
+                ["<leader>gd"] = {
+                    query = "@function.outer",
+                    desc = "Peek [d]efinition of current method/function.",
+                },
+                ["<leader>gD"] = {
+                    query = "@class.outer",
+                    desc = "Peek [D]efinition of current object/class.",
+                },
+            },
+        },
         select = {
             enable = true,
             lookahead = true,
+            lookbehind = true,
             keymaps = {
                 -- You can use the capture groups defined in textobjects.scm
                 ["aa"] = {
