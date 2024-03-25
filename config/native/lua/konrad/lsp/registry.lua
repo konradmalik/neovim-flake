@@ -7,15 +7,15 @@
 
 -- track items that should be registered only once per buffer
 -- maps bufrn -> { functionality_name -> client data }
----@type table<integer, table<string, {id: integer, name: string}>>
+---@type table<string, table<string, {id: integer, name: string}>>
 local once_per_buffer = {}
 
 -- client-id -> {command name->true} (global commands)
----@type table<integer, table<string, true>>
+---@type table<string, table<string, true>>
 local commands = {}
 
 -- client id -> {command name -> true}
----@type table<integer, table<string, true>>
+---@type table<string, table<string, true>>
 local buf_commands = {}
 
 ---@param ttable table
@@ -38,7 +38,7 @@ end
 local M = {}
 
 ---useful for debugging
----@return table
+---@return {once_per_buffer: table, commands: table, buf_commands: table}
 M.current_state = function()
     return {
         once_per_buffer = once_per_buffer,
@@ -55,8 +55,10 @@ end
 ---@param handler CapabilityHandler
 M.register_once = function(fname, data, handler)
     local bufnr = data.bufnr
+    local bufkey = tostring(bufnr)
     local client = data.client
-    local buf_functionalities = once_per_buffer[bufnr] or {}
+    local clientkey = tostring(client.id)
+    local buf_functionalities = once_per_buffer[bufkey] or {}
     local registered_client = buf_functionalities[fname]
 
     if registered_client then
@@ -82,12 +84,16 @@ M.register_once = function(fname, data, handler)
     local registered = handler.attach(data)
 
     if registered.commands then
-        insert_into_nested(commands, client.id, list_into_set(registered.commands))
+        insert_into_nested(commands, clientkey, list_into_set(registered.commands))
     end
     if registered.buf_commands then
-        insert_into_nested(buf_commands, client.id, list_into_set(registered.buf_commands))
+        insert_into_nested(buf_commands, clientkey, list_into_set(registered.buf_commands))
     end
-    insert_into_nested(once_per_buffer, bufnr, { [fname] = { id = client.id, name = client.name } })
+    insert_into_nested(
+        once_per_buffer,
+        bufkey,
+        { [fname] = { id = client.id, name = client.name } }
+    )
 end
 
 ---Call this to clean-up after any generic lsp.
@@ -95,26 +101,28 @@ end
 ---@param client vim.lsp.Client
 ---@param bufnr integer
 M.deregister = function(client, bufnr)
+    local bufkey = tostring(bufnr)
+    local clientkey = tostring(client.id)
     -- commands
-    local client_commands = commands[client.id]
+    local client_commands = commands[clientkey]
     if client_commands then
         for cmd, _ in pairs(client_commands) do
             pcall(vim.api.nvim_del_user_command, cmd)
         end
-        commands[client.id] = nil
+        commands[clientkey] = nil
     end
 
     -- buf commands
-    local client_buf_commands = buf_commands[client.id]
+    local client_buf_commands = buf_commands[clientkey]
     if client_buf_commands then
         for buf_cmd, _ in pairs(client_buf_commands) do
             pcall(vim.api.nvim_buf_del_user_command, bufnr, buf_cmd)
         end
-        buf_commands[client.id] = nil
+        buf_commands[clientkey] = nil
     end
 
     -- once-per-buffer functionalities
-    local buf_functionalities = once_per_buffer[bufnr]
+    local buf_functionalities = once_per_buffer[bufkey]
     if buf_functionalities then
         for fname, registered_client in pairs(buf_functionalities) do
             if registered_client.id == client.id then buf_functionalities[fname] = nil end
