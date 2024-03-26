@@ -42,10 +42,10 @@ return {
             function() format(client.id, bufnr) end,
             { desc = "Format current buffer with LSP" }
         )
+    end,
 
-        return {
-            commands = { "AutoFormatToggle" },
-            buf_commands = { "Format" },
-        }
+    detach = function(_, bufnr)
+        vim.api.nvim_buf_del_user_command(bufnr, "AutoFormatToggle")
+        vim.api.nvim_buf_del_user_command(bufnr, "Format")
     end,
 }

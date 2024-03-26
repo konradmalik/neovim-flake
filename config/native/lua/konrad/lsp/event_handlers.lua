@@ -10,28 +10,30 @@ local M = {}
 ---@param client vim.lsp.Client
 ---@param bufnr integer
 M.detach = function(client, bufnr)
+    local client_id = client.id
     augroups.del_autocmds_for_buf(client, bufnr)
     local function client_buf_supports_method(method)
         return client.supports_method(method, { bufnr = bufnr })
     end
 
     if client_buf_supports_method(ms.textDocument_codeAction) then
-        require("konrad.lsp.capability_handlers.codeaction").detach()
+        require("konrad.lsp.capability_handlers.codeaction").detach(client_id, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_codeLens) then
-        require("konrad.lsp.capability_handlers.codelens").detach({
-            client_id = client.id,
-            bufnr = bufnr,
-        })
+        require("konrad.lsp.capability_handlers.codelens").detach(client_id, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
-        require("konrad.lsp.capability_handlers.documenthighlight").detach()
+        require("konrad.lsp.capability_handlers.documenthighlight").detach(client_id, bufnr)
+    end
+
+    if client_buf_supports_method(ms.textDocument_formatting) then
+        require("konrad.lsp.capability_handlers.format").detach(client_id, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_inlayHint) then
-        require("konrad.lsp.capability_handlers.inlayhints").detach({ bufnr = bufnr })
+        require("konrad.lsp.capability_handlers.inlayhints").detach(client_id, bufnr)
     end
 
     registry.deregister(client, bufnr)

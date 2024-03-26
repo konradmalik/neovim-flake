@@ -35,11 +35,10 @@ return {
             end,
             desc = "Clear references when cursor moves",
         })
-
-        return {
-            commands = { "DocumentHighlightToggle" },
-        }
     end,
 
-    detach = function() pcall(vim.lsp.buf.clear_references) end,
+    detach = function(_, bufnr)
+        pcall(vim.lsp.buf.clear_references)
+        vim.api.nvim_buf_del_user_command(bufnr, "DocumentHighlightToggle")
+    end,
 }

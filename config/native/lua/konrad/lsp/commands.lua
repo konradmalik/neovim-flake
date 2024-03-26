@@ -103,14 +103,6 @@ local function lsp_registry_info()
     for line in vim.inspect(state.once_per_buffer):gmatch("[^\r\n]+") do
         table.insert(content, line)
     end
-    table.insert(content, "Commands:")
-    for line in vim.inspect(state.commands):gmatch("[^\r\n]+") do
-        table.insert(content, line)
-    end
-    table.insert(content, "Buffer Commands:")
-    for line in vim.inspect(state.buf_commands):gmatch("[^\r\n]+") do
-        table.insert(content, line)
-    end
     local info = create_window("LspRegistryInfo")
     vim.api.nvim_buf_set_lines(info.bufnr, 0, 0, false, content)
     vim.api.nvim_set_option_value("readonly", true, { buf = info.bufnr })

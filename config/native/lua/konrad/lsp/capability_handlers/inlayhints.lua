@@ -36,14 +36,10 @@ return {
         end, {
             desc = "Enable/disable inlayhints with lsp",
         })
-
-        return {
-            commands = { "InlayHintsToggle" },
-        }
     end,
 
-    detach = function(data)
-        local bufnr = data.bufnr
+    detach = function(_, bufnr)
         pcall(vim.lsp.inlay_hint.enable, bufnr, false)
+        vim.api.nvim_buf_del_user_command(bufnr, "InlayHintsToggle")
     end,
 }

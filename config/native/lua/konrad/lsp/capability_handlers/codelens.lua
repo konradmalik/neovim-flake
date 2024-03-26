@@ -40,11 +40,11 @@ return {
 
         -- refresh manually right now for a start
         if codelens_is_enabled then vim.lsp.codelens.refresh({ bufnr = bufnr }) end
-        return {
-            commands = { "CodeLensToggle" },
-            buf_commands = { "CodeLensRefresh" },
-        }
     end,
 
-    detach = function(client_id, bufnr) pcall(vim.lsp.codelens.clear, client_id, bufnr) end,
+    detach = function(client_id, bufnr)
+        pcall(vim.lsp.codelens.clear, client_id, bufnr)
+        vim.api.nvim_buf_del_user_command(bufnr, "CodeLensToggle")
+        vim.api.nvim_buf_del_user_command(bufnr, "CodeLensRefresh")
+    end,
 }

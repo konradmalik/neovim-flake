@@ -39,11 +39,10 @@ return {
             end,
             desc = "Hide lightbulb",
         })
-
-        return {
-            commands = { "LightBulbToggle" },
-        }
     end,
 
-    detach = function() require("konrad.lsp.lightbulb").hide() end,
+    detach = function(_, bufnr)
+        require("konrad.lsp.lightbulb").hide()
+        vim.api.nvim_buf_del_user_command(bufnr, "LightBulbToggle")
+    end,
 }
