@@ -13,11 +13,12 @@ end
 ---@param bufnr integer
 M.clear = function(bufnr)
     for _, mode in ipairs({ "n", "i", "v" }) do
+        ---@type vim.api.keyset.keymap
         local keymaps = vim.api.nvim_buf_get_keymap(bufnr, mode)
         for _, keymap in ipairs(keymaps) do
-            if keymap.desc then
+            if keymap.desc and keymap.lhs then
                 if vim.startswith(keymap.desc, M.prefix) then
-                    pcall(vim.api.nvim_buf_del_keymap, bufnr, mode, keymap.lhs)
+                    vim.api.nvim_buf_del_keymap(bufnr, mode, keymap.lhs)
                 end
             end
         end
