@@ -2,8 +2,6 @@ local keymap_prefix = "[LSP]"
 
 local M = {}
 
-M.prefix = keymap_prefix
-
 ---@param bufnr integer
 ---@return fun(string): table
 M.opts_for = function(bufnr)
@@ -17,7 +15,7 @@ M.clear = function(bufnr)
         local keymaps = vim.api.nvim_buf_get_keymap(bufnr, mode)
         for _, keymap in ipairs(keymaps) do
             if keymap.desc and keymap.lhs then
-                if vim.startswith(keymap.desc, M.prefix) then
+                if vim.startswith(keymap.desc, keymap_prefix) then
                     vim.api.nvim_buf_del_keymap(bufnr, mode, keymap.lhs)
                 end
             end
