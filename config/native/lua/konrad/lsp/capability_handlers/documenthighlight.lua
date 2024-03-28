@@ -2,8 +2,6 @@ local highlight_is_enabled = true
 
 ---@type CapabilityHandler
 return {
-    name = "DocumentHighlight",
-
     attach = function(data)
         local augroup = data.augroup
         local bufnr = data.bufnr

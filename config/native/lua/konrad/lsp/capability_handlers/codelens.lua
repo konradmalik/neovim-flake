@@ -2,8 +2,6 @@ local codelens_is_enabled = true
 
 ---@type CapabilityHandler
 return {
-    name = "CodeLens",
-
     attach = function(data)
         local keymapper = require("konrad.lsp.keymapper")
 

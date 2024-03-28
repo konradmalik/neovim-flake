@@ -2,8 +2,6 @@ local inlayhints_is_enabled = true
 
 ---@type CapabilityHandler
 return {
-    name = "InlayHints",
-
     attach = function(data)
         local bufnr = data.bufnr
         local augroup = data.augroup

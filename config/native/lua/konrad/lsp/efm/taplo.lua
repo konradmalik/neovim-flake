@@ -2,9 +2,7 @@ local binaries = require("konrad.binaries")
 
 ---@type EfmPlugin
 return {
-    filetypes = {
-        "toml",
-    },
+    filetypes = { "toml" },
     entry = {
         formatCommand = { binaries.taplo(), "format", "-" },
         formatStdin = true,

@@ -1,9 +1,14 @@
 local augroups = require("konrad.lsp.augroups")
 local keymapper = require("konrad.lsp.keymapper")
 local protocol = require("vim.lsp.protocol")
-local registry = require("konrad.lsp.registry")
 local telescope = require("telescope.builtin")
 local ms = protocol.Methods
+
+---@alias HandlerData {augroup: integer, bufnr: integer, client: vim.lsp.Client}
+
+---@class CapabilityHandler
+---@field attach fun(data: HandlerData)
+---@field detach fun(client_id: integer, bufnr: integer)
 
 local M = {}
 
@@ -32,8 +37,6 @@ M.detach = function(client, bufnr)
         require("konrad.lsp.capability_handlers.inlayhints").detach(client_id, bufnr)
     end
 
-    registry.deregister(client, bufnr)
-
     local clients = vim.lsp.get_clients({ bufnr = bufnr })
     -- don't remove if more than 1 client attached
     -- 1 is allowed, since detach runs just before detaching from buffer
@@ -49,7 +52,7 @@ M.attach = function(client, bufnr)
         return client.supports_method(method, { bufnr = bufnr })
     end
 
-    local register_data = {
+    local handler_data = {
         augroup = augroup,
         bufnr = bufnr,
         client = client,
@@ -64,13 +67,11 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_codeLens) then
-        local handler = require("konrad.lsp.capability_handlers.codelens")
-        registry.register_once(handler.name, register_data, handler)
+        require("konrad.lsp.capability_handlers.codelens").attach(handler_data)
     end
 
     if client_buf_supports_method(ms.textDocument_formatting) then
-        local handler = require("konrad.lsp.capability_handlers.format")
-        registry.register_once(handler.name, register_data, handler)
+        require("konrad.lsp.capability_handlers.format").attach(handler_data)
     end
 
     if client_buf_supports_method(ms.textDocument_declaration) then
@@ -82,8 +83,7 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
-        local handler = require("konrad.lsp.capability_handlers.documenthighlight")
-        registry.register_once(handler.name, register_data, handler)
+        require("konrad.lsp.capability_handlers.documenthighlight").attach(handler_data)
     end
 
     if client_buf_supports_method(ms.textDocument_documentSymbol) then
@@ -136,8 +136,7 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_inlayHint) then
-        local handler = require("konrad.lsp.capability_handlers.inlayhints")
-        registry.register_once(handler.name, register_data, handler)
+        require("konrad.lsp.capability_handlers.inlayhints").attach(handler_data)
     end
 
     vim.keymap.set(

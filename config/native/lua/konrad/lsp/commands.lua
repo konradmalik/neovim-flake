@@ -1,5 +1,4 @@
 local lsp = require("konrad.lsp")
-local registry = require("konrad.lsp.registry")
 
 ---@param args string
 ---@return number?
@@ -96,24 +95,8 @@ local function lsp_info()
     vim.api.nvim_set_option_value("readonly", true, { buf = info.bufnr })
 end
 
-local function lsp_registry_info()
-    local state = registry.current_state()
-    local content = {}
-    table.insert(content, "Once Per Buffer:")
-    for line in vim.inspect(state.once_per_buffer):gmatch("[^\r\n]+") do
-        table.insert(content, line)
-    end
-    local info = create_window("LspRegistryInfo")
-    vim.api.nvim_buf_set_lines(info.bufnr, 0, 0, false, content)
-    vim.api.nvim_set_option_value("readonly", true, { buf = info.bufnr })
-end
-
 vim.api.nvim_create_user_command("LspInfo", lsp_info, {
     desc = "List LSP clients with their details",
-})
-
-vim.api.nvim_create_user_command("LspRegistryInfo", lsp_registry_info, {
-    desc = "Show info about the lsp registry for debugging",
 })
 
 vim.api.nvim_create_user_command("LspStop", function(info)
