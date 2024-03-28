@@ -16,10 +16,6 @@ M.detach = function(client, bufnr)
         return client.supports_method(method, { bufnr = bufnr })
     end
 
-    if client_buf_supports_method(ms.textDocument_codeAction) then
-        require("konrad.lsp.capability_handlers.codeaction").detach(client_id, bufnr)
-    end
-
     if client_buf_supports_method(ms.textDocument_codeLens) then
         require("konrad.lsp.capability_handlers.codelens").detach(client_id, bufnr)
     end
@@ -64,8 +60,7 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_codeAction) then
-        local handler = require("konrad.lsp.capability_handlers.codeaction")
-        registry.register_once(handler.name, register_data, handler)
+        vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
     end
 
     if client_buf_supports_method(ms.textDocument_codeLens) then
