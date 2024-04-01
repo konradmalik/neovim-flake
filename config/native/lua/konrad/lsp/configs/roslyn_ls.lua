@@ -20,6 +20,9 @@ local function testRun(cwd, filter)
         "--nologo",
         "--logger",
         "console;verbosity=detailed",
+        "--verbosity",
+        "quiet",
+        "--clp:ErrorsOnly",
         "--filter",
         filter,
     }
