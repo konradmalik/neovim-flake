@@ -1,6 +1,5 @@
 local bufnr = vim.api.nvim_get_current_buf()
 
-local efm = require("konrad.lsp.efm")
 local lsp = require("konrad.lsp")
 
-lsp.init(efm.build_config("sh", { "shfmt", "shellcheck" }), bufnr)
+lsp.init(require("konrad.lsp.configs.efm").setup("sh", { "shfmt", "shellcheck" }), bufnr)

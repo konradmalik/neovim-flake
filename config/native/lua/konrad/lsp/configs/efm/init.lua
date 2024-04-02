@@ -23,80 +23,64 @@
 local binaries = require("konrad.binaries")
 
 ---@param plugin EfmPlugin
----@return table
+---@return table<string, EfmEntry>
 local make_languages_entry_for_plugin = function(plugin)
-    -- efm requires nested tables here (notice brackets in entry)
-    local nested = vim.tbl_map(function(t) return { [t] = { plugin.entry } } end, plugin.filetypes)
-    if #nested < 1 then
-        error("must have at least one entry")
-    elseif #nested == 1 then
-        return nested[1]
+    local entries = {}
+    for _, ft in ipairs(plugin.filetypes) do
+        entries[ft] = plugin.entry
     end
-    return vim.tbl_extend("error", unpack(nested))
-end
-
-local checkFormattingEnabled = function(languages)
-    for _, entries in pairs(vim.tbl_values(languages)) do
-        for _, entry in ipairs(entries) do
-            for key, _ in pairs(entry) do
-                if vim.startswith(key, "format") then return true end
-            end
-        end
-    end
-    return false
+    return entries
 end
 
 ---@param config EfmPlugin
 ---@return EfmPlugin
-local function prepare_config(config)
+local function prepare_plugin(config)
     if type(config.entry.formatCommand) == "table" then
+        ---@diagnostic disable-next-line: param-type-mismatch
         config.entry.formatCommand = table.concat(config.entry.formatCommand, " ")
     end
     if type(config.entry.lintCommand) == "table" then
+        ---@diagnostic disable-next-line: param-type-mismatch
         config.entry.lintCommand = table.concat(config.entry.lintCommand, " ")
     end
     return config
-end
-
----@param list any[]
----@return any[]
-local unique_list = function(list)
-    local r = {}
-    for _, value in ipairs(list) do
-        if not r[value] then r[value] = true end
-    end
-    return vim.tbl_keys(r)
 end
 
 return {
     ---Build an LspConfig table from the specified EFM plugins
     ---@param name string unique name of this efm instance
     ---@param plugins string[] names of plugins to add, ex. 'prettier'
-    build_config = function(name, plugins)
+    setup = function(name, plugins)
         return {
             config = function()
+                ---@type table<string, EfmEntry[]>
                 local languages = {}
-                local allRootMarkers = { ".git/" }
+                local allRootMarkers = { [".git/"] = true }
+                local formattingEnabled = false
+                local rangeFormattingEnabled = false
+
                 for _, v in ipairs(plugins) do
-                    local plugin = require("konrad.lsp.efm." .. v)
-                    local plugin_config = prepare_config(plugin)
-                    local languages_entry = make_languages_entry_for_plugin(plugin_config)
+                    ---@type EfmPlugin
+                    local plugin = prepare_plugin(require("konrad.lsp.configs.efm." .. v))
+                    local languages_entry = make_languages_entry_for_plugin(plugin)
                     for key, value in pairs(languages_entry) do
-                        if languages[key] then
-                            languages[key] = vim.list_extend(languages[key], value)
-                        else
-                            languages[key] = value
-                        end
+                        if not languages[key] then languages[key] = {} end
+                        table.insert(languages[key], value)
                     end
 
-                    if plugin_config.entry.rootMarkers then
-                        vim.list_extend(allRootMarkers, plugin_config.entry.rootMarkers)
+                    for _, marker in ipairs(plugin.entry.rootMarkers) do
+                        allRootMarkers[marker] = true
+                    end
+
+                    if not formattingEnabled and plugin.entry.formatCommand then
+                        formattingEnabled = true
+                    end
+                    if not rangeFormattingEnabled and plugin.entry.formatCanRange then
+                        rangeFormattingEnabled = true
                     end
                 end
 
-                local rootMarkers = unique_list(allRootMarkers)
-
-                local formattingEnabled = checkFormattingEnabled(languages)
+                local rootMarkers = vim.tbl_keys(allRootMarkers)
 
                 ---@type vim.lsp.ClientConfig
                 return {
@@ -104,7 +88,7 @@ return {
                     cmd = { binaries.efm() },
                     init_options = {
                         documentFormatting = formattingEnabled,
-                        documentRangeFormatting = formattingEnabled,
+                        documentRangeFormatting = rangeFormattingEnabled,
                     },
                     settings = {
                         rootMarkers = rootMarkers,
