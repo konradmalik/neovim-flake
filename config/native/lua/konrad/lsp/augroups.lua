@@ -23,7 +23,7 @@ local del_autocmds_for_buf = function(augroup, bufnr)
         buffer = bufnr,
     })
     for _, aucmd in ipairs(aucmds) do
-        pcall(vim.api.nvim_del_autocmd, aucmd.id)
+        if aucmd.id then vim.api.nvim_del_autocmd(aucmd.id) end
     end
 end
 
