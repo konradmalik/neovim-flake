@@ -7,10 +7,15 @@ return {
 
         local augroup = data.augroup
         local bufnr = data.bufnr
+        local client = data.client
 
         vim.api.nvim_buf_create_user_command(bufnr, "CodeLensToggle", function()
             codelens_is_enabled = not codelens_is_enabled
-            if not codelens_is_enabled then vim.lsp.codelens.clear(data.client.id, bufnr) end
+            if not codelens_is_enabled then
+                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                    vim.lsp.codelens.clear(client.id, buf)
+                end
+            end
             print("Setting codelens to: " .. tostring(codelens_is_enabled))
         end, {
             desc = "Enable/disable codelens with lsp",
