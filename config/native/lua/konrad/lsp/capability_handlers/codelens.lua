@@ -41,7 +41,7 @@ return {
     end,
 
     detach = function(client_id, bufnr)
-        pcall(vim.lsp.codelens.clear, client_id, bufnr)
+        vim.lsp.codelens.clear(client_id, bufnr)
         vim.api.nvim_buf_del_user_command(bufnr, "CodeLensToggle")
         vim.api.nvim_buf_del_user_command(bufnr, "CodeLensRefresh")
     end,

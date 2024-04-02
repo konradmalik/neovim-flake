@@ -36,7 +36,7 @@ return {
     end,
 
     detach = function(_, bufnr)
-        pcall(vim.lsp.buf.clear_references)
+        vim.api.nvim_buf_call(bufnr, function() vim.lsp.buf.clear_references() end)
         vim.api.nvim_buf_del_user_command(bufnr, "DocumentHighlightToggle")
     end,
 }
