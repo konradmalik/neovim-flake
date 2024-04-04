@@ -92,7 +92,7 @@ vim.api.nvim_create_autocmd({ "LspProgress" }, {
         ---@type LspProgress
         local progress = ev.data.result.value
         local message = get_lsp_progress_msg(progress)
-        if not message then return end
+        if not message or #message == 0 then return end
 
         -- The row position of the floating window. Just right above the status line.
         local win_row = vim.o.lines - vim.o.cmdheight - 4
