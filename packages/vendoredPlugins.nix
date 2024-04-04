@@ -1,41 +1,52 @@
 { curl, vimUtils, neovimUtils, inputs, vimPlugins }:
 let
   version = "master";
-  buildVim = { name, src, nvimRequireCheck ? name, vimCommandCheck ? null }: vimUtils.buildVimPlugin {
-    inherit src version nvimRequireCheck vimCommandCheck;
+  buildVim = { name, src, nvimRequireCheck ? name, vimCommandCheck ? null, dependencies ? [ ] }: vimUtils.buildVimPlugin {
+    inherit dependencies src version nvimRequireCheck vimCommandCheck;
     pname = name;
   };
-  buildNeovim = { name, src, nvimRequireCheck ? name }: neovimUtils.buildNeovimPlugin {
-    inherit src version nvimRequireCheck;
+  buildNeovim = { name, src, nvimRequireCheck ? name, dependencies ? [ ] }: neovimUtils.buildNeovimPlugin {
+    inherit dependencies src version nvimRequireCheck;
     pname = name;
   };
 in
 # why not simple overrideAttrs?
   # - does not work for src in buildVimPlugin
   # - plugins internally depend on vimUtils.plenary-nvim and similar either way
-  # TODO: try dependencies after https://github.com/NixOS/nixpkgs/pull/297054
 rec {
   SchemaStore-nvim = buildVim { name = "SchemaStore.nvim"; src = inputs.SchemaStore-nvim; nvimRequireCheck = "schemastore"; };
   boole-nvim = buildVim { name = "boole.nvim"; src = inputs.boole-nvim; nvimRequireCheck = "boole"; };
   comment-nvim = (buildVim { name = "comment.nvim"; src = inputs.comment-nvim; nvimRequireCheck = "Comment"; });
-  cmp-buffer = (buildVim { name = "cmp-buffer"; src = inputs.cmp-buffer; }).overrideAttrs {
-    nativeBuildInputs = [ nvim-cmp ];
-  };
-  cmp-nvim-lsp = (buildVim { name = "cmp-nvim-lsp"; src = inputs.cmp-nvim-lsp; }).overrideAttrs {
-    nativeBuildInputs = [ nvim-cmp ];
-  };
-  cmp-path = (buildVim { name = "cmp-path"; src = inputs.cmp-path; }).overrideAttrs {
-    nativeBuildInputs = [ nvim-cmp ];
-  };
-  cmp_luasnip = (buildVim { name = "cmp_luasnip"; src = inputs.cmp_luasnip; }).overrideAttrs {
-    nativeBuildInputs = [ nvim-cmp ];
-  };
+  cmp-buffer = (buildVim {
+    name = "cmp-buffer";
+    src = inputs.cmp-buffer;
+    nvimRequireCheck = "cmp_buffer";
+    dependencies = [ nvim-cmp ];
+  });
+  cmp-nvim-lsp = (buildVim {
+    name = "cmp-nvim-lsp";
+    src = inputs.cmp-nvim-lsp;
+    nvimRequireCheck = "cmp_nvim_lsp";
+    dependencies = [ nvim-cmp ];
+  });
+  cmp-path = (buildVim {
+    name = "cmp-path";
+    src = inputs.cmp-path;
+    nvimRequireCheck = "cmp_path";
+    dependencies = [ nvim-cmp ];
+  });
+  cmp_luasnip = (buildVim {
+    name = "cmp_luasnip";
+    src = inputs.cmp_luasnip;
+    dependencies = [ nvim-cmp ];
+  });
   dressing-nvim = buildVim { name = "dressing.nvim"; src = inputs.dressing-nvim; nvimRequireCheck = "dressing"; };
   friendly-snippets = (buildVim {
     name = "friendly-snippets";
     src = inputs.friendly-snippets;
     nvimRequireCheck = "luasnip.loaders.from_vscode";
-  }).overrideAttrs { nativeBuildInputs = [ luasnip ]; };
+    dependencies = [ luasnip ];
+  });
   git-conflict-nvim = buildVim {
     name = "git-conflict.nvim";
     src = inputs.git-conflict-nvim;
@@ -44,24 +55,28 @@ rec {
   gitsigns-nvim = (buildNeovim { name = "gitsigns.nvim"; src = inputs.gitsigns-nvim; nvimRequireCheck = "gitsigns"; }).overrideAttrs {
     doInstallCheck = true;
   };
-  harpoon = (buildVim { name = "harpoon"; src = inputs.harpoon; }).overrideAttrs {
-    nativeBuildInputs = [ plenary-nvim ];
-  };
+  harpoon = (buildVim {
+    name = "harpoon";
+    src = inputs.harpoon;
+    dependencies = [ plenary-nvim ];
+  });
   kanagawa-nvim = buildVim { name = "kanagawa.nvim"; src = inputs.kanagawa-nvim; nvimRequireCheck = "kanagawa"; };
   luasnip = buildVim { name = "luasnip"; src = inputs.luasnip; };
   neo-tree-nvim = buildVim { name = "neo-tree.nvim"; src = inputs.neo-tree-nvim; nvimRequireCheck = "neo-tree"; };
   nui-nvim = buildNeovim { name = "nui.nvim"; src = inputs.nui-nvim; nvimRequireCheck = "nui.popup"; };
   nvim-cmp = buildNeovim { name = "nvim-cmp"; src = inputs.nvim-cmp; nvimRequireCheck = "cmp"; };
   nvim-dap = buildVim { name = "nvim-dap"; src = inputs.nvim-dap; nvimRequireCheck = "dap"; };
-  nvim-dap-ui = (buildVim { name = "nvim-dap-ui"; src = inputs.nvim-dap-ui; nvimRequireCheck = "dapui"; }).overrideAttrs {
-    nativeBuildInputs = [ nvim-dap ];
-  };
+  nvim-dap-ui = (buildVim {
+    name = "nvim-dap-ui";
+    src = inputs.nvim-dap-ui;
+    nvimRequireCheck = "dapui";
+    dependencies = [ nvim-dap nvim-nio ];
+  });
   nvim-dap-virtual-text = (buildVim {
     name = "nvim-dap-virtual-text";
     src = inputs.nvim-dap-virtual-text;
-  }).overrideAttrs {
-    nativeBuildInputs = [ nvim-dap ];
-  };
+    dependencies = [ nvim-dap ];
+  });
   nvim-luaref = buildVim {
     name = "nvim-luaref";
     src = inputs.nvim-luaref;
@@ -77,10 +92,9 @@ rec {
     name = "nvim-treesitter-textobjects";
     src =
       inputs.nvim-treesitter-textobjects;
-    nvimRequireCheck = "nvim-treesitter.textobjects";
-  }).overrideAttrs {
-    nativeBuildInputs = [ vimPlugins.nvim-treesitter ];
-  };
+    nvimRequireCheck = "nvim-treesitter-textobjects";
+    dependencies = [ vimPlugins.nvim-treesitter ];
+  });
   nvim-web-devicons = buildVim { name = "nvim-web-devicons"; src = inputs.nvim-web-devicons; };
   plenary-nvim = (buildNeovim { name = "plenary.nvim"; src = inputs.plenary-nvim; nvimRequireCheck = "plenary"; }).overrideAttrs {
     postPatch = ''
@@ -93,9 +107,9 @@ rec {
       name = "telescope-fzf-native.nvim";
       src = inputs.telescope-fzf-native-nvim;
       nvimRequireCheck = "telescope._extensions.fzf";
+      dependencies = [ telescope-nvim plenary-nvim ];
     }).overrideAttrs {
       buildPhase = "make";
-      nativeBuildInputs = [ telescope-nvim ];
     };
   telescope-nvim = buildNeovim {
     name = "telescope.nvim";
