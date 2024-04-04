@@ -68,8 +68,10 @@ return {
                         table.insert(languages[key], value)
                     end
 
-                    for _, marker in ipairs(plugin.entry.rootMarkers) do
-                        allRootMarkers[marker] = true
+                    if plugin.entry.rootMarkers then
+                        for _, marker in ipairs(plugin.entry.rootMarkers) do
+                            allRootMarkers[marker] = true
+                        end
                     end
 
                     if not formattingEnabled and plugin.entry.formatCommand then
