@@ -246,6 +246,7 @@ M.ruler = function() return wrap_hl(colors.purple, "[%7(%l/%3L%):%2c %P]") end
 M.scrollbar = function()
     local curr_line = vim.api.nvim_win_get_cursor(utils.stwinnr())[1]
     local lines = vim.api.nvim_buf_line_count(utils.stbufnr())
+    if lines == 0 then return string.rep(sbar[1], 2) end
     local i = math.floor((curr_line - 1) / lines * #sbar) + 1
     return wrap_hl(colors.blue, string.rep(sbar[i], 2))
 end
