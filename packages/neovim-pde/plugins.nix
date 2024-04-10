@@ -91,10 +91,6 @@ processMadePlugins (with neovimPlugins;[
     optional = true;
   })
   (makePlugin {
-    plugin = comment-nvim;
-    optional = true;
-  })
-  (makePlugin {
     plugin = git-conflict-nvim;
     optional = true;
   })

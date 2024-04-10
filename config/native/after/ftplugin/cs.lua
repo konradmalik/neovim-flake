@@ -1,3 +1,6 @@
+-- default is /*%s*/
+vim.opt.commentstring = "// %s"
+
 local bufnr = vim.api.nvim_get_current_buf()
 local dap = require("konrad.dap")
 local lsp = require("konrad.lsp")

@@ -16,7 +16,6 @@ in
 rec {
   SchemaStore-nvim = buildVim { name = "SchemaStore.nvim"; src = inputs.SchemaStore-nvim; nvimRequireCheck = "schemastore"; };
   boole-nvim = buildVim { name = "boole.nvim"; src = inputs.boole-nvim; nvimRequireCheck = "boole"; };
-  comment-nvim = (buildVim { name = "comment.nvim"; src = inputs.comment-nvim; nvimRequireCheck = "Comment"; });
   cmp-buffer = (buildVim {
     name = "cmp-buffer";
     src = inputs.cmp-buffer;
