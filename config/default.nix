@@ -1,24 +1,11 @@
 { pkgs, lib, appName, self-contained }:
 let
-  fs = lib.fileset;
-  sourceFiles = fs.unions [
-    ./native
-  ];
-  name = "${appName}-native-config";
-
   nativeConfig = pkgs.stdenv.mkDerivation {
-    inherit name;
-    src = builtins.path {
-      inherit name;
-      path = fs.toSource {
-        root = ./.;
-        fileset = sourceFiles;
-      };
-    };
+    name = "${appName}-native-config";
+    src = ./native;
     dontBuild = true;
     installPhase = ''
-      mkdir -p $out/
-      cp -r $src/native/* $out/
+      cp -r $src $out
     '';
   };
   # manually handle nix templates to avoid IFD
