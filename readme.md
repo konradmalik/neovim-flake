@@ -30,12 +30,11 @@ There is a home-manager module provided, which links the configuration to your `
 
 This is the recommended way to use this flake "day-to-day" in your NixOS system.
 
-### Isolated mode
+### Self-contained mode
 
-When running/using `neovim-pde` from the flake directly it runs in 'isolated' mode.
+When running/using `neovim-pde` from the flake directly it runs in `self-contained` mode.
 
-Without going into much detail, this means that it append its config in nix store to your `$XDG_CONFIG_DIRS` and use `-u`
-flag to force-load this specific `init.lua`.
+This means that it appends its config in nix store to your `$XDG_CONFIG_DIRS` and use `-u` flag to force-load this specific `init.lua`.
 This means that any `init.lua` in your local `$XDG_CONFIG_HOME/$NVIM_APPNAME` won't be loaded, even if `$NVIM_APPNAME` is `neovim-pde`
 (I think that `after` folders and others that don't need to be required explicitly will be loaded, so those should work if put to the proper `$NVIM_APPNAME` folder, but I've never tested this).
 

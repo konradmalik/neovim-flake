@@ -47,7 +47,7 @@ in
         description = "NVIM_APPNAME to use";
       };
 
-      isolated = mkOption {
+      self-contained = mkOption {
         type = types.bool;
         default = false;
         description = ''
@@ -70,7 +70,7 @@ in
 
   config =
     let
-      nvim = self.packages.${pkgs.system}.neovim.override { inherit (cfg) appName isolated viAlias vimAlias; };
+      nvim = self.packages.${pkgs.system}.neovim.override { inherit (cfg) appName self-contained viAlias vimAlias; };
     in
     mkIf cfg.enable {
       home.packages = [ nvim ];
@@ -84,7 +84,7 @@ in
       };
 
       xdg.configFile.${cfg.appName} = {
-        enable = !cfg.isolated;
+        enable = !cfg.self-contained;
         source = nvim.passthru.config;
         recursive = true;
         onChange = ''

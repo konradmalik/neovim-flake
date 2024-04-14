@@ -7,17 +7,17 @@
 , appName ? "neovim-pde"
 , viAlias ? false
 , vimAlias ? false
-, isolated ? true
+, self-contained ? true
 }:
 let
-  config = callPackage ../../config { inherit appName isolated; };
+  config = callPackage ../../config { inherit appName self-contained; };
   plugins = callPackage ./plugins.nix { inherit neovimPlugins; };
   deps = callPackage ./deps.nix { };
   extraWrapperArgs =
     [ "--set" "NVIM_APPNAME" appName ]
     ++ lib.optionals (deps != [ ])
       [ "--suffix" "PATH" ":" "${lib.makeBinPath deps}" ]
-    ++ lib.optionals isolated
+    ++ lib.optionals self-contained
       [
         "--add-flags"
         "-u"

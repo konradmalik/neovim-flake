@@ -1,4 +1,4 @@
-{ pkgs, lib, appName, isolated }:
+{ pkgs, lib, appName, self-contained }:
 let
   fs = lib.fileset;
   sourceFiles = fs.unions [
@@ -34,11 +34,11 @@ pkgs.symlinkJoin {
   ];
 
   # config structure:
-  # - if isolated is false, then $out/init.lua. This is for home-manager
-  # - if isolated is true, then $out/${appName}/init.lua. This is for 'nix run .' etc where we override XDG_CONFIG_HOME
+  # - if self-contained is false, then $out/init.lua. This is for home-manager
+  # - if self-contained is true, then $out/${appName}/init.lua. This is for 'nix run .' etc where we override XDG_CONFIG_HOME
   #   and the expected structure is the same as XDG_CONFIG_HOME
-  # postBuild below runs if isolated and it's purpose is to create XDG_CONFIG_HOME-like folder structure
-  postBuild = lib.optionalString isolated ''
+  # postBuild below runs if self-contained and it's purpose is to create XDG_CONFIG_HOME-like folder structure
+  postBuild = lib.optionalString self-contained ''
     mkdir $out/${appName}
     shopt -s extglob dotglob
     mv $out/!(${appName}) $out/${appName}
