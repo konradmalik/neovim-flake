@@ -1,4 +1,4 @@
-{ pkgs, nativeConfig }:
+{ pkgs }:
 pkgs.writeTextDir "lua/konrad/skeletons.lua" ''
-  return "${nativeConfig}/skeletons"
+  return "${../../skeletons}"
 ''

@@ -10,7 +10,7 @@ let
   };
   # manually handle nix templates to avoid IFD
   binaries-lua = pkgs.callPackage ./nix/lua/konrad/binaries.nix { };
-  skeletons-lua = pkgs.callPackage ./nix/lua/konrad/skeletons.nix { inherit nativeConfig; };
+  skeletons-lua = pkgs.callPackage ./nix/lua/konrad/skeletons.nix { };
 in
 pkgs.symlinkJoin {
   name = "${appName}-config";
