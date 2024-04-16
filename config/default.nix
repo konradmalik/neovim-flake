@@ -1,4 +1,4 @@
-{ pkgs, lib, appName, self-contained }:
+{ pkgs, lib, appName, self-contained, include-native-config ? true }:
 let
   nativeConfig = pkgs.stdenv.mkDerivation {
     name = "${appName}-native-config";
@@ -15,10 +15,10 @@ in
 pkgs.symlinkJoin {
   name = "${appName}-config";
   paths = [
-    nativeConfig
     binaries-lua
     skeletons-lua
-  ];
+  ] ++ lib.optionals include-native-config
+    [ nativeConfig ];
 
   # config structure:
   # - if self-contained is false, then $out/init.lua. This is for home-manager
