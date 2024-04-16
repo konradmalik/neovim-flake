@@ -85,7 +85,7 @@ in
 
       xdg.configFile.${cfg.appName} = {
         enable = !cfg.self-contained;
-        source = nvim.passthru.config;
+        source = "${nvim.passthru.config}/${cfg.appName}";
         recursive = true;
         onChange = ''
           rm -rf ${config.xdg.cacheHome}/${cfg.appName}

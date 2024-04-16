@@ -59,10 +59,33 @@
     in
     {
       devShells = forAllSystems (pkgs: {
-        default = pkgs.mkShell {
-          name = "neovim-shell";
-          packages = with pkgs; [ stylua lua.pkgs.luacheck ];
-        };
+        default =
+          let
+            nvim-dev-pkg =
+              (self.packages.${pkgs.system}.neovim.override
+                { appName = "native"; self-contained = false; include-native-config = false; tmp-cache = true; });
+            nvim-dev = pkgs.writeShellScriptBin "nvim-dev"
+              ''
+                if [[ ! $NVIM_PDE_DEV_NATIVE_CONFIG_PATH ]]; then
+                  echo "must set NVIM_PDE_DEV_NATIVE_CONFIG_PATH"
+                  exit 1
+                fi
+
+                XDG_CONFIG_DIRS="${nvim-dev-pkg.passthru.config}:$NVIM_PDE_DEV_NATIVE_CONFIG_PATH" \
+                  ${nvim-dev-pkg}/bin/nvim  -u $NVIM_PDE_DEV_NATIVE_CONFIG_PATH/native/init.lua
+              '';
+          in
+          pkgs.mkShell {
+            name = "neovim-shell";
+            shellHook = ''
+              export NVIM_PDE_DEV_NATIVE_CONFIG_PATH="$PWD/config"
+            '';
+            packages = with pkgs; [
+              stylua
+              lua.pkgs.luacheck
+              nvim-dev
+            ];
+          };
       });
       overlays.default = final: prev: {
         neovimPlugins = neovimPluginsFor final;

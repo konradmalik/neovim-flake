@@ -8,9 +8,11 @@
 , viAlias ? false
 , vimAlias ? false
 , self-contained ? true
+, include-native-config ? true
+, tmp-cache ? self-contained
 }:
 let
-  config = callPackage ../../config { inherit appName self-contained; };
+  config = callPackage ../../config { inherit appName include-native-config; };
   plugins = callPackage ./plugins.nix { inherit neovimPlugins; };
   deps = callPackage ./deps.nix { };
   extraWrapperArgs =
@@ -27,6 +29,9 @@ let
         "XDG_CONFIG_DIRS"
         ":"
         "${config}"
+      ]
+    ++ lib.optionals tmp-cache
+      [
         "--set"
         "XDG_CACHE_HOME"
         "/tmp/${appName}-cache"

@@ -1,4 +1,4 @@
-{ pkgs, lib, appName, self-contained, include-native-config ? true }:
+{ pkgs, lib, appName, include-native-config }:
 let
   nativeConfig = pkgs.stdenv.mkDerivation {
     name = "${appName}-native-config";
@@ -20,12 +20,9 @@ pkgs.symlinkJoin {
   ] ++ lib.optionals include-native-config
     [ nativeConfig ];
 
-  # config structure:
-  # - if self-contained is false, then $out/init.lua. This is for home-manager
-  # - if self-contained is true, then $out/${appName}/init.lua. This is for 'nix run .' etc where we override XDG_CONFIG_HOME
-  #   and the expected structure is the same as XDG_CONFIG_HOME
-  # postBuild below runs if self-contained and it's purpose is to create XDG_CONFIG_HOME-like folder structure
-  postBuild = lib.optionalString self-contained ''
+  # config structure: $out/${appName}/init.lua
+  # (the same as XDG_CONFIG_HOME)
+  postBuild = ''
     mkdir $out/${appName}
     shopt -s extglob dotglob
     mv $out/!(${appName}) $out/${appName}
