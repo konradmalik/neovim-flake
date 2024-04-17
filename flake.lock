@@ -490,6 +490,7 @@
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
         "telescope-nvim": "telescope-nvim",
         "todo-comments-nvim": "todo-comments-nvim",
+        "tree-sitter-earthfile": "tree-sitter-earthfile",
         "undotree": "undotree",
         "vim-fugitive": "vim-fugitive",
         "which-key-nvim": "which-key-nvim"
@@ -555,6 +556,22 @@
       "original": {
         "owner": "folke",
         "repo": "todo-comments.nvim",
+        "type": "github"
+      }
+    },
+    "tree-sitter-earthfile": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1713298382,
+        "narHash": "sha256-U40ep0bkQYBBhyNWBLUHXu5nBGQCDVp7Z+Uueo7DgNg=",
+        "owner": "glehmann",
+        "repo": "tree-sitter-earthfile",
+        "rev": "a079e6c472eeedd6b9a1e03ca0b6c82cd6a112a4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "glehmann",
+        "repo": "tree-sitter-earthfile",
         "type": "github"
       }
     },

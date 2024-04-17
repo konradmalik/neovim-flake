@@ -12,10 +12,10 @@ let
 
   processMadePlugins = madePlugins: lib.unique (lib.flatten madePlugins);
 in
-processMadePlugins (with neovimPlugins;[
+processMadePlugins (with neovimPlugins; [
   # treesitter
   (makePlugin {
-    plugin = nvim-treesitter.withAllGrammars;
+    plugin = nvim-treesitter;
     dependencies = [
       { plugin = nvim-treesitter-context; optional = true; }
       nvim-treesitter-textobjects

@@ -8,6 +8,7 @@
         url = "github:neovim/neovim?dir=contrib";
         inputs.nixpkgs.follows = "nixpkgs";
       };
+      tree-sitter-earthfile = { url = "github:glehmann/tree-sitter-earthfile"; flake = false; };
 
       # plugins
       SchemaStore-nvim = { url = "github:b0o/SchemaStore.nvim"; flake = false; };
@@ -54,8 +55,20 @@
         ]
           (system: funcOfPkgs nixpkgs.legacyPackages.${system});
 
-      neovimPluginsFor = pkgs: { inherit (pkgs.vimPlugins) nvim-treesitter; }
-        // pkgs.callPackage ./packages/vendoredPlugins.nix { inherit inputs; };
+      neovimPluginsFor = pkgs:
+        let
+          nt = pkgs.vimPlugins.nvim-treesitter;
+          nvim-treesitter = nt.withPlugins (_:
+            [
+              (pkgs.tree-sitter.buildGrammar {
+                language = "earthfile";
+                version = inputs.tree-sitter-earthfile.rev;
+                src = inputs.tree-sitter-earthfile;
+              })
+            ]
+          );
+        in
+        pkgs.callPackage ./packages/vendoredPlugins.nix { inherit inputs nvim-treesitter; };
     in
     {
       devShells = forAllSystems (pkgs: {
