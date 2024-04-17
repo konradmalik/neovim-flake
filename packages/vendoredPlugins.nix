@@ -1,4 +1,4 @@
-{ curl, vimUtils, neovimUtils, inputs, nvim-treesitter }:
+{ lib, curl, vimUtils, neovimUtils, all-treesitter-grammars, inputs }:
 let
   version = "master";
   buildVim = { name, src, nvimRequireCheck ? name, vimCommandCheck ? null, dependencies ? [ ] }: vimUtils.buildVimPlugin {
@@ -14,8 +14,6 @@ in
   # - does not work for src in buildVimPlugin
   # - plugins internally depend on vimUtils.plenary-nvim and similar either way
 rec {
-  inherit nvim-treesitter;
-
   SchemaStore-nvim = buildVim { name = "SchemaStore.nvim"; src = inputs.SchemaStore-nvim; nvimRequireCheck = "schemastore"; };
   boole-nvim = buildVim { name = "boole.nvim"; src = inputs.boole-nvim; nvimRequireCheck = "boole"; };
   cmp-buffer = (buildVim {
@@ -84,6 +82,12 @@ rec {
     nvimRequireCheck = null;
   };
   nvim-nio = buildVim { name = "nvim-nio"; src = inputs.nvim-nio; nvimRequireCheck = "nio"; };
+  nvim-treesitter = (buildVim {
+    name = "nvim-treesitter";
+    src = inputs.nvim-treesitter;
+  }).overrideAttrs {
+    passthru.dependencies = map neovimUtils.grammarToPlugin all-treesitter-grammars;
+  };
   nvim-treesitter-context = buildVim {
     name = "nvim-treesitter-context";
     src = inputs.nvim-treesitter-context;
@@ -93,7 +97,6 @@ rec {
     name = "nvim-treesitter-textobjects";
     src =
       inputs.nvim-treesitter-textobjects;
-    nvimRequireCheck = "nvim-treesitter-textobjects";
     dependencies = [ nvim-treesitter ];
   });
   nvim-web-devicons = buildVim { name = "nvim-web-devicons"; src = inputs.nvim-web-devicons; };

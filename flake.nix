@@ -32,6 +32,7 @@
       nvim-dap-virtual-text = { url = "github:theHamsta/nvim-dap-virtual-text"; flake = false; };
       nvim-luaref = { url = "github:milisims/nvim-luaref"; flake = false; };
       nvim-nio = { url = "github:nvim-neotest/nvim-nio"; flake = false; };
+      nvim-treesitter = { url = "github:nvim-treesitter/nvim-treesitter"; flake = false; };
       nvim-treesitter-context = { url = "github:nvim-treesitter/nvim-treesitter-context"; flake = false; };
       nvim-treesitter-textobjects = { url = "github:nvim-treesitter/nvim-treesitter-textobjects"; flake = false; };
       nvim-web-devicons = { url = "github:kyazdani42/nvim-web-devicons"; flake = false; };
@@ -57,18 +58,19 @@
 
       neovimPluginsFor = pkgs:
         let
-          nt = pkgs.vimPlugins.nvim-treesitter;
-          nvim-treesitter = nt.withPlugins (_:
-            [
-              (pkgs.tree-sitter.buildGrammar {
-                language = "earthfile";
-                version = inputs.tree-sitter-earthfile.rev;
-                src = inputs.tree-sitter-earthfile;
-              })
-            ]
-          );
+          tree-sitter-earthfile-grammar = pkgs.tree-sitter.buildGrammar
+            {
+              language = "earthfile";
+              version = inputs.tree-sitter-earthfile.rev;
+              src = inputs.tree-sitter-earthfile;
+            };
         in
-        pkgs.callPackage ./packages/vendoredPlugins.nix { inherit inputs nvim-treesitter; };
+        pkgs.callPackage ./packages/vendoredPlugins.nix
+          {
+            inherit inputs;
+            all-treesitter-grammars =
+              pkgs.vimPlugins.nvim-treesitter.allGrammars ++ [ tree-sitter-earthfile-grammar ];
+          };
     in
     {
       devShells = forAllSystems (pkgs: {
