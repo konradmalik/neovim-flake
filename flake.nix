@@ -56,16 +56,10 @@
           (system: funcOfPkgs nixpkgs.legacyPackages.${system});
 
       neovimPluginsFor = pkgs:
-        let
-          # TODO remove after https://github.com/NixOS/nixpkgs/pull/304876 is merged
-          tree-sitter-earthfile = (builtins.getFlake
-            "github:konradmalik/nixpkgs/fd74d0d49ac082ffba5c733bbc9d3fea3abd2a7f").legacyPackages.${pkgs.system}.tree-sitter.builtGrammars.tree-sitter-earthfile;
-        in
         pkgs.callPackage ./packages/vendoredPlugins.nix
           {
             inherit inputs;
-            all-treesitter-grammars =
-              pkgs.vimPlugins.nvim-treesitter.allGrammars ++ [ tree-sitter-earthfile ];
+            all-treesitter-grammars = pkgs.vimPlugins.nvim-treesitter.allGrammars;
           };
     in
     {
