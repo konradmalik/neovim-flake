@@ -54,5 +54,4 @@ vim.opt.termguicolors = true
 -- highlight the current line
 vim.opt.cursorline = true
 -- use ripgrep as grep program
-vim.opt.grepprg = "rg --vimgrep --no-heading --smart-case --hidden"
-vim.opt.grepformat = { "%f:%l:%c:%m", "%f:%l:%m" }
+vim.opt.grepprg = "rg --vimgrep --no-heading --smart-case"
