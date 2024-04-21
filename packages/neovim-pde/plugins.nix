@@ -98,7 +98,6 @@ processMadePlugins (with neovimPlugins; [
     plugin = gitsigns-nvim;
     optional = true;
   })
-  (makePlugin harpoon)
   (makePlugin nvim-luaref)
   (makePlugin { plugin = undotree; optional = true; })
   (makePlugin vim-fugitive)

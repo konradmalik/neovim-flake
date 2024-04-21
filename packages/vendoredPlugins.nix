@@ -54,11 +54,6 @@ rec {
   gitsigns-nvim = (buildNeovim { name = "gitsigns.nvim"; src = inputs.gitsigns-nvim; nvimRequireCheck = "gitsigns"; }).overrideAttrs {
     doInstallCheck = true;
   };
-  harpoon = (buildVim {
-    name = "harpoon";
-    src = inputs.harpoon;
-    dependencies = [ plenary-nvim ];
-  });
   kanagawa-nvim = buildVim { name = "kanagawa.nvim"; src = inputs.kanagawa-nvim; nvimRequireCheck = "kanagawa"; };
   luasnip = buildVim { name = "luasnip"; src = inputs.luasnip; };
   neo-tree-nvim = buildVim { name = "neo-tree.nvim"; src = inputs.neo-tree-nvim; nvimRequireCheck = "neo-tree"; };

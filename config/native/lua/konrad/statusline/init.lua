@@ -5,7 +5,7 @@ local utils = require("konrad.statusline.utils")
 
 local config = {
     special = {
-        filetype = { "^git.*", "fugitive", "harpoon", "undotree", "diff" },
+        filetype = { "^git.*", "fugitive", "undotree", "diff" },
         buftype = { "nofile", "prompt", "help", "quickfix" },
     },
 }
