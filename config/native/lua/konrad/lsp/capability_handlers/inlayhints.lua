@@ -11,7 +11,7 @@ return {
             buffer = bufnr,
             callback = function(args)
                 if not inlayhints_is_enabled then return end
-                vim.lsp.inlay_hint.enable(args.bufnr, true)
+                vim.lsp.inlay_hint.enable(true, { bufnr = args.bufnr })
             end,
         })
         vim.api.nvim_create_autocmd("InsertLeave", {
@@ -19,7 +19,7 @@ return {
             buffer = bufnr,
             callback = function(args)
                 if not inlayhints_is_enabled then return end
-                vim.lsp.inlay_hint.enable(args.bufnr, false)
+                vim.lsp.inlay_hint.enable(false, { bufnr = args.bufnr })
             end,
         })
 
@@ -27,7 +27,7 @@ return {
             inlayhints_is_enabled = not inlayhints_is_enabled
             if not inlayhints_is_enabled then
                 for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-                    vim.lsp.inlay_hint.enable(buf, false)
+                    vim.lsp.inlay_hint.enable(false, { bufnr = buf })
                 end
             end
             print("Setting inlayhints to: " .. tostring(inlayhints_is_enabled))
@@ -37,7 +37,7 @@ return {
     end,
 
     detach = function(_, bufnr)
-        vim.lsp.inlay_hint.enable(bufnr, false)
+        vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
         vim.api.nvim_buf_del_user_command(bufnr, "InlayHintsToggle")
     end,
 }
