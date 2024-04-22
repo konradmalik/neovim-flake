@@ -1,4 +1,4 @@
-local system = require("konrad.system")
+local paths = require("konrad.paths")
 require("konrad.notes").setup({
-    base_path = system.get_notes_path,
+    base_path = paths.get_notes,
 })

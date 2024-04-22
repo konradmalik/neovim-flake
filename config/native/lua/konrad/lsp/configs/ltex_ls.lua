@@ -2,7 +2,7 @@
 
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
-local system = require("konrad.system")
+local paths = require("konrad.paths")
 
 local dictionary = {}
 local disabledRules = {}
@@ -68,16 +68,14 @@ local update_client_with = function(changed_settings)
     client.notify("workspace/didChangeConfiguration", { settings = changed_settings })
 end
 
-local function get_dictionary_file(language)
-    return system.spellfile_path(vim.split(language, "-")[1])
-end
+local function get_dictionary_file(language) return paths.get_spellfile(vim.split(language, "-")[1]) end
 
 local function get_false_positives_file(language)
-    return system.spellfile_path(nil) .. "/ltex_false-positives_" .. language .. ".txt"
+    return paths.get_spellfile(nil) .. "/ltex_false-positives_" .. language .. ".txt"
 end
 
 local function get_disabled_rules_file(language)
-    return system.spellfile_path(nil) .. "/ltex_disabled-rules_" .. language .. ".txt"
+    return paths.get_spellfile(nil) .. "/ltex_disabled-rules_" .. language .. ".txt"
 end
 
 return {

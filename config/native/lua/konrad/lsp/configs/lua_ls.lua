@@ -1,7 +1,7 @@
 -- https://github.com/sumneko/lua-language-server
 local binaries = require("konrad.binaries")
 local configs = require("konrad.lsp.configs")
-local system = require("konrad.system")
+local paths = require("konrad.paths")
 local nvim_library = {}
 
 return {
@@ -22,7 +22,7 @@ return {
                 table.insert(nvim_library, "${3rd}/luv/library")
                 table.insert(nvim_library, vim.env.VIMRUNTIME)
                 local cwd = vim.uv.cwd()
-                if cwd and not string.find(cwd, system.repository_name, nil, true) then
+                if cwd and not string.find(cwd, paths.repository_name, nil, true) then
                     table.insert(nvim_library, vim.fn.stdpath("config"))
                     ---@diagnostic disable-next-line: param-type-mismatch
                     for _, dir in ipairs(vim.fn.stdpath("config_dirs")) do

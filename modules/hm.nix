@@ -65,12 +65,26 @@ in
           Helps to prevent it from growing indefinately without manual interventions.
         '';
       };
+
+      notesPath = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "Path to notes folder. E.g. obsidian.";
+      };
+
+      repositoryPath = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "Path to the cloned repository";
+      };
     };
   };
 
   config =
     let
-      nvim = self.packages.${pkgs.system}.neovim.override { inherit (cfg) appName self-contained viAlias vimAlias; };
+      nvim = self.packages.${pkgs.system}.neovim.override {
+        inherit (cfg) appName notesPath repositoryPath self-contained viAlias vimAlias;
+      };
     in
     mkIf cfg.enable {
       home.packages = [ nvim ];
