@@ -37,18 +37,9 @@ vim.keymap.set(
 )
 vim.keymap.set("n", "<leader>dq", vim.diagnostic.setqflist, opts_with_desc("Send all to QF list"))
 
-do
-    local diagnostics_are_enabled = true
-    vim.api.nvim_create_user_command("DiagnosticsToggle", function()
-        if diagnostics_are_enabled then
-            vim.diagnostic.disable()
-            diagnostics_are_enabled = false
-        else
-            vim.diagnostic.enable()
-            diagnostics_are_enabled = true
-        end
-        print("Setting diagnostics to: " .. tostring(diagnostics_are_enabled))
-    end, {
-        desc = "Enable/disable diagnostics globally",
-    })
-end
+vim.api.nvim_create_user_command("DiagnosticsToggle", function()
+    vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+    print("Setting diagnostics to: " .. tostring(vim.diagnostic.is_enabled()))
+end, {
+    desc = "Enable/disable diagnostics globally",
+})
