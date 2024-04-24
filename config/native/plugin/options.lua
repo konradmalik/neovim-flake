@@ -53,5 +53,3 @@ vim.opt.timeoutlen = 1000
 vim.opt.termguicolors = true
 -- highlight the current line
 vim.opt.cursorline = true
--- use ripgrep as grep program
-vim.opt.grepprg = "rg --vimgrep --no-heading --smart-case"
