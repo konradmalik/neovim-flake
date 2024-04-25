@@ -2,8 +2,7 @@
 , lib
 , appName
 , include-native-config
-, notesPath
-, repositoryPath
+, systemLua
 }:
 let
   nativeConfig = pkgs.stdenv.mkDerivation {
@@ -17,7 +16,7 @@ let
   # manually handle nix templates to avoid IFD
   binaries-lua = pkgs.callPackage ./nix/lua/konrad/binaries.nix { };
   skeletons-lua = pkgs.callPackage ./nix/lua/konrad/skeletons.nix { };
-  system-lua = pkgs.callPackage ./nix/lua/konrad/system.nix { inherit notesPath repositoryPath; };
+  system-lua = pkgs.callPackage ./nix/lua/konrad/system.nix { inherit systemLua; };
 in
 pkgs.symlinkJoin {
   name = "${appName}-config";

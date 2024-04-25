@@ -2,7 +2,7 @@
 let
   debugpy = pkgs.python3.withPackages (p: [ p.debugpy ]);
 in
-pkgs.writeTextDir "lua/konrad/binaries.lua" ''
+pkgs.writeTextDir "lua/konrad/binaries.lua" /* lua */ ''
   local fs = require("konrad.fs")
   return {
       -- formatters

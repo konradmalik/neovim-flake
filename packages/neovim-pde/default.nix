@@ -10,11 +10,10 @@
 , self-contained ? true
 , include-native-config ? true
 , tmp-cache ? self-contained
-, notesPath ? null
-, repositoryPath ? null
+, systemLua ? "return {}"
 }:
 let
-  config = callPackage ../../config { inherit appName include-native-config notesPath repositoryPath; };
+  config = callPackage ../../config { inherit appName include-native-config systemLua; };
   plugins = callPackage ./plugins.nix { inherit neovimPlugins; };
   deps = callPackage ./deps.nix { };
   extraWrapperArgs =

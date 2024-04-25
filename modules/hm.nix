@@ -66,16 +66,17 @@ in
         '';
       };
 
-      notesPath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to notes folder. E.g. obsidian.";
-      };
-
-      repositoryPath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the cloned repository";
+      systemLua = mkOption {
+        type = types.str;
+        default = /* lua */ ''
+          return {}
+        '';
+        description = ''
+          A lua script contents which should return
+          a table. This table is then used in Lua code
+          to understand some system-variables like repository path or
+          notes (obsidian) path.
+        '';
       };
     };
   };
@@ -83,7 +84,7 @@ in
   config =
     let
       nvim = self.packages.${pkgs.system}.neovim.override {
-        inherit (cfg) appName notesPath repositoryPath self-contained viAlias vimAlias;
+        inherit (cfg) appName systemLua self-contained viAlias vimAlias;
       };
     in
     mkIf cfg.enable {
@@ -102,7 +103,7 @@ in
         source = "${nvim.passthru.config}/${cfg.appName}";
         recursive = true;
         onChange = ''
-          rm -rf ${config.xdg.cacheHome}/${cfg.appName}
+          rm - rf ${config.xdg.cacheHome}/${cfg.appName}
         '' + lib.optionalString
           cfg.cleanLspLog
           ''
@@ -129,3 +130,8 @@ in
         { vimdiff = "nvim -d"; };
     };
 }
+
+
+
+
+
