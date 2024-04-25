@@ -1,4 +1,4 @@
-local icons = require("konrad.icons")
+local icons = require("pde.icons")
 
 -- [[ Setting options ]]
 -- See `:help vim.o`

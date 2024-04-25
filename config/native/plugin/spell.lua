@@ -1,4 +1,4 @@
-local paths = require("konrad.paths")
+local paths = require("pde.paths")
 
 local lang = "en"
 local spellfile = paths.get_spellfile(lang)

@@ -1,9 +1,9 @@
 -- caching needs to be first
-require("konrad.loader")
+require("pde.loader")
 -- colorscheme as soon as possible
-require("konrad.colorscheme")
+require("pde.colorscheme")
 
-require("konrad.disable_builtin")
+require("pde.disable_builtin")
 
 -- exrc (.nvim.lua)
 vim.opt.exrc = true
@@ -12,4 +12,4 @@ vim.opt.exrc = true
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-require("konrad.globals")
+require("pde.globals")

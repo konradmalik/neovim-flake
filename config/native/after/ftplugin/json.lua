@@ -1,6 +1,6 @@
 local bufnr = vim.api.nvim_get_current_buf()
 
-local lsp = require("konrad.lsp")
+local lsp = require("pde.lsp")
 
-lsp.init(require("konrad.lsp.configs.efm").setup("efmson", { "prettier", "jq" }), bufnr)
-lsp.init(require("konrad.lsp.configs.jsonls"), bufnr)
+lsp.init(require("pde.lsp.configs.efm").setup("efmson", { "prettier", "jq" }), bufnr)
+lsp.init(require("pde.lsp.configs.jsonls"), bufnr)

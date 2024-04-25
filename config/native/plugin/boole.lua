@@ -1,4 +1,4 @@
-require("konrad.lazy").make_lazy_load("boole", { "BufNew", "BufRead" }, function()
+require("pde.lazy").make_lazy_load("boole", { "BufNew", "BufRead" }, function()
     vim.cmd.packadd("boole.nvim")
     require("boole").setup({
         mappings = {

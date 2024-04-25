@@ -1,4 +1,4 @@
-local icons = require("konrad.icons")
+local icons = require("pde.icons")
 local diag_icons = icons.diagnostics
 
 vim.diagnostic.config({

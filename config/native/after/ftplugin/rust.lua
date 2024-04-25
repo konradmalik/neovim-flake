@@ -1,5 +1,5 @@
 local bufnr = vim.api.nvim_get_current_buf()
 
-local lsp = require("konrad.lsp")
+local lsp = require("pde.lsp")
 
-lsp.init(require("konrad.lsp.configs.rust_analyzer"), bufnr)
+lsp.init(require("pde.lsp.configs.rust_analyzer"), bufnr)

@@ -10,7 +10,7 @@ keymap.set(
 
 local neo_tree = require("neo-tree")
 
-local icons = require("konrad.icons")
+local icons = require("pde.icons")
 local git_icons = icons.git
 local docs_icons = icons.documents
 local lines_icons = icons.lines

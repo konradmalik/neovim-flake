@@ -1,4 +1,4 @@
-require("konrad.lazy").make_lazy_load("gitsigns", { "BufNew", "BufRead" }, function()
+require("pde.lazy").make_lazy_load("gitsigns", { "BufNew", "BufRead" }, function()
     vim.cmd.packadd("gitsigns.nvim")
     local gitsigns = require("gitsigns")
 

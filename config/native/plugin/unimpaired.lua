@@ -1,1 +1,1 @@
-require("konrad.unimpaired").setup()
+require("pde.unimpaired").setup()

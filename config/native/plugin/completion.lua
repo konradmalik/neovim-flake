@@ -19,7 +19,7 @@ local function load_after_plugin(fpattern)
     return #after_paths
 end
 
-require("konrad.lazy").make_lazy_load("cmp", "InsertEnter", function()
+require("pde.lazy").make_lazy_load("cmp", "InsertEnter", function()
     local main_plugins = { "luasnip", "nvim-cmp" }
     for _, plug in ipairs(main_plugins) do
         vim.cmd.packadd(plug)
@@ -41,5 +41,5 @@ require("konrad.lazy").make_lazy_load("cmp", "InsertEnter", function()
         )
     end
 
-    require("konrad.cmp").setup()
+    require("pde.cmp").setup()
 end)

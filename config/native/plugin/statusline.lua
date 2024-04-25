@@ -1,1 +1,1 @@
-require("konrad.statusline").setup()
+require("pde.statusline").setup()

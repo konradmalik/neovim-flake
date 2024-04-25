@@ -1,7 +1,7 @@
 local group = vim.api.nvim_create_augroup("personal-skeletons", { clear = true })
 
 local insert_skeleton = function(name)
-    local skeletons_path = require("konrad.skeletons")
+    local skeletons_path = require("pde.skeletons")
     vim.cmd("0r " .. skeletons_path .. "/" .. name)
 end
 

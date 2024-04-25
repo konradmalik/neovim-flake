@@ -14,9 +14,9 @@ let
     '';
   };
   # manually handle nix templates to avoid IFD
-  binaries-lua = pkgs.callPackage ./nix/lua/konrad/binaries.nix { };
-  skeletons-lua = pkgs.callPackage ./nix/lua/konrad/skeletons.nix { };
-  system-lua = pkgs.callPackage ./nix/lua/konrad/system.nix { inherit systemLua; };
+  binaries-lua = pkgs.callPackage ./nix/lua/pde/binaries.nix { };
+  skeletons-lua = pkgs.callPackage ./nix/lua/pde/skeletons.nix { };
+  system-lua = pkgs.callPackage ./nix/lua/pde/system.nix { inherit systemLua; };
 in
 pkgs.symlinkJoin {
   name = "${appName}-config";

@@ -1,4 +1,4 @@
-require("konrad.lazy").make_lazy_load("todo-comments", { "BufNew", "BufRead" }, function()
+require("pde.lazy").make_lazy_load("todo-comments", { "BufNew", "BufRead" }, function()
     vim.cmd.packadd("todo-comments-nvim")
 
     local todo = require("todo-comments")

@@ -1,4 +1,4 @@
-local icons = require("konrad.icons")
+local icons = require("pde.icons")
 
 vim.opt.foldcolumn = "auto"
 vim.opt.fillchars = {

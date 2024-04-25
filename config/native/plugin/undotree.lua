@@ -1,4 +1,4 @@
-require("konrad.lazy").make_enable_command(
+require("pde.lazy").make_enable_command(
     "UndotreeToggle",
     { "undotree" },
     function() vim.cmd("UndotreeToggle") end,
