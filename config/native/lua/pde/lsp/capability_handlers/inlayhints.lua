@@ -6,15 +6,20 @@ return {
         local bufnr = data.bufnr
         local augroup = data.augroup
 
-        vim.api.nvim_create_autocmd({ "InsertEnter", "InsertLeave" }, {
+        vim.api.nvim_create_autocmd("InsertEnter", {
             group = augroup,
             buffer = bufnr,
             callback = function(args)
                 if not inlayhints_is_enabled then return end
-                vim.lsp.inlay_hint.enable(
-                    not vim.lsp.inlay_hint.is_enabled(args.bufnr),
-                    { bufnr = args.bufnr }
-                )
+                vim.lsp.inlay_hint.enable(true, { bufnr = args.bufnr })
+            end,
+        })
+        vim.api.nvim_create_autocmd("InsertLeave", {
+            group = augroup,
+            buffer = bufnr,
+            callback = function(args)
+                if not inlayhints_is_enabled then return end
+                vim.lsp.inlay_hint.enable(false, { bufnr = args.bufnr })
             end,
         })
 
