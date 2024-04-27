@@ -12,15 +12,14 @@ map("<leader>dsi", dap.step_into, "step into")
 map("<leader>dso", dap.step_out, "step out")
 map("<leader>dr", dap.repl.open, "repl")
 map("<leader>db", dap.toggle_breakpoint, "toggle breakpoint")
-map(
-    "<leader>dB",
-    function() dap.set_breakpoint(vim.ui.input("[DAP] Condition > ")) end,
-    "conditional breakpoint"
-)
-
+map("<leader>dB", function()
+    vim.ui.input({ prompt = "Condition: " }, function(condition)
+        if condition then dap.set_breakpoint(condition) end
+    end)
+end, "conditional breakpoint")
 map("<leader>de", dapui.eval, "evaluate")
-map(
-    "<leader>dE",
-    function() dapui.eval(vim.ui.input("[DAP] Expression > ")) end,
-    "evaluate interactive"
-)
+map("<leader>dE", function()
+    vim.ui.input({ prompt = "Expression: " }, function(expr)
+        if expr then dapui.eval(expr, { enter = true }) end
+    end)
+end, "evaluate interactive")
