@@ -51,7 +51,7 @@ local function runSingle(command)
 
     local cwd = task.args.workspaceRoot
 
-    runner.run(vim.tbl_flatten(cmd), { cwd = cwd })
+    runner.run(vim.iter(cmd):flatten():totable(), { cwd = cwd })
 end
 
 return {
