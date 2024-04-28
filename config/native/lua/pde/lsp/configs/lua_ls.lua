@@ -10,15 +10,7 @@ return {
         return {
             name = "lua_ls",
             cmd = { binaries.lua_ls() },
-            init_options = {
-                documentFormatting = false,
-                documentRangeFormatting = false,
-            },
-            on_init = function(client)
-                -- use stylua via efm, this formatter is not great and it clears diagnostic text on save
-                client.server_capabilities.documentFormattingProvider = nil
-                client.server_capabilities.documentRangeFormattingProvider = nil
-
+            before_init = function()
                 table.insert(nvim_library, "${3rd}/luv/library")
                 table.insert(nvim_library, vim.env.VIMRUNTIME)
                 local cwd = vim.uv.cwd()
@@ -29,6 +21,11 @@ return {
                         table.insert(nvim_library, dir)
                     end
                 end
+            end,
+            on_init = function(client)
+                -- use stylua via efm, this formatter is not great and it clears diagnostic text on save
+                client.server_capabilities.documentFormattingProvider = nil
+                client.server_capabilities.documentRangeFormattingProvider = nil
             end,
             settings = {
                 Lua = {

@@ -84,7 +84,7 @@ return {
         return {
             name = name,
             cmd = { binaries.ltex_ls() },
-            on_init = function()
+            before_init = function()
                 if not dictionary[current_language] then
                     dictionary[current_language] = {}
                     read_lines_into(
