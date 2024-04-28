@@ -23,10 +23,9 @@ end, {
 -- Deletes all trailing whitespace in a file if it's not binary nor a diff.
 local trim_trailing_whitespace = function()
     if not vim.bo.binary and vim.bo.filetype ~= "diff" then
-        local current_view = vim.fn.winsaveview()
+        local pos = vim.api.nvim_win_get_cursor(0)
         vim.cmd([[keeppatterns %s/\s\+$//e]])
-        ---@diagnostic disable-next-line: param-type-mismatch
-        vim.fn.winrestview(current_view)
+        vim.api.nvim_win_set_cursor(0, pos)
     end
 end
 
