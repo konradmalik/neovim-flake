@@ -151,15 +151,13 @@ M.fileformat = function()
 end
 
 M.git = function()
-    local bufnr = utils.stbufnr()
-    local head = vim.b[bufnr].gitsigns_head
+    local head = vim.b[utils.stbufnr()].gitsigns_head
     if not head then return "" end
     return wrap_hl(colors.orange, icons.git.Branch .. " " .. head)
 end
 
 M.gitchanges = function()
-    local bufnr = utils.stbufnr()
-    local git_status = vim.b[bufnr].gitsigns_status_dict
+    local git_status = vim.b[utils.stbufnr()].gitsigns_status_dict
     if not git_status then return "" end
 
     local added = (git_status.added and git_status.added ~= 0)
@@ -176,8 +174,7 @@ M.gitchanges = function()
 end
 
 M.diagnostics = function()
-    local bufnr = utils.stbufnr()
-    local counts = vim.diagnostic.count(bufnr)
+    local counts = vim.diagnostic.count(utils.stbufnr())
     local numErrors = counts[vim.diagnostic.severity.ERROR] or 0
     local numWarnings = counts[vim.diagnostic.severity.WARN] or 0
     local numHints = counts[vim.diagnostic.severity.HINT] or 0
@@ -198,21 +195,18 @@ M.diagnostics = function()
 end
 
 M.filetype = function()
-    local bufnr = utils.stbufnr()
-    local ft = vim.bo[bufnr].filetype
+    local ft = vim.bo[utils.stbufnr()].filetype
     if ft == "" then ft = "plain text" end
     return wrap_hl(colors.filetype, icons.documents.FileContents .. " " .. ft)
 end
 
 M.file_encoding = function()
-    local bufnr = utils.stbufnr()
-    local encode = vim.bo[bufnr].fileencoding
+    local encode = vim.bo[utils.stbufnr()].fileencoding
     if encode == "" then encode = "none" end
     return wrap_hl(colors.gray, encode:lower())
 end
 
 M.LSP_status = function()
-    local names = {}
     local clients = vim.lsp.get_clients({ bufnr = utils.stbufnr() })
     local numClients = #clients
     if numClients == 0 then return "" end
@@ -220,10 +214,11 @@ M.LSP_status = function()
     local icon = numClients > 1 and icons.ui.CheckAll or icons.ui.Check
     if numClients >= 3 then return wrap_hl(colors.green, icon .. " " .. numClients .. " LSPs") end
 
+    local texts = { icon }
     for _, server in pairs(clients) do
-        table.insert(names, server.name)
+        table.insert(texts, server.name)
     end
-    return wrap_hl(colors.green, icon .. " " .. table.concat(names, " "))
+    return wrap_hl(colors.green, table.concat(texts, " "))
 end
 
 M.DAP_status = function()
@@ -233,15 +228,34 @@ M.DAP_status = function()
 end
 
 M.cwd = function()
-    local cwd = vim.fn.getcwd()
+    local winnr = utils.stwinnr()
+    local cwd = vim.fn.getcwd(winnr)
     cwd = vim.fn.fnamemodify(cwd, ":t")
-    cwd = (vim.fn.haslocaldir(0) == 1 and "l" or "g") .. " " .. icons.documents.Folder .. " " .. cwd
+    cwd = (vim.fn.haslocaldir(winnr) == 1 and "l" or "g")
+        .. " "
+        .. icons.documents.Folder
+        .. " "
+        .. cwd
     return wrap_hl(colors.directory, cwd)
 end
 
-M.hostname = function() return wrap_hl(colors.blue, icons.ui.Laptop .. " " .. vim.fn.hostname()) end
+do
+    local hostname
+    M.hostname = function()
+        if not hostname then
+            hostname = wrap_hl(colors.blue, icons.ui.Laptop .. " " .. vim.fn.hostname())
+        end
+        return hostname
+    end
+end
 
-M.ruler = function() return wrap_hl(colors.purple, "[%7(%l/%3L%):%2c %P]") end
+do
+    local ruler
+    M.ruler = function()
+        if not ruler then ruler = wrap_hl(colors.purple, "[%7(%l/%3L%):%2c %P]") end
+        return ruler
+    end
+end
 
 M.scrollbar = function()
     local curr_line = vim.api.nvim_win_get_cursor(utils.stwinnr())[1]
