@@ -23,14 +23,6 @@ local opts_with_desc = function(desc) return { desc = "[Diagnostic] " .. desc } 
 
 vim.keymap.set(
     "n",
-    "<leader>e",
-    vim.diagnostic.open_float,
-    opts_with_desc("Open in floating window")
-)
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts_with_desc("Previous"))
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts_with_desc("Next"))
-vim.keymap.set(
-    "n",
     "<leader>dl",
     vim.diagnostic.setloclist,
     opts_with_desc("Send all from current buffer to location list")
