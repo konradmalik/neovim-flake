@@ -1,8 +1,9 @@
-{ pkgs
-, lib
-, appName
-, include-native-config
-, systemLua
+{
+  pkgs,
+  lib,
+  appName,
+  include-native-config,
+  systemLua,
 }:
 let
   nativeConfig = pkgs.stdenv.mkDerivation {
@@ -24,8 +25,7 @@ pkgs.symlinkJoin {
     binaries-lua
     skeletons-lua
     system-lua
-  ] ++ lib.optionals include-native-config
-    [ nativeConfig ];
+  ] ++ lib.optionals include-native-config [ nativeConfig ];
 
   # config structure: $out/${appName}/init.lua
   # (the same as XDG_CONFIG_HOME)

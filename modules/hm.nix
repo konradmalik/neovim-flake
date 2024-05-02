@@ -1,5 +1,10 @@
 self:
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.programs.neovim-pde;
@@ -68,9 +73,10 @@ in
 
       systemLua = mkOption {
         type = types.str;
-        default = /* lua */ ''
-          return {}
-        '';
+        default = # lua
+          ''
+            return {}
+          '';
         description = ''
           A lua script contents which should return
           a table. This table is then used in Lua code
@@ -84,7 +90,13 @@ in
   config =
     let
       nvim = self.packages.${pkgs.system}.neovim.override {
-        inherit (cfg) appName systemLua self-contained viAlias vimAlias;
+        inherit (cfg)
+          appName
+          systemLua
+          self-contained
+          viAlias
+          vimAlias
+          ;
       };
     in
     mkIf cfg.enable {
@@ -102,36 +114,22 @@ in
         enable = !cfg.self-contained;
         source = "${nvim.passthru.config}/${cfg.appName}";
         recursive = true;
-        onChange = ''
-          rm - rf ${config.xdg.cacheHome}/${cfg.appName}
-        '' + lib.optionalString
-          cfg.cleanLspLog
+        onChange =
           ''
+            rm - rf ${config.xdg.cacheHome}/${cfg.appName}
+          ''
+          + lib.optionalString cfg.cleanLspLog ''
             rm -f ${config.xdg.stateHome}/${cfg.appName}/lsp.log
           '';
-
       };
 
-      programs.git.ignores = mkIf
-        cfg.extendGitIgnores
-        [
-          ".netcoredbg_hist"
-          ".nvim.lua"
-        ];
+      programs.git.ignores = mkIf cfg.extendGitIgnores [
+        ".netcoredbg_hist"
+        ".nvim.lua"
+      ];
 
-      programs.bash.shellAliases = mkIf
-        cfg.vimdiffAlias
-        { vimdiff = "nvim -d"; };
-      programs.fish.shellAliases = mkIf
-        cfg.vimdiffAlias
-        { vimdiff = "nvim -d"; };
-      programs.zsh.shellAliases = mkIf
-        cfg.vimdiffAlias
-        { vimdiff = "nvim -d"; };
+      programs.bash.shellAliases = mkIf cfg.vimdiffAlias { vimdiff = "nvim -d"; };
+      programs.fish.shellAliases = mkIf cfg.vimdiffAlias { vimdiff = "nvim -d"; };
+      programs.zsh.shellAliases = mkIf cfg.vimdiffAlias { vimdiff = "nvim -d"; };
     };
 }
-
-
-
-
-

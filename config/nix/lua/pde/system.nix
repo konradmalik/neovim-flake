@@ -1,2 +1,1 @@
-{ systemLua, writeTextDir }:
-writeTextDir "lua/pde/system.lua" systemLua
+{ systemLua, writeTextDir }: writeTextDir "lua/pde/system.lua" systemLua
