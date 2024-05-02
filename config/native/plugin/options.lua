@@ -49,7 +49,5 @@ vim.opt.sidescrolloff = 10
 -- Decrease update time
 vim.opt.updatetime = 1000
 vim.opt.timeoutlen = 1000
--- True color support
-vim.opt.termguicolors = true
 -- highlight the current line
 vim.opt.cursorline = true
