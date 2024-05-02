@@ -1,7 +1,6 @@
 -- https://github.com/valentjn/ltex-ls
 
 local binaries = require("pde.binaries")
-local configs = require("pde.lsp.configs")
 local paths = require("pde.paths")
 
 local dictionary = {}
@@ -119,7 +118,7 @@ return {
                     hiddenFalsePositives = hiddenFalsePositives,
                 },
             },
-            root_dir = configs.root_dir(".git"),
+            root_dir = vim.fs.root(0, ".git"),
             on_attach = function(_, bufnr)
                 vim.api.nvim_buf_call(bufnr, function() vim.opt_local.spell = false end)
                 -- TODO: buf_command for changing the language

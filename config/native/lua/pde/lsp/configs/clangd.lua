@@ -1,5 +1,4 @@
 local binaries = require("pde.binaries")
-local configs = require("pde.lsp.configs")
 
 return {
     config = function()
@@ -7,7 +6,7 @@ return {
         return {
             name = "clangd",
             cmd = { binaries.clangd() },
-            root_dir = configs.root_dir({
+            root_dir = vim.fs.root(0, {
                 ".clangd",
                 ".clang-tidy",
                 ".clang-format",

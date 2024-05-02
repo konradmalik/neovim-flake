@@ -1,6 +1,5 @@
 -- https://github.com/redhat-developer/yaml-language-server
 local binaries = require("pde.binaries")
-local configs = require("pde.lsp.configs")
 
 vim.cmd.packadd("SchemaStore.nvim")
 local schemastore = require("schemastore")
@@ -39,7 +38,7 @@ return {
                     },
                 },
             },
-            root_dir = configs.root_dir(".git"),
+            root_dir = vim.fs.root(0, ".git"),
         }
     end,
 }

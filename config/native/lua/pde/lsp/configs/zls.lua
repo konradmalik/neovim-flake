@@ -1,7 +1,5 @@
 -- https://github.com/zigtools/zls
-
 local binaries = require("pde.binaries")
-local configs = require("pde.lsp.configs")
 
 return {
     config = function()
@@ -9,7 +7,7 @@ return {
         return {
             name = "zls",
             cmd = { binaries.zls() },
-            root_dir = configs.root_dir({ "zls.json", ".git" }),
+            root_dir = vim.fs.root(0, { "zls.json", ".git" }),
         }
     end,
 }

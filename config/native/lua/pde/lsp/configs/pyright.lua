@@ -1,7 +1,6 @@
 -- https://github.com/microsoft/pyright
 
 local binaries = require("pde.binaries")
-local configs = require("pde.lsp.configs")
 
 return {
     config = function()
@@ -18,7 +17,7 @@ return {
                     },
                 },
             },
-            root_dir = configs.root_dir({
+            root_dir = vim.fs.root(0, {
                 "pyproject.toml",
                 "setup.py",
                 "setup.cfg",

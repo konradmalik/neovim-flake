@@ -1,6 +1,5 @@
 -- https://github.com/golang/tools/tree/master/gopls
 local binaries = require("pde.binaries")
-local configs = require("pde.lsp.configs")
 
 return {
     config = function()
@@ -14,7 +13,7 @@ return {
                     allExperiments = true,
                 },
             },
-            root_dir = configs.root_dir({ "go.work", "go.mod", ".git" }),
+            root_dir = vim.fs.root(0, { "go.work", "go.mod", ".git" }),
         }
     end,
 }

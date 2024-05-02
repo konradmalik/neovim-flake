@@ -1,8 +1,7 @@
 local augroups = require("pde.lsp.augroups")
 local keymapper = require("pde.lsp.keymapper")
-local protocol = require("vim.lsp.protocol")
 local telescope = require("telescope.builtin")
-local ms = protocol.Methods
+local ms = vim.lsp.protocol.Methods
 
 ---@alias HandlerData {augroup: integer, bufnr: integer, client: vim.lsp.Client}
 

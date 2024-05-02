@@ -1,6 +1,5 @@
 -- https://github.com/sumneko/lua-language-server
 local binaries = require("pde.binaries")
-local configs = require("pde.lsp.configs")
 local paths = require("pde.paths")
 local nvim_library = {}
 
@@ -41,8 +40,7 @@ return {
                     },
                 },
             },
-            root_dir = configs.root_dir(".luarc.json", { type = "file" })
-                or configs.root_dir({ "lua", ".git" }, { type = "directory" }),
+            root_dir = vim.fs.root(0, ".luarc.json") or vim.fs.root(0, { "lua", ".git" }),
         }
     end,
 }

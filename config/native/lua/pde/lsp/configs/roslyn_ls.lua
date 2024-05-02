@@ -1,5 +1,4 @@
 local binaries = require("pde.binaries")
-local fs = require("pde.fs")
 local runner = require("pde.runner")
 
 ---@param command lsp.Command
@@ -74,9 +73,17 @@ local function ensure_tree_is_parsed(bufnr)
     end
 end
 
+local function find(pattern)
+    return vim.fs.find(function(name, _) return name:match(pattern) end, {
+        upward = true,
+        stop = vim.uv.os_homedir(),
+        path = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),
+    })[1]
+end
+
 return {
     config = function()
-        local solution = fs.find(".sln$")
+        local solution = find(".sln$")
         if not solution then
             -- most probably decompilation from already running server, so reuse it
             -- luacheck: ignore 512

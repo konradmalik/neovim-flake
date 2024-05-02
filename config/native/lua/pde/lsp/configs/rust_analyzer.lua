@@ -1,5 +1,4 @@
 local binaries = require("pde.binaries")
-local configs = require("pde.lsp.configs")
 local runner = require("pde.runner")
 local name = "rust_analyzer"
 
@@ -100,7 +99,7 @@ return {
             commands = {
                 ["rust-analyzer.runSingle"] = runSingle,
             },
-            root_dir = configs.root_dir({ "Cargo.toml", "rust-project.json" }),
+            root_dir = vim.fs.root(0, { "Cargo.toml", "rust-project.json" }),
             on_attach = function(_, bufnr)
                 vim.api.nvim_buf_create_user_command(
                     bufnr,

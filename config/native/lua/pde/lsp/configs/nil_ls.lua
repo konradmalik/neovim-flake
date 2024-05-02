@@ -1,7 +1,6 @@
 -- https://github.com/oxalica/nil
 
 local binaries = require("pde.binaries")
-local configs = require("pde.lsp.configs")
 
 return {
     config = function()
@@ -22,7 +21,7 @@ return {
                     },
                 },
             },
-            root_dir = configs.root_dir({ "flake.nix", ".git" }),
+            root_dir = vim.fs.root(0, { "flake.nix", ".git" }),
         }
     end,
 }

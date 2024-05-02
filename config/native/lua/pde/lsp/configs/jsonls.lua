@@ -1,7 +1,6 @@
 -- https://github.com/hrsh7th/vscode-langservers-extracted
 
 local binaries = require("pde.binaries")
-local configs = require("pde.lsp.configs")
 vim.cmd.packadd("SchemaStore.nvim")
 local schemastore = require("schemastore")
 
@@ -21,7 +20,7 @@ return {
                     schemas = schemastore.json.schemas(),
                 },
             },
-            root_dir = configs.root_dir(".git"),
+            root_dir = vim.fs.root(0, ".git"),
         }
     end,
 }
