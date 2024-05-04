@@ -181,11 +181,12 @@
             shellHook = ''
               export NVIM_PDE_DEV_NATIVE_CONFIG_PATH="$PWD/config"
             '';
-            packages = with pkgs; [
-              stylua
-              lua.pkgs.luacheck
-              nvim-dev
-            ];
+            packages =
+              (with pkgs; [
+                stylua
+                lua.pkgs.luacheck
+              ])
+              ++ [ nvim-dev ];
           };
       });
       overlays.default = final: prev: {
