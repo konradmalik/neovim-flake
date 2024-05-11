@@ -90,7 +90,7 @@ end
 vim.api.nvim_create_autocmd({ "LspProgress" }, {
     callback = function(ev)
         ---@type LspProgress
-        local progress = ev.data.result.value
+        local progress = ev.data.params.value
         local message = get_lsp_progress_msg(progress)
         if not message or #message == 0 then return end
 
