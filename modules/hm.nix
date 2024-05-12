@@ -116,7 +116,7 @@ in
         recursive = true;
         onChange =
           ''
-            rm - rf ${config.xdg.cacheHome}/${cfg.appName}
+            rm -rf ${config.xdg.cacheHome}/${cfg.appName}
           ''
           + lib.optionalString cfg.cleanLspLog ''
             rm -f ${config.xdg.stateHome}/${cfg.appName}/lsp.log
