@@ -62,7 +62,9 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_codeAction) then
-        vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
+        vim.keymap.set("n", "crr", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
+        vim.keymap.set("x", "<c-r><c-r>", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
+        vim.keymap.set("x", "<c-r>r", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
     end
 
     if client_buf_supports_method(ms.textDocument_codeLens) then
@@ -108,7 +110,7 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_rename) then
-        vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts_with_desc("Rename"))
+        vim.keymap.set("n", "crn", vim.lsp.buf.rename, opts_with_desc("Rename"))
     end
 
     if client_buf_supports_method(ms.textDocument_signatureHelp) then
