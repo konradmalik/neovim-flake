@@ -111,6 +111,8 @@ return {
         SlopeUp = "◢",
         Tab = "▷",
         Trail = "·",
+        EmptyTriangle = "󰼛",
+        Caret = "󱞩",
     },
     oss = {
         Linux = "",

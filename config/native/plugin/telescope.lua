@@ -1,8 +1,11 @@
+local icons = require("pde.icons")
 local telescope = require("telescope")
 
 telescope.setup({
     defaults = {
         wrap_results = true,
+        prompt_prefix = icons.characters.EmptyTriangle .. " ",
+        selection_caret = icons.characters.Caret .. " ",
     },
 })
 -- To get extensions loaded and working with telescope, you need to call
