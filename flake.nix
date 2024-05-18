@@ -3,10 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    neovim = {
-      url = "github:neovim/neovim?dir=contrib";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
     # plugins
     SchemaStore-nvim = {
@@ -228,7 +225,7 @@
       formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
       packages = forAllSystems (pkgs: rec {
         neovim = pkgs.callPackage ./packages/neovim-pde {
-          neovim = inputs.neovim.packages.${pkgs.system}.neovim;
+          neovim = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
           neovimPlugins = neovimPluginsFor pkgs;
         };
         default = neovim;
