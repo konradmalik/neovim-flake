@@ -62,9 +62,7 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_codeAction) then
-        vim.keymap.set("n", "crr", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
-        vim.keymap.set("x", "<c-r><c-r>", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
-        vim.keymap.set("x", "<c-r>r", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
+        vim.keymap.set("n", "gll", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
     end
 
     if client_buf_supports_method(ms.textDocument_codeLens) then
@@ -76,11 +74,11 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_declaration) then
-        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts_with_desc("Go To Declaration"))
+        vim.keymap.set("n", "glD", vim.lsp.buf.declaration, opts_with_desc("Go To Declaration"))
     end
 
     if client_buf_supports_method(ms.textDocument_definition) then
-        vim.keymap.set("n", "gd", telescope.lsp_definitions, opts_with_desc("Go To Definition"))
+        vim.keymap.set("n", "gld", telescope.lsp_definitions, opts_with_desc("Go To Definition"))
     end
 
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
@@ -90,7 +88,7 @@ M.attach = function(client, bufnr)
     if client_buf_supports_method(ms.textDocument_documentSymbol) then
         vim.keymap.set(
             "n",
-            "<leader>ds",
+            "glds",
             telescope.lsp_document_symbols,
             opts_with_desc("Document Symbols")
         )
@@ -99,29 +97,29 @@ M.attach = function(client, bufnr)
     if client_buf_supports_method(ms.textDocument_implementation) then
         vim.keymap.set(
             "n",
-            "gI",
+            "glI",
             telescope.lsp_implementations,
             opts_with_desc("Go To Implementation")
         )
     end
 
     if client_buf_supports_method(ms.textDocument_references) then
-        vim.keymap.set("n", "gr", telescope.lsp_references, opts_with_desc("Go To References"))
+        vim.keymap.set("n", "glr", telescope.lsp_references, opts_with_desc("Go To References"))
     end
 
     if client_buf_supports_method(ms.textDocument_rename) then
-        vim.keymap.set("n", "crn", vim.lsp.buf.rename, opts_with_desc("Rename"))
+        vim.keymap.set("n", "gln", vim.lsp.buf.rename, opts_with_desc("Rename"))
     end
 
     if client_buf_supports_method(ms.textDocument_signatureHelp) then
-        vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
+        vim.keymap.set("n", "gls", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
         vim.keymap.set("i", "<c-s>", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
     end
 
     if client_buf_supports_method(ms.textDocument_typeDefinition) then
         vim.keymap.set(
             "n",
-            "<leader>T",
+            "glt",
             telescope.lsp_type_definitions,
             opts_with_desc("Type Definition")
         )
@@ -130,7 +128,7 @@ M.attach = function(client, bufnr)
     if client_buf_supports_method(ms.workspace_symbol) then
         vim.keymap.set(
             "n",
-            "<leader>ws",
+            "glws",
             telescope.lsp_dynamic_workspace_symbols,
             opts_with_desc("Workspace Symbols")
         )
@@ -142,19 +140,19 @@ M.attach = function(client, bufnr)
 
     vim.keymap.set(
         "n",
-        "<leader>wa",
+        "glwa",
         vim.lsp.buf.add_workspace_folder,
         opts_with_desc("Add Workspace Folder")
     )
     vim.keymap.set(
         "n",
-        "<leader>wr",
+        "glwr",
         vim.lsp.buf.remove_workspace_folder,
         opts_with_desc("Remove Workspace Folder")
     )
     vim.keymap.set(
         "n",
-        "<leader>wl",
+        "glwl",
         function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
         opts_with_desc("List Workspace Folders")
     )
