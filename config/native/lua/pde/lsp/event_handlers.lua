@@ -74,11 +74,11 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_declaration) then
-        vim.keymap.set("n", "glD", vim.lsp.buf.declaration, opts_with_desc("Go To Declaration"))
+        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts_with_desc("Go To Declaration"))
     end
 
     if client_buf_supports_method(ms.textDocument_definition) then
-        vim.keymap.set("n", "gld", telescope.lsp_definitions, opts_with_desc("Go To Definition"))
+        vim.keymap.set("n", "gd", telescope.lsp_definitions, opts_with_desc("Go To Definition"))
     end
 
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
