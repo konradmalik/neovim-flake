@@ -62,7 +62,7 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_codeAction) then
-        vim.keymap.set("n", "gll", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
+        vim.keymap.set({ "n", "x" }, "gra", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
     end
 
     if client_buf_supports_method(ms.textDocument_codeLens) then
@@ -88,7 +88,7 @@ M.attach = function(client, bufnr)
     if client_buf_supports_method(ms.textDocument_documentSymbol) then
         vim.keymap.set(
             "n",
-            "glds",
+            "grds",
             telescope.lsp_document_symbols,
             opts_with_desc("Document Symbols")
         )
@@ -97,29 +97,29 @@ M.attach = function(client, bufnr)
     if client_buf_supports_method(ms.textDocument_implementation) then
         vim.keymap.set(
             "n",
-            "glI",
+            "grI",
             telescope.lsp_implementations,
             opts_with_desc("Go To Implementation")
         )
     end
 
     if client_buf_supports_method(ms.textDocument_references) then
-        vim.keymap.set("n", "glr", telescope.lsp_references, opts_with_desc("Go To References"))
+        vim.keymap.set("n", "grr", telescope.lsp_references, opts_with_desc("Go To References"))
     end
 
     if client_buf_supports_method(ms.textDocument_rename) then
-        vim.keymap.set("n", "gln", vim.lsp.buf.rename, opts_with_desc("Rename"))
+        vim.keymap.set("n", "grn", vim.lsp.buf.rename, opts_with_desc("Rename"))
     end
 
     if client_buf_supports_method(ms.textDocument_signatureHelp) then
-        vim.keymap.set("n", "gls", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
+        vim.keymap.set("n", "grs", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
         vim.keymap.set("i", "<c-s>", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
     end
 
     if client_buf_supports_method(ms.textDocument_typeDefinition) then
         vim.keymap.set(
             "n",
-            "glt",
+            "grt",
             telescope.lsp_type_definitions,
             opts_with_desc("Type Definition")
         )
@@ -128,7 +128,7 @@ M.attach = function(client, bufnr)
     if client_buf_supports_method(ms.workspace_symbol) then
         vim.keymap.set(
             "n",
-            "glws",
+            "grws",
             telescope.lsp_dynamic_workspace_symbols,
             opts_with_desc("Workspace Symbols")
         )
@@ -140,19 +140,19 @@ M.attach = function(client, bufnr)
 
     vim.keymap.set(
         "n",
-        "glwa",
+        "grwa",
         vim.lsp.buf.add_workspace_folder,
         opts_with_desc("Add Workspace Folder")
     )
     vim.keymap.set(
         "n",
-        "glwr",
+        "grwr",
         vim.lsp.buf.remove_workspace_folder,
         opts_with_desc("Remove Workspace Folder")
     )
     vim.keymap.set(
         "n",
-        "glwl",
+        "grwl",
         function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
         opts_with_desc("List Workspace Folders")
     )
