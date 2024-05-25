@@ -74,11 +74,11 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_declaration) then
-        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts_with_desc("Go To Declaration"))
+        vim.keymap.set("n", "gd", vim.lsp.buf.declaration, opts_with_desc("Go To Declaration"))
     end
 
     if client_buf_supports_method(ms.textDocument_definition) then
-        vim.keymap.set("n", "gd", telescope.lsp_definitions, opts_with_desc("Go To Definition"))
+        vim.keymap.set("n", "<c-]>", telescope.lsp_definitions, opts_with_desc("Go To Definition"))
     end
 
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
@@ -97,7 +97,7 @@ M.attach = function(client, bufnr)
     if client_buf_supports_method(ms.textDocument_implementation) then
         vim.keymap.set(
             "n",
-            "grI",
+            "gri",
             telescope.lsp_implementations,
             opts_with_desc("Go To Implementation")
         )
@@ -117,12 +117,7 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_typeDefinition) then
-        vim.keymap.set(
-            "n",
-            "grt",
-            telescope.lsp_type_definitions,
-            opts_with_desc("Type Definition")
-        )
+        vim.keymap.set("n", "gD", telescope.lsp_type_definitions, opts_with_desc("Type Definition"))
     end
 
     if client_buf_supports_method(ms.workspace_symbol) then
