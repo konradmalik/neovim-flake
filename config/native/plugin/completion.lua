@@ -1,4 +1,5 @@
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
+vim.opt.shortmess:append("c")
 
 ---@param fpattern string filename pattern
 ---@return integer

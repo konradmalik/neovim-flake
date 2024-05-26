@@ -2,7 +2,7 @@ local M = {}
 
 M.setup = function()
     -- register custom and vscode snippets to luasnip
-    require("pde.cmp.snippets")
+    local snippet = require("pde.cmp.snippets")
 
     local menu_entries = {
         -- lsp gets lsp server name via client.name
@@ -22,7 +22,7 @@ M.setup = function()
     local cmp = require("cmp")
     cmp.setup({
         snippet = {
-            expand = function(args) vim.snippet.expand(args.body) end,
+            expand = function(args) snippet.lsp_expand(args.body) end,
         },
         mapping = cmp.mapping.preset.insert({
             ["<C-d>"] = cmp.mapping.scroll_docs(-4),
@@ -33,10 +33,10 @@ M.setup = function()
             ["<C-n>"] = cmp.mapping.select_next_item(),
             ["<C-p>"] = cmp.mapping.select_prev_item(),
             ["<C-l>"] = cmp.mapping(function()
-                if vim.snippet.jumpable(1) then vim.snippet.jump(1) end
+                if snippet.expand_or_jumpable() then snippet.expand_or_jump() end
             end, { "i", "s" }),
             ["<C-h>"] = cmp.mapping(function()
-                if vim.snippet.jumpable(-1) then vim.snippet.jump(-1) end
+                if snippet.jumpable(-1) then snippet.jump(-1) end
             end, { "i", "s" }),
         }),
         formatting = {
@@ -53,10 +53,10 @@ M.setup = function()
             end,
         },
         sources = {
+            { name = "nvim_lsp" },
             { name = "luasnip" },
             { name = "buffer" },
             { name = "path" },
-            { name = "nvim_lsp" },
         },
     })
 end

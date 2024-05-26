@@ -32,3 +32,5 @@ ls.add_snippets("all", {
 })
 
 require("luasnip.loaders.from_vscode").lazy_load()
+
+return ls
