@@ -3,11 +3,11 @@
     "SchemaStore-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1716346858,
-        "narHash": "sha256-MyQf8/UjHFX+fu9Cx3vsI06PCuRvht2IAth1TrSidyw=",
+        "lastModified": 1716786051,
+        "narHash": "sha256-ePr6yM9Yy4+IuS8khAFtc3K9sVBuz6ScEVeLk8F3H4M=",
         "owner": "b0o",
         "repo": "SchemaStore.nvim",
-        "rev": "9a5992a881583d886bfbb46631a09f736f0fae50",
+        "rev": "931f9f3b7b60ec976159cb01b4a40da3829ac2fd",
         "type": "github"
       },
       "original": {
@@ -218,11 +218,38 @@
         "type": "github"
       }
     },
+    "git-hooks": {
+      "inputs": {
+        "flake-compat": "flake-compat_2",
+        "gitignore": "gitignore",
+        "nixpkgs": [
+          "neovim-nightly-overlay",
+          "nixpkgs"
+        ],
+        "nixpkgs-stable": [
+          "neovim-nightly-overlay",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1716213921,
+        "narHash": "sha256-xrsYFST8ij4QWaV6HEokCUNIZLjjLP1bYC60K8XiBVA=",
+        "owner": "cachix",
+        "repo": "git-hooks.nix",
+        "rev": "0e8fcc54b842ad8428c9e705cb5994eaf05c26a0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cachix",
+        "repo": "git-hooks.nix",
+        "type": "github"
+      }
+    },
     "gitignore": {
       "inputs": {
         "nixpkgs": [
           "neovim-nightly-overlay",
-          "pre-commit-hooks",
+          "git-hooks",
           "nixpkgs"
         ]
       },
@@ -330,17 +357,17 @@
       "inputs": {
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
+        "git-hooks": "git-hooks",
         "hercules-ci-effects": "hercules-ci-effects",
         "neovim-src": "neovim-src",
-        "nixpkgs": "nixpkgs",
-        "pre-commit-hooks": "pre-commit-hooks"
+        "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1716747123,
-        "narHash": "sha256-XZFVa21Vpn39Y7fCmGAb8CxKJlX0YKKUyUfArvhXNjo=",
+        "lastModified": 1716827514,
+        "narHash": "sha256-5qS9Jn3FaEFMGGhS/1mLOUifMFDLPcLczjcdaN7xgyE=",
         "owner": "nix-community",
         "repo": "neovim-nightly-overlay",
-        "rev": "491c6d2a3f239754a2e6aa110d47899a38d94c45",
+        "rev": "7849e018a09688cd71bde887113954b3ce08739c",
         "type": "github"
       },
       "original": {
@@ -512,11 +539,11 @@
     "nvim-treesitter": {
       "flake": false,
       "locked": {
-        "lastModified": 1716718319,
-        "narHash": "sha256-zbil2pixYFKT1bqLBbCJmEJ0Tt+o5a9bgMGH7nQkg4g=",
+        "lastModified": 1716792560,
+        "narHash": "sha256-B+lCD3HJjSwtpJaIwvFN7RPqdR9Lemf3ihap7wDt1Tg=",
         "owner": "nvim-treesitter",
         "repo": "nvim-treesitter",
-        "rev": "245da4eb2e52d14b034bbbedec9671e997ede764",
+        "rev": "aa02427dfeaead86fae038024ae7b29299f08b8c",
         "type": "github"
       },
       "original": {
@@ -589,33 +616,6 @@
         "type": "github"
       }
     },
-    "pre-commit-hooks": {
-      "inputs": {
-        "flake-compat": "flake-compat_2",
-        "gitignore": "gitignore",
-        "nixpkgs": [
-          "neovim-nightly-overlay",
-          "nixpkgs"
-        ],
-        "nixpkgs-stable": [
-          "neovim-nightly-overlay",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1716213921,
-        "narHash": "sha256-xrsYFST8ij4QWaV6HEokCUNIZLjjLP1bYC60K8XiBVA=",
-        "owner": "cachix",
-        "repo": "pre-commit-hooks.nix",
-        "rev": "0e8fcc54b842ad8428c9e705cb5994eaf05c26a0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "cachix",
-        "repo": "pre-commit-hooks.nix",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "SchemaStore-nvim": "SchemaStore-nvim",
@@ -672,11 +672,11 @@
     "telescope-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1716732931,
-        "narHash": "sha256-JXdpKfrSvrzpTqy+g9Bg85/vIDTUZfDr+ZhxH8wJDxA=",
+        "lastModified": 1716774631,
+        "narHash": "sha256-YCAOZzC99NdAC5HsJa2N1RKI+OAbYxvj1hCTydN0muA=",
         "owner": "nvim-telescope",
         "repo": "telescope.nvim",
-        "rev": "349660c0d35da06459ee8589af77de2086b652ce",
+        "rev": "4c96370cf93e2ba287548da12d673442d0ffecc3",
         "type": "github"
       },
       "original": {
