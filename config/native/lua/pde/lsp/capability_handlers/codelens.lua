@@ -39,7 +39,7 @@ return {
             function() vim.lsp.codelens.refresh({ bufnr = bufnr }) end,
             { desc = "Refresh codelens for the current buffer" }
         )
-        vim.keymap.set("n", "<leader>cl", vim.lsp.codelens.run, opts_with_desc("CodeLens run"))
+        vim.keymap.set("n", "grl", vim.lsp.codelens.run, opts_with_desc("CodeLens run"))
 
         -- refresh manually right now for a start
         if codelens_is_enabled then vim.lsp.codelens.refresh({ bufnr = bufnr }) end
@@ -47,6 +47,7 @@ return {
 
     detach = function(client_id, bufnr)
         vim.lsp.codelens.clear(client_id, bufnr)
+        vim.api.nvim_del_keymap("n", "grl")
         vim.api.nvim_buf_del_user_command(bufnr, "CodeLensToggle")
         vim.api.nvim_buf_del_user_command(bufnr, "CodeLensRefresh")
     end,
