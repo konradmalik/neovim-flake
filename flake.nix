@@ -225,7 +225,10 @@
       formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
       packages = forAllSystems (pkgs: rec {
         neovim = pkgs.callPackage ./packages/neovim-pde {
-          neovim = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+          neovim = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim.override {
+            # fixes high cpu usage on x86_64-darwin
+            libuv = pkgs.libuv;
+          };
           neovimPlugins = neovimPluginsFor pkgs;
         };
         default = neovim;
