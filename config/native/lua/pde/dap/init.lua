@@ -48,7 +48,6 @@ local initialize_once = function()
     vim.cmd.packadd("nvim-dap-virtual-text")
 
     setup()
-    require("pde.dap.keymaps")
 
     initialized = true
 end
