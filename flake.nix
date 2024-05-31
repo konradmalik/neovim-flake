@@ -227,12 +227,30 @@
         neovim = pkgs.callPackage ./packages/neovim-pde {
           neovim = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim.override {
             # fixes high cpu usage on x86_64-darwin
-            libuv = pkgs.libuv;
+            libuv = self.packages.${pkgs.system}.libuv-fetchurl;
           };
           neovimPlugins = neovimPluginsFor pkgs;
         };
         default = neovim;
         config = neovim.passthru.config;
+        libuv-fetchzip = pkgs.libuv.overrideAttrs {
+          src = pkgs.fetchzip {
+            url = "https://github.com/libuv/libuv/archive/v1.48.0.tar.gz";
+            hash = "sha256-U68BmIQNpmIy3prS7LkYl+wvDJQNikoeFiKh50yQFoA=";
+          };
+        };
+        libuv-fetchurl = pkgs.libuv.overrideAttrs {
+          src = builtins.fetchurl {
+            url = "https://github.com/libuv/libuv/archive/v1.48.0.tar.gz";
+            sha256 = "8c253adb0f800926a6cbd1c6576abae0bc8eb86a4f891049b72f9e5b7dc58f33";
+          };
+        };
+        libuv-fetchtarball = pkgs.libuv.overrideAttrs {
+          src = builtins.fetchTarball {
+            url = "https://github.com/libuv/libuv/archive/v1.48.0.tar.gz";
+            sha256 = "sha256:100nj16fg8922qg4m2hdjh62zv4p32wyrllsvqr659hdhjc03bsk";
+          };
+        };
       });
       apps = forAllSystems (pkgs: {
         default = {
