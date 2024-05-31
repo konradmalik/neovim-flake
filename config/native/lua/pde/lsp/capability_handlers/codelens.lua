@@ -47,7 +47,7 @@ return {
 
     detach = function(client_id, bufnr)
         vim.lsp.codelens.clear(client_id, bufnr)
-        vim.api.nvim_del_keymap("n", "grl")
+        vim.api.nvim_buf_del_keymap(bufnr, "n", "grl")
         vim.api.nvim_buf_del_user_command(bufnr, "CodeLensToggle")
         vim.api.nvim_buf_del_user_command(bufnr, "CodeLensRefresh")
     end,
