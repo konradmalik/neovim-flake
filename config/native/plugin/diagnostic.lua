@@ -2,6 +2,10 @@ local icons = require("pde.icons")
 local diag_icons = icons.diagnostics
 
 vim.diagnostic.config({
+    jump = {
+        float = true,
+        wrap = true,
+    },
     virtual_text = {
         prefix = icons.ui.Square,
         source = "if_many",
