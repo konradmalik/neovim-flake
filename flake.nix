@@ -135,6 +135,27 @@
   outputs =
     { self, nixpkgs, ... }@inputs:
     let
+      nixpkgsFor =
+        system:
+        (import inputs.nixpkgs {
+          localSystem = {
+            inherit system;
+          };
+          overlays = [
+            # until https://github.com/NixOS/nixpkgs/issues/317055
+            (final: prev: {
+              zig_0_12 = prev.zig_0_12.overrideAttrs (_oldAttrs: {
+                preConfigure = ''
+                  CC=$(type -p $CC)
+                  CXX=$(type -p $CXX)
+                  LD=$(type -p $LD)
+                  AR=$(type -p $AR)
+                '';
+              });
+            })
+          ];
+        });
+
       forAllSystems =
         funcOfPkgs:
         nixpkgs.lib.genAttrs [
@@ -142,7 +163,7 @@
           "aarch64-linux"
           "x86_64-darwin"
           "aarch64-darwin"
-        ] (system: funcOfPkgs nixpkgs.legacyPackages.${system});
+        ] (system: funcOfPkgs (nixpkgsFor system));
 
       neovimPluginsFor =
         pkgs:
