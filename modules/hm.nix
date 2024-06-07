@@ -105,8 +105,8 @@ in
       home.sessionVariables = {
         # should be like that but many programs don't respect VISUAL in favor of EDITOR so...
         # EDITOR = "nvim -u NONE -e";
-        EDITOR = lib.mkDefault lib.getExe nvim;
-        VISUAL = lib.mkDefault lib.getExe nvim;
+        EDITOR = lib.mkDefault (lib.getExe nvim);
+        VISUAL = lib.mkDefault (lib.getExe nvim);
         GIT_EDITOR = lib.mkDefault "${lib.getExe nvim} -u NONE";
       };
 
