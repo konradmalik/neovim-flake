@@ -170,7 +170,7 @@
               fi
 
               XDG_CONFIG_DIRS="${nvim-dev-pkg.passthru.config}:$NVIM_PDE_DEV_NATIVE_CONFIG_PATH" \
-                ${nvim-dev-pkg}/bin/nvim  -u $NVIM_PDE_DEV_NATIVE_CONFIG_PATH/native/init.lua
+                ${pkgs.lib.getExe nvim-dev-pkg} -u $NVIM_PDE_DEV_NATIVE_CONFIG_PATH/native/init.lua
             '';
           in
           pkgs.mkShell {
@@ -234,7 +234,7 @@
       apps = forAllSystems (pkgs: {
         default = {
           type = "app";
-          program = "${self.packages.${pkgs.system}.neovim}/bin/nvim";
+          program = pkgs.lib.getExe self.packages.${pkgs.system}.neovim;
         };
       });
       homeManagerModules.default = import ./modules/hm.nix self;

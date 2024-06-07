@@ -201,7 +201,7 @@ rec {
       {
         postPatch = ''
           sed -Ei lua/plenary/curl.lua \
-              -e 's@(command\s*=\s*")curl(")@\1${curl}/bin/curl\2@'
+              -e 's@(command\s*=\s*")curl(")@\1${lib.getExe curl}\2@'
         '';
       };
   telescope-fzf-native-nvim =

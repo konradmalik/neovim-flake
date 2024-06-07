@@ -105,9 +105,9 @@ in
       home.sessionVariables = {
         # should be like that but many programs don't respect VISUAL in favor of EDITOR so...
         # EDITOR = "nvim -u NONE -e";
-        EDITOR = lib.mkDefault "${nvim}/bin/nvim";
-        VISUAL = lib.mkDefault "${nvim}/bin/nvim";
-        GIT_EDITOR = lib.mkDefault "${nvim}/bin/nvim -u NONE";
+        EDITOR = lib.mkDefault lib.getExe nvim;
+        VISUAL = lib.mkDefault lib.getExe nvim;
+        GIT_EDITOR = lib.mkDefault "${lib.getExe nvim} -u NONE";
       };
 
       xdg.configFile.${cfg.appName} = {
