@@ -88,11 +88,6 @@ rec {
       dependencies = [ nvim-cmp ];
     }
   );
-  dressing-nvim = buildVim {
-    name = "dressing.nvim";
-    src = inputs.dressing-nvim;
-    nvimRequireCheck = "dressing";
-  };
   friendly-snippets = (
     buildVim {
       name = "friendly-snippets";
@@ -215,6 +210,15 @@ rec {
       ];
     }).overrideAttrs
       { buildPhase = "make"; };
+  telescope-ui-select-nvim = buildVim {
+    name = "telescope-ui-select.nvim";
+    src = inputs.telescope-ui-select-nvim;
+    nvimRequireCheck = "telescope._extensions.ui-select";
+    dependencies = [
+      telescope-nvim
+      plenary-nvim
+    ];
+  };
   telescope-nvim = buildNeovim {
     name = "telescope.nvim";
     src = inputs.telescope-nvim;

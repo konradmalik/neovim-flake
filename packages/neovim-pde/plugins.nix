@@ -91,13 +91,13 @@ processMadePlugins (
       dependencies = [
         plenary-nvim
         telescope-fzf-native-nvim
+        telescope-ui-select-nvim
       ];
     })
     # statusline
     (makePlugin nvim-web-devicons)
 
     # UI
-    (makePlugin dressing-nvim)
     (makePlugin kanagawa-nvim)
     (makePlugin {
       plugin = neo-tree-nvim;

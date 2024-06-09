@@ -30,10 +30,6 @@
       url = "github:saadparwaiz1/cmp_luasnip";
       flake = false;
     };
-    dressing-nvim = {
-      url = "github:stevearc/dressing.nvim";
-      flake = false;
-    };
     friendly-snippets = {
       url = "github:rafamadriz/friendly-snippets";
       flake = false;
@@ -108,6 +104,10 @@
     };
     telescope-fzf-native-nvim = {
       url = "github:nvim-telescope/telescope-fzf-native.nvim";
+      flake = false;
+    };
+    telescope-ui-select-nvim = {
+      url = "github:nvim-telescope/telescope-ui-select.nvim";
       flake = false;
     };
     telescope-nvim = {

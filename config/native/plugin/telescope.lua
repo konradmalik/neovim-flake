@@ -7,10 +7,16 @@ telescope.setup({
         prompt_prefix = icons.characters.EmptyTriangle .. " ",
         selection_caret = icons.characters.Caret .. " ",
     },
+    extensions = {
+        ["ui-select"] = {
+            require("telescope.themes").get_dropdown(),
+        },
+    },
 })
 -- To get extensions loaded and working with telescope, you need to call
 -- load_extension, somewhere after setup function:
 telescope.load_extension("fzf")
+telescope.load_extension("ui-select")
 
 local opts_with_desc = function(desc) return { desc = "[Telescope] " .. desc } end
 
