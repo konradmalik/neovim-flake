@@ -204,7 +204,10 @@
                 stylua
                 lua.pkgs.luacheck
               ])
-              ++ [ nvim-dev ];
+              ++ [
+                nvim-dev
+                self.packages.${pkgs.system}.nvim-typecheck
+              ];
           };
       });
       overlays.default = final: prev: {
@@ -212,36 +215,42 @@
         neovim = self.packages.${prev.system}.neovim;
       };
 
-      checks = forAllSystems (pkgs: {
-        luacheck =
-          let
-            fs = pkgs.lib.fileset;
-            sourceFiles = fs.unions [
-              ./config/native
-              ./.luacheckrc
-            ];
-            name = "luacheck";
-          in
-          pkgs.stdenvNoCC.mkDerivation {
-            inherit name;
-            dontBuild = true;
-            src = builtins.path {
+      checks = forAllSystems (
+        pkgs:
+        let
+          fs = pkgs.lib.fileset;
+          makeCheckJob =
+            name: cmd:
+            pkgs.stdenvNoCC.mkDerivation {
               inherit name;
-              path = fs.toSource {
-                root = ./.;
-                fileset = sourceFiles;
+              dontBuild = true;
+              dontConfigure = true;
+              src = builtins.path {
+                inherit name;
+                path = fs.toSource {
+                  root = ./.;
+                  fileset = fs.unions [
+                    ./config/native
+                    ./.luacheckrc
+                  ];
+                };
               };
+              doCheck = true;
+              checkPhase = cmd;
+              installPhase = ''
+                touch "$out"
+              '';
             };
-            doCheck = true;
-            nativeBuildInputs = with pkgs; [ lua.pkgs.luacheck ];
-            checkPhase = ''
-              luacheck --codes --no-cache ./config/native
-            '';
-            installPhase = ''
-              touch "$out"
-            '';
-          };
-      });
+        in
+        {
+          luacheck = makeCheckJob "luacheck" ''
+            ${pkgs.lua.pkgs.luacheck}/bin/luacheck --codes --no-cache ./config/native
+          '';
+          typecheck = makeCheckJob "typecheck" ''
+            ${self.packages.${pkgs.system}.nvim-typecheck}/bin/nvim-typecheck ./config/native
+          '';
+        }
+      );
 
       formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
       packages = forAllSystems (
