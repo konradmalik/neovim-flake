@@ -176,38 +176,22 @@
       devShells = forAllSystems (pkgs: {
         default =
           let
-            nvim-dev-pkg = (
-              self.packages.${pkgs.system}.neovim.override {
-                appName = "native";
-                self-contained = false;
-                include-native-config = false;
-                tmp-cache = true;
-              }
-            );
             nvim-dev = pkgs.writeShellScriptBin "nvim-dev" ''
-              if [[ ! $NVIM_PDE_DEV_NATIVE_CONFIG_PATH ]]; then
-                echo "must set NVIM_PDE_DEV_NATIVE_CONFIG_PATH"
-                exit 1
-              fi
-
-              XDG_CONFIG_DIRS="${nvim-dev-pkg.passthru.config}:$NVIM_PDE_DEV_NATIVE_CONFIG_PATH" \
-                ${pkgs.lib.getExe nvim-dev-pkg} -u $NVIM_PDE_DEV_NATIVE_CONFIG_PATH/native/init.lua
+              NVIM_PDE_DEV_NATIVE_CONFIG_PATH="$PWD/config" nix run .#neovim-dev
             '';
           in
           pkgs.mkShell {
             name = "neovim-shell";
-            shellHook = ''
-              export NVIM_PDE_DEV_NATIVE_CONFIG_PATH="$PWD/config"
-            '';
             packages =
               (with pkgs; [
                 stylua
                 lua.pkgs.luacheck
               ])
               ++ [
-                nvim-dev
                 self.packages.${pkgs.system}.nvim-typecheck
+                nvim-dev
               ];
+
           };
       });
       overlays.default = final: prev: {
@@ -261,10 +245,29 @@
             neovim = nightlyNeovim;
             neovimPlugins = neovimPluginsFor pkgs;
           };
+          myNeovimDev =
+            let
+              pkg = myNeovim.override {
+                appName = "native";
+                self-contained = false;
+                include-native-config = false;
+                tmp-cache = true;
+              };
+            in
+            pkgs.writeShellScriptBin "nvim-dev" ''
+              if [[ ! $NVIM_PDE_DEV_NATIVE_CONFIG_PATH ]]; then
+                echo "must set NVIM_PDE_DEV_NATIVE_CONFIG_PATH"
+                exit 1
+              fi
+
+              XDG_CONFIG_DIRS="${pkg.passthru.config}:$NVIM_PDE_DEV_NATIVE_CONFIG_PATH" \
+                ${pkgs.lib.getExe pkg} -u $NVIM_PDE_DEV_NATIVE_CONFIG_PATH/native/init.lua
+            '';
         in
         {
-          neovim = myNeovim;
           default = myNeovim;
+          neovim = myNeovim;
+          neovim-dev = myNeovimDev;
           config = myNeovim.passthru.config;
           nvim-typecheck = pkgs.callPackage ./packages/nvim-typecheck { neovim = nightlyNeovim; };
         }
