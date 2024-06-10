@@ -27,7 +27,7 @@ pkgs.writeTextDir "lua/pde/binaries.lua" # lua
         gopls = function() return "${lib.getExe pkgs.gopls}" end,
         jsonls = function() return "${lib.getExe pkgs.nodePackages.vscode-json-languageserver}" end,
         ltex_ls = function() return "${lib.getExe' pkgs.ltex-ls "ltex-ls"}" end,
-        lua_ls = function() return "${lib.getExe pkgs.sumneko-lua-language-server}" end,
+        lua_ls = function() return "${lib.getExe pkgs.lua-language-server}" end,
         nixd = function() return "${lib.getExe pkgs.nixd}" end,
         pyright = function() return "${lib.getExe' pkgs.nodePackages.pyright "pyright-langserver"}" end,
         roslyn_ls = function() return "${lib.getExe pkgs.roslyn-ls}" end,

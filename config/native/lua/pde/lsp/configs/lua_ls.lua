@@ -1,4 +1,4 @@
--- https://github.com/sumneko/lua-language-server
+-- https://github.com/LuaLS/lua-language-server
 local binaries = require("pde.binaries")
 local paths = require("pde.paths")
 local nvim_library = {}
