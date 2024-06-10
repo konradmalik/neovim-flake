@@ -244,14 +244,22 @@
       });
 
       formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
-      packages = forAllSystems (pkgs: rec {
-        neovim = pkgs.callPackage ./packages/neovim-pde {
-          neovim = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
-          neovimPlugins = neovimPluginsFor pkgs;
-        };
-        default = neovim;
-        config = neovim.passthru.config;
-      });
+      packages = forAllSystems (
+        pkgs:
+        let
+          nightlyNeovim = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+          myNeovim = pkgs.callPackage ./packages/neovim-pde {
+            neovim = nightlyNeovim;
+            neovimPlugins = neovimPluginsFor pkgs;
+          };
+        in
+        {
+          neovim = myNeovim;
+          default = myNeovim;
+          config = myNeovim.passthru.config;
+          nvim-typecheck = pkgs.callPackage ./packages/nvim-typecheck { neovim = nightlyNeovim; };
+        }
+      );
       apps = forAllSystems (pkgs: {
         default = {
           type = "app";
