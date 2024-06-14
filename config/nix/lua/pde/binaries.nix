@@ -29,11 +29,11 @@ pkgs.writeTextDir "lua/pde/binaries.lua" # lua
         ltex_ls = function() return "${lib.getExe' pkgs.ltex-ls "ltex-ls"}" end,
         lua_ls = function() return "${lib.getExe pkgs.lua-language-server}" end,
         nixd = function() return "${lib.getExe pkgs.nixd}" end,
-        pyright = function() return "${lib.getExe' pkgs.nodePackages.pyright "pyright-langserver"}" end,
+        pyright = function() return "${lib.getExe pkgs.pyright}" end,
         roslyn_ls = function() return "${lib.getExe pkgs.roslyn-ls}" end,
         rust_analyzer = function() return "${lib.getExe pkgs.rust-analyzer}" end,
         terraformls = function() return "${lib.getExe pkgs.terraform-ls}" end,
-        yamlls = function() return "${lib.getExe pkgs.nodePackages.yaml-language-server}" end,
+        yamlls = function() return "${lib.getExe pkgs.yaml-language-server}" end,
         zls = function() return "${lib.getExe pkgs.zls}" end,
 
         -- debuggers
