@@ -133,7 +133,7 @@
   };
 
   outputs =
-    { self, nixpkgs, ... }@inputs:
+    { self, ... }@inputs:
     let
       nixpkgsFor =
         system:
@@ -158,7 +158,7 @@
 
       forAllSystems =
         funcOfPkgs:
-        nixpkgs.lib.genAttrs [
+        inputs.nixpkgs.lib.genAttrs [
           "x86_64-linux"
           "aarch64-linux"
           "x86_64-darwin"
@@ -240,7 +240,7 @@
       packages = forAllSystems (
         pkgs:
         let
-          nightlyNeovim = inputs.neovim-nightly-overlay.packages.${pkgs.system}.neovim;
+          nightlyNeovim = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
           myNeovim = pkgs.callPackage ./packages/neovim-pde {
             neovim = nightlyNeovim;
             neovimPlugins = neovimPluginsFor pkgs;
