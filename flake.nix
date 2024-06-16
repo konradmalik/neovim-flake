@@ -5,6 +5,11 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
     # plugins
     SchemaStore-nvim = {
       url = "github:b0o/SchemaStore.nvim";
@@ -132,155 +137,6 @@
     };
   };
 
-  outputs =
-    { self, ... }@inputs:
-    let
-      nixpkgsFor =
-        system:
-        (import inputs.nixpkgs {
-          localSystem = {
-            inherit system;
-          };
-          overlays = [
-            # until https://github.com/NixOS/nixpkgs/issues/317055
-            (final: prev: {
-              zig_0_12 = prev.zig_0_12.overrideAttrs (_oldAttrs: {
-                preConfigure = ''
-                  CC=$(type -p $CC)
-                  CXX=$(type -p $CXX)
-                  LD=$(type -p $LD)
-                  AR=$(type -p $AR)
-                '';
-              });
-            })
-          ];
-        });
-
-      forAllSystems =
-        funcOfPkgs:
-        inputs.nixpkgs.lib.genAttrs [
-          "x86_64-linux"
-          "aarch64-linux"
-          "x86_64-darwin"
-          "aarch64-darwin"
-        ] (system: funcOfPkgs (nixpkgsFor system));
-
-      neovimPluginsFor =
-        pkgs:
-        pkgs.callPackage ./packages/vendoredPlugins.nix {
-          inherit inputs;
-          all-treesitter-grammars = pkgs.vimPlugins.nvim-treesitter.allGrammars;
-        };
-    in
-    {
-      devShells = forAllSystems (pkgs: {
-        default =
-          let
-            nvim-dev = pkgs.writeShellScriptBin "nvim-dev" ''
-              NVIM_PDE_DEV_NATIVE_CONFIG_PATH="$PWD/config" nix run .#neovim-dev
-            '';
-          in
-          pkgs.mkShell {
-            name = "neovim-shell";
-            packages =
-              (with pkgs; [
-                stylua
-                lua.pkgs.luacheck
-              ])
-              ++ [
-                self.packages.${pkgs.system}.nvim-typecheck
-                nvim-dev
-              ];
-
-          };
-      });
-      overlays.default = final: prev: {
-        neovimPlugins = neovimPluginsFor final;
-        neovim = self.packages.${prev.system}.neovim;
-      };
-
-      checks = forAllSystems (
-        pkgs:
-        let
-          fs = pkgs.lib.fileset;
-          makeCheckJob =
-            name: cmd:
-            pkgs.stdenvNoCC.mkDerivation {
-              inherit name;
-              dontBuild = true;
-              dontConfigure = true;
-              src = builtins.path {
-                inherit name;
-                path = fs.toSource {
-                  root = ./.;
-                  fileset = fs.unions [
-                    ./config/native
-                    ./.luacheckrc
-                  ];
-                };
-              };
-              doCheck = true;
-              checkPhase = cmd;
-              installPhase = ''
-                touch "$out"
-              '';
-            };
-        in
-        {
-          luacheck = makeCheckJob "luacheck" ''
-            ${pkgs.lua.pkgs.luacheck}/bin/luacheck --codes --no-cache ./config/native
-          '';
-          typecheck = makeCheckJob "typecheck" ''
-            ${self.packages.${pkgs.system}.nvim-typecheck}/bin/nvim-typecheck ./config/native
-          '';
-        }
-      );
-
-      formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
-      packages = forAllSystems (
-        pkgs:
-        let
-          nightlyNeovim = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
-          myNeovim = pkgs.callPackage ./packages/neovim-pde {
-            neovim = nightlyNeovim;
-            neovimPlugins = neovimPluginsFor pkgs;
-          };
-          myNeovimDev =
-            let
-              pkg = myNeovim.override {
-                appName = "native";
-                self-contained = false;
-                include-native-config = false;
-                tmp-cache = true;
-              };
-            in
-            pkgs.writeShellScriptBin "nvim-dev" ''
-              if [[ ! $NVIM_PDE_DEV_NATIVE_CONFIG_PATH ]]; then
-                echo "must set NVIM_PDE_DEV_NATIVE_CONFIG_PATH"
-                exit 1
-              fi
-
-              XDG_CONFIG_DIRS="${pkg.passthru.config}:$NVIM_PDE_DEV_NATIVE_CONFIG_PATH" \
-                ${pkgs.lib.getExe pkg} -u $NVIM_PDE_DEV_NATIVE_CONFIG_PATH/native/init.lua
-            '';
-        in
-        {
-          default = myNeovim;
-          neovim = myNeovim;
-          neovim-dev = myNeovimDev;
-          config = myNeovim.passthru.config;
-          nvim-typecheck = pkgs.callPackage ./packages/nvim-typecheck { neovim = nightlyNeovim; };
-        }
-      );
-      apps = forAllSystems (pkgs: {
-        default = {
-          type = "app";
-          program = pkgs.lib.getExe self.packages.${pkgs.system}.neovim;
-        };
-      });
-      homeManagerModules.default = import ./modules/hm.nix self;
-    };
-
   nixConfig = {
     extra-substituters = [
       "https://konradmalik.cachix.org"
@@ -291,4 +147,16 @@
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs"
     ];
   };
+
+  outputs =
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+      imports = [ ./flake ];
+    };
 }

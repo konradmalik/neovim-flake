@@ -14,7 +14,7 @@
   systemLua ? "return {}",
 }:
 let
-  config = callPackage ../../config { inherit appName include-native-config systemLua; };
+  config = callPackage ../../../config { inherit appName include-native-config systemLua; };
   plugins = callPackage ./plugins.nix { inherit neovimPlugins; };
   deps = callPackage ./deps.nix { };
   extraWrapperArgs =
