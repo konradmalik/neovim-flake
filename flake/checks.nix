@@ -1,6 +1,6 @@
 {
   perSystem =
-    { pkgs, config, ... }:
+    { pkgs, self', ... }:
     {
       checks =
         let
@@ -33,7 +33,7 @@
             ${pkgs.lua.pkgs.luacheck}/bin/luacheck --codes --no-cache ./config/native
           '';
           typecheck = makeCheckJob "typecheck" ''
-            ${config.packages.nvim-typecheck}/bin/nvim-typecheck ./config/native
+            ${self'.packages.nvim-typecheck}/bin/nvim-typecheck ./config/native
           '';
         };
     };

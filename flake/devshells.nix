@@ -1,10 +1,10 @@
 {
   perSystem =
-    { pkgs, config, ... }:
+    { pkgs, self', ... }:
     {
       devShells.default =
         let
-          neovim-pde-dev = config.packages.neovim-pde-dev;
+          neovim-pde-dev = self'.packages.neovim-pde-dev;
         in
         pkgs.mkShell {
           name = "neovim-shell";
@@ -15,7 +15,7 @@
               lua.pkgs.luacheck
             ])
             ++ [
-              config.packages.nvim-typecheck
+              self'.packages.nvim-typecheck
               neovim-pde-dev
             ];
         };

@@ -1,10 +1,10 @@
 {
   perSystem =
-    { pkgs, config, ... }:
+    { pkgs, self', ... }:
     {
       apps.default = {
         type = "app";
-        program = pkgs.lib.getExe config.packages.neovim-pde;
+        program = pkgs.lib.getExe self'.packages.neovim-pde;
       };
     };
 }
