@@ -1,5 +1,5 @@
-require("pde.lazy").make_lazy_load("treesitter-context", { "BufNew", "BufRead" }, function()
-    vim.cmd.packadd("nvim-treesitter-context")
-
-    require("treesitter-context").setup()
-end)
+require("lz.n").load({
+    "nvim-treesitter-context",
+    event = { "BufNew", "BufRead" },
+    after = function() require("treesitter-context").setup() end,
+})
