@@ -113,12 +113,17 @@ processMadePlugins (
       dependencies = [ plenary-nvim ];
     })
     # misc
+    lz-n-vimPlugin
     (makePlugin {
       plugin = boole-nvim;
       optional = true;
     })
     (makePlugin {
       plugin = git-conflict-nvim;
+      optional = true;
+    })
+    (makePlugin {
+      plugin = gitsigns-nvim;
       optional = true;
     })
     (makePlugin {

@@ -20,27 +20,31 @@ local function load_after_plugin(fpattern)
     return #after_paths
 end
 
-require("pde.lazy").make_lazy_load("cmp", "InsertEnter", function()
-    local main_plugins = { "luasnip", "nvim-cmp" }
-    for _, plug in ipairs(main_plugins) do
-        vim.cmd.packadd(plug)
-    end
+require("lz.n").load({
+    "cmp",
+    event = "InsertEnter",
+    after = function()
+        local main_plugins = { "luasnip", "nvim-cmp" }
+        for _, plug in ipairs(main_plugins) do
+            vim.cmd.packadd(plug)
+        end
 
-    local source_plugins = { "cmp_luasnip", "cmp-buffer", "cmp-path", "cmp-nvim-lsp" }
-    for _, plug in ipairs(source_plugins) do
-        vim.cmd.packadd(plug)
-    end
+        local source_plugins = { "cmp_luasnip", "cmp-buffer", "cmp-path", "cmp-nvim-lsp" }
+        for _, plug in ipairs(source_plugins) do
+            vim.cmd.packadd(plug)
+        end
 
-    local after_sourced = load_after_plugin("cmp*.lua")
-    if after_sourced ~= #source_plugins then
-        vim.notify(
-            "expected "
-                .. #source_plugins
-                .. " cmp source after/plugin sources, but got "
-                .. after_sourced,
-            vim.log.levels.WARN
-        )
-    end
+        local after_sourced = load_after_plugin("cmp*.lua")
+        if after_sourced ~= #source_plugins then
+            vim.notify(
+                "expected "
+                    .. #source_plugins
+                    .. " cmp source after/plugin sources, but got "
+                    .. after_sourced,
+                vim.log.levels.WARN
+            )
+        end
 
-    require("pde.cmp").setup()
-end)
+        require("pde.cmp").setup()
+    end,
+})

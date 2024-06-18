@@ -55,6 +55,10 @@
       url = "github:L3MON4D3/LuaSnip";
       flake = false;
     };
+    lz-n = {
+      url = "github:nvim-neorocks/lz.n";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     neo-tree-nvim = {
       url = "github:nvim-neo-tree/neo-tree.nvim";
       flake = false;

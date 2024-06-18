@@ -1,8 +1,4 @@
-require("pde.lazy").make_enable_command(
-    "UndotreeToggle",
-    { "undotree" },
-    function() vim.cmd("UndotreeToggle") end,
-    {
-        desc = "Initialize Undotree and open it",
-    }
-)
+require("lz.n").load({
+    "undotree",
+    cmd = "UndotreeToggle",
+})

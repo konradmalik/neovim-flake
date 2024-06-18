@@ -3,9 +3,12 @@
   perSystem =
     { inputs', pkgs, ... }:
     let
-      neovimPlugins = pkgs.callPackage ./vendoredPlugins.nix {
+      vendoredPlugins = pkgs.callPackage ./vendoredPlugins.nix {
         inherit inputs;
         all-treesitter-grammars = pkgs.vimPlugins.nvim-treesitter.allGrammars;
+      };
+      neovimPlugins = vendoredPlugins // {
+        inherit (inputs'.lz-n.packages) lz-n-vimPlugin;
       };
     in
     {
