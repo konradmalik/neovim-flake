@@ -1,9 +1,6 @@
 local M = {}
 
 M.setup = function()
-    -- register custom and vscode snippets to luasnip
-    local snippet = require("pde.cmp.snippets")
-
     local menu_entries = {
         -- lsp gets lsp server name via client.name
         luasnip = "[Snippet]",
@@ -22,7 +19,7 @@ M.setup = function()
     local cmp = require("cmp")
     cmp.setup({
         snippet = {
-            expand = function(args) snippet.lsp_expand(args.body) end,
+            expand = function(args) require("luasnip").lsp_expand(args.body) end,
         },
         mapping = cmp.mapping.preset.insert({
             ["<C-d>"] = cmp.mapping.scroll_docs(-4),
@@ -33,10 +30,12 @@ M.setup = function()
             ["<C-n>"] = cmp.mapping.select_next_item(),
             ["<C-p>"] = cmp.mapping.select_prev_item(),
             ["<C-l>"] = cmp.mapping(function()
-                if snippet.expand_or_jumpable() then snippet.expand_or_jump() end
+                if require("luasnip").expand_or_jumpable() then
+                    require("luasnip").expand_or_jump()
+                end
             end, { "i", "s" }),
             ["<C-h>"] = cmp.mapping(function()
-                if snippet.jumpable(-1) then snippet.jump(-1) end
+                if require("luasnip").jumpable(-1) then require("luasnip").jump(-1) end
             end, { "i", "s" }),
         }),
         formatting = {

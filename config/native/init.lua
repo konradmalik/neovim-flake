@@ -11,3 +11,5 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 require("pde.globals")
+
+require("lz.n").load("plugins")
