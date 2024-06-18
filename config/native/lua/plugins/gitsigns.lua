@@ -1,4 +1,4 @@
-require("lz.n").load({
+return {
     "gitsigns.nvim",
     event = { "BufNew", "BufRead" },
     after = function()
@@ -41,4 +41,4 @@ require("lz.n").load({
             end,
         })
     end,
-})
+}

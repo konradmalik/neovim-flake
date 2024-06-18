@@ -1,5 +1,4 @@
-vim.opt.completeopt = { "menu", "menuone", "noselect" }
-vim.opt.shortmess:append("c")
+P("loading cmp")
 
 ---@param fpattern string filename pattern
 ---@return integer
@@ -20,15 +19,10 @@ local function load_after_plugin(fpattern)
     return #after_paths
 end
 
-require("lz.n").load({
-    "cmp",
+return {
+    "nvim-cmp",
     event = "InsertEnter",
     after = function()
-        local main_plugins = { "luasnip", "nvim-cmp" }
-        for _, plug in ipairs(main_plugins) do
-            vim.cmd.packadd(plug)
-        end
-
         local source_plugins = { "cmp_luasnip", "cmp-buffer", "cmp-path", "cmp-nvim-lsp" }
         for _, plug in ipairs(source_plugins) do
             vim.cmd.packadd(plug)
@@ -45,6 +39,9 @@ require("lz.n").load({
             )
         end
 
-        require("pde.cmp").setup()
+        vim.opt.completeopt = { "menu", "menuone", "noselect" }
+        vim.opt.shortmess:append("c")
+
+        require("plugins.cmp.config").setup()
     end,
-})
+}
