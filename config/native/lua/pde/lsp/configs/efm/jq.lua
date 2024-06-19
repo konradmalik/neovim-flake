@@ -3,8 +3,12 @@ local binaries = require("pde.binaries")
 return {
     filetypes = { "json" },
     entry = {
-        lintCommand = { binaries.jq(), "." },
-        lintFormats = { "parse %trror: %m at line %l, column %c" },
+        lintCommand = { binaries.jq() },
         lintSource = "jq",
+        lintStdin = true,
+        lintOffset = 1,
+        lintFormats = {
+            "%m at line %l, column %c",
+        },
     },
 }

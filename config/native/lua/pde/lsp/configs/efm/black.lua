@@ -7,8 +7,6 @@ return {
             binaries.black(),
             "--no-color",
             "--quiet",
-            "--stdin-filename",
-            "'${INPUT}'",
             "-",
         },
         formatStdin = true,

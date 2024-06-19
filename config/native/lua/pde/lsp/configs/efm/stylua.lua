@@ -4,7 +4,6 @@ local binaries = require("pde.binaries")
 return {
     filetypes = { "lua" },
     entry = {
-        formatCanRange = true,
         formatCommand = {
             binaries.stylua(),
             "--color",
@@ -13,6 +12,7 @@ return {
             "${--range-end:charEnd}",
             "-",
         },
+        formatCanRange = true,
         formatStdin = true,
         rootMarkers = { "stylua.toml", ".stylua.toml" },
     },

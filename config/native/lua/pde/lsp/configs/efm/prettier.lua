@@ -27,7 +27,7 @@ return {
             "'${INPUT}'",
             "${--range-start:charStart}",
             "${--range-end:charEnd}",
-            "${--tab-width:tabSize}",
+            "${--tab-width:tabWidth}",
             "${--use-tabs:!insertSpaces}",
         },
         formatStdin = true,

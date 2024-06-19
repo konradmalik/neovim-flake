@@ -3,7 +3,7 @@ local binaries = require("pde.binaries")
 return {
     filetypes = { "python" },
     entry = {
-        formatCommand = { binaries.isort(), "--stdout", "--filename", "'${INPUT}'", "-" },
+        formatCommand = { binaries.isort(), "--quiet", "-" },
         formatStdin = true,
     },
 }
