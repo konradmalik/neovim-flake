@@ -1,4 +1,4 @@
-return {
+require("lz.n").load({
     "git-conflict.nvim",
     event = { "BufNew", "BufReadPre" },
     after = function()
@@ -92,4 +92,4 @@ return {
             end,
         })
     end,
-}
+})

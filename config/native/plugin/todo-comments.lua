@@ -1,4 +1,4 @@
-return {
+require("lz.n").load({
     "todo-comments-nvim",
     event = { "BufNew", "BufRead" },
     after = function()
@@ -26,4 +26,4 @@ return {
             opts_with_desc("Find all todo [n]otes")
         )
     end,
-}
+})

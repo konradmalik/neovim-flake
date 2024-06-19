@@ -1,4 +1,4 @@
-return {
+require("lz.n").load({
     "luasnip",
     event = "InsertEnter",
     after = function()
@@ -37,4 +37,4 @@ return {
 
         require("luasnip.loaders.from_vscode").lazy_load()
     end,
-}
+})

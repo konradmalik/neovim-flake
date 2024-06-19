@@ -1,6 +1,9 @@
 local M = {}
 
 M.setup = function()
+    vim.opt.shortmess:append("c")
+    vim.opt.completeopt = { "menu", "menuone", "noselect" }
+
     local menu_entries = {
         -- lsp gets lsp server name via client.name
         luasnip = "[Snippet]",

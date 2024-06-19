@@ -1,5 +1,3 @@
-P("loading cmp")
-
 ---@param fpattern string filename pattern
 ---@return integer
 --HACK:this is needed only for cmp sources because they (incorrectly) use "after/plugin"
@@ -19,7 +17,7 @@ local function load_after_plugin(fpattern)
     return #after_paths
 end
 
-return {
+require("lz.n").load({
     "nvim-cmp",
     event = "InsertEnter",
     after = function()
@@ -39,9 +37,6 @@ return {
             )
         end
 
-        vim.opt.completeopt = { "menu", "menuone", "noselect" }
-        vim.opt.shortmess:append("c")
-
-        require("plugins.cmp.config").setup()
+        require("pde.completion").setup()
     end,
-}
+})

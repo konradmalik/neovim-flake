@@ -1,4 +1,4 @@
-return {
+require("lz.n").load({
     "boole.nvim",
     event = { "BufNew", "BufRead" },
     after = function()
@@ -14,4 +14,4 @@ return {
             },
         })
     end,
-}
+})
