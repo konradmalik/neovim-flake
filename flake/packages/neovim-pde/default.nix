@@ -15,8 +15,9 @@
 }:
 let
   config = callPackage ../../../config { inherit appName includeNativeConfig systemLua; };
-  pluginManager = callPackage ./pluginManager.nix { inherit neovimPlugins; };
-  inherit (pluginManager) plugins systemDeps;
+  pluginsList = callPackage ./pluginsList.nix { inherit neovimPlugins; };
+  pluginsPack = callPackage ./pluginManager.nix { inherit pluginsList; };
+  inherit (pluginsPack) plugins systemDeps;
   extraWrapperArgs =
     [
       "--set"
