@@ -55,7 +55,7 @@
               description = "NVIM_APPNAME to use";
             };
 
-            self-contained = mkOption {
+            selfContained = mkOption {
               type = types.bool;
               default = false;
               description = ''
@@ -96,7 +96,7 @@
               inherit (cfg)
                 appName
                 systemLua
-                self-contained
+                selfContained
                 viAlias
                 vimAlias
                 ;
@@ -114,7 +114,7 @@
             };
 
             xdg.configFile.${cfg.appName} = {
-              enable = !cfg.self-contained;
+              enable = !cfg.selfContained;
               source = "${nvim.passthru.config}/${cfg.appName}";
               recursive = true;
               onChange =

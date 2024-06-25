@@ -5,6 +5,7 @@ let
     let
       makeAttrset = p: if builtins.hasAttr "plugin" p then p else { plugin = p; };
       hasDeps = s: builtins.hasAttr "dependencies" s;
+
       pluginAttrset = makeAttrset plugin;
       dependencies = if hasDeps pluginAttrset then pluginAttrset.dependencies else [ ];
       dependenciesAttrsets = builtins.map makePlugin dependencies;

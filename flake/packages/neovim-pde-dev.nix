@@ -6,9 +6,9 @@
 let
   pkg = neovim-pde.override {
     appName = "native";
-    self-contained = false;
-    include-native-config = false;
-    tmp-cache = true;
+    selfContained = false;
+    includeNativeConfig = false;
+    tmpCache = true;
   };
 in
 (writeShellScriptBin "nvim-dev" ''

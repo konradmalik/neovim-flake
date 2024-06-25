@@ -2,7 +2,7 @@
   pkgs,
   lib,
   appName,
-  include-native-config,
+  includeNativeConfig,
   systemLua,
 }:
 let
@@ -25,7 +25,7 @@ pkgs.symlinkJoin {
     binaries-lua
     skeletons-lua
     system-lua
-  ] ++ lib.optionals include-native-config [ nativeConfig ];
+  ] ++ lib.optionals includeNativeConfig [ nativeConfig ];
 
   # config structure: $out/${appName}/init.lua
   # (the same as XDG_CONFIG_HOME)

@@ -8,13 +8,13 @@
   appName ? "neovim-pde",
   viAlias ? false,
   vimAlias ? false,
-  self-contained ? true,
-  include-native-config ? true,
-  tmp-cache ? self-contained,
+  selfContained ? true,
+  includeNativeConfig ? true,
+  tmpCache ? selfContained,
   systemLua ? "return {}",
 }:
 let
-  config = callPackage ../../../config { inherit appName include-native-config systemLua; };
+  config = callPackage ../../../config { inherit appName includeNativeConfig systemLua; };
   plugins = callPackage ./plugins.nix { inherit neovimPlugins; };
   deps = callPackage ./deps.nix { };
   extraWrapperArgs =
@@ -29,7 +29,7 @@ let
       ":"
       "${lib.makeBinPath deps}"
     ]
-    ++ lib.optionals self-contained [
+    ++ lib.optionals selfContained [
       "--add-flags"
       "-u"
       "--add-flags"
@@ -39,7 +39,7 @@ let
       ":"
       "${config}"
     ]
-    ++ lib.optionals tmp-cache [
+    ++ lib.optionals tmpCache [
       "--set"
       "XDG_CACHE_HOME"
       "/tmp/${appName}-cache"
