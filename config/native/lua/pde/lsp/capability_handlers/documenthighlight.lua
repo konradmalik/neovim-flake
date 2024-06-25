@@ -1,11 +1,15 @@
 local highlight_is_enabled = true
 
 local buf_clear_references = function(buf)
-    vim.api.nvim_buf_call(buf, function() vim.lsp.buf.clear_references() end)
+    if vim.api.nvim_buf_is_loaded(buf) then
+        vim.api.nvim_buf_call(buf, function() vim.lsp.buf.clear_references() end)
+    end
 end
 
 local buf_document_highlight = function(buf)
-    vim.api.nvim_buf_call(buf, function() vim.lsp.buf.document_highlight() end)
+    if vim.api.nvim_buf_is_loaded(buf) then
+        vim.api.nvim_buf_call(buf, function() vim.lsp.buf.document_highlight() end)
+    end
 end
 
 ---@type CapabilityHandler
