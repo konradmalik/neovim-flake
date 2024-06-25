@@ -1,26 +1,41 @@
-{ neovimPlugins, lib, ... }:
+{
+  neovimPlugins,
+  lib,
+  git,
+  fd,
+  fzf,
+  ripgrep,
+  ...
+}:
 let
   makePlugin =
-    plugin:
+    p:
     let
-      makeAttrset = p: if builtins.hasAttr "plugin" p then p else { plugin = p; };
-      hasDeps = s: builtins.hasAttr "dependencies" s;
-
-      pluginAttrset = makeAttrset plugin;
-      dependencies = if hasDeps pluginAttrset then pluginAttrset.dependencies else [ ];
-      dependenciesAttrsets = builtins.map makePlugin dependencies;
+      pluginAttrset = if p ? plugin then p else { plugin = p; };
+      deps = if pluginAttrset ? deps then pluginAttrset.deps else [ ];
+      depsAttrsets = builtins.map makePlugin deps;
     in
-    dependenciesAttrsets ++ [ (lib.filterAttrs (n: v: n != "dependencies") pluginAttrset) ];
+    depsAttrsets ++ [ (lib.filterAttrs (n: v: n != "deps") pluginAttrset) ];
 
-  processMadePlugins = madePlugins: lib.unique (lib.flatten madePlugins);
+  process =
+    madePlugins:
+    let
+      flat = lib.unique (lib.flatten madePlugins);
+      plugins = builtins.map (lib.filterAttrs (n: v: n != "systemDeps")) flat;
+      systemDeps = builtins.map(a: if a ? systemDeps then a.systemDeps else []) flat;
+    in
+    {
+      inherit plugins;
+      systemDeps = lib.unique (lib.flatten systemDeps);
+    };
 in
-processMadePlugins (
+process (
   with neovimPlugins;
   [
     # treesitter
     (makePlugin {
       plugin = nvim-treesitter;
-      dependencies = [
+      deps = [
         {
           plugin = nvim-treesitter-context;
           optional = true;
@@ -32,7 +47,7 @@ processMadePlugins (
     (makePlugin {
       plugin = nvim-cmp;
       optional = true;
-      dependencies = [
+      deps = [
         {
           plugin = cmp-buffer;
           optional = true;
@@ -65,7 +80,7 @@ processMadePlugins (
     (makePlugin {
       plugin = nvim-dap;
       optional = true;
-      dependencies = [
+      deps = [
         {
           plugin = nvim-dap-ui;
           optional = true;
@@ -73,7 +88,7 @@ processMadePlugins (
         {
           plugin = nvim-dap-ui;
           optional = true;
-          dependencies = [
+          deps = [
             {
               plugin = nvim-nio;
               optional = true;
@@ -89,10 +104,16 @@ processMadePlugins (
     # telescope
     (makePlugin {
       plugin = telescope-nvim;
-      dependencies = [
+      deps = [
         plenary-nvim
         telescope-fzf-native-nvim
         telescope-ui-select-nvim
+      ];
+      systemDeps = [
+        git
+        fd
+        fzf
+        ripgrep
       ];
     })
     # statusline
@@ -102,16 +123,17 @@ processMadePlugins (
     (makePlugin kanagawa-nvim)
     (makePlugin {
       plugin = neo-tree-nvim;
-      dependencies = [
+      deps = [
         nvim-web-devicons
         plenary-nvim
         nui-nvim
       ];
+      systemDeps = [ git ];
     })
     (makePlugin {
       plugin = todo-comments-nvim;
       optional = true;
-      dependencies = [ plenary-nvim ];
+      deps = [ plenary-nvim ];
     })
     # misc
     lz-n-vimPlugin
@@ -122,21 +144,22 @@ processMadePlugins (
     (makePlugin {
       plugin = git-conflict-nvim;
       optional = true;
+      systemDeps = [ git ];
     })
     (makePlugin {
       plugin = gitsigns-nvim;
       optional = true;
-    })
-    (makePlugin {
-      plugin = gitsigns-nvim;
-      optional = true;
+      systemDeps = [ git ];
     })
     (makePlugin nvim-luaref)
     (makePlugin {
       plugin = undotree;
       optional = true;
     })
-    (makePlugin vim-fugitive)
+    (makePlugin {
+      plugin = vim-fugitive;
+      systemDeps = [ git ];
+    })
     (makePlugin which-key-nvim)
   ]
 )

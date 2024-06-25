@@ -15,19 +15,19 @@
 }:
 let
   config = callPackage ../../../config { inherit appName includeNativeConfig systemLua; };
-  plugins = callPackage ./plugins.nix { inherit neovimPlugins; };
-  deps = callPackage ./deps.nix { };
+  pluginManager = callPackage ./pluginManager.nix { inherit neovimPlugins; };
+  inherit (pluginManager) plugins systemDeps;
   extraWrapperArgs =
     [
       "--set"
       "NVIM_APPNAME"
       appName
     ]
-    ++ lib.optionals (deps != [ ]) [
+    ++ lib.optionals (systemDeps != [ ]) [
       "--suffix"
       "PATH"
       ":"
-      "${lib.makeBinPath deps}"
+      "${lib.makeBinPath systemDeps}"
     ]
     ++ lib.optionals selfContained [
       "--add-flags"
