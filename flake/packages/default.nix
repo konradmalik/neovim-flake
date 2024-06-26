@@ -9,18 +9,17 @@
       };
       nightlyNeovim = inputs'.neovim-nightly-overlay.packages.default;
       nvimConfig = pkgs.callPackage ../../config { };
+      pluginsList = pkgs.callPackage ./pluginsList.nix { inherit neovimPlugins; };
       neovim-pde = pkgs.callPackage ./neovim-pde {
-        inherit neovimPlugins;
+        inherit pluginsList nvimConfig;
         neovim = nightlyNeovim;
-        config = nvimConfig;
       };
     in
     {
       packages = {
-        inherit neovim-pde;
+        inherit neovim-pde nvimConfig;
         neovim-pde-dev = pkgs.callPackage ./neovim-pde-dev.nix { inherit neovim-pde nvimConfig; };
         default = neovim-pde;
-        config = nvimConfig;
         nvim-typecheck = pkgs.callPackage ./nvim-typecheck.nix { neovim = nightlyNeovim; };
       } // neovimPlugins;
     };

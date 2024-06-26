@@ -95,13 +95,12 @@
             nvim = (getSystem pkgs.system).packages.neovim-pde.override {
               inherit (cfg)
                 appName
-                systemLua
                 selfContained
                 viAlias
                 vimAlias
                 ;
             };
-            nvimConfig = (getSystem pkgs.system).packages.config.override { inherit (cfg) systemLua; };
+            nvimConfig = (getSystem pkgs.system).packages.nvimConfig.override { inherit (cfg) systemLua; };
           in
           mkIf cfg.enable {
             home.packages = [ nvim ];

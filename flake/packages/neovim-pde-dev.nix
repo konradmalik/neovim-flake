@@ -10,7 +10,7 @@ let
     appName = "native";
     selfContained = false;
     tmpCache = true;
-    config = devConfig;
+    nvimConfig = devConfig;
   };
 in
 (writeShellScriptBin "nvim-dev" ''

@@ -1,12 +1,12 @@
 {
   neovim,
   neovimUtils,
-  neovimPlugins,
   wrapNeovimUnstable,
   callPackage,
   stdenvNoCC,
   lib,
-  config,
+  nvimConfig,
+  pluginsList,
   appName ? "neovim-pde",
   viAlias ? false,
   vimAlias ? false,
@@ -18,14 +18,13 @@ let
     name = "${appName}-config";
     dontBuild = true;
     dontConfigure = true;
-    src = config;
+    src = nvimConfig;
     installPhase = ''
       mkdir $out
       cp -r $src $out/${appName}
     '';
   };
 
-  pluginsList = callPackage ./pluginsList.nix { inherit neovimPlugins; };
   pluginsPack = callPackage ./pluginManager.nix { inherit pluginsList; };
   inherit (pluginsPack) plugins systemDeps;
   extraWrapperArgs =
