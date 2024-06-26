@@ -1,13 +1,11 @@
--- NOTE: this is a vastly simplified https://github.com/jmederosalvarado/roslyn.nvim
+-- NOTE: whole module based on https://github.com/seblj/roslyn.nvim
 local hacks = require("roslyn.hacks")
-local rpc = require("roslyn.rpc")
 
 local M = {}
 
 ---@class RoslynConfig
----@field cmd string
+---@field pipe_name string
 ---@field solution string
----@field logLevel? "Critical"|"Debug"|"Error"|"Information"|"None"|"Trace"|"Warning"
 
 ---Creates a new Roslyn LSP server configuration
 ---Should be passed to eg. start_client
@@ -23,19 +21,15 @@ function M.config(config)
         return
     end
 
-    config.logLevel = config.logLevel or "Information"
-    local cmd_args = {
-        "--logLevel=" .. config.logLevel,
-        "--extensionLogDirectory=" .. vim.fs.dirname(vim.lsp.get_log_path()),
-    }
-
     return {
         name = "roslyn",
-        cmd = function(dispatchers)
-            return rpc.start_dynamic_socket(config.cmd, cmd_args, dispatchers)
-        end,
+        cmd = vim.lsp.rpc.connect(config.pipe_name),
         root_dir = vim.fs.dirname(solution),
         on_init = function(client)
+            local commands = require("roslyn.commands")
+            commands.fix_all_code_action(client)
+            commands.nested_code_action(client)
+
             vim.notify(
                 "Roslyn client initialized for target " .. vim.fn.fnamemodify(solution, ":~:."),
                 vim.log.levels.INFO

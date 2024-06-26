@@ -1,4 +1,6 @@
 local binaries = require("pde.binaries")
+local lsp = require("pde.lsp")
+local roslyn = require("roslyn.wrapper")
 local runner = require("pde.runner")
 
 ---@param command lsp.Command
@@ -81,58 +83,77 @@ local function find(pattern)
     })[1]
 end
 
-return {
-    config = function()
-        local solution = find(".sln$")
-        if not solution then
-            -- most probably decompilation from already running server, so reuse it
-            -- luacheck: ignore 512
-            for _, client in ipairs(vim.lsp.get_clients({ name = "roslyn" })) do
-                return client.config
-            end
-            error("cannot find solution file, nor reuse existing client", vim.log.levels.ERROR)
-        end
+local M = {}
 
-        local config = assert(require("roslyn").config({
-            cmd = binaries.roslyn_ls(),
-            solution = solution,
-        }))
-
-        local root_dir = config.root_dir
-        config.commands = {
-            ["roslyn.client.peekReferences"] = function() vim.lsp.buf.references() end,
-            ["dotnet.test.run"] = function(command, ctx)
-                if not validate_command(command) then return end
-
-                local range = command.arguments[1].range
-                local bufnr = ctx.bufnr
-
-                ensure_tree_is_parsed(bufnr)
-                local root_node = get_node_at_range(bufnr, range)
-                if not root_node then
-                    vim.notify(
-                        "cannot find root node " .. vim.inspect(range["start"]),
-                        vim.log.levels.ERROR
-                    )
-                    return
-                end
-
-                local root_name = vim.treesitter.get_node_text(root_node, bufnr)
-                local class_name_node = get_class_name_node(root_node)
-                if class_name_node and class_name_node:id() ~= root_node:id() then
-                    local class_name = vim.treesitter.get_node_text(class_name_node, bufnr)
-                    root_name = class_name .. "." .. root_name
-                end
-
-                local ns_name_node = get_namespace_name_node(class_name_node or root_node)
-                if ns_name_node then
-                    local ns_name = vim.treesitter.get_node_text(ns_name_node, bufnr)
-                    root_name = ns_name .. "." .. root_name
-                end
-
-                testRun(root_dir, root_name)
+function M.init(bufnr)
+    local cmd = {
+        binaries.roslyn_ls(),
+        "--logLevel=Information",
+        "--extensionLogDirectory=" .. vim.fs.dirname(vim.lsp.get_log_path()),
+    }
+    roslyn.wrap(cmd, function(pipeName)
+        lsp.init({
+            config = function()
+                local config = M.config(pipeName)
+                config.on_exit = function(_, _, _) roslyn.stop() end
+                return config
             end,
-        }
-        return config
-    end,
-}
+        }, bufnr)
+    end)
+end
+
+function M.config(pipe_name)
+    local solution = find(".sln$")
+    if not solution then
+        -- most probably decompilation from already running server, so reuse it
+        -- luacheck: ignore 512
+        for _, client in ipairs(vim.lsp.get_clients({ name = "roslyn" })) do
+            return client.config
+        end
+        error("cannot find solution file, nor reuse existing client", vim.log.levels.ERROR)
+    end
+
+    local config = assert(require("roslyn").config({
+        pipe_name = pipe_name,
+        solution = solution,
+    }))
+
+    local root_dir = config.root_dir
+    config.commands = {
+        ["roslyn.client.peekReferences"] = function() vim.lsp.buf.references() end,
+        ["dotnet.test.run"] = function(command, ctx)
+            if not validate_command(command) then return end
+
+            local range = command.arguments[1].range
+            local bufnr = ctx.bufnr
+
+            ensure_tree_is_parsed(bufnr)
+            local root_node = get_node_at_range(bufnr, range)
+            if not root_node then
+                vim.notify(
+                    "cannot find root node " .. vim.inspect(range["start"]),
+                    vim.log.levels.ERROR
+                )
+                return
+            end
+
+            local root_name = vim.treesitter.get_node_text(root_node, bufnr)
+            local class_name_node = get_class_name_node(root_node)
+            if class_name_node and class_name_node:id() ~= root_node:id() then
+                local class_name = vim.treesitter.get_node_text(class_name_node, bufnr)
+                root_name = class_name .. "." .. root_name
+            end
+
+            local ns_name_node = get_namespace_name_node(class_name_node or root_node)
+            if ns_name_node then
+                local ns_name = vim.treesitter.get_node_text(ns_name_node, bufnr)
+                root_name = ns_name .. "." .. root_name
+            end
+
+            testRun(root_dir, root_name)
+        end,
+    }
+    return config
+end
+
+return M
