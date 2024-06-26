@@ -50,9 +50,9 @@ end
 
 ---starts if needed and attaches to the current buffer
 ---respects LspAutostartToggle
----@param fconfig fun(): vim.lsp.ClientConfig
+---@param config vim.lsp.ClientConfig
 ---@param bufnr integer buffer to attach to
-local function start_and_attach(fconfig, bufnr)
+local function start_and_attach(config, bufnr)
     if not autostart_enabled then
         vim.notify_once("LSP autostart is disabled", vim.log.levels.INFO)
         return
@@ -62,7 +62,7 @@ local function start_and_attach(fconfig, bufnr)
 
     initialize_once()
 
-    local made_config = require("pde.lsp.configs").make_config(fconfig())
+    local made_config = require("pde.lsp.configs").make_config(config)
     local client_id = vim.lsp.start(made_config, {
         bufnr = bufnr,
         reuse_client = function(client, conf)
@@ -80,11 +80,11 @@ M.toggle_autostart = function() autostart_enabled = not autostart_enabled end
 
 function M.is_autostart_enabled() return autostart_enabled end
 
----@param lsp_config {["config"]: fun(): vim.lsp.ClientConfig}
+---@param lsp_config vim.lsp.ClientConfig
 ---@param bufnr integer|nil
 function M.init(lsp_config, bufnr)
     bufnr = bufnr or vim.api.nvim_get_current_buf()
-    start_and_attach(lsp_config.config, bufnr)
+    start_and_attach(lsp_config, bufnr)
 end
 
 return M

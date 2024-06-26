@@ -50,54 +50,50 @@ return {
     ---Build an LspConfig table from the specified EFM plugins
     ---@param name string unique name of this efm instance
     ---@param plugins string[] names of plugins to add, ex. 'prettier'
+    ---@return vim.lsp.ClientConfig
     setup = function(name, plugins)
-        return {
-            config = function()
-                ---@type table<string, EfmEntry[]>
-                local languages = {}
-                local allRootMarkers = { [".git/"] = true }
-                local formattingEnabled = false
-                local rangeFormattingEnabled = false
+        ---@type table<string, EfmEntry[]>
+        local languages = {}
+        local allRootMarkers = { [".git/"] = true }
+        local formattingEnabled = false
+        local rangeFormattingEnabled = false
 
-                for _, v in ipairs(plugins) do
-                    ---@type EfmPlugin
-                    local plugin = prepare_plugin(require("pde.lsp.configs.efm." .. v))
-                    local languages_entry = make_languages_entry_for_plugin(plugin)
-                    for key, value in pairs(languages_entry) do
-                        if not languages[key] then languages[key] = {} end
-                        table.insert(languages[key], value)
-                    end
+        for _, v in ipairs(plugins) do
+            ---@type EfmPlugin
+            local plugin = prepare_plugin(require("pde.lsp.configs.efm." .. v))
+            local languages_entry = make_languages_entry_for_plugin(plugin)
+            for key, value in pairs(languages_entry) do
+                if not languages[key] then languages[key] = {} end
+                table.insert(languages[key], value)
+            end
 
-                    if plugin.entry.rootMarkers then
-                        for _, marker in ipairs(plugin.entry.rootMarkers) do
-                            allRootMarkers[marker] = true
-                        end
-                    end
-
-                    if not formattingEnabled and plugin.entry.formatCommand then
-                        formattingEnabled = true
-                    end
-                    if not rangeFormattingEnabled and plugin.entry.formatCanRange then
-                        rangeFormattingEnabled = true
-                    end
+            if plugin.entry.rootMarkers then
+                for _, marker in ipairs(plugin.entry.rootMarkers) do
+                    allRootMarkers[marker] = true
                 end
+            end
 
-                local rootMarkers = vim.tbl_keys(allRootMarkers)
+            if not formattingEnabled and plugin.entry.formatCommand then
+                formattingEnabled = true
+            end
+            if not rangeFormattingEnabled and plugin.entry.formatCanRange then
+                rangeFormattingEnabled = true
+            end
+        end
 
-                ---@type vim.lsp.ClientConfig
-                return {
-                    name = name,
-                    cmd = { binaries.efm() },
-                    init_options = {
-                        documentFormatting = formattingEnabled,
-                        documentRangeFormatting = rangeFormattingEnabled,
-                    },
-                    settings = {
-                        rootMarkers = rootMarkers,
-                        languages = languages,
-                    },
-                }
-            end,
+        local rootMarkers = vim.tbl_keys(allRootMarkers)
+
+        return {
+            name = name,
+            cmd = { binaries.efm() },
+            init_options = {
+                documentFormatting = formattingEnabled,
+                documentRangeFormatting = rangeFormattingEnabled,
+            },
+            settings = {
+                rootMarkers = rootMarkers,
+                languages = languages,
+            },
         }
     end,
 }

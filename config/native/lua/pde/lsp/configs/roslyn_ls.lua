@@ -1,6 +1,5 @@
 local binaries = require("pde.binaries")
-local lsp = require("pde.lsp")
-local roslyn = require("roslyn.wrapper")
+local roslyn = require("roslyn.server")
 local runner = require("pde.runner")
 
 ---@param command lsp.Command
@@ -83,26 +82,7 @@ local function find(pattern)
     })[1]
 end
 
-local M = {}
-
-function M.init(bufnr)
-    local cmd = {
-        binaries.roslyn_ls(),
-        "--logLevel=Information",
-        "--extensionLogDirectory=" .. vim.fs.dirname(vim.lsp.get_log_path()),
-    }
-    roslyn.wrap(cmd, function(pipeName)
-        lsp.init({
-            config = function()
-                local config = M.config(pipeName)
-                config.on_exit = function(_, _, _) roslyn.stop() end
-                return config
-            end,
-        }, bufnr)
-    end)
-end
-
-function M.config(pipe_name)
+local function get_config(pipe_name)
     local solution = find(".sln$")
     if not solution then
         -- most probably decompilation from already running server, so reuse it
@@ -154,6 +134,23 @@ function M.config(pipe_name)
         end,
     }
     return config
+end
+
+local M = {}
+
+---initializes roslyn server, handles pipe, attaches lsp client
+---@param with_config fun(config: vim.lsp.ClientConfig)
+function M.wrap(with_config)
+    local cmd = {
+        binaries.roslyn_ls(),
+        "--logLevel=Information",
+        "--extensionLogDirectory=" .. vim.fs.dirname(vim.lsp.get_log_path()),
+    }
+    roslyn.start_server(cmd, function(pipeName)
+        local config = get_config(pipeName)
+        config.on_exit = function(_, _, _) roslyn.stop_server() end
+        with_config(config)
+    end)
 end
 
 return M
