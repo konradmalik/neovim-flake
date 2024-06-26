@@ -3,8 +3,8 @@
   callPackage,
   symlinkJoin,
   lib,
-  includeNativeConfig,
-  systemLua,
+  includeNativeConfig ? true,
+  systemLua ? "return {}",
 }:
 let
   nativeConfig = stdenvNoCC.mkDerivation {

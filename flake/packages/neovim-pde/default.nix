@@ -6,17 +6,14 @@
   callPackage,
   stdenvNoCC,
   lib,
+  config,
   appName ? "neovim-pde",
   viAlias ? false,
   vimAlias ? false,
   selfContained ? true,
-  includeNativeConfig ? true,
   tmpCache ? selfContained,
-  systemLua ? "return {}",
 }:
 let
-  config = callPackage ../../../config { inherit includeNativeConfig systemLua; };
-
   preparedConfig = stdenvNoCC.mkDerivation {
     name = "${appName}-config";
     dontBuild = true;
@@ -66,16 +63,11 @@ let
     withRuby = false;
   };
 
-  nvim = wrapNeovimUnstable neovim (
-    neovimConfig
-    // {
-      wrapperArgs = neovimConfig.wrapperArgs ++ extraWrapperArgs;
-      wrapRc = false;
-    }
-  );
 in
-lib.attrsets.recursiveUpdate nvim {
-  passthru = {
-    inherit config;
-  };
-}
+wrapNeovimUnstable neovim (
+  neovimConfig
+  // {
+    wrapperArgs = neovimConfig.wrapperArgs ++ extraWrapperArgs;
+    wrapRc = false;
+  }
+)

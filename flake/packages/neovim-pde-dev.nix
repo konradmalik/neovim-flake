@@ -1,14 +1,16 @@
 {
   lib,
-  neovim-pde,
   writeShellScriptBin,
+  neovim-pde,
+  nvimConfig,
 }:
 let
+  devConfig = nvimConfig.override { includeNativeConfig = false; };
   pkg = neovim-pde.override {
     appName = "native";
     selfContained = false;
-    includeNativeConfig = false;
     tmpCache = true;
+    config = devConfig;
   };
 in
 (writeShellScriptBin "nvim-dev" ''
@@ -17,7 +19,7 @@ in
     exit 1
   fi
 
-  XDG_CONFIG_DIRS="${pkg.passthru.config}:$NVIM_PDE_DEV_NATIVE_CONFIG_PATH" \
+  XDG_CONFIG_DIRS="${devConfig}:$NVIM_PDE_DEV_NATIVE_CONFIG_PATH" \
     ${lib.getExe pkg} -u $NVIM_PDE_DEV_NATIVE_CONFIG_PATH/native/init.lua
 '').overrideAttrs
   {

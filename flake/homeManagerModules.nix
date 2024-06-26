@@ -101,6 +101,7 @@
                 vimAlias
                 ;
             };
+            nvimConfig = (getSystem pkgs.system).packages.config.override { inherit (cfg) systemLua; };
           in
           mkIf cfg.enable {
             home.packages = [ nvim ];
@@ -115,7 +116,7 @@
 
             xdg.configFile.${cfg.appName} = {
               enable = !cfg.selfContained;
-              source = nvim.passthru.config;
+              source = nvimConfig;
               recursive = true;
               onChange =
                 ''
