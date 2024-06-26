@@ -115,7 +115,7 @@
 
             xdg.configFile.${cfg.appName} = {
               enable = !cfg.selfContained;
-              source = "${nvim.passthru.config}/${cfg.appName}";
+              source = nvim.passthru.config;
               recursive = true;
               onChange =
                 ''

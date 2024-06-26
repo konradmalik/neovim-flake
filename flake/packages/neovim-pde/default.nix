@@ -4,6 +4,7 @@
   neovimPlugins,
   wrapNeovimUnstable,
   callPackage,
+  stdenvNoCC,
   lib,
   appName ? "neovim-pde",
   viAlias ? false,
@@ -14,7 +15,19 @@
   systemLua ? "return {}",
 }:
 let
-  config = callPackage ../../../config { inherit appName includeNativeConfig systemLua; };
+  config = callPackage ../../../config { inherit includeNativeConfig systemLua; };
+
+  preparedConfig = stdenvNoCC.mkDerivation {
+    name = "${appName}-config";
+    dontBuild = true;
+    dontConfigure = true;
+    src = config;
+    installPhase = ''
+      mkdir $out
+      cp -r $src $out/${appName}
+    '';
+  };
+
   pluginsList = callPackage ./pluginsList.nix { inherit neovimPlugins; };
   pluginsPack = callPackage ./pluginManager.nix { inherit pluginsList; };
   inherit (pluginsPack) plugins systemDeps;
@@ -34,11 +47,11 @@ let
       "--add-flags"
       "-u"
       "--add-flags"
-      "'${config}/${appName}/init.lua'"
+      "'${preparedConfig}/${appName}/init.lua'"
       "--prefix"
       "XDG_CONFIG_DIRS"
       ":"
-      "${config}"
+      "${preparedConfig}"
     ]
     ++ lib.optionals tmpCache [
       "--set"
