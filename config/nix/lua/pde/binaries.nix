@@ -22,7 +22,7 @@ pkgs.writeTextDir "lua/pde/binaries.lua" # lua
         shellcheck = function() return "${lib.getExe pkgs.shellcheck}" end,
 
         -- lsps
-        clangd = function() return "${lib.getExe pkgs.clang-tools}" end,
+        clangd = function() return "${lib.getExe' pkgs.clang-tools "clangd"}" end,
         efm = function() return '${lib.getExe pkgs.efm-langserver}' end,
         gopls = function() return "${lib.getExe pkgs.gopls}" end,
         jsonls = function() return "${lib.getExe pkgs.nodePackages.vscode-json-languageserver}" end,
