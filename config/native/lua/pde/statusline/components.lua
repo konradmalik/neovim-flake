@@ -28,7 +28,7 @@ local colors = {
     debug = "Debug",
 }
 
-local sbar = icons.ui.Animations.ThinFill
+local sbar = icons.ui.Animations.Fill
 
 local format_types = {
     unix = icons.oss.Linux,
@@ -260,9 +260,9 @@ end
 M.scrollbar = function()
     local curr_line = vim.api.nvim_win_get_cursor(utils.stwinnr())[1]
     local lines = vim.api.nvim_buf_line_count(utils.stbufnr())
-    if lines == 0 then return string.rep(sbar[1], 2) end
+    if lines == 0 then return sbar[1] end
     local i = math.floor((curr_line - 1) / lines * #sbar) + 1
-    return wrap_hl(colors.blue, string.rep(sbar[i], 2))
+    return wrap_hl(colors.blue, sbar[i])
 end
 
 -- test_status = function()

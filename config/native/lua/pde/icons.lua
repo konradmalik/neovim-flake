@@ -4,7 +4,7 @@
 -- find more here: https://www.nerdfonts.com/cheat-sheet
 
 return {
-    kind = {
+    lsp = {
         Class = "",
         Color = "",
         Constant = "",
@@ -33,15 +33,10 @@ return {
         Variable = "",
     },
     documents = {
-        File = "",
-        Files = "",
         FileContents = "",
-        SymlinkFile = "",
         Folder = "",
         OpenFolder = "",
         EmptyFolder = "",
-        EmptyOpenFolder = "",
-        SymlinkFolder = "",
     },
     git = {
         Add = "",
@@ -85,7 +80,6 @@ return {
                 "▇▇",
                 "██",
             },
-            ThinFill = { "_", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" },
         },
     },
     lines = {
@@ -96,16 +90,12 @@ return {
         Error = "",
         Warning = "",
         Information = "",
-        Question = "",
         Hint = "󰛨",
-        Attention = "",
     },
     misc = {
         Neovim = "",
     },
     characters = {
-        Eol = "↵",
-        Nbsp = "␣",
         Nbsp2 = "○",
         SlopeDown = "◣",
         SlopeUp = "◢",
