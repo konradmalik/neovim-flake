@@ -20,8 +20,6 @@ vim.opt.breakindent = true
 vim.opt.swapfile = false
 -- don't create a backup file
 vim.opt.backup = false
--- when a file was modified outside of vim and not modified in vim, we can read it automatically
-vim.bo.autoread = true
 -- Save undo history
 vim.opt.undofile = true
 vim.opt.undodir = vim.fn.stdpath("state") .. "/undodir"
