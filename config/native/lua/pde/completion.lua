@@ -1,3 +1,32 @@
+local icons = {
+    Class = "",
+    Color = "",
+    Constant = "",
+    Constructor = "",
+    Copilot = "",
+    Enum = "",
+    EnumMember = "",
+    Event = "",
+    Field = "",
+    File = "",
+    Folder = "",
+    Function = "󰊕",
+    Interface = "",
+    Keyword = "",
+    Method = "m",
+    Module = "",
+    Operator = "",
+    Property = "",
+    Reference = "",
+    Snippet = "",
+    Struct = "",
+    Text = "",
+    TypeParameter = "",
+    Unit = "",
+    Value = "",
+    Variable = "",
+}
+
 local M = {}
 
 M.setup = function()
@@ -14,9 +43,8 @@ M.setup = function()
     -- fill native LSP completion_item_kind
     -- cmp is filled below in format
     local kinds = vim.lsp.protocol.CompletionItemKind
-    local lsp_icons = require("pde.icons").lsp
     for i, kind in ipairs(kinds) do
-        kinds[i] = lsp_icons[kind] or kind
+        kinds[i] = icons[kind] or kind
     end
 
     local cmp = require("cmp")
@@ -44,7 +72,7 @@ M.setup = function()
         formatting = {
             fields = { "kind", "abbr", "menu" },
             format = function(entry, vim_item)
-                vim_item.kind = lsp_icons[vim_item.kind] or vim_item.kind
+                vim_item.kind = icons[vim_item.kind] or vim_item.kind
                 if entry.source.name == "nvim_lsp" then
                     -- name of lsp client
                     vim_item.menu = "[" .. entry.source.source.client.name .. "]"

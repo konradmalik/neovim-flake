@@ -1,5 +1,5 @@
 local devicons = require("nvim-web-devicons")
-local icons = require("pde.icons")
+local icons = require("pde.statusline.icons")
 local utils = require("pde.statusline.utils")
 
 ---@param hl string

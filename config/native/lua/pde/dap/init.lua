@@ -7,15 +7,7 @@ local setup = function()
     local dap = require("dap")
     local dapui = require("dapui")
 
-    local icons = require("pde.icons")
-
-    dapui.setup({
-        icons = {
-            expanded = icons.ui.Expanded,
-            collapsed = icons.ui.Collapsed,
-            current_frame = icons.ui.FoldClosed,
-        },
-    })
+    dapui.setup()
 
     local map = function(lhs, rhs, desc)
         desc = "[DAP] " .. desc

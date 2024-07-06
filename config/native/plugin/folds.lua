@@ -1,12 +1,16 @@
-local icons = require("pde.icons")
+local icons = {
+    FoldClosed = "",
+    FoldOpen = "",
+    Guide = "┊",
+}
 
 vim.opt.foldcolumn = "auto"
 vim.opt.fillchars = {
     eob = " ",
     fold = " ",
-    foldopen = icons.ui.FoldOpen,
-    foldsep = icons.ui.Guide,
-    foldclose = icons.ui.FoldClosed,
+    foldopen = icons.FoldOpen,
+    foldsep = icons.Guide,
+    foldclose = icons.FoldClosed,
 }
 vim.opt.foldmethod = "expr"
 -- TODO: lua-based treesitter's foldexpr is unusable with fugitive's Git log command.

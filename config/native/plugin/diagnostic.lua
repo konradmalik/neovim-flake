@@ -1,5 +1,9 @@
-local icons = require("pde.icons")
-local diag_icons = icons.diagnostics
+local icons = {
+    Error = "",
+    Warning = "",
+    Information = "",
+    Hint = "󰛨",
+}
 
 vim.diagnostic.config({
     jump = {
@@ -7,7 +11,7 @@ vim.diagnostic.config({
         wrap = true,
     },
     virtual_text = {
-        prefix = icons.ui.Square,
+        -- prefix = icons.ui.Square,
         source = "if_many",
         spacing = 4,
     },
@@ -15,10 +19,10 @@ vim.diagnostic.config({
     severity_sort = true,
     signs = {
         text = {
-            [vim.diagnostic.severity.ERROR] = diag_icons.Error,
-            [vim.diagnostic.severity.WARN] = diag_icons.Warning,
-            [vim.diagnostic.severity.HINT] = diag_icons.Hint,
-            [vim.diagnostic.severity.INFO] = diag_icons.Information,
+            [vim.diagnostic.severity.ERROR] = icons.Error,
+            [vim.diagnostic.severity.WARN] = icons.Warning,
+            [vim.diagnostic.severity.HINT] = icons.Hint,
+            [vim.diagnostic.severity.INFO] = icons.Information,
         },
     },
 })

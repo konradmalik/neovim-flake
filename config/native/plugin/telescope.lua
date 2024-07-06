@@ -1,11 +1,14 @@
-local icons = require("pde.icons")
+local icons = {
+    EmptyTriangle = "󰼛",
+    Caret = "󱞩",
+}
 local telescope = require("telescope")
 
 telescope.setup({
     defaults = {
         wrap_results = true,
-        prompt_prefix = icons.characters.EmptyTriangle .. " ",
-        selection_caret = icons.characters.Caret .. " ",
+        prompt_prefix = icons.EmptyTriangle .. " ",
+        selection_caret = icons.Caret .. " ",
     },
     extensions = {
         ["ui-select"] = {
