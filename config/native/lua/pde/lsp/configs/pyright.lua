@@ -3,7 +3,9 @@
 local binaries = require("pde.binaries")
 
 return {
-    config = function()
+    ---@param bufnr integer
+    ---@return vim.lsp.ClientConfig
+    config = function(bufnr)
         ---@type vim.lsp.ClientConfig
         return {
             name = "pyright",
@@ -17,7 +19,7 @@ return {
                     },
                 },
             },
-            root_dir = vim.fs.root(0, {
+            root_dir = vim.fs.root(bufnr, {
                 "pyproject.toml",
                 "setup.py",
                 "setup.cfg",

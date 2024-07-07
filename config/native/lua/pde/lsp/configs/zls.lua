@@ -2,12 +2,14 @@
 local binaries = require("pde.binaries")
 
 return {
-    config = function()
+    ---@param bufnr integer
+    ---@return vim.lsp.ClientConfig
+    config = function(bufnr)
         ---@type vim.lsp.ClientConfig
         return {
             name = "zls",
             cmd = { binaries.zls() },
-            root_dir = vim.fs.root(0, { "zls.json", ".git" }),
+            root_dir = vim.fs.root(bufnr, { "zls.json", ".git" }),
         }
     end,
 }

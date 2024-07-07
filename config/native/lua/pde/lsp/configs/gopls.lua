@@ -2,7 +2,9 @@
 local binaries = require("pde.binaries")
 
 return {
-    config = function()
+    ---@param bufnr integer
+    ---@return vim.lsp.ClientConfig
+    config = function(bufnr)
         ---@type vim.lsp.ClientConfig
         return {
             name = "gopls",
@@ -13,7 +15,7 @@ return {
                     allExperiments = true,
                 },
             },
-            root_dir = vim.fs.root(0, { "go.work", "go.mod", ".git" }),
+            root_dir = vim.fs.root(bufnr, { "go.work", "go.mod", ".git" }),
         }
     end,
 }

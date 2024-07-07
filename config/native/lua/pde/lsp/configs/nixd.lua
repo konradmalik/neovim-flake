@@ -3,7 +3,9 @@
 local binaries = require("pde.binaries")
 
 return {
-    config = function()
+    ---@param bufnr integer
+    ---@return vim.lsp.ClientConfig
+    config = function(bufnr)
         ---@type vim.lsp.ClientConfig
         return {
             name = "nixd",
@@ -15,7 +17,7 @@ return {
                     },
                 },
             },
-            root_dir = vim.fs.root(0, { "flake.nix", ".git" }),
+            root_dir = vim.fs.root(bufnr, { "flake.nix", ".git" }),
         }
     end,
 }

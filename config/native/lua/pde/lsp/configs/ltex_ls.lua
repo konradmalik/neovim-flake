@@ -78,7 +78,9 @@ local function get_disabled_rules_file(language)
 end
 
 return {
-    config = function()
+    ---@param bufnr integer
+    ---@return vim.lsp.ClientConfig
+    config = function(bufnr)
         ---@type vim.lsp.ClientConfig
         return {
             name = name,
@@ -118,9 +120,9 @@ return {
                     hiddenFalsePositives = hiddenFalsePositives,
                 },
             },
-            root_dir = vim.fs.root(0, ".git"),
-            on_attach = function(_, bufnr)
-                vim.api.nvim_buf_call(bufnr, function() vim.opt_local.spell = false end)
+            root_dir = vim.fs.root(bufnr, ".git"),
+            on_attach = function(_, buf)
+                vim.api.nvim_buf_call(buf, function() vim.opt_local.spell = false end)
                 -- TODO: buf_command for changing the language
             end,
             commands = {

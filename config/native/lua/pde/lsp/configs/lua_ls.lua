@@ -4,7 +4,9 @@ local paths = require("pde.paths")
 local nvim_library = {}
 
 return {
-    config = function()
+    ---@param bufnr integer
+    ---@return vim.lsp.ClientConfig
+    config = function(bufnr)
         ---@type vim.lsp.ClientConfig
         return {
             name = "lua_ls",
@@ -40,7 +42,7 @@ return {
                     },
                 },
             },
-            root_dir = vim.fs.root(0, ".luarc.json") or vim.fs.root(0, { "lua", ".git" }),
+            root_dir = vim.fs.root(bufnr, ".luarc.json") or vim.fs.root(0, { "lua", ".git" }),
         }
     end,
 }

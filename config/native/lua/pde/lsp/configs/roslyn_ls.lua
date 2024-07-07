@@ -74,16 +74,16 @@ local function ensure_tree_is_parsed(bufnr)
     end
 end
 
-local function find(pattern)
+local function find(bufnr, pattern)
     return vim.fs.find(function(name, _) return name:match(pattern) end, {
         upward = true,
         stop = vim.uv.os_homedir(),
-        path = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),
+        path = vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr)),
     })[1]
 end
 
-local function get_config(pipe_name)
-    local solution = find(".sln$")
+local function get_config(bufnr, pipe_name)
+    local solution = find(bufnr, ".sln$")
     if not solution then
         -- most probably decompilation from already running server, so reuse it
         -- luacheck: ignore 512
@@ -105,10 +105,9 @@ local function get_config(pipe_name)
             if not validate_command(command) then return end
 
             local range = command.arguments[1].range
-            local bufnr = ctx.bufnr
 
-            ensure_tree_is_parsed(bufnr)
-            local root_node = get_node_at_range(bufnr, range)
+            ensure_tree_is_parsed(ctx.bufnr)
+            local root_node = get_node_at_range(ctx.bufnr, range)
             if not root_node then
                 vim.notify(
                     "cannot find root node " .. vim.inspect(range["start"]),
@@ -139,15 +138,16 @@ end
 local M = {}
 
 ---initializes roslyn server, handles pipe, attaches lsp client
+---@param bufnr integer
 ---@param with_config fun(config: vim.lsp.ClientConfig)
-function M.wrap(with_config)
+function M.wrap(bufnr, with_config)
     local cmd = {
         binaries.roslyn_ls(),
         "--logLevel=Information",
         "--extensionLogDirectory=" .. vim.fs.dirname(vim.lsp.get_log_path()),
     }
     roslyn.start_server(cmd, function(pipeName)
-        local config = get_config(pipeName)
+        local config = get_config(bufnr, pipeName)
         config.on_exit = function(_, _, _) roslyn.stop_server() end
         with_config(config)
     end)

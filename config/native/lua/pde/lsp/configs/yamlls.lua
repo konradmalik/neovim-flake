@@ -10,7 +10,9 @@ local schemas = vim.tbl_extend("error", schemastore.yaml.schemas(), {
 })
 
 return {
-    config = function()
+    ---@param bufnr integer
+    ---@return vim.lsp.ClientConfig
+    config = function(bufnr)
         ---@type vim.lsp.ClientConfig
         return {
             name = "yamlls",
@@ -38,7 +40,7 @@ return {
                     },
                 },
             },
-            root_dir = vim.fs.root(0, ".git"),
+            root_dir = vim.fs.root(bufnr, ".git"),
         }
     end,
 }

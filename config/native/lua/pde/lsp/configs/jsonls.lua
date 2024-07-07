@@ -5,7 +5,9 @@ vim.cmd.packadd("SchemaStore.nvim")
 local schemastore = require("schemastore")
 
 return {
-    config = function()
+    ---@param bufnr integer
+    ---@return vim.lsp.ClientConfig
+    config = function(bufnr)
         ---@type vim.lsp.ClientConfig
         return {
             name = "jsonls",
@@ -20,7 +22,7 @@ return {
                     schemas = schemastore.json.schemas(),
                 },
             },
-            root_dir = vim.fs.root(0, ".git"),
+            root_dir = vim.fs.root(bufnr, ".git"),
         }
     end,
 }

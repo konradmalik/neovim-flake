@@ -54,7 +54,9 @@ local function runSingle(command)
 end
 
 return {
-    config = function()
+    ---@param bufnr integer
+    ---@return vim.lsp.ClientConfig
+    config = function(bufnr)
         ---@type vim.lsp.ClientConfig
         return {
             name = name,
@@ -99,22 +101,22 @@ return {
             commands = {
                 ["rust-analyzer.runSingle"] = runSingle,
             },
-            root_dir = vim.fs.root(0, { "Cargo.toml", "rust-project.json" }),
-            on_attach = function(_, bufnr)
+            root_dir = vim.fs.root(bufnr, { "Cargo.toml", "rust-project.json" }),
+            on_attach = function(_, buf)
                 vim.api.nvim_buf_create_user_command(
-                    bufnr,
+                    buf,
                     "CargoReload",
-                    function() reload_workspace(bufnr) end,
+                    function() reload_workspace(buf) end,
                     { desc = "[" .. name .. "] Reload current cargo workspace" }
                 )
 
                 vim.api.nvim_create_autocmd("LspDetach", {
                     group = vim.api.nvim_create_augroup(
-                        "personal-lsp-" .. name .. "-buf-" .. bufnr,
+                        "personal-lsp-" .. name .. "-buf-" .. buf,
                         { clear = true }
                     ),
-                    buffer = bufnr,
-                    callback = function() vim.api.nvim_buf_del_user_command(bufnr, "CargoReload") end,
+                    buffer = buf,
+                    callback = function() vim.api.nvim_buf_del_user_command(buf, "CargoReload") end,
                 })
             end,
         }
