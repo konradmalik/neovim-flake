@@ -5,5 +5,12 @@ return {
     entry = {
         formatCommand = { binaries.isort(), "--quiet", "-" },
         formatStdin = true,
+        rootMarkers = {
+            "pyproject.toml",
+            "setup.cfg",
+            "setup.py",
+            "requirements.txt",
+            "requirements-dev.txt",
+        },
     },
 }

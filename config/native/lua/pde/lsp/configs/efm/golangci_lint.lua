@@ -17,6 +17,11 @@ return {
         },
         lintStdin = false,
         lintFormats = { "%.%#:%l:%c %m" },
-        rootMarkers = {},
+        rootMarkers = {
+            ".golangci.yml",
+            ".golangci.yaml",
+            ".golangci.toml",
+            ".golangci.json",
+        },
     },
 }

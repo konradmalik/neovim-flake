@@ -10,5 +10,12 @@ return {
             "-",
         },
         formatStdin = true,
+        rootMarkers = {
+            "pyproject.toml",
+            "setup.cfg",
+            "setup.py",
+            "requirements.txt",
+            "requirements-dev.txt",
+        },
     },
 }
