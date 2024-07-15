@@ -10,6 +10,7 @@ let
     appName = "native";
     selfContained = false;
     tmpCache = true;
+    prependXdgConfig = true;
     nvimConfig = devConfig;
   };
 in

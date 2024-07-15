@@ -12,6 +12,7 @@
   vimAlias ? false,
   selfContained ? true,
   tmpCache ? selfContained,
+  prependXdgConfig ? selfContained,
 }:
 let
   preparedConfig = stdenvNoCC.mkDerivation {
@@ -44,6 +45,8 @@ let
       "-u"
       "--add-flags"
       "'${preparedConfig}/${appName}/init.lua'"
+    ]
+    ++ lib.optionals prependXdgConfig [
       "--prefix"
       "XDG_CONFIG_DIRS"
       ":"
