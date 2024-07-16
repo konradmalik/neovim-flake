@@ -9,6 +9,7 @@ telescope.setup({
         wrap_results = true,
         prompt_prefix = icons.EmptyTriangle .. " ",
         selection_caret = icons.Caret .. " ",
+        border = false,
     },
     extensions = {
         ["ui-select"] = {
