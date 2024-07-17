@@ -1,14 +1,10 @@
-local icons = {
-    EmptyTriangle = "󰼛",
-    Caret = "󱞩",
-}
 local telescope = require("telescope")
 
 telescope.setup({
     defaults = {
         wrap_results = true,
-        prompt_prefix = icons.EmptyTriangle .. " ",
-        selection_caret = icons.Caret .. " ",
+        selection_caret = "󱞩 ",
+        prompt_prefix = "󰼛 ",
         border = false,
     },
     extensions = {

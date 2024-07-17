@@ -1,16 +1,10 @@
-local icons = {
-    FoldClosed = "",
-    FoldOpen = "",
-    Guide = "┊",
-}
-
 vim.opt.foldcolumn = "auto"
 vim.opt.fillchars = {
     eob = " ",
     fold = " ",
-    foldopen = icons.FoldOpen,
-    foldsep = icons.Guide,
-    foldclose = icons.FoldClosed,
+    foldopen = "",
+    foldsep = "┊",
+    foldclose = "",
 }
 vim.opt.foldmethod = "expr"
 -- TODO: lua-based treesitter's foldexpr is unusable with fugitive's Git log command.

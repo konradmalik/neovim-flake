@@ -1,35 +1,35 @@
-local icons = {
-    Class = "",
-    Color = "",
-    Constant = "",
-    Constructor = "",
-    Copilot = "",
-    Enum = "",
-    EnumMember = "",
-    Event = "",
-    Field = "",
-    File = "",
-    Folder = "",
-    Function = "󰊕",
-    Interface = "",
-    Keyword = "",
-    Method = "m",
-    Module = "",
-    Operator = "",
-    Property = "",
-    Reference = "",
-    Snippet = "",
-    Struct = "",
-    Text = "",
-    TypeParameter = "",
-    Unit = "",
-    Value = "",
-    Variable = "",
-}
-
 local M = {}
 
 M.setup = function()
+    local icons = {
+        Class = "",
+        Color = "",
+        Constant = "",
+        Constructor = "",
+        Copilot = "",
+        Enum = "",
+        EnumMember = "",
+        Event = "",
+        Field = "",
+        File = "",
+        Folder = "",
+        Function = "󰊕",
+        Interface = "",
+        Keyword = "",
+        Method = "m",
+        Module = "",
+        Operator = "",
+        Property = "",
+        Reference = "",
+        Snippet = "",
+        Struct = "",
+        Text = "",
+        TypeParameter = "",
+        Unit = "",
+        Value = "",
+        Variable = "",
+    }
+
     vim.opt.shortmess:append("c")
     vim.opt.completeopt = { "menu", "menuone", "noselect" }
 

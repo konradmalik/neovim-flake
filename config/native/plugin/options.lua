@@ -28,24 +28,15 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 -- Keep signcolumn on by default
 vim.opt.signcolumn = "yes"
-
-local icons = {
-    Guide = "┊",
-    Nbsp2 = "○",
-    SlopeDown = "◣",
-    SlopeUp = "◢",
-    Tab = "▷",
-    Trail = "·",
-}
 -- show some hidden chars
 vim.opt.list = true
 vim.opt.listchars = {
-    trail = icons.Trail,
-    tab = icons.Tab .. "-" .. icons.Tab,
-    nbsp = icons.Nbsp2,
-    extends = icons.SlopeDown,
-    precedes = icons.SlopeUp,
-    leadmultispace = icons.Guide .. " ",
+    trail = "·",
+    tab = "--▷",
+    nbsp = "○",
+    extends = "◣",
+    precedes = "◢",
+    leadmultispace = "┊ ",
 }
 -- Lines of context when scrolling
 vim.opt.scrolloff = 10

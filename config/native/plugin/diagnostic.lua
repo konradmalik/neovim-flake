@@ -1,10 +1,3 @@
-local icons = {
-    Error = "",
-    Warning = "",
-    Information = "",
-    Hint = "󰛨",
-}
-
 vim.diagnostic.config({
     jump = {
         float = true,
@@ -19,10 +12,10 @@ vim.diagnostic.config({
     severity_sort = true,
     signs = {
         text = {
-            [vim.diagnostic.severity.ERROR] = icons.Error,
-            [vim.diagnostic.severity.WARN] = icons.Warning,
-            [vim.diagnostic.severity.HINT] = icons.Hint,
-            [vim.diagnostic.severity.INFO] = icons.Information,
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.INFO] = "",
+            [vim.diagnostic.severity.HINT] = "󰛨",
         },
     },
 })
