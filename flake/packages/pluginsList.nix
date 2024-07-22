@@ -34,10 +34,12 @@ in
       {
         plugin = np.cmp_luasnip;
         optional = true;
-      }
-      {
-        plugin = np.luasnip;
-        optional = true;
+        deps = [
+          {
+            plugin = np.luasnip;
+            optional = true;
+          }
+        ];
       }
       np.friendly-snippets
     ];
