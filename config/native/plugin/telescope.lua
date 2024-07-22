@@ -5,7 +5,6 @@ telescope.setup({
         wrap_results = true,
         selection_caret = "󱞩 ",
         prompt_prefix = "󰼛 ",
-        border = false,
     },
     extensions = {
         ["ui-select"] = {
