@@ -7,6 +7,7 @@
   lib,
   nvimConfig,
   pluginsList,
+  systemDeps ? [ ],
   appName ? "neovim-pde",
   viAlias ? false,
   vimAlias ? false,
@@ -27,18 +28,19 @@ let
   };
 
   pluginsPack = callPackage ./pluginManager.nix { inherit pluginsList; };
-  inherit (pluginsPack) plugins systemDeps;
+  inherit (pluginsPack) plugins;
+  allSystemDeps = lib.unique (pluginsPack.systemDeps ++ systemDeps);
   extraWrapperArgs =
     [
       "--set"
       "NVIM_APPNAME"
       appName
     ]
-    ++ lib.optionals (systemDeps != [ ]) [
+    ++ lib.optionals (allSystemDeps != [ ]) [
       "--suffix"
       "PATH"
       ":"
-      "${lib.makeBinPath systemDeps}"
+      "${lib.makeBinPath allSystemDeps}"
     ]
     ++ lib.optionals selfContained [
       "--add-flags"

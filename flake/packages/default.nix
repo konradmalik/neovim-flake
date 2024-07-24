@@ -1,17 +1,27 @@
 { inputs, ... }:
 {
   perSystem =
-    { inputs', pkgs, ... }:
+    {
+      inputs',
+      pkgs,
+      lib,
+      ...
+    }:
     let
-      neovimPlugins = pkgs.callPackages ./neovimPlugins.nix {
-        inherit inputs inputs';
+      pluginsList = import ./plugins.nix {
+        inherit (pkgs) vimUtils neovimUtils;
+        inherit
+          pkgs
+          lib
+          inputs
+          inputs'
+          ;
         all-treesitter-grammars = pkgs.vimPlugins.nvim-treesitter.allGrammars;
       };
       nightlyNeovim = inputs'.neovim-nightly-overlay.packages.default;
       nvimConfig = pkgs.callPackage ../../config { };
-      pluginsList = pkgs.callPackage ./pluginsList.nix { inherit neovimPlugins; };
       neovim-pde = pkgs.callPackage ./neovim-pde {
-        inherit pluginsList nvimConfig;
+        inherit nvimConfig pluginsList;
         neovim = nightlyNeovim;
       };
     in
@@ -21,6 +31,6 @@
         neovim-pde-dev = pkgs.callPackage ./neovim-pde-dev.nix { inherit neovim-pde nvimConfig; };
         default = neovim-pde;
         nvim-typecheck = pkgs.callPackage ./nvim-typecheck.nix { neovim = nightlyNeovim; };
-      } // neovimPlugins;
+      };
     };
 }
