@@ -1,5 +1,5 @@
 require("lz.n").load({
-    "todo-comments-nvim",
+    "todo-comments.nvim",
     event = { "BufNew", "BufRead" },
     after = function()
         local todo = require("todo-comments")
