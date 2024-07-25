@@ -71,30 +71,6 @@ let
     input = "boole-nvim";
     nvimRequireCheck = "boole";
   };
-  cmp-buffer = buildVim {
-    input = "cmp-buffer";
-    nvimRequireCheck = "cmp_buffer";
-    dependencies = [ nvim-cmp ];
-  };
-  cmp-nvim-lsp = buildVim {
-    input = "cmp-nvim-lsp";
-    nvimRequireCheck = "cmp_nvim_lsp";
-    dependencies = [ nvim-cmp ];
-  };
-  cmp-path = buildVim {
-    input = "cmp-path";
-    nvimRequireCheck = "cmp_path";
-    dependencies = [ nvim-cmp ];
-  };
-  cmp_luasnip = buildVim {
-    input = "cmp_luasnip";
-    dependencies = [ nvim-cmp ];
-  };
-  friendly-snippets = buildVim {
-    input = "friendly-snippets";
-    nvimRequireCheck = "luasnip.loaders.from_vscode";
-    dependencies = [ luasnip ];
-  };
   git-conflict-nvim = buildVim {
     input = "git-conflict-nvim";
     nvimRequireCheck = "git-conflict";
@@ -109,7 +85,6 @@ let
     input = "kanagawa-nvim";
     nvimRequireCheck = "kanagawa";
   };
-  luasnip = buildVim { input = "luasnip"; };
   neo-tree-nvim = buildVim {
     input = "neo-tree-nvim";
     nvimRequireCheck = "neo-tree";
@@ -224,36 +199,6 @@ in
         optional = true;
       }
       nvim-treesitter-textobjects
-    ];
-  }
-  # completion
-  {
-    plugin = nvim-cmp;
-    optional = true;
-    deps = [
-      {
-        plugin = cmp-buffer;
-        optional = true;
-      }
-      {
-        plugin = cmp-nvim-lsp;
-        optional = true;
-      }
-      {
-        plugin = cmp-path;
-        optional = true;
-      }
-      {
-        plugin = cmp_luasnip;
-        optional = true;
-        deps = [
-          {
-            plugin = luasnip;
-            optional = true;
-            deps = [ friendly-snippets ];
-          }
-        ];
-      }
     ];
   }
   # LSP
