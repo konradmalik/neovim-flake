@@ -21,7 +21,7 @@ in
   fi
 
   XDG_CONFIG_DIRS="${devConfig}:$NVIM_PDE_DEV_NATIVE_CONFIG_PATH" \
-    ${lib.getExe pkg} -u $NVIM_PDE_DEV_NATIVE_CONFIG_PATH/native/init.lua
+    ${lib.getExe pkg} -u $NVIM_PDE_DEV_NATIVE_CONFIG_PATH/native/init.lua "$@"
 '').overrideAttrs
   {
     shellHook = ''
