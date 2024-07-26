@@ -19,26 +19,6 @@
       url = "github:nat-418/boole.nvim";
       flake = false;
     };
-    cmp-buffer = {
-      url = "github:hrsh7th/cmp-buffer";
-      flake = false;
-    };
-    cmp-nvim-lsp = {
-      url = "github:hrsh7th/cmp-nvim-lsp";
-      flake = false;
-    };
-    cmp-path = {
-      url = "github:hrsh7th/cmp-path";
-      flake = false;
-    };
-    cmp_luasnip = {
-      url = "github:saadparwaiz1/cmp_luasnip";
-      flake = false;
-    };
-    friendly-snippets = {
-      url = "github:rafamadriz/friendly-snippets";
-      flake = false;
-    };
     git-conflict-nvim = {
       url = "github:konradmalik/git-conflict.nvim";
       flake = false;
@@ -49,10 +29,6 @@
     };
     kanagawa-nvim = {
       url = "github:rebelot/kanagawa.nvim";
-      flake = false;
-    };
-    luasnip = {
-      url = "github:L3MON4D3/LuaSnip";
       flake = false;
     };
     lz-n = {

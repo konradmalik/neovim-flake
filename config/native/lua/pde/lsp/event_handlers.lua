@@ -57,6 +57,10 @@ M.attach = function(client, bufnr)
         client = client,
     }
 
+    if client_buf_supports_method(ms.textDocument_completion) then
+        vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
+    end
+
     if client_buf_supports_method(ms.textDocument_hover) then
         vim.keymap.set("n", "K", vim.lsp.buf.hover, opts_with_desc("Hover Documentation"))
     end
