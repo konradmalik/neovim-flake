@@ -13,7 +13,7 @@
     {
       _module.args.pkgs = import inputs.nixpkgs {
         inherit system;
-        overlays = [ ];
+        overlays = [ inputs.nixpkgs-extra.overlays.default ];
       };
 
       formatter = pkgs.nixfmt-rfc-style;

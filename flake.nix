@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs-extra.url = "github:konradmalik/nixpkgs-extra";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
     flake-parts = {
