@@ -16,6 +16,10 @@
       url = "github:b0o/SchemaStore.nvim";
       flake = false;
     };
+    bigfile-nvim = {
+      url = "github:LunarVim/bigfile.nvim";
+      flake = false;
+    };
     boole-nvim = {
       url = "github:nat-418/boole.nvim";
       flake = false;

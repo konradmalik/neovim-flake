@@ -67,6 +67,10 @@ let
     input = "SchemaStore-nvim";
     nvimRequireCheck = "schemastore";
   };
+  bigfile-nvim = buildVim {
+    input = "bigfile-nvim";
+    nvimRequireCheck = "bigfile";
+  };
   boole-nvim = buildVim {
     input = "boole-nvim";
     nvimRequireCheck = "boole";
@@ -322,6 +326,7 @@ in
     deps = [ plenary-nvim ];
   }
   # misc
+  bigfile-nvim
   {
     plugin = boole-nvim;
     optional = true;
