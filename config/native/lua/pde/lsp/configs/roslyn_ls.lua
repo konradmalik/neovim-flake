@@ -1,5 +1,4 @@
 local binaries = require("pde.binaries")
-local roslyn = require("roslyn.server")
 local runner = require("pde.runner")
 
 ---@param command lsp.Command
@@ -74,100 +73,71 @@ local function ensure_tree_is_parsed(bufnr)
     end
 end
 
-local function find(bufnr, pattern)
-    return vim.fs.find(function(name, _) return name:match(pattern) end, {
-        upward = true,
-        stop = vim.uv.os_homedir(),
-        path = vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr)),
-    })[1]
-end
+local function get_config()
+    return {
+        settings = {
+            ["csharp|inlay_hints"] = {
+                csharp_enable_inlay_hints_for_implicit_object_creation = true,
+                csharp_enable_inlay_hints_for_implicit_variable_types = true,
+                csharp_enable_inlay_hints_for_lambda_parameter_types = true,
+                csharp_enable_inlay_hints_for_types = true,
+                dotnet_enable_inlay_hints_for_indexer_parameters = true,
+                dotnet_enable_inlay_hints_for_literal_parameters = true,
+                dotnet_enable_inlay_hints_for_object_creation_parameters = true,
+                dotnet_enable_inlay_hints_for_other_parameters = true,
+                dotnet_enable_inlay_hints_for_parameters = true,
+                dotnet_suppress_inlay_hints_for_parameters_that_differ_only_by_suffix = true,
+                dotnet_suppress_inlay_hints_for_parameters_that_match_argument_name = true,
+                dotnet_suppress_inlay_hints_for_parameters_that_match_method_intent = true,
+            },
+        },
+        commands = {
+            ["roslyn.client.peekReferences"] = function() vim.lsp.buf.references() end,
+            ["dotnet.test.run"] = function(command, ctx)
+                if not validate_command(command) then return end
 
-local function get_config(bufnr, pipe_name)
-    local solution = find(bufnr, ".sln$")
-    if not solution then
-        -- most probably decompilation from already running server, so reuse it
-        -- luacheck: ignore 512
-        for _, client in ipairs(vim.lsp.get_clients({ name = "roslyn" })) do
-            return client.config
-        end
-        error("cannot find solution file, nor reuse existing client", vim.log.levels.ERROR)
-    end
+                local bufnr = ctx.bufnr
+                local range = command.arguments[1].range
 
-    local config = assert(require("roslyn").config({
-        pipe_name = pipe_name,
-        solution = solution,
-        filewatching = true,
-    }))
+                ensure_tree_is_parsed(bufnr)
+                local root_node = get_node_at_range(bufnr, range)
+                if not root_node then
+                    vim.notify(
+                        "cannot find root node " .. vim.inspect(range["start"]),
+                        vim.log.levels.ERROR
+                    )
+                    return
+                end
 
-    config.settings = {
-        ["csharp|inlay_hints"] = {
-            csharp_enable_inlay_hints_for_implicit_object_creation = true,
-            csharp_enable_inlay_hints_for_implicit_variable_types = true,
-            csharp_enable_inlay_hints_for_lambda_parameter_types = true,
-            csharp_enable_inlay_hints_for_types = true,
-            dotnet_enable_inlay_hints_for_indexer_parameters = true,
-            dotnet_enable_inlay_hints_for_literal_parameters = true,
-            dotnet_enable_inlay_hints_for_object_creation_parameters = true,
-            dotnet_enable_inlay_hints_for_other_parameters = true,
-            dotnet_enable_inlay_hints_for_parameters = true,
-            dotnet_suppress_inlay_hints_for_parameters_that_differ_only_by_suffix = true,
-            dotnet_suppress_inlay_hints_for_parameters_that_match_argument_name = true,
-            dotnet_suppress_inlay_hints_for_parameters_that_match_method_intent = true,
+                local root_name = vim.treesitter.get_node_text(root_node, bufnr)
+                local class_name_node = get_class_name_node(root_node)
+                if class_name_node and class_name_node:id() ~= root_node:id() then
+                    local class_name = vim.treesitter.get_node_text(class_name_node, bufnr)
+                    root_name = class_name .. "." .. root_name
+                end
+
+                local ns_name_node = get_namespace_name_node(class_name_node or root_node)
+                if ns_name_node then
+                    local ns_name = vim.treesitter.get_node_text(ns_name_node, bufnr)
+                    root_name = ns_name .. "." .. root_name
+                end
+
+                local client = vim.lsp.get_client_by_id(ctx.client_id)
+                assert(client)
+
+                testRun(client.root_dir, root_name)
+            end,
         },
     }
-    local root_dir = config.root_dir
-    config.commands = {
-        ["roslyn.client.peekReferences"] = function() vim.lsp.buf.references() end,
-        ["dotnet.test.run"] = function(command, ctx)
-            if not validate_command(command) then return end
-
-            local range = command.arguments[1].range
-
-            ensure_tree_is_parsed(ctx.bufnr)
-            local root_node = get_node_at_range(ctx.bufnr, range)
-            if not root_node then
-                vim.notify(
-                    "cannot find root node " .. vim.inspect(range["start"]),
-                    vim.log.levels.ERROR
-                )
-                return
-            end
-
-            local root_name = vim.treesitter.get_node_text(root_node, bufnr)
-            local class_name_node = get_class_name_node(root_node)
-            if class_name_node and class_name_node:id() ~= root_node:id() then
-                local class_name = vim.treesitter.get_node_text(class_name_node, bufnr)
-                root_name = class_name .. "." .. root_name
-            end
-
-            local ns_name_node = get_namespace_name_node(class_name_node or root_node)
-            if ns_name_node then
-                local ns_name = vim.treesitter.get_node_text(ns_name_node, bufnr)
-                root_name = ns_name .. "." .. root_name
-            end
-
-            testRun(root_dir, root_name)
-        end,
-    }
-    return config
 end
 
 local M = {}
 
----initializes roslyn server, handles pipe, attaches lsp client
----@param bufnr integer
----@param with_config fun(config: vim.lsp.ClientConfig)
-function M.wrap(bufnr, with_config)
-    local cmd = {
-        binaries.roslyn_ls(),
-        "--logLevel=Information",
-        "--extensionLogDirectory=" .. vim.fs.dirname(vim.lsp.get_log_path()),
+function M.get_roslyn_config()
+    return {
+        exe = binaries.roslyn_ls(),
+        config = get_config(),
     }
-    roslyn.start_server(cmd, function(pipeName)
-        local config = get_config(bufnr, pipeName)
-        config.on_exit = function(_, _, _) roslyn.stop_server() end
-        with_config(config)
-    end)
 end
 
 return M

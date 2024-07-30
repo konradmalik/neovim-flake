@@ -169,6 +169,10 @@ let
               -e 's@(command\s*=\s*")curl(")@\1${lib.getExe pkgs.curl}\2@'
         '';
       };
+  roslyn-nvim = buildVim {
+    input = "roslyn-nvim";
+    nvimRequireCheck = "roslyn";
+  };
   telescope-fzf-native-nvim =
     (buildVim {
       input = "telescope-fzf-native-nvim";
@@ -259,6 +263,10 @@ in
   # LSP
   {
     plugin = SchemaStore-nvim;
+    optional = true;
+  }
+  {
+    plugin = roslyn-nvim;
     optional = true;
   }
   # DAP

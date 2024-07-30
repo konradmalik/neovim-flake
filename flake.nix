@@ -112,6 +112,10 @@
       url = "github:nvim-lua/plenary.nvim";
       flake = false;
     };
+    roslyn-nvim = {
+      url = "github:konradmalik/roslyn.nvim";
+      flake = false;
+    };
     telescope-fzf-native-nvim = {
       url = "github:nvim-telescope/telescope-fzf-native.nvim";
       flake = false;

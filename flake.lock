@@ -1283,6 +1283,7 @@
         "nvim-treesitter-textobjects": "nvim-treesitter-textobjects",
         "nvim-web-devicons": "nvim-web-devicons",
         "plenary-nvim": "plenary-nvim",
+        "roslyn-nvim": "roslyn-nvim",
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
         "telescope-nvim": "telescope-nvim",
         "telescope-ui-select-nvim": "telescope-ui-select-nvim",
@@ -1290,6 +1291,22 @@
         "undotree": "undotree",
         "vim-fugitive": "vim-fugitive",
         "which-key-nvim": "which-key-nvim"
+      }
+    },
+    "roslyn-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1722351347,
+        "narHash": "sha256-umzqpZvSjwJMSk3XQAinmWJ4J6FGA9PDiRWEgPtLcio=",
+        "owner": "konradmalik",
+        "repo": "roslyn.nvim",
+        "rev": "5260ccf0fcfc3f5c4afbcba7d2f8e73fefa64baa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "konradmalik",
+        "repo": "roslyn.nvim",
+        "type": "github"
       }
     },
     "telescope-fzf-native-nvim": {
