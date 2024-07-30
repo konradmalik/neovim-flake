@@ -30,7 +30,7 @@ function M.start_server(cmd, on_start)
                 local log = require("vim.lsp.log")
                 if chunk and log.error() then log.error("rpc", "dotnet", "stderr", chunk) end
             end,
-            detach = false,
+            detach = true,
         })
     end
 end
