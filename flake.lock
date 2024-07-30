@@ -1313,11 +1313,11 @@
     "roslyn-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1722351347,
-        "narHash": "sha256-umzqpZvSjwJMSk3XQAinmWJ4J6FGA9PDiRWEgPtLcio=",
+        "lastModified": 1722374745,
+        "narHash": "sha256-NXV3oRlom4i2WTJl0YiAx2kDuTu9knmxrKJCTXz08q0=",
         "owner": "konradmalik",
         "repo": "roslyn.nvim",
-        "rev": "5260ccf0fcfc3f5c4afbcba7d2f8e73fefa64baa",
+        "rev": "b37c4d9495de2b5db5a0df9aea797a8eabddc436",
         "type": "github"
       },
       "original": {
