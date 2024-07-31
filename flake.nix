@@ -117,7 +117,7 @@
       flake = false;
     };
     roslyn-nvim = {
-      url = "github:konradmalik/roslyn.nvim";
+      url = "github:seblj/roslyn.nvim";
       flake = false;
     };
     telescope-fzf-native-nvim = {
