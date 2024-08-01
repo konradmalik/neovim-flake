@@ -1,5 +1,6 @@
 local binaries = require("pde.binaries")
 local dap = require("dap")
+
 dap.adapters.delve = {
     type = "server",
     port = "$${port}",

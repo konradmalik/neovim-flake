@@ -1,6 +1,6 @@
 local binaries = require("pde.binaries")
-local configs = require("pde.dap.configs")
 local dap = require("dap")
+local pickers = require("pde.dap.pickers")
 
 dap.adapters.coreclr = {
     type = "executable",
@@ -13,7 +13,7 @@ dap.configurations.cs = {
         type = "coreclr",
         name = "Launch netcoredbg",
         request = "launch",
-        program = configs.telescope_select("Path to dll", {
+        program = pickers.telescope_select("Path to dll", {
             "fd",
             "--hidden",
             "--no-ignore",
@@ -27,7 +27,7 @@ dap.configurations.cs = {
         type = "coreclr",
         name = "Launch netcoredbg (with args)",
         request = "launch",
-        program = configs.telescope_select("Path to dll", {
+        program = pickers.telescope_select("Path to dll", {
             "fd",
             "--hidden",
             "--no-ignore",

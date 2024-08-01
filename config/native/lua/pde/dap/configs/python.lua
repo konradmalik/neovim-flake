@@ -1,5 +1,6 @@
 local binaries = require("pde.binaries")
 local dap = require("dap")
+
 dap.adapters.debugpy = {
     type = "executable",
     command = binaries.debugpy(),
