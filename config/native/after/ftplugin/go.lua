@@ -5,6 +5,9 @@ vim.opt.expandtab = false
 local dap = require("pde.dap")
 local lsp = require("pde.lsp")
 
-lsp.init(require("pde.lsp.configs.gopls").config(bufnr), bufnr)
-lsp.init(require("pde.lsp.configs.efm").setup("golangci-lint", { "golangci_lint" }), bufnr)
+lsp.start(require("pde.lsp.configs.gopls").config(bufnr), { bufnr = bufnr })
+lsp.start(
+    require("pde.lsp.configs.efm").setup("golangci-lint", { "golangci_lint" }),
+    { bufnr = bufnr }
+)
 dap.init("go")

@@ -14,28 +14,27 @@ M.toggle_autostart = function() autostart_enabled = not autostart_enabled end
 
 function M.is_autostart_enabled() return autostart_enabled end
 
----@param lsp_config vim.lsp.ClientConfig
----@param bufnr integer|nil
-function M.init(lsp_config, bufnr)
+---Same arguments as vim.lsp.start
+--- @param config vim.lsp.ClientConfig Configuration for the server.
+--- @param opts vim.lsp.start.Opts? Optional keyword arguments
+--- @return integer? client_id
+function M.start(config, opts)
     if not autostart_enabled then
         vim.notify_once("LSP autostart is disabled", vim.log.levels.INFO)
         return
     end
 
-    bufnr = bufnr or vim.api.nvim_get_current_buf()
+    opts = opts or {}
+    opts.bufnr = opts.bufnr or vim.api.nvim_get_current_buf()
 
-    if not is_buf_readable_file(bufnr) then return end
+    if not is_buf_readable_file(opts.bufnr) then return end
 
-    local made_config = require("pde.lsp.configs").make_config(lsp_config)
-    local client_id = vim.lsp.start(made_config, {
-        bufnr = bufnr,
-        reuse_client = function(client, conf)
-            return client.name == conf.name and client.root_dir == conf.root_dir
-        end,
-    })
+    local made_config = require("pde.lsp.capabilities").merge_capabilities(config)
+    local client_id = vim.lsp.start(made_config, opts)
     if not client_id then
         vim.notify("cannot start lsp: " .. made_config.cmd[1], vim.log.levels.WARN)
     end
+    return client_id
 end
 
 do
