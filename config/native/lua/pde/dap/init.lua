@@ -1,4 +1,22 @@
-local setup = function()
+local initialize_once = function()
+    vim.cmd.packadd("nvim-dap")
+    -- nio is a dependency of nvim-dap-ui
+    vim.cmd.packadd("nvim-nio")
+    vim.cmd.packadd("nvim-dap-ui")
+    vim.cmd.packadd("nvim-dap-virtual-text")
+end
+
+local function load_configs()
+    require("pde.dap.configs.cs")
+    require("pde.dap.configs.go")
+    require("pde.dap.configs.python")
+end
+
+local M = {}
+
+function M.setup()
+    initialize_once()
+
     require("nvim-dap-virtual-text").setup({
         enabled = true,
         enabled_commands = true,
@@ -27,46 +45,8 @@ local setup = function()
     dap.listeners.before.launch.dapui_config = function() dapui.open() end
     dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
     dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
-end
 
-local initialized = false
-local initialize_once = function()
-    if initialized then return end
-
-    vim.cmd.packadd("nvim-dap")
-    -- nio is a dependency of nvim-dap-ui
-    vim.cmd.packadd("nvim-nio")
-    vim.cmd.packadd("nvim-dap-ui")
-    vim.cmd.packadd("nvim-dap-virtual-text")
-
-    setup()
-
-    initialized = true
-end
-
-local M = {}
-
---- Configure DAP by name
----
----Built-in names
----      - cs
----      - go
----      - python
---- If anything else, a whole configuration function needs to be provided.
----
----@param dap string|function - dap config name or a function that configures it
----@return nil
-M.init = function(dap)
-    initialize_once()
-
-    if type(dap) == "string" then
-        local found, _ = pcall(require, "pde.dap.configs." .. dap)
-        if not found then vim.notify("could not find DAP config for " .. dap) end
-    elseif type(dap) == "function" then
-        dap()
-    else
-        vim.notify("bad type for dap config: " .. vim.inspect(dap), vim.log.levels.ERROR)
-    end
+    load_configs()
 end
 
 return M

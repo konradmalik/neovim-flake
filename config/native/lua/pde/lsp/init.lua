@@ -37,46 +37,39 @@ function M.start(config, opts)
     return client_id
 end
 
-do
-    local initialized = false
-    function M.initialize_once()
-        if initialized then return end
+function M.initialize_once()
+    require("pde.lsp.commands")
 
-        require("pde.lsp.commands")
+    require("pde.lsp.progress")
+    local group = vim.api.nvim_create_augroup("personal-lsp", { clear = true })
 
-        require("pde.lsp.progress")
-        local group = vim.api.nvim_create_augroup("personal-lsp", { clear = true })
+    vim.api.nvim_create_autocmd("LspAttach", {
+        group = group,
+        callback = function(args)
+            local client_id = args.data.client_id
+            local client = vim.lsp.get_client_by_id(client_id)
+            local bufnr = args.buf
+            if client then
+                require("pde.lsp.event_handlers").attach(client, bufnr)
+            else
+                vim.notify("cannot find client " .. client_id, vim.log.levels.ERROR)
+            end
+        end,
+    })
 
-        vim.api.nvim_create_autocmd("LspAttach", {
-            group = group,
-            callback = function(args)
-                local client_id = args.data.client_id
-                local client = vim.lsp.get_client_by_id(client_id)
-                local bufnr = args.buf
-                if client then
-                    require("pde.lsp.event_handlers").attach(client, bufnr)
-                else
-                    vim.notify("cannot find client " .. client_id, vim.log.levels.ERROR)
-                end
-            end,
-        })
-
-        vim.api.nvim_create_autocmd("LspDetach", {
-            group = group,
-            callback = function(args)
-                local client_id = args.data.client_id
-                local client = vim.lsp.get_client_by_id(client_id)
-                local bufnr = args.buf
-                if client then
-                    require("pde.lsp.event_handlers").detach(client, bufnr)
-                else
-                    vim.notify("cannot find client " .. client_id, vim.log.levels.ERROR)
-                end
-            end,
-        })
-
-        initialized = true
-    end
+    vim.api.nvim_create_autocmd("LspDetach", {
+        group = group,
+        callback = function(args)
+            local client_id = args.data.client_id
+            local client = vim.lsp.get_client_by_id(client_id)
+            local bufnr = args.buf
+            if client then
+                require("pde.lsp.event_handlers").detach(client, bufnr)
+            else
+                vim.notify("cannot find client " .. client_id, vim.log.levels.ERROR)
+            end
+        end,
+    })
 end
 
 return M
