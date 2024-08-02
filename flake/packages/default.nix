@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ ... }:
 {
   perSystem =
     {
@@ -10,11 +10,7 @@
     let
       pluginsList = import ./plugins.nix {
         inherit (pkgs) vimUtils neovimUtils;
-        inherit
-          pkgs
-          lib
-          inputs
-          inputs'
+        inherit pkgs lib
           ;
         all-treesitter-grammars = pkgs.vimPlugins.nvim-treesitter.allGrammars;
       };

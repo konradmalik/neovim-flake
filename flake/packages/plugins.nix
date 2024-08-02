@@ -4,13 +4,13 @@
   vimUtils,
   neovimUtils,
   all-treesitter-grammars,
-  inputs,
-  inputs',
 }:
 # notes:
 # - pname matters for packadd only
 # - require() is not influenced by any of the names here
 let
+  npins = import ./../../npins;
+
   makePname =
     str:
     if lib.strings.hasSuffix "-nvim" str then
@@ -23,8 +23,8 @@ let
   buildVim =
     {
       input,
-      src ? inputs.${input},
-      version ? inputs.${input}.shortRev,
+      src ? npins.${input},
+      version ? npins.${input}.revision,
       nvimRequireCheck ? input,
       vimCommandCheck ? null,
       dependencies ? [ ],
@@ -43,8 +43,8 @@ let
   buildNeovim =
     {
       input,
-      src ? inputs.${input},
-      version ? inputs.${input}.shortRev,
+      src ? npins.${input},
+      version ? npins.${input}.revision,
       nvimRequireCheck ? input,
       dependencies ? [ ],
     }:
@@ -62,17 +62,16 @@ in
 # - does not work for src in buildVimPlugin
 # - plugins internally depend on vimUtils.plenary-nvim and similar either way
 let
-  inherit (inputs'.lz-n.packages) lz-n-vimPlugin;
   SchemaStore-nvim = buildVim {
-    input = "SchemaStore-nvim";
+    input = "SchemaStore.nvim";
     nvimRequireCheck = "schemastore";
   };
   bigfile-nvim = buildVim {
-    input = "bigfile-nvim";
+    input = "bigfile.nvim";
     nvimRequireCheck = "bigfile";
   };
   boole-nvim = buildVim {
-    input = "boole-nvim";
+    input = "boole.nvim";
     nvimRequireCheck = "boole";
   };
   cmp-buffer = buildVim {
@@ -100,26 +99,30 @@ let
     dependencies = [ luasnip ];
   };
   git-conflict-nvim = buildVim {
-    input = "git-conflict-nvim";
+    input = "git-conflict.nvim";
     nvimRequireCheck = "git-conflict";
   };
   gitsigns-nvim =
     (buildNeovim {
-      input = "gitsigns-nvim";
+      input = "gitsigns.nvim";
       nvimRequireCheck = "gitsigns";
     }).overrideAttrs
       { doInstallCheck = true; };
   kanagawa-nvim = buildVim {
-    input = "kanagawa-nvim";
+    input = "kanagawa.nvim";
     nvimRequireCheck = "kanagawa";
+  };
+  lz-n = buildVim {
+    input = "lz-n";
+    nvimRequireCheck = "lz.n";
   };
   luasnip = buildVim { input = "luasnip"; };
   neo-tree-nvim = buildVim {
-    input = "neo-tree-nvim";
+    input = "neo-tree.nvim";
     nvimRequireCheck = "neo-tree";
   };
   nui-nvim = buildNeovim {
-    input = "nui-nvim";
+    input = "nui.nvim";
     nvimRequireCheck = "nui.popup";
   };
   nvim-cmp = buildNeovim {
@@ -164,7 +167,7 @@ let
   nvim-web-devicons = buildVim { input = "nvim-web-devicons"; };
   plenary-nvim =
     (buildNeovim {
-      input = "plenary-nvim";
+      input = "plenary.nvim";
       nvimRequireCheck = "plenary";
     }).overrideAttrs
       {
@@ -174,12 +177,12 @@ let
         '';
       };
   roslyn-nvim = buildVim {
-    input = "roslyn-nvim";
+    input = "roslyn.nvim";
     nvimRequireCheck = "roslyn";
   };
   telescope-fzf-native-nvim =
     (buildVim {
-      input = "telescope-fzf-native-nvim";
+      input = "telescope-fzf-native.nvim";
       nvimRequireCheck = "telescope._extensions.fzf";
       dependencies = [
         telescope-nvim
@@ -188,7 +191,7 @@ let
     }).overrideAttrs
       { buildPhase = "make"; };
   telescope-ui-select-nvim = buildVim {
-    input = "telescope-ui-select-nvim";
+    input = "telescope-ui-select.nvim";
     nvimRequireCheck = "telescope._extensions.ui-select";
     dependencies = [
       telescope-nvim
@@ -196,11 +199,11 @@ let
     ];
   };
   telescope-nvim = buildNeovim {
-    input = "telescope-nvim";
+    input = "telescope.nvim";
     nvimRequireCheck = "telescope";
   };
   todo-comments-nvim = buildVim {
-    input = "todo-comments-nvim";
+    input = "todo-comments.nvim";
     nvimRequireCheck = "todo-comments";
   };
   undotree = buildVim {
@@ -214,7 +217,7 @@ let
     vimCommandCheck = "G";
   };
   which-key-nvim = buildVim {
-    input = "which-key-nvim";
+    input = "which-key.nvim";
     nvimRequireCheck = "which-key";
   };
 in
@@ -222,7 +225,7 @@ in
   # base
   nvim-web-devicons
   plenary-nvim
-  lz-n-vimPlugin
+  lz-n
   # treesitter
   {
     plugin = nvim-treesitter;
