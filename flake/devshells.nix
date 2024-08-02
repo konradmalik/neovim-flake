@@ -13,6 +13,7 @@
             (with pkgs; [
               stylua
               lua.pkgs.luacheck
+              npins
             ])
             ++ [
               self'.packages.nvim-typecheck
