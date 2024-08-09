@@ -857,24 +857,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-extra": {
-      "inputs": {
-        "nixpkgs": "nixpkgs_8"
-      },
-      "locked": {
-        "lastModified": 1722171597,
-        "narHash": "sha256-0YEASFMrW0SMfernq5o3H713sh0PoA7+tx0K75ZaSIo=",
-        "owner": "konradmalik",
-        "repo": "nixpkgs-extra",
-        "rev": "05f24df165724cd214c6ed7791b6ed44c5ded524",
-        "type": "github"
-      },
-      "original": {
-        "owner": "konradmalik",
-        "repo": "nixpkgs-extra",
-        "type": "github"
-      }
-    },
     "nixpkgs-lib": {
       "locked": {
         "lastModified": 1722555339,
@@ -1034,22 +1016,6 @@
       },
       "original": {
         "owner": "nixos",
-        "ref": "nixpkgs-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_8": {
-      "locked": {
-        "lastModified": 1722141560,
-        "narHash": "sha256-Ul3rIdesWaiW56PS/Ak3UlJdkwBrD4UcagCmXZR9Z7Y=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "038fb464fcfa79b4f08131b07f2d8c9a6bcc4160",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
         "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
         "type": "github"
@@ -1287,7 +1253,6 @@
         "neo-tree-nvim": "neo-tree-nvim",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs_7",
-        "nixpkgs-extra": "nixpkgs-extra",
         "nui-nvim": "nui-nvim",
         "nvim-cmp": "nvim-cmp",
         "nvim-dap": "nvim-dap",
