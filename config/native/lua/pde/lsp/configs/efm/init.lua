@@ -50,8 +50,9 @@ return {
     ---Build an LspConfig table from the specified EFM plugins
     ---@param name string unique name of this efm instance
     ---@param plugins string[] names of plugins to add, ex. 'prettier'
+    ---@param bufnr integer?
     ---@return vim.lsp.ClientConfig
-    setup = function(name, plugins)
+    setup = function(name, plugins, bufnr)
         ---@type table<string, EfmEntry[]>
         local languages = {}
         local allRootMarkers = { [".git/"] = true }
@@ -83,6 +84,7 @@ return {
 
         local rootMarkers = vim.tbl_keys(allRootMarkers)
 
+        bufnr = bufnr or 0
         return {
             name = name,
             cmd = { binaries.efm() },
@@ -94,6 +96,7 @@ return {
                 rootMarkers = rootMarkers,
                 languages = languages,
             },
+            root_dir = vim.fs.root(bufnr, { "flake.nix", ".git" }),
         }
     end,
 }
