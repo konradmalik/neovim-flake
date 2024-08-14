@@ -30,6 +30,9 @@ function M.start(config, opts)
     if not is_buf_readable_file(opts.bufnr) then return end
 
     local made_config = require("pde.lsp.capabilities").merge_capabilities(config)
+
+    if not made_config.root_dir then made_config.root_dir = vim.uv.os_tmpdir() end
+
     local client_id = vim.lsp.start(made_config, opts)
     if not client_id then
         vim.notify("cannot start lsp: " .. made_config.cmd[1], vim.log.levels.WARN)
