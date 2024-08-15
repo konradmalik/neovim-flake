@@ -51,9 +51,8 @@ function M.initialize_once()
         callback = function(args)
             local client_id = args.data.client_id
             local client = vim.lsp.get_client_by_id(client_id)
-            local bufnr = args.buf
             if client then
-                require("pde.lsp.event_handlers").attach(client, bufnr)
+                require("pde.lsp.event_handlers").attach(client, args.buf)
             else
                 vim.notify("cannot find client " .. client_id, vim.log.levels.ERROR)
             end
@@ -65,9 +64,8 @@ function M.initialize_once()
         callback = function(args)
             local client_id = args.data.client_id
             local client = vim.lsp.get_client_by_id(client_id)
-            local bufnr = args.buf
             if client then
-                require("pde.lsp.event_handlers").detach(client, bufnr)
+                require("pde.lsp.event_handlers").detach(client, args.buf)
             else
                 vim.notify("cannot find client " .. client_id, vim.log.levels.ERROR)
             end

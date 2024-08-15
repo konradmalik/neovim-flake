@@ -46,57 +46,68 @@ local function prepare_plugin(config)
     return config
 end
 
+---Build an LspConfig table from the specified EFM plugins
+---@param name string unique name of this efm instance
+---@param plugins string[] names of plugins to add, ex. 'prettier'
+---@param bufnr integer?
+---@return vim.lsp.ClientConfig
+local function build(name, plugins, bufnr)
+    ---@type table<string, EfmEntry[]>
+    local languages = {}
+    local allRootMarkers = { [".git/"] = true }
+    local formattingEnabled = false
+    local rangeFormattingEnabled = false
+
+    for _, v in ipairs(plugins) do
+        ---@type EfmPlugin
+        local plugin = prepare_plugin(require("pde.lsp.configs.efm." .. v))
+        local languages_entry = make_languages_entry_for_plugin(plugin)
+        for key, value in pairs(languages_entry) do
+            if not languages[key] then languages[key] = {} end
+            table.insert(languages[key], value)
+        end
+
+        if plugin.entry.rootMarkers then
+            for _, marker in ipairs(plugin.entry.rootMarkers) do
+                allRootMarkers[marker] = true
+            end
+        end
+
+        if not formattingEnabled and plugin.entry.formatCommand then formattingEnabled = true end
+        if not rangeFormattingEnabled and plugin.entry.formatCanRange then
+            rangeFormattingEnabled = true
+        end
+    end
+
+    local rootMarkers = vim.tbl_keys(allRootMarkers)
+
+    bufnr = bufnr or 0
+    return {
+        name = name,
+        cmd = { binaries.efm() },
+        init_options = {
+            documentFormatting = formattingEnabled,
+            documentRangeFormatting = rangeFormattingEnabled,
+        },
+        settings = {
+            rootMarkers = rootMarkers,
+            languages = languages,
+        },
+        root_dir = vim.fs.root(bufnr, { ".git" }),
+    }
+end
+
 return {
+    ---Build an LspConfig table from the specified EFM plugin
+    ---@param plugin string unique name of this efm instance
+    ---@param bufnr integer?
+    ---@return vim.lsp.ClientConfig
+    config_from_single = function(plugin, bufnr) return build(plugin, { plugin }, bufnr) end,
+
     ---Build an LspConfig table from the specified EFM plugins
     ---@param name string unique name of this efm instance
     ---@param plugins string[] names of plugins to add, ex. 'prettier'
     ---@param bufnr integer?
     ---@return vim.lsp.ClientConfig
-    setup = function(name, plugins, bufnr)
-        ---@type table<string, EfmEntry[]>
-        local languages = {}
-        local allRootMarkers = { [".git/"] = true }
-        local formattingEnabled = false
-        local rangeFormattingEnabled = false
-
-        for _, v in ipairs(plugins) do
-            ---@type EfmPlugin
-            local plugin = prepare_plugin(require("pde.lsp.configs.efm." .. v))
-            local languages_entry = make_languages_entry_for_plugin(plugin)
-            for key, value in pairs(languages_entry) do
-                if not languages[key] then languages[key] = {} end
-                table.insert(languages[key], value)
-            end
-
-            if plugin.entry.rootMarkers then
-                for _, marker in ipairs(plugin.entry.rootMarkers) do
-                    allRootMarkers[marker] = true
-                end
-            end
-
-            if not formattingEnabled and plugin.entry.formatCommand then
-                formattingEnabled = true
-            end
-            if not rangeFormattingEnabled and plugin.entry.formatCanRange then
-                rangeFormattingEnabled = true
-            end
-        end
-
-        local rootMarkers = vim.tbl_keys(allRootMarkers)
-
-        bufnr = bufnr or 0
-        return {
-            name = name,
-            cmd = { binaries.efm() },
-            init_options = {
-                documentFormatting = formattingEnabled,
-                documentRangeFormatting = rangeFormattingEnabled,
-            },
-            settings = {
-                rootMarkers = rootMarkers,
-                languages = languages,
-            },
-            root_dir = vim.fs.root(bufnr, { "flake.nix", ".git" }),
-        }
-    end,
+    config_from_multi = function(name, plugins, bufnr) return build(name, plugins, bufnr) end,
 }

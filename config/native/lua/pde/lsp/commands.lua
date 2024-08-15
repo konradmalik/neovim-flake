@@ -31,7 +31,7 @@ local function restart_servers(filter)
                 local attached_buffers = tuple[2]
                 if client.is_stopped() then
                     for _, buf in ipairs(attached_buffers) do
-                        lsp.start(client.config, buf)
+                        lsp.start(client.config, { bufnr = buf })
                     end
                     detach_clients[old_client_id] = nil
                 end
