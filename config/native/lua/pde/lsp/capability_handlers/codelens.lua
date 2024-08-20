@@ -21,7 +21,7 @@ return {
             desc = "Enable/disable codelens with lsp",
         })
 
-        vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "CursorHold", "InsertLeave" }, {
+        vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
             group = augroup,
             buffer = bufnr,
             callback = function()
