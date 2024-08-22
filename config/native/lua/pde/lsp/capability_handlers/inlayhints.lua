@@ -1,4 +1,4 @@
-local inlayhints_is_enabled = true
+local inlayhints_is_enabled = false
 
 ---@type CapabilityHandler
 return {
