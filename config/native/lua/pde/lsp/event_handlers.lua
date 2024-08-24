@@ -57,6 +57,15 @@ M.attach = function(client, bufnr)
         client = client,
     }
 
+    if client_buf_supports_method(ms.textDocument_completion) then
+        local completion = require("pde.lsp.completion")
+        completion.enable(client, bufnr)
+
+        if client_buf_supports_method(ms.completionItem_resolve) then
+            completion.enable_completion_documentation(client, augroup, bufnr)
+        end
+    end
+
     if client_buf_supports_method(ms.textDocument_hover) then
         vim.keymap.set("n", "K", vim.lsp.buf.hover, opts_with_desc("Hover Documentation"))
     end

@@ -88,6 +88,10 @@ local function build(name, plugins, bufnr)
         init_options = {
             documentFormatting = formattingEnabled,
             documentRangeFormatting = rangeFormattingEnabled,
+            hover = false,
+            documentSymbol = false,
+            codeAction = false,
+            completion = false,
         },
         settings = {
             rootMarkers = rootMarkers,
