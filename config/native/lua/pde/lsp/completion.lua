@@ -1,16 +1,23 @@
 local docs_debounce_ms = 500
 local timer = vim.uv.new_timer()
-if not timer then
-    vim.notify("cannot create timer", vim.log.levels.ERROR)
-    return {}
-end
 
 local M = {}
+
+---@param client vim.lsp.Client
+---@param bufnr integer
+M.enable = function(client, bufnr)
+    vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
+end
 
 ---@param client vim.lsp.Client
 ---@param augroup integer
 ---@param bufnr integer
 M.enable_completion_documentation = function(client, augroup, bufnr)
+    if not timer then
+        vim.notify("cannot create timer", vim.log.levels.ERROR)
+        return {}
+    end
+
     vim.api.nvim_create_autocmd("CompleteChanged", {
         group = augroup,
         buffer = bufnr,
@@ -24,6 +31,9 @@ M.enable_completion_documentation = function(client, augroup, bufnr)
             local completion_item =
                 vim.tbl_get(vim.v.completed_item, "user_data", "nvim", "lsp", "completion_item")
             if not completion_item then return end
+
+            local complete_info = vim.fn.complete_info({ "selected" })
+            if vim.tbl_isempty(complete_info) then return end
 
             timer:start(
                 docs_debounce_ms,
@@ -43,14 +53,11 @@ M.enable_completion_documentation = function(client, augroup, bufnr)
                                 return
                             end
 
-                            local info = vim.fn.complete_info({ "selected" })
-                            if vim.tbl_isempty(info) then return end
-
                             local docs = vim.tbl_get(result, "documentation", "value")
                             if not docs then return end
 
                             local wininfo =
-                                vim.api.nvim__complete_set(info.selected, { info = docs })
+                                vim.api.nvim__complete_set(complete_info.selected, { info = docs })
                             if
                                 vim.tbl_isempty(wininfo)
                                 or not vim.api.nvim_win_is_valid(wininfo.winid)
@@ -74,11 +81,4 @@ M.enable_completion_documentation = function(client, augroup, bufnr)
         end,
     })
 end
-
----@param client vim.lsp.Client
----@param bufnr integer
-M.enable = function(client, bufnr)
-    vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
-end
-
 return M
