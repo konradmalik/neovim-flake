@@ -4,7 +4,7 @@ local highlight = "Normal:NonText"
 local keep_done_message_ms = 2000
 local timer = vim.uv.new_timer()
 if not timer then
-    vim.notify("cannot start timer", vim.log.levels.ERROR)
+    vim.notify("cannot create timer", vim.log.levels.ERROR)
     return
 end
 -- Buffer number and window id for the floating window
