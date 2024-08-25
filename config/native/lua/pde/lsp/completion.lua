@@ -67,7 +67,7 @@ M.enable_completion_documentation = function(client, augroup, bufnr)
 
                             vim.api.nvim_win_set_config(wininfo.winid, { border = "rounded" })
                             vim.wo[wininfo.winid].conceallevel = 2
-                            vim.wo[wininfo.winid].concealcursor = "niv"
+                            vim.wo[wininfo.winid].concealcursor = "n"
 
                             if not vim.api.nvim_buf_is_valid(wininfo.bufnr) then return end
 
