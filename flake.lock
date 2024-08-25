@@ -322,22 +322,6 @@
         "type": "indirect"
       }
     },
-    "friendly-snippets": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1721003887,
-        "narHash": "sha256-kwGyfXZ+jZ3PIniESUGBltBm2fRXV5ArNhSo+zosdco=",
-        "owner": "rafamadriz",
-        "repo": "friendly-snippets",
-        "rev": "00ebcaa159e817150bd83bfe2d51fa3b3377d5c4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "rafamadriz",
-        "repo": "friendly-snippets",
-        "type": "github"
-      }
-    },
     "gen-luarc": {
       "inputs": {
         "flake-parts": "flake-parts_3",
@@ -618,22 +602,6 @@
       "original": {
         "owner": "rebelot",
         "repo": "kanagawa.nvim",
-        "type": "github"
-      }
-    },
-    "luasnip": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1724185291,
-        "narHash": "sha256-zPygc/M446bMdgK9Zy05HZKLrIy2bC9KSd+Xoghy980=",
-        "owner": "L3MON4D3",
-        "repo": "LuaSnip",
-        "rev": "7ad2eaeaca56d6ed63acacbfc114b99f1f67b982",
-        "type": "github"
-      },
-      "original": {
-        "owner": "L3MON4D3",
-        "repo": "LuaSnip",
         "type": "github"
       }
     },
@@ -1160,11 +1128,9 @@
         "bigfile-nvim": "bigfile-nvim",
         "boole-nvim": "boole-nvim",
         "flake-parts": "flake-parts",
-        "friendly-snippets": "friendly-snippets",
         "git-conflict-nvim": "git-conflict-nvim",
         "gitsigns-nvim": "gitsigns-nvim",
         "kanagawa-nvim": "kanagawa-nvim",
-        "luasnip": "luasnip",
         "lz-n": "lz-n",
         "neo-tree-nvim": "neo-tree-nvim",
         "neovim-nightly-overlay": "neovim-nightly-overlay",

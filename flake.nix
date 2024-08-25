@@ -23,10 +23,6 @@
       url = "github:nat-418/boole.nvim";
       flake = false;
     };
-    friendly-snippets = {
-      url = "github:rafamadriz/friendly-snippets";
-      flake = false;
-    };
     git-conflict-nvim = {
       url = "github:konradmalik/git-conflict.nvim";
       flake = false;
@@ -37,10 +33,6 @@
     };
     kanagawa-nvim = {
       url = "github:rebelot/kanagawa.nvim";
-      flake = false;
-    };
-    luasnip = {
-      url = "github:L3MON4D3/LuaSnip";
       flake = false;
     };
     lz-n = {

@@ -75,11 +75,6 @@ let
     input = "boole-nvim";
     nvimRequireCheck = "boole";
   };
-  friendly-snippets = buildVim {
-    input = "friendly-snippets";
-    nvimRequireCheck = "luasnip.loaders.from_vscode";
-    dependencies = [ luasnip ];
-  };
   git-conflict-nvim = buildVim {
     input = "git-conflict-nvim";
     nvimRequireCheck = "git-conflict";
@@ -94,7 +89,6 @@ let
     input = "kanagawa-nvim";
     nvimRequireCheck = "kanagawa";
   };
-  luasnip = buildVim { input = "luasnip"; };
   neo-tree-nvim = buildVim {
     input = "neo-tree-nvim";
     nvimRequireCheck = "neo-tree";
@@ -210,12 +204,6 @@ in
       }
       nvim-treesitter-textobjects
     ];
-  }
-  # snippets
-  {
-    plugin = luasnip;
-    optional = true;
-    deps = [ friendly-snippets ];
   }
   # LSP
   {
