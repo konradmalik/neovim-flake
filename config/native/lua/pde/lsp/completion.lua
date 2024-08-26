@@ -84,7 +84,7 @@ M.enable = function(client, bufnr)
     -- If there's none, fallback to vanilla omnifunc.
     -- if there's none, use buffer completion
     keymap("i", "<C-Space>", function()
-        if next(vim.lsp.get_clients({ bufnr = bufnr })) then
+        if next(vim.lsp.get_clients({ bufnr = bufnr, id = client.id })) then
             vim.lsp.completion.trigger()
         else
             if vim.bo.omnifunc == "" then
