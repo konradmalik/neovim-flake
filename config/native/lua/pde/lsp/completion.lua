@@ -1,5 +1,7 @@
-local docs_debounce_ms = 500
-local timer = vim.uv.new_timer()
+local docs_debounce_ms = 250
+local docs_timer = assert(vim.uv.new_timer(), "cannot create timer")
+local trigger_debounce_ms = 250
+local trigger_timer = assert(vim.uv.new_timer(), "cannot create timer")
 
 local kinds = {
     Text = "󰉿",
@@ -42,7 +44,7 @@ local function pumvisible() return tonumber(vim.fn.pumvisible()) ~= 0 end
 
 ---@param keys string
 local function feedkeys(keys)
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), "n", true)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), "n", false)
 end
 
 local M = {}
@@ -69,15 +71,20 @@ M.enable = function(client, bufnr)
     -- completion is triggered only on inserting new characters,
     -- if we delete char to adjust the match, popup disappears
     -- this solves it
-    for _, keys in ipairs({ "<BS>", "<C-h>" }) do
+    for _, keys in ipairs({ "<BS>", "<C-h>", "<C-w>" }) do
         keymap("i", keys, function()
             if pumvisible() then
+                trigger_timer:stop()
                 feedkeys(keys)
-                vim.lsp.completion.trigger()
+                trigger_timer:start(
+                    trigger_debounce_ms,
+                    0,
+                    vim.schedule_wrap(vim.lsp.completion.trigger)
+                )
                 return
             end
             feedkeys(keys)
-        end, "Remove previous character and trigger LSP completion if needed")
+        end, "Feed '" .. keys .. "' and trigger LSP completion if needed")
     end
 
     -- Trigger LSP completion.
@@ -100,16 +107,11 @@ end
 ---@param augroup integer
 ---@param bufnr integer
 M.enable_completion_documentation = function(client, augroup, bufnr)
-    if not timer then
-        vim.notify("cannot create timer", vim.log.levels.ERROR)
-        return {}
-    end
-
     vim.api.nvim_create_autocmd("CompleteChanged", {
         group = augroup,
         buffer = bufnr,
         callback = function()
-            timer:stop()
+            docs_timer:stop()
 
             local client_id =
                 vim.tbl_get(vim.v.completed_item, "user_data", "nvim", "lsp", "client_id")
@@ -122,7 +124,7 @@ M.enable_completion_documentation = function(client, augroup, bufnr)
             local complete_info = vim.fn.complete_info({ "selected" })
             if vim.tbl_isempty(complete_info) then return end
 
-            timer:start(
+            docs_timer:start(
                 docs_debounce_ms,
                 0,
                 vim.schedule_wrap(function()

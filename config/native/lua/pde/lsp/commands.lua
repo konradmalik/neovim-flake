@@ -20,8 +20,7 @@ local function restart_servers(filter)
         client.stop()
     end
 
-    local timer = vim.uv.new_timer()
-    if not timer then error("cannot create timer", vim.log.levels.ERROR) end
+    local timer = assert(vim.uv.new_timer(), "cannot create timer")
     timer:start(
         500,
         100,
@@ -79,6 +78,7 @@ local function lsp_info()
         if type(client.config.cmd) == "function" then
             cmd_str = "fun(dispatchers)"
         else
+            ---@diagnostic disable-next-line: param-type-mismatch
             cmd_str = table.concat(client.config.cmd, " ")
         end
         table.insert(replacement, cmd_str)
