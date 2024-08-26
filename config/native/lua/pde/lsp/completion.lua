@@ -1,11 +1,49 @@
 local docs_debounce_ms = 500
 local timer = vim.uv.new_timer()
 
+local kinds = {
+    Text = "󰉿",
+    Method = "󰆧",
+    Function = "󰊕",
+    Constructor = "",
+    Field = "󰜢",
+    Variable = "󰀫",
+    Class = "󰠱",
+    Interface = "",
+    Module = "",
+    Property = "󰜢",
+    Unit = "󰑭",
+    Value = "󰎠",
+    Enum = "",
+    Keyword = "󰌋",
+    Snippet = "",
+    Color = "󰏘",
+    File = "󰈙",
+    Reference = "󰈇",
+    Folder = "󰉋",
+    EnumMember = "",
+    Constant = "󰏿",
+    Struct = "󰙅",
+    Event = "",
+    Operator = "󰆕",
+    TypeParameter = "",
+}
+
+local initialized = false
+local function initialize_once()
+    if initialized then return end
+    for i, v in ipairs(vim.lsp.protocol.CompletionItemKind) do
+        vim.lsp.protocol.CompletionItemKind[i] = kinds[v]
+    end
+    initialized = true
+end
+
 local M = {}
 
 ---@param client vim.lsp.Client
 ---@param bufnr integer
 M.enable = function(client, bufnr)
+    initialize_once()
     vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
 end
 
