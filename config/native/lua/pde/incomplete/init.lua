@@ -40,7 +40,6 @@ function M.completefunc(findstart, base)
                 info = "when you have enough",
             },
         },
-        refresh = "always",
     }
 end
 
