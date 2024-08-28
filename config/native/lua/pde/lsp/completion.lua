@@ -40,7 +40,13 @@ local function initialize_once()
     initialized = true
 end
 
+---@return boolean
 local function pumvisible() return tonumber(vim.fn.pumvisible()) ~= 0 end
+
+---@param docs string
+---@param client vim.lsp.Client
+---@return string
+local function format_docs(docs, client) return docs .. "\n\n_source: " .. client.name .. "_" end
 
 ---@param keys string
 local function feedkeys(keys)
@@ -145,8 +151,10 @@ M.enable_completion_documentation = function(client, augroup, bufnr)
                             local docs = vim.tbl_get(result, "documentation", "value")
                             if not docs then return end
 
-                            local wininfo =
-                                vim.api.nvim__complete_set(complete_info.selected, { info = docs })
+                            local wininfo = vim.api.nvim__complete_set(
+                                complete_info.selected,
+                                { info = format_docs(docs, client) }
+                            )
                             if
                                 vim.tbl_isempty(wininfo)
                                 or not vim.api.nvim_win_is_valid(wininfo.winid)
