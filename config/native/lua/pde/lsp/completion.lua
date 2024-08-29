@@ -2,6 +2,9 @@ local docs_debounce_ms = 250
 local docs_timer = assert(vim.uv.new_timer(), "cannot create timer")
 local trigger_debounce_ms = 250
 local trigger_timer = assert(vim.uv.new_timer(), "cannot create timer")
+-- some LSPs for some reason say they have completionItem_resolve capability
+-- but then throw errors when this is executed (I look at you gopls)
+local documentation_is_enabled = true
 
 local kinds = {
     Text = "󰉿",
@@ -113,10 +116,19 @@ end
 ---@param augroup integer
 ---@param bufnr integer
 M.enable_completion_documentation = function(client, augroup, bufnr)
+    vim.api.nvim_buf_create_user_command(bufnr, "CompletionDocumentationToggle", function()
+        documentation_is_enabled = not documentation_is_enabled
+        print("Setting completion documentation to: " .. tostring(documentation_is_enabled))
+    end, {
+        desc = "Enable/disable completion documentation popup",
+    })
+
     vim.api.nvim_create_autocmd("CompleteChanged", {
         group = augroup,
         buffer = bufnr,
         callback = function()
+            if not documentation_is_enabled then return end
+
             docs_timer:stop()
 
             local client_id =
