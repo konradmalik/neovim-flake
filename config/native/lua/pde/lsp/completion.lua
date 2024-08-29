@@ -116,13 +116,6 @@ end
 ---@param augroup integer
 ---@param bufnr integer
 M.enable_completion_documentation = function(client, augroup, bufnr)
-    vim.api.nvim_buf_create_user_command(bufnr, "CompletionDocumentationToggle", function()
-        documentation_is_enabled = not documentation_is_enabled
-        print("Setting completion documentation to: " .. tostring(documentation_is_enabled))
-    end, {
-        desc = "Enable/disable completion documentation popup",
-    })
-
     vim.api.nvim_create_autocmd("CompleteChanged", {
         group = augroup,
         buffer = bufnr,
@@ -154,9 +147,14 @@ M.enable_completion_documentation = function(client, augroup, bufnr)
                         function(err, result)
                             if err ~= nil then
                                 vim.notify(
-                                    "client " .. client.id .. vim.inspect(err),
-                                    vim.log.levels.ERROR
+                                    "Error from client "
+                                        .. client.id
+                                        .. " when getting documentation\n"
+                                        .. vim.inspect(err),
+                                    vim.log.levels.WARN
                                 )
+                                -- at this stage just disable it
+                                documentation_is_enabled = false
                                 return
                             end
 
