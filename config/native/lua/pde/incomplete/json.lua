@@ -28,7 +28,7 @@ function M.convert(snips)
         ---@type CompleteItem
         return {
             word = value.prefix,
-            menu = "snippet",
+            menu = "󰩫",
             info = value.description,
             user_data = { incomplete = value },
         }
