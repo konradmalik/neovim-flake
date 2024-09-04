@@ -1,24 +1,17 @@
-local loaded_snippets = {
-    all = {
-        shrug = {
-            body = "¯\\_(ツ)_/¯",
-            prefix = "shrug",
-            description = "when you have nothing better to say",
-        },
-        rageflip = {
-            body = "(╯°□°)╯彡┻━┻",
-            prefix = "rageflip",
-            description = "when you have enough",
-        },
-    },
-}
-
 local M = {}
 
---TODO actually load from somewhere
 ---@param ft string filetype or "all" for non-filetype specific
 ---@return table[]
-function M.load_for(ft) return loaded_snippets[ft] end
+function M.load_for(ft)
+    local jsons = vim.api.nvim_get_runtime_file("snippets/**/" .. ft .. ".json", true)
+    return vim.iter(jsons)
+        :map(function(file)
+            local lines = vim.fn.readfile(file)
+            local str = table.concat(lines, "")
+            return vim.json.decode(str)
+        end)
+        :fold({}, function(acc, v) return vim.tbl_deep_extend("force", acc, v) end)
+end
 
 ---converts json snippets into incomplete
 ---@param snips table<string, table>[]

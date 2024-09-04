@@ -49,16 +49,26 @@ function M.setup()
     vim.o.completefunc = "v:lua.require'pde.incomplete'.completefunc"
 end
 
----comment
+---@param what string
 ---@return CompleteItem[]
-local function build_cache()
+local function build_cache_for(what)
     local json = require("pde.incomplete.json")
-    local loaded = json.load_for("all")
+    local loaded = json.load_for(what)
     return json.convert(loaded)
 end
 
 do
-    local cached_snippets
+    ---@type table<string,CompleteItem[]>
+    local cached_snippets = {}
+
+    ---uses or populates cache and injects data into target
+    ---this mutates gathered_snippets
+    ---@param what string
+    ---@param target table[] will be mutated
+    local function inject_snippets_for(what, target)
+        if not cached_snippets[what] then cached_snippets[what] = build_cache_for(what) end
+        vim.list_extend(target, cached_snippets[what])
+    end
 
     ---Exemplary stuff for fun and learning
     ---@param findstart integer
@@ -72,11 +82,18 @@ do
             return -1
         end
 
-        if not cached_snippets then cached_snippets = build_cache() end
+        local bufnr = vim.api.nvim_get_current_buf()
+        local ft = vim.bo[bufnr].filetype
+
+        local gathered_snippets = {}
+
+        if ft and ft ~= "" then inject_snippets_for(ft, gathered_snippets) end
+
+        inject_snippets_for("all", gathered_snippets)
 
         return {
             ---@type CompleteItem[]
-            words = cached_snippets,
+            words = gathered_snippets,
         }
     end
 end
