@@ -23,6 +23,7 @@ local function handle_accepted_snippet(completed_item)
     local row, col = cursor[1] - 1, cursor[2]
     -- need to remove just inserted, unexpanded word
     vim.api.nvim_buf_set_text(vim.api.nvim_get_current_buf(), row, col - #word, row, col, {})
+    if type(body) == "table" then body = table.concat(body, "\n") end
     -- this adds the text directly
     vim.snippet.expand(body)
 end
@@ -66,7 +67,7 @@ do
         vim.list_extend(target, cached_snippets[what])
     end
 
-    ---Exemplary stuff for fun and learning
+    ---completefunc implementation that serves snippets
     ---@param findstart integer
     ---@param base string
     ---@return integer|CompleteItem

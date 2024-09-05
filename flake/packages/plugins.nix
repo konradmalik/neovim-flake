@@ -75,6 +75,10 @@ let
     input = "boole-nvim";
     nvimRequireCheck = "boole";
   };
+  friendly-snippets = buildVim {
+    input = "friendly-snippets";
+    nvimRequireCheck = null;
+  };
   git-conflict-nvim = buildVim {
     input = "git-conflict-nvim";
     nvimRequireCheck = "git-conflict";
@@ -266,6 +270,8 @@ in
     optional = true;
     deps = [ plenary-nvim ];
   }
+  # snippets
+  friendly-snippets
   # misc
   bigfile-nvim
   {

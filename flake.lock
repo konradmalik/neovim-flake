@@ -356,6 +356,22 @@
         "type": "indirect"
       }
     },
+    "friendly-snippets": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1721003887,
+        "narHash": "sha256-kwGyfXZ+jZ3PIniESUGBltBm2fRXV5ArNhSo+zosdco=",
+        "owner": "rafamadriz",
+        "repo": "friendly-snippets",
+        "rev": "00ebcaa159e817150bd83bfe2d51fa3b3377d5c4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rafamadriz",
+        "repo": "friendly-snippets",
+        "type": "github"
+      }
+    },
     "gen-luarc": {
       "inputs": {
         "flake-parts": "flake-parts_3",
@@ -1279,6 +1295,7 @@
         "bigfile-nvim": "bigfile-nvim",
         "boole-nvim": "boole-nvim",
         "flake-parts": "flake-parts",
+        "friendly-snippets": "friendly-snippets",
         "git-conflict-nvim": "git-conflict-nvim",
         "gitsigns-nvim": "gitsigns-nvim",
         "kanagawa-nvim": "kanagawa-nvim",

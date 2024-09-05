@@ -23,6 +23,10 @@
       url = "github:nat-418/boole.nvim";
       flake = false;
     };
+    friendly-snippets = {
+      url = "github:rafamadriz/friendly-snippets";
+      flake = false;
+    };
     git-conflict-nvim = {
       url = "github:konradmalik/git-conflict.nvim";
       flake = false;
