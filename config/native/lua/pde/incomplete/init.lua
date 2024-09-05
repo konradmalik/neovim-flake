@@ -51,11 +51,7 @@ end
 
 ---@param what string
 ---@return CompleteItem[]
-local function build_cache_for(what)
-    local json = require("pde.incomplete.json")
-    local loaded = json.load_for(what)
-    return json.convert(loaded)
-end
+local function build_cache_for(what) return require("pde.incomplete.json").load_for(what) end
 
 do
     ---@type table<string,CompleteItem[]>

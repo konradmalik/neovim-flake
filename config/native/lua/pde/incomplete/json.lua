@@ -1,10 +1,6 @@
-local M = {}
-
----Reads snippets from json files (files must be in snippets/<ft>.json)
----and from folders (snippets/<ft>/**/<anyname>.json)
 ---@param ft string filetype or "all" for non-filetype specific
 ---@return table[]
-function M.load_for(ft)
+local function read(ft)
     local jsons = vim.api.nvim_get_runtime_file("snippets/" .. ft .. ".json", true)
     vim.list_extend(jsons, vim.api.nvim_get_runtime_file("snippets/" .. ft .. "/**/*.json", true))
     return vim.iter(jsons)
@@ -19,7 +15,7 @@ end
 ---converts json snippets into incomplete
 ---@param snips table<string, table>[]
 ---@return CompleteItem[]
-function M.convert(snips)
+local function convert(snips)
     return vim.tbl_values(vim.tbl_map(function(value)
         ---@type CompleteItem
         return {
@@ -29,6 +25,17 @@ function M.convert(snips)
             user_data = { incomplete = value },
         }
     end, snips))
+end
+
+local M = {}
+
+---Reads snippets from json files (files must be in snippets/<ft>.json)
+---and from folders (snippets/<ft>/**/<anyname>.json)
+---@param ft string filetype or "all" for non-filetype specific
+---@return table[]
+function M.load_for(ft)
+    local snips = read(ft)
+    return convert(snips)
 end
 
 return M
