@@ -9,6 +9,16 @@
 ---@field words string|CompleteItem
 ---@field refresh? "always"|nil
 
+--- needed for friendly-snippets
+--- if something's not here, the original ft will be used
+local additional_loads = {
+    cs = { "csharp" },
+}
+
+---@param what string
+---@return CompleteItem[]
+local function build_cache_for(what) return require("pde.incomplete.json").load_for(what) end
+
 ---@param completed_item {word: string}
 local function handle_accepted_snippet(completed_item)
     local word = completed_item.word ---@type string
@@ -50,10 +60,6 @@ function M.setup()
     vim.o.completefunc = "v:lua.require'pde.incomplete'.completefunc"
 end
 
----@param what string
----@return CompleteItem[]
-local function build_cache_for(what) return require("pde.incomplete.json").load_for(what) end
-
 do
     ---@type table<string,CompleteItem[]>
     local cached_snippets = {}
@@ -80,11 +86,15 @@ do
         end
 
         local bufnr = vim.api.nvim_get_current_buf()
-        local ft = vim.bo[bufnr].filetype
+        local orig_ft = vim.bo[bufnr].filetype
+        local all_ft = additional_loads[orig_ft] or {}
+        table.insert(all_ft, orig_ft)
 
         local gathered_snippets = {}
 
-        if ft and ft ~= "" then inject_snippets_for(ft, gathered_snippets) end
+        for _, ft in ipairs(all_ft) do
+            if ft ~= "" then inject_snippets_for(ft, gathered_snippets) end
+        end
 
         inject_snippets_for("all", gathered_snippets)
 
