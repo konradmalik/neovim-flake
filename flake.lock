@@ -689,6 +689,22 @@
         "type": "github"
       }
     },
+    "incomplete-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1726648149,
+        "narHash": "sha256-yxJLIu2c1y6Wsu1w63mLsp9lrwN7mIrnYjFaVr1IUuY=",
+        "owner": "konradmalik",
+        "repo": "incomplete.nvim",
+        "rev": "88339e4b2e1d5b6374724bafea71f334ceaeccb1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "konradmalik",
+        "repo": "incomplete.nvim",
+        "type": "github"
+      }
+    },
     "kanagawa-nvim": {
       "flake": false,
       "locked": {
@@ -1298,6 +1314,7 @@
         "friendly-snippets": "friendly-snippets",
         "git-conflict-nvim": "git-conflict-nvim",
         "gitsigns-nvim": "gitsigns-nvim",
+        "incomplete-nvim": "incomplete-nvim",
         "kanagawa-nvim": "kanagawa-nvim",
         "lz-n": "lz-n",
         "neo-tree-nvim": "neo-tree-nvim",

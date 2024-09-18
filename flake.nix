@@ -35,6 +35,10 @@
       url = "github:lewis6991/gitsigns.nvim";
       flake = false;
     };
+    incomplete-nvim = {
+      url = "github:konradmalik/incomplete.nvim";
+      flake = false;
+    };
     kanagawa-nvim = {
       url = "github:rebelot/kanagawa.nvim";
       flake = false;

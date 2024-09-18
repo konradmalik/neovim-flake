@@ -89,6 +89,10 @@ let
       nvimRequireCheck = "gitsigns";
     }).overrideAttrs
       { doInstallCheck = true; };
+  incomplete-nvim = buildVim {
+    input = "incomplete-nvim";
+    nvimRequireCheck = "incomplete";
+  };
   kanagawa-nvim = buildVim {
     input = "kanagawa-nvim";
     nvimRequireCheck = "kanagawa";
@@ -271,7 +275,10 @@ in
     deps = [ plenary-nvim ];
   }
   # snippets
-  friendly-snippets
+  {
+    plugin = incomplete-nvim;
+    deps = [ friendly-snippets ];
+  }
   # misc
   bigfile-nvim
   {
