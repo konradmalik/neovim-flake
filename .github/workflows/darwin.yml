@@ -16,10 +16,6 @@ jobs:
           extra_nix_config: |
             accept-flake-config = true
       - name: Flake check
-        env:
-          # workaround for segfaults
-          # https://github.com/NixOS/nix/issues/4246
-          GC_DONT_GC: 1
         run: nix flake check
 
   build-shell:
