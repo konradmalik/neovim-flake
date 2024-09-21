@@ -4,10 +4,9 @@ require("pde.loader")
 require("pde.colorscheme")
 
 -- exrc (.nvim.lua)
-vim.opt.exrc = true
+vim.o.exrc = true
 
 -- map leader
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+vim.g.mapleader = vim.keycode("<Space>")
 
 require("pde.globals")

@@ -1,6 +1,6 @@
 local bufnr = vim.api.nvim_get_current_buf()
 
-vim.opt.expandtab = false
+vim.o.expandtab = false
 
 local lsp = require("pde.lsp")
 

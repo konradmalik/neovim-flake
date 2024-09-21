@@ -1,12 +1,12 @@
 -- Make line numbers default
-vim.opt.number = true
+vim.o.number = true
 -- Relative line numbers
-vim.opt.relativenumber = true
+vim.o.relativenumber = true
 
 vim.api.nvim_create_user_command(
     "LineNumberToggle",
     ---@diagnostic disable-next-line: undefined-field
-    function() vim.opt.relativenumber = not vim.opt.relativenumber:get() end,
+    function() vim.o.relativenumber = not vim.o.relativenumber end,
     {
         desc = "Enable/disable relative line numbers",
     }

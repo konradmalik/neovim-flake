@@ -122,7 +122,7 @@ return {
             },
             root_dir = vim.fs.root(bufnr, ".git"),
             on_attach = function(_, buf)
-                vim.api.nvim_buf_call(buf, function() vim.opt_local.spell = false end)
+                vim.api.nvim_buf_call(buf, function() vim.o.spell = false end)
                 -- TODO: buf_command for changing the language
             end,
             commands = {

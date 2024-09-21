@@ -2,34 +2,34 @@
 -- See `:help vim.o`
 -- use spaces instead of tabs. Mostly useful for new files not in repos/isolated files etc.
 -- Most of the time editorconfig should be used (neovim loads it automatically)
-vim.opt.shiftwidth = 4
-vim.opt.softtabstop = -1 -- negative means just use shiftwidth
-vim.opt.expandtab = true
+vim.o.shiftwidth = 4
+vim.o.softtabstop = -1 -- negative means just use shiftwidth
+vim.o.expandtab = true
 -- indenting
-vim.opt.smartindent = true
-vim.opt.autoindent = true
+vim.o.smartindent = true
+vim.o.autoindent = true
 -- Set highlight on search. Use :noh to disable until next search
-vim.opt.hlsearch = true
+vim.o.hlsearch = true
 -- incrementally search
-vim.opt.incsearch = true
+vim.o.incsearch = true
 -- Enable mouse mode
-vim.opt.mouse = "a"
+vim.o.mouse = "a"
 -- Enable break indent
-vim.opt.breakindent = true
+vim.o.breakindent = true
 -- don't create a swapfile
-vim.opt.swapfile = false
+vim.o.swapfile = false
 -- don't create a backup file
-vim.opt.backup = false
+vim.o.backup = false
 -- Save undo history
-vim.opt.undofile = true
-vim.opt.undodir = vim.fn.stdpath("state") .. "/undodir"
+vim.o.undofile = true
+vim.o.undodir = vim.fn.stdpath("state") .. "/undodir"
 -- Case insensitive searching UNLESS /C or capital in search
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
+vim.o.ignorecase = true
+vim.o.smartcase = true
 -- Keep signcolumn on by default
-vim.opt.signcolumn = "yes"
+vim.o.signcolumn = "yes"
 -- show some hidden chars
-vim.opt.list = true
+vim.o.list = true
 vim.opt.listchars = {
     trail = "·",
     tab = "--▷",
@@ -39,11 +39,11 @@ vim.opt.listchars = {
     leadmultispace = "┊ ",
 }
 -- Lines of context when scrolling
-vim.opt.scrolloff = 10
+vim.o.scrolloff = 10
 -- Columns of context when scrolling
-vim.opt.sidescrolloff = 10
+vim.o.sidescrolloff = 10
 -- Decrease update time
-vim.opt.updatetime = 1000
-vim.opt.timeoutlen = 1000
+vim.o.updatetime = 1000
+vim.o.timeoutlen = 1000
 -- highlight the current line
-vim.opt.cursorline = true
+vim.o.cursorline = true

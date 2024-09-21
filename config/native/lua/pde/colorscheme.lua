@@ -40,6 +40,6 @@ require("kanagawa").setup({
     end,
 })
 
-vim.opt.background = "dark"
+vim.o.background = "dark"
 vim.cmd.colorscheme("kanagawa")
 require("pde.loader").add_to_on_reset(function() vim.cmd("KanagawaCompile") end)

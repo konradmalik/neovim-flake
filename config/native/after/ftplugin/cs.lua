@@ -1,2 +1,2 @@
 -- default is /*%s*/
-vim.opt.commentstring = "// %s"
+vim.o.commentstring = "// %s"
