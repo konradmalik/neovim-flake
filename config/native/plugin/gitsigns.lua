@@ -16,6 +16,18 @@ require("lz.n").load({
                     return { desc = "[Gitsigns] " .. desc, buffer = bufnr }
                 end
 
+                vim.keymap.set(
+                    "n",
+                    "<leader>gq",
+                    function() gitsigns.setqflist("all") end,
+                    opts_with_desc("All Hunks to qf list")
+                )
+                vim.keymap.set(
+                    "n",
+                    "<leader>gl",
+                    gitsigns.setloclist,
+                    opts_with_desc("All current buffer hunks to loclist")
+                )
                 vim.keymap.set("n", "<leader>gj", gitsigns.next_hunk, opts_with_desc("Next Hunk"))
                 vim.keymap.set("n", "<leader>gk", gitsigns.prev_hunk, opts_with_desc("Prev Hunk"))
                 vim.keymap.set(
