@@ -95,21 +95,6 @@ M.enable = function(client, bufnr)
             feedkeys(keys)
         end, "Feed '" .. keys .. "' and trigger LSP completion if needed")
     end
-
-    -- Trigger LSP completion.
-    -- If there's none, fallback to vanilla omnifunc.
-    -- if there's none, use buffer completion
-    keymap("i", "<C-Space>", function()
-        if next(vim.lsp.get_clients({ bufnr = bufnr, id = client.id })) then
-            vim.lsp.completion.trigger()
-        else
-            if vim.bo.omnifunc == "" then
-                feedkeys("<C-x><C-n>")
-            else
-                feedkeys("<C-x><C-o>")
-            end
-        end
-    end, "Smart completion trigger")
 end
 
 ---@param client vim.lsp.Client
