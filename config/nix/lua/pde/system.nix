@@ -2,10 +2,19 @@
   notesPath,
   spellPath,
   writeTextDir,
+  lib,
 }:
-writeTextDir "lua/pde/system.lua" ''
-  return {
-    notes_path = "${if notesPath == null then "nil" else notesPath}",
-    spell_path = "${if spellPath == null then "nil" else spellPath}",
-  }
-''
+writeTextDir "lua/pde/system.lua" (
+  ''
+    return {
+  ''
+  + lib.optionalString (notesPath != null) ''
+    notes_path = "${notesPath}",
+  ''
+  + lib.optionalString (spellPath != null) ''
+    spell_path = "${spellPath}",
+  ''
+  + ''
+    }
+  ''
+)

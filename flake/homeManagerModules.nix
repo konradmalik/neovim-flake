@@ -78,7 +78,7 @@
               type = types.str;
               default = "nil";
               description = ''
-                Absolute path to notes folder for quick-notes functionality.
+                Absolute path to root folder for quick-notes functionality.
                 Provide nil to keep this in XDG state folder.
               '';
             };
