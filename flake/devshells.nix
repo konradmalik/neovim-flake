@@ -13,7 +13,6 @@
             +
               # bash
               ''
-                # symlink the .luarc.json generated in the overlay
                 ln -fs ${self'.packages.nvim-luarc-json} ./config/native/.luarc.json
               '';
           packages =

@@ -74,17 +74,22 @@
               '';
             };
 
-            systemLua = mkOption {
+            obsidianPath = mkOption {
               type = types.str;
-              default = # lua
-                ''
-                  return {}
-                '';
+              default = "nil";
               description = ''
-                A lua script contents which should return
-                a table. This table is then used in Lua code
-                to understand some system-variables like repository path or
-                notes (obsidian) path.
+                Absolute path to obsidian folder for quick-notes functionality.
+                Provide nil to keep this in XDG state folder.
+              '';
+            };
+
+            repositoryPath = mkOption {
+              type = types.str;
+              default = "nil";
+              description = ''
+                Absolute path to neovim-flake repo folder.
+                Used in some cases where we want to store something and commit it to the repo (e.g. spell file).
+                Provide nil to use other locations on a per-case basis (e.g. XDG config or state folders).
               '';
             };
           };
@@ -100,7 +105,9 @@
                 vimAlias
                 ;
             };
-            config = (getSystem pkgs.system).packages.config.override { inherit (cfg) systemLua; };
+            config = (getSystem pkgs.system).packages.config.override {
+              inherit (cfg) obsidianPath repositoryPath;
+            };
           in
           mkIf cfg.enable {
             home.packages = [ nvim ];

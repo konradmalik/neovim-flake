@@ -3,8 +3,9 @@
   callPackage,
   symlinkJoin,
   lib,
+  obsidianPath ? null,
+  repositoryPath ? null,
   onlyNix ? false,
-  systemLua ? "return {}",
 }:
 let
   native = stdenvNoCC.mkDerivation {
@@ -20,9 +21,10 @@ let
     # manually handle nix templates to avoid IFD
     (callPackage ./nix/lua/pde/binaries.nix { })
     (callPackage ./nix/lua/pde/skeletons.nix { })
-    (callPackage ./nix/lua/pde/system.nix { inherit systemLua; })
+    (callPackage ./nix/lua/pde/system.nix { inherit obsidianPath repositoryPath; })
   ];
-in symlinkJoin {
-    name = "neovim-pde-config";
-    paths = nix ++ lib.optionals (!onlyNix) [ native ];
-  }
+in
+symlinkJoin {
+  name = "neovim-pde-config";
+  paths = nix ++ lib.optionals (!onlyNix) [ native ];
+}
