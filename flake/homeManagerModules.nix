@@ -74,22 +74,21 @@
               '';
             };
 
-            obsidianPath = mkOption {
+            notesPath = mkOption {
               type = types.str;
               default = "nil";
               description = ''
-                Absolute path to obsidian folder for quick-notes functionality.
+                Absolute path to notes folder for quick-notes functionality.
                 Provide nil to keep this in XDG state folder.
               '';
             };
 
-            repositoryPath = mkOption {
+            spellPath = mkOption {
               type = types.str;
               default = "nil";
               description = ''
-                Absolute path to neovim-flake repo folder.
-                Used in some cases where we want to store something and commit it to the repo (e.g. spell file).
-                Provide nil to use other locations on a per-case basis (e.g. XDG config or state folders).
+                Absolute path to root folder of spellfiles.
+                Provide nil to keep it in XDG state folder.
               '';
             };
           };
@@ -106,7 +105,7 @@
                 ;
             };
             nvimConfig = (getSystem pkgs.system).packages.config.override {
-              inherit (cfg) obsidianPath repositoryPath;
+              inherit (cfg) notesPath spellPath;
             };
           in
           mkIf cfg.enable {

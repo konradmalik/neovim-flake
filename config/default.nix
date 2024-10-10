@@ -3,8 +3,8 @@
   callPackage,
   symlinkJoin,
   lib,
-  obsidianPath ? null,
-  repositoryPath ? null,
+  notesPath ? null,
+  spellPath ? null,
   onlyNix ? false,
 }:
 let
@@ -21,7 +21,7 @@ let
     # manually handle nix templates to avoid IFD
     (callPackage ./nix/lua/pde/binaries.nix { })
     (callPackage ./nix/lua/pde/skeletons.nix { })
-    (callPackage ./nix/lua/pde/system.nix { inherit obsidianPath repositoryPath; })
+    (callPackage ./nix/lua/pde/system.nix { inherit notesPath spellPath; })
   ];
 in
 symlinkJoin {
