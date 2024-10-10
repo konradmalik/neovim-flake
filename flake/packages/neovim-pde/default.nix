@@ -2,11 +2,10 @@
   neovim,
   neovimUtils,
   wrapNeovimUnstable,
-  callPackage,
   stdenvNoCC,
   lib,
   nvimConfig,
-  pluginsList,
+  plugins,
   systemDeps ? [ ],
   appName ? "neovim-pde",
   viAlias ? false,
@@ -27,20 +26,17 @@ let
     '';
   };
 
-  pluginsPack = callPackage ./pluginManager.nix { inherit pluginsList; };
-  inherit (pluginsPack) plugins;
-  allSystemDeps = lib.unique (pluginsPack.systemDeps ++ systemDeps);
   extraWrapperArgs =
     [
       "--set"
       "NVIM_APPNAME"
       appName
     ]
-    ++ lib.optionals (allSystemDeps != [ ]) [
+    ++ lib.optionals (systemDeps != [ ]) [
       "--suffix"
       "PATH"
       ":"
-      "${lib.makeBinPath allSystemDeps}"
+      "${lib.makeBinPath systemDeps}"
     ]
     ++ lib.optionals selfContained [
       "--add-flags"

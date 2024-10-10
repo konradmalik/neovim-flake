@@ -8,11 +8,18 @@
         in
         pkgs.mkShell {
           name = "neovim-shell";
-          shellHook = neovim-pde-dev.shellHook;
+          shellHook =
+            neovim-pde-dev.shellHook
+            +
+              # bash
+              ''
+                # symlink the .luarc.json generated in the overlay
+                ln -fs ${self'.packages.nvim-luarc-json} ./config/native/.luarc.json
+              '';
           packages =
             (with pkgs; [
               stylua
-              lua.pkgs.luacheck
+              luajitPackages.luacheck
             ])
             ++ [
               self'.packages.nvim-typecheck

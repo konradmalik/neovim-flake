@@ -13,7 +13,9 @@
     {
       _module.args.pkgs = import inputs.nixpkgs {
         inherit system;
-        overlays = [ ];
+        overlays = [
+          inputs.gen-luarc.overlays.default
+        ];
       };
 
       formatter = pkgs.nixfmt-rfc-style;

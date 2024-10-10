@@ -3,3 +3,4 @@
 result
 *.spl
 *.log
+.luarc.json
