@@ -10,8 +10,7 @@ let
     # this is a hack to load everything in 'native' folder
     appName = "native";
     selfContained = false;
-    tmpCache = true;
-    prependXdgConfig = true;
+    devMode = true;
     config = devConfig;
   };
 in
