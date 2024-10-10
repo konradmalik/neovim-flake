@@ -105,7 +105,7 @@
                 vimAlias
                 ;
             };
-            config = (getSystem pkgs.system).packages.config.override {
+            nvimConfig = (getSystem pkgs.system).packages.config.override {
               inherit (cfg) obsidianPath repositoryPath;
             };
           in
@@ -122,7 +122,7 @@
 
             xdg.configFile.${cfg.appName} = {
               enable = !cfg.selfContained;
-              source = config;
+              source = nvimConfig;
               recursive = true;
               onChange =
                 ''
