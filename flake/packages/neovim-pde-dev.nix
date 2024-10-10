@@ -2,16 +2,17 @@
   lib,
   writeShellScriptBin,
   neovim-pde,
-  nvimConfig,
+  config,
 }:
 let
-  devConfig = nvimConfig.override { includeNativeConfig = false; };
+  devConfig = config.override { onlyNix = true; };
   pkg = neovim-pde.override {
+    # this is a hack to load everything in 'native' folder
     appName = "native";
     selfContained = false;
     tmpCache = true;
     prependXdgConfig = true;
-    nvimConfig = devConfig;
+    config = devConfig;
   };
 in
 (writeShellScriptBin "nvim-dev" ''

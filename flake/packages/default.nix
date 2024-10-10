@@ -8,7 +8,8 @@
       ...
     }:
     let
-      pluginsPack = pkgs.callPackage ./neovim-pde/pluginManager.nix {
+      # plugins
+      dependencies = pkgs.callPackage ./mkDependencies.nix {
         pluginsList = (
           import ./plugins.nix {
             inherit (pkgs) vimUtils neovimUtils;
@@ -22,25 +23,27 @@
           }
         );
       };
+      inherit (dependencies) plugins systemDeps;
 
-      inherit (pluginsPack) plugins;
-      systemDeps = lib.unique pluginsPack.systemDeps;
+      # config
+      config = pkgs.callPackage ../../config { };
 
-      nightlyNeovim = inputs'.neovim-nightly-overlay.packages.default;
-      nvimConfig = pkgs.callPackage ../../config { };
-      neovim-pde = pkgs.callPackage ./neovim-pde {
-        inherit nvimConfig plugins systemDeps;
-        neovim = nightlyNeovim;
+      # neovim
+      neovimNightly = inputs'.neovim-nightly-overlay.packages.default;
+      neovim-pde = pkgs.callPackage ./neovim-pde.nix {
+        inherit config plugins systemDeps;
+        neovim = neovimNightly;
       };
     in
     {
       packages = {
-        inherit neovim-pde nvimConfig;
-        neovim-pde-dev = pkgs.callPackage ./neovim-pde-dev.nix { inherit neovim-pde nvimConfig; };
         default = neovim-pde;
-        nvim-typecheck = pkgs.callPackage ./nvim-typecheck.nix { neovim = nightlyNeovim; };
+
+        inherit neovim-pde config;
+        neovim-pde-dev = pkgs.callPackage ./neovim-pde-dev.nix { inherit neovim-pde config; };
+        nvim-typecheck = pkgs.callPackage ./nvim-typecheck.nix { neovim = neovimNightly; };
         nvim-luarc-json = pkgs.mk-luarc-json {
-          nvim = nightlyNeovim;
+          nvim = neovimNightly;
           inherit plugins;
         };
       };

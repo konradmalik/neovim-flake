@@ -4,7 +4,7 @@
   wrapNeovimUnstable,
   stdenvNoCC,
   lib,
-  nvimConfig,
+  config,
   plugins,
   systemDeps ? [ ],
   appName ? "neovim-pde",
@@ -19,7 +19,7 @@ let
     name = "${appName}-config";
     dontBuild = true;
     dontConfigure = true;
-    src = nvimConfig;
+    src = config;
     installPhase = ''
       mkdir $out
       cp -r $src $out/${appName}
