@@ -2,8 +2,6 @@ local notes_path
 local spellfile_parent
 
 return {
-    repository_name = "neovim-flake",
-
     get_notes = function()
         if not notes_path then
             notes_path = require("pde.system").notes_path

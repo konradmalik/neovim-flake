@@ -1,7 +1,5 @@
 -- https://github.com/LuaLS/lua-language-server
 local binaries = require("pde.binaries")
-local paths = require("pde.paths")
-local nvim_library = {}
 
 return {
     ---@param bufnr integer
@@ -11,18 +9,6 @@ return {
         return {
             name = "lua_ls",
             cmd = { binaries.lua_ls() },
-            before_init = function()
-                table.insert(nvim_library, "${3rd}/luv/library")
-                table.insert(nvim_library, vim.env.VIMRUNTIME)
-                local cwd = vim.uv.cwd()
-                if cwd and not string.find(cwd, paths.repository_name, nil, true) then
-                    table.insert(nvim_library, vim.fn.stdpath("config"))
-                    ---@diagnostic disable-next-line: param-type-mismatch
-                    for _, dir in ipairs(vim.fn.stdpath("config_dirs")) do
-                        table.insert(nvim_library, dir)
-                    end
-                end
-            end,
             on_init = function(client)
                 -- use stylua via efm, this formatter is not great and it clears diagnostic text on save
                 client.server_capabilities.documentFormattingProvider = nil
@@ -38,7 +24,6 @@ return {
                     telemetry = { enable = false },
                     workspace = {
                         checkThirdParty = false,
-                        library = nvim_library,
                     },
                 },
             },
