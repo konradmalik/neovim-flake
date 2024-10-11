@@ -1,17 +1,16 @@
 local cache = {}
 
 ---@param path string?
----@param subfolder string?
+---@param fallback_subfolder string?
 ---@return string
-local function get_or_fallback(path, subfolder)
+local function get_or_fallback(path, fallback_subfolder)
     if not path then
         ---@type string
         ---@diagnostic disable-next-line: assign-type-mismatch
         local state = vim.fn.stdpath("state")
         path = state
+        if fallback_subfolder then path = path .. "/" .. fallback_subfolder end
     end
-
-    if subfolder then path = path .. "/" .. subfolder end
 
     if vim.fn.isdirectory(path) == 0 then vim.fn.mkdir(path, "p") end
 
