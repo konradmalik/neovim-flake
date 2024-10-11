@@ -1,0 +1,12 @@
+return {
+    _all = {
+        coverage = false,
+        lpath = "config/native/lua/?.lua;config/native/lua/?/init.lua",
+    },
+    default = {
+        verbose = true,
+    },
+    tests = {
+        verbose = true,
+    },
+}

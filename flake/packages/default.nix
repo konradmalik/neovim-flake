@@ -42,9 +42,12 @@
         inherit neovim-pde config;
         neovim-pde-dev = pkgs.callPackage ./neovim-pde-dev.nix { inherit neovim-pde config; };
         nvim-typecheck = pkgs.callPackage ./nvim-typecheck.nix { neovim = neovimNightly; };
-        nvim-luarc-json = pkgs.mk-luarc-json {
+        full-luarc-json = pkgs.mk-luarc-json {
           nvim = neovimNightly;
           inherit plugins;
+        };
+        no-plugins-luarc-json = pkgs.mk-luarc-json {
+          # use not-nightly neovim because busted uses that as well
         };
       };
     };

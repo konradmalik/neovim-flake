@@ -15,6 +15,7 @@
         inherit system;
         overlays = [
           inputs.gen-luarc.overlays.default
+          inputs.neorocks.overlays.default
         ];
       };
 

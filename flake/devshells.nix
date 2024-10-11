@@ -13,12 +13,14 @@
             +
               # bash
               ''
-                ln -fs ${self'.packages.nvim-luarc-json} ./config/native/.luarc.json
+                ln -fs ${self'.packages.full-luarc-json} ./config/native/.luarc.json
+                ln -fs ${self'.packages.no-plugins-luarc-json} ./.luarc.json
               '';
           packages =
             (with pkgs; [
-              stylua
+              busted-nlua
               luajitPackages.luacheck
+              stylua
             ])
             ++ [
               self'.packages.nvim-typecheck

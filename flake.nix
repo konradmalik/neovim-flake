@@ -4,11 +4,18 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+
+    neorocks = {
+      url = "github:nvim-neorocks/neorocks";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        neovim-nightly.follows = "neovim-nightly-overlay";
+      };
+    };
     gen-luarc = {
       url = "github:mrcjkb/nix-gen-luarc-json";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
