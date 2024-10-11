@@ -16,3 +16,8 @@ check-fmt:
 
 .PHONY: check-lint
 check-lint: luacheck typecheck
+
+.PHONY: test
+test:
+	@busted
+

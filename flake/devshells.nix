@@ -18,6 +18,7 @@
               '';
           packages =
             (with pkgs; [
+              gnumake
               busted-nlua
               luajitPackages.luacheck
               stylua

@@ -37,11 +37,25 @@ jobs:
       - name: Shell build
         run: nix build .#devShells.x86_64-darwin.default
 
+  tests:
+    # latest x86_64-darwin
+    runs-on: macos-13
+    needs:
+      - build-shell
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
+      - name: run tests
+        run: nix develop --command make test
+
   build-package:
     # latest x86_64-darwin
     runs-on: macos-13
     needs:
-      - flake-check
+      - tests
     steps:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v30
