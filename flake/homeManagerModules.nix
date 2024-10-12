@@ -75,7 +75,7 @@
             };
 
             notesPath = mkOption {
-              type = types.path;
+              type = types.nullOr types.path;
               default = null;
               description = ''
                 Absolute path to root folder for quick-notes functionality.
@@ -84,7 +84,7 @@
             };
 
             spellPath = mkOption {
-              type = types.path;
+              type = types.nullOr types.path;
               default = null;
               description = ''
                 Absolute path to root folder of spellfiles.
