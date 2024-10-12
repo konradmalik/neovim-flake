@@ -519,11 +519,11 @@
     "git-conflict-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1728590407,
-        "narHash": "sha256-AqV3WsxS8R4Bzb1aevvDq0H0EM7TC5XejLR8hgBUnPk=",
+        "lastModified": 1728767593,
+        "narHash": "sha256-2T/oK2HNJM6UiXleKiNE2PrIwVVtJnGNxSRVj8r1gUU=",
         "owner": "konradmalik",
         "repo": "git-conflict.nvim",
-        "rev": "4fffaa228b36258bcb60a0c220924ca84a0cd39c",
+        "rev": "6218bde1987c8a8ca0613380668e060b69281c26",
         "type": "github"
       },
       "original": {
