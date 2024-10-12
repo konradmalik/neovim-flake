@@ -75,20 +75,20 @@
             };
 
             notesPath = mkOption {
-              type = types.str;
-              default = "nil";
+              type = types.path;
+              default = null;
               description = ''
                 Absolute path to root folder for quick-notes functionality.
-                Provide nil to keep this in XDG state folder.
+                Provide null to keep this in XDG state folder.
               '';
             };
 
             spellPath = mkOption {
-              type = types.str;
-              default = "nil";
+              type = types.path;
+              default = null;
               description = ''
                 Absolute path to root folder of spellfiles.
-                Provide nil to keep it in XDG state folder.
+                Provide null to keep it in XDG state folder.
               '';
             };
           };
@@ -104,9 +104,7 @@
                 vimAlias
                 ;
             };
-            nvimConfig = (getSystem pkgs.system).packages.config.override {
-              inherit (cfg) notesPath spellPath;
-            };
+            nvimConfig = (getSystem pkgs.system).packages.config;
           in
           mkIf cfg.enable {
             home.packages = [ nvim ];
@@ -117,6 +115,16 @@
               EDITOR = lib.mkDefault (lib.getExe nvim);
               VISUAL = lib.mkDefault (lib.getExe nvim);
               GIT_EDITOR = lib.mkDefault "${lib.getExe nvim} -u NONE";
+            };
+
+            xdg.stateFile."${cfg.appName}/notes" = {
+              enable = cfg.notesPath != null;
+              source = cfg.notesPath;
+            };
+
+            xdg.stateFile."${cfg.appName}/spell" = {
+              enable = cfg.spellPath != null;
+              source = cfg.spellPath;
             };
 
             xdg.configFile.${cfg.appName} = {
