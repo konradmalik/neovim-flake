@@ -1,6 +1,11 @@
 ---@return string
 local function get_dir()
-    return assert(vim.uv.fs_mkdtemp(vim.uv.os_tmpdir() .. "/git-conflict-nvim-XXXXXX"))
+    local mktemp_obj = vim.system({ "mktemp", "-d", "-t", "neovim-flake-XXXXXX" }, { text = true })
+        :wait()
+
+    if mktemp_obj.code ~= 0 then error("cannot create tmpdir") end
+
+    return vim.fn.split(mktemp_obj.stdout, "\n")[1]
 end
 
 ---@param dir string
