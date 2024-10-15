@@ -40,7 +40,12 @@
     };
     git-conflict-nvim = {
       url = "github:konradmalik/git-conflict.nvim";
-      flake = false;
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        gen-luarc.follows = "gen-luarc";
+        neorocks.follows = "neorocks";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
     gitsigns-nvim = {
       url = "github:lewis6991/gitsigns.nvim";
@@ -48,7 +53,12 @@
     };
     incomplete-nvim = {
       url = "github:konradmalik/incomplete.nvim";
-      flake = false;
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        gen-luarc.follows = "gen-luarc";
+        neorocks.follows = "neorocks";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
     kanagawa-nvim = {
       url = "github:rebelot/kanagawa.nvim";

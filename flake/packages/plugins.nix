@@ -62,6 +62,8 @@ in
 # - does not work for src in buildVimPlugin
 # - plugins internally depend on vimUtils.plenary-nvim and similar either way
 let
+  inherit (inputs'.git-conflict-nvim.packages) git-conflict-nvim;
+  inherit (inputs'.incomplete-nvim.packages) incomplete-nvim;
   inherit (inputs'.lz-n.packages) lz-n-vimPlugin;
   SchemaStore-nvim = buildVim {
     input = "SchemaStore-nvim";
@@ -79,20 +81,12 @@ let
     input = "friendly-snippets";
     nvimRequireCheck = null;
   };
-  git-conflict-nvim = buildVim {
-    input = "git-conflict-nvim";
-    nvimRequireCheck = "git-conflict";
-  };
   gitsigns-nvim =
     (buildNeovim {
       input = "gitsigns-nvim";
       nvimRequireCheck = "gitsigns";
     }).overrideAttrs
       { doInstallCheck = true; };
-  incomplete-nvim = buildVim {
-    input = "incomplete-nvim";
-    nvimRequireCheck = "incomplete";
-  };
   kanagawa-nvim = buildVim {
     input = "kanagawa-nvim";
     nvimRequireCheck = "kanagawa";
