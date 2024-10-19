@@ -1,5 +1,5 @@
 require("lz.n").load({
-    "git-conflict.nvim",
+    "git-conflict-nvim",
     event = { "BufNew", "BufReadPre" },
     after = function()
         local cmd = require("git-conflict.commands")
