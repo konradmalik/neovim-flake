@@ -1,13 +1,13 @@
 ---NOTE: stolen from https://github.com/folke/snacks.nvim/blob/main/lua/snacks/gitbrowse.lua
 
----@class gitbrowse
+---@class pde.gitbrowse
 ---@hide
----@overload fun(opts?: gitbrowse.Config)
+---@overload fun(opts?: pde.gitbrowse.Config)
 local M = setmetatable({}, {
     __call = function(t, ...) return t.open(...) end,
 })
 
----@class gitbrowse.Config
+---@class pde.gitbrowse.Config
 local defaults = {
     ---function that transforms URL in some custom way
     ---@param url string
@@ -33,7 +33,7 @@ local defaults = {
 }
 
 ---@param remote string
----@param opts? gitbrowse.Config
+---@param opts? pde.gitbrowse.Config
 local function get_url(remote, opts)
     opts = vim.tbl_deep_extend("force", defaults, opts or {})
     local ret = remote
@@ -43,7 +43,7 @@ local function get_url(remote, opts)
     return ret:find("https://") == 1 and ret or ("https://%s"):format(ret)
 end
 
----@param opts? gitbrowse.Config
+---@param opts? pde.gitbrowse.Config
 function M.open(opts)
     opts = vim.tbl_deep_extend("force", defaults, opts or {})
     local proc = vim.system({ "git", "remote", "-v" }, { text = true }):wait()

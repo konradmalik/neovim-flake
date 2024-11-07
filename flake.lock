@@ -16,22 +16,6 @@
         "type": "github"
       }
     },
-    "bigfile-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1699279791,
-        "narHash": "sha256-fabA2mVZAZg5Qot4ED9cJ1YMZ4wX4OvURNhIvKltFtA=",
-        "owner": "LunarVim",
-        "repo": "bigfile.nvim",
-        "rev": "33eb067e3d7029ac77e081cfe7c45361887a311a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "LunarVim",
-        "repo": "bigfile.nvim",
-        "type": "github"
-      }
-    },
     "boole-nvim": {
       "flake": false,
       "locked": {
@@ -1719,7 +1703,6 @@
     "root": {
       "inputs": {
         "SchemaStore-nvim": "SchemaStore-nvim",
-        "bigfile-nvim": "bigfile-nvim",
         "boole-nvim": "boole-nvim",
         "flake-parts": "flake-parts",
         "friendly-snippets": "friendly-snippets",

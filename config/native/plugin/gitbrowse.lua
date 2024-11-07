@@ -1,6 +1,6 @@
 local opts_with_desc = function(desc) return { desc = "[gitbrowse] " .. desc } end
 
----@type gitbrowse.Config
+---@type pde.gitbrowse.Config
 local opts = {
     url_transform = function(url)
         if url:find("repositories.gitlab") then url = url:gsub("repositories.", "") end
