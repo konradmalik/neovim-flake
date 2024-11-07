@@ -41,6 +41,6 @@ vim.keymap.set("n", "<leader>fc", builtin.commands, opts_with_desc("Find [C]omma
 vim.keymap.set("n", "<leader>fm", builtin.keymaps, opts_with_desc("Find key[m]aps"))
 vim.keymap.set("n", "<leader>fo", builtin.oldfiles, opts_with_desc("Find [o]ldfiles"))
 -- git
-vim.keymap.set("n", "<leader>go", builtin.git_status, opts_with_desc("Git status"))
+vim.keymap.set("n", "<leader>gS", builtin.git_status, opts_with_desc("Git [S]tatus"))
 vim.keymap.set("n", "<leader>gb", builtin.git_branches, opts_with_desc("Git [b]ranches"))
 vim.keymap.set("n", "<leader>gc", builtin.git_commits, opts_with_desc("Git [c]ommits"))
