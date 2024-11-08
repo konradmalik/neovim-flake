@@ -8,7 +8,10 @@ keymap.set(
     opts_with_desc("Toggle")
 )
 
+local events = require("neo-tree.events")
 local neo_tree = require("neo-tree")
+
+local function on_move(data) Snacks.rename.on_rename_file(data.source, data.destination) end
 
 neo_tree.setup({
     sources = {
@@ -31,5 +34,9 @@ neo_tree.setup({
         follow_current_file = {
             enabled = true,
         },
+    },
+    event_handlers = {
+        { event = events.FILE_MOVED, handler = on_move },
+        { event = events.FILE_RENAMED, handler = on_move },
     },
 })
