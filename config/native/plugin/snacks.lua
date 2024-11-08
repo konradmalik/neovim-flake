@@ -3,7 +3,7 @@ snacks.setup({
     bigfile = { enabled = true },
     gitbrowse = {
         remote_patterns = {
-            -- TODO can we somehow just get this?
+            -- order matters
             { "^(https?://.*)%.git$", "%1" },
             { "^git@(.+):(.+)%.git$", "https://%1/%2" },
             { "^git@(.+):(.+)$", "https://%1/%2" },
@@ -40,3 +40,6 @@ vim.keymap.set(
     snacks.gitbrowse.open,
     opts_with_desc("open current file in the browser")
 )
+
+vim.keymap.set("n", "grf", snacks.rename.rename_file, opts_with_desc("Rename current file"))
+
