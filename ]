@@ -1,0 +1,12 @@
+require("snacks").setup({
+    bigfile = { enabled = true },
+    gitbrowse = {
+        remote_patterns = {
+            { "ssh%.dev%.azure%.com/v3/(.*)/(.*)$", "dev.azure.com/%1/_git/%2" },
+        },
+    },
+    notifier = { enabled = false },
+    quickfile = { enabled = true },
+    statuscolumn = { enabled = true },
+    words = { enabled = false },
+})
