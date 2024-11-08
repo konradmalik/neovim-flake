@@ -1728,6 +1728,7 @@
         "nvim-web-devicons": "nvim-web-devicons",
         "plenary-nvim": "plenary-nvim",
         "roslyn-nvim": "roslyn-nvim",
+        "snacks-nvim": "snacks-nvim",
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
         "telescope-nvim": "telescope-nvim",
         "telescope-ui-select-nvim": "telescope-ui-select-nvim",
@@ -1750,6 +1751,22 @@
       "original": {
         "owner": "seblj",
         "repo": "roslyn.nvim",
+        "type": "github"
+      }
+    },
+    "snacks-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1731060400,
+        "narHash": "sha256-Ja7EhadUEhEty4i/Zbwhml50VuPFHZ/sNewk2awvcck=",
+        "owner": "folke",
+        "repo": "snacks.nvim",
+        "rev": "edbd40aab492ac6e8a00c8a16baf8200939d5405",
+        "type": "github"
+      },
+      "original": {
+        "owner": "folke",
+        "repo": "snacks.nvim",
         "type": "github"
       }
     },
