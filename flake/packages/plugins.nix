@@ -281,7 +281,6 @@ in
   }
   {
     plugin = git-conflict-nvim;
-    optional = true;
     systemDeps = [ pkgs.git ];
   }
   {
