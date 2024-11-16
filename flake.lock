@@ -1375,6 +1375,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-stable_7": {
+      "locked": {
+        "lastModified": 1731652201,
+        "narHash": "sha256-XUO0JKP1hlww0d7mm3kpmIr4hhtR4zicg5Wwes9cPMg=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "c21b77913ea840f8bcf9adf4c41cecc2abffd38d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-24.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1730768919,
@@ -1716,6 +1732,7 @@
         "neorocks": "neorocks_2",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs_9",
+        "nixpkgs-stable": "nixpkgs-stable_7",
         "nui-nvim": "nui-nvim",
         "nvim-dap": "nvim-dap",
         "nvim-dap-ui": "nvim-dap-ui",
