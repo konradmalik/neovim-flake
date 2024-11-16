@@ -26,10 +26,6 @@ snacks.setup({
             },
         },
     },
-    notifier = { enabled = false },
-    quickfile = { enabled = true },
-    statuscolumn = { enabled = true },
-    words = { enabled = false },
 })
 
 local opts_with_desc = function(desc) return { desc = "[snacks] " .. desc } end
@@ -42,4 +38,3 @@ vim.keymap.set(
 )
 
 vim.keymap.set("n", "grf", snacks.rename.rename_file, opts_with_desc("Rename current file"))
-
