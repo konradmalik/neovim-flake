@@ -38,7 +38,7 @@ pkgs.writeTextDir "lua/pde/binaries.lua" # lua
 
         -- debuggers
         debugpy = function() return '${debugpy}/bin/python' end,
-        delve = function() return '${lib.getExe' pkgs.delve "dap"}' end,
+        delve = function() return '${lib.getExe' pkgs.delve "dlv-dap"}' end,
         netcoredbg = function() return '${lib.getExe pkgs.netcoredbg}' end,
 
         -- other
