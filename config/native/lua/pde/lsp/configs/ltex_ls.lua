@@ -64,7 +64,7 @@ end
 local update_client_with = function(changed_settings)
     local client = vim.lsp.get_clients({ name = name })[1]
     if not client then return end
-    client.notify("workspace/didChangeConfiguration", { settings = changed_settings })
+    client:notify("workspace/didChangeConfiguration", { settings = changed_settings })
 end
 
 local function get_dictionary_file(language) return paths.get_spellfile(vim.split(language, "-")[1]) end

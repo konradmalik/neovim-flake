@@ -124,7 +124,7 @@ M.enable_completion_documentation = function(client, augroup, bufnr)
                 docs_debounce_ms,
                 0,
                 vim.schedule_wrap(function()
-                    client.request(
+                    client:request(
                         vim.lsp.protocol.Methods.completionItem_resolve,
                         completion_item,
                         ---@param err lsp.ResponseError

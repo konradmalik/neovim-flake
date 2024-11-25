@@ -6,7 +6,7 @@ local function reload_workspace(bufnr)
     local clients = vim.lsp.get_clients({ name = name, bufnr = bufnr })
     for _, client in ipairs(clients) do
         vim.notify("Reloading Cargo Workspace")
-        client.request("rust-analyzer/reloadWorkspace", nil, function(err)
+        client:request("rust-analyzer/reloadWorkspace", nil, function(err)
             if err then error(tostring(err)) end
             vim.notify("Cargo workspace reloaded")
         end, 0)
@@ -21,18 +21,23 @@ local function validate_command(command)
         return false
     end
 
+    ---@type table
+    ---@diagnostic disable-next-line: assign-type-mismatch
     local task = command.arguments[1]
     if not task or task.kind ~= "cargo" then
-        vim.notify("unexpected kind: " .. vim.inspec(task), vim.log.levels.ERROR)
+        vim.notify("unexpected kind: " .. vim.inspect(task), vim.log.levels.ERROR)
         return false
     end
 
     return true
 end
 
+---@param command lsp.Command
 local function runSingle(command)
     if not validate_command(command) then return end
 
+    ---@type table
+    ---@diagnostic disable-next-line: assign-type-mismatch
     local task = command.arguments[1]
     if not task then
         vim.notify("no command arguments", vim.log.levels.ERROR)

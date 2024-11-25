@@ -39,7 +39,7 @@ function M.setup()
     map("<F5>", dap.step_back, "step back")
     map("<F12>", dap.restart, "restart")
     map("<leader>db", dap.toggle_breakpoint, "toggle breakpoint")
-    map("<leader>d?", function() dapui.eval(nil, { enter = true }) end, "evaluate under cursor")
+    map("<leader>d?", dapui.eval, "evaluate under cursor")
 
     dap.listeners.before.attach.dapui_config = function() dapui.open() end
     dap.listeners.before.launch.dapui_config = function() dapui.open() end

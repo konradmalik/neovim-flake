@@ -17,7 +17,7 @@ local function restart_servers(filter)
     local detach_clients = {}
     for _, client in ipairs(clients) do
         detach_clients[client.id] = { client, vim.lsp.get_buffers_by_client_id(client.id) }
-        client.stop()
+        client:stop()
     end
 
     local timer = assert(vim.uv.new_timer(), "cannot create timer")
@@ -28,7 +28,7 @@ local function restart_servers(filter)
             for old_client_id, tuple in pairs(detach_clients) do
                 local client = tuple[1]
                 local attached_buffers = tuple[2]
-                if client.is_stopped() then
+                if client:is_stopped() then
                     for _, buf in ipairs(attached_buffers) do
                         lsp.start(client.config, { bufnr = buf })
                     end

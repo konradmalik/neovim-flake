@@ -16,9 +16,7 @@ local M = {}
 M.detach = function(client, bufnr)
     local client_id = client.id
     augroups.del_autocmds_for_buf(client, bufnr)
-    local function client_buf_supports_method(method)
-        return client.supports_method(method, { bufnr = bufnr })
-    end
+    local function client_buf_supports_method(method) return client:supports_method(method, bufnr) end
 
     if client_buf_supports_method(ms.textDocument_codeLens) then
         require("pde.lsp.capability_handlers.codelens").detach(client_id, bufnr)
@@ -47,9 +45,7 @@ end
 M.attach = function(client, bufnr)
     local augroup = augroups.get_augroup(client)
     local opts_with_desc = keymapper.opts_for(bufnr)
-    local function client_buf_supports_method(method)
-        return client.supports_method(method, { bufnr = bufnr })
-    end
+    local function client_buf_supports_method(method) return client:supports_method(method, bufnr) end
 
     local handler_data = {
         augroup = augroup,

@@ -28,8 +28,18 @@ require("lz.n").load({
                     gitsigns.setloclist,
                     opts_with_desc("All current buffer hunks to loclist")
                 )
-                vim.keymap.set("n", "<leader>gj", gitsigns.next_hunk, opts_with_desc("Next Hunk"))
-                vim.keymap.set("n", "<leader>gk", gitsigns.prev_hunk, opts_with_desc("Prev Hunk"))
+                vim.keymap.set(
+                    "n",
+                    "<leader>gj",
+                    function() gitsigns.nav_hunk("next") end,
+                    opts_with_desc("Next Hunk")
+                )
+                vim.keymap.set(
+                    "n",
+                    "<leader>gk",
+                    function() gitsigns.nav_hunk("prev") end,
+                    opts_with_desc("Prev Hunk")
+                )
                 vim.keymap.set(
                     "n",
                     "<leader>gp",
