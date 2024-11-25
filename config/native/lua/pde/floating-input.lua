@@ -1,28 +1,30 @@
 local M = {}
 
-function M.window_center(input_width)
+---@param winid integer
+---@param input_width integer
+---@return table
+local function window_center(winid, input_width)
     return {
         relative = "win",
-        row = vim.api.nvim_win_get_height(0) / 2 - 1,
-        col = vim.api.nvim_win_get_width(0) / 2 - input_width / 2,
+        row = vim.api.nvim_win_get_height(winid) / 2 - 1,
+        col = vim.api.nvim_win_get_width(winid) / 2 - input_width / 2,
     }
 end
 
-function M.under_cursor(_)
-    return {
-        relative = "cursor",
-        row = 1,
-        col = 0,
-    }
-end
+local under_cursor = {
+    relative = "cursor",
+    row = 1,
+    col = 0,
+}
 
 function M.input(opts, on_confirm, win_config)
     local prompt = opts.prompt or "Input: "
     local default = opts.default or ""
     on_confirm = on_confirm or function() end
 
-    -- Calculate a minimal width with a bit buffer
-    local default_width = vim.str_utfindex(default, "utf-8") + 10
+    -- Calculate a minimal width with a bit padding
+    local default_length = vim.str_utfindex(default, "utf-8")
+    local default_width = default_length + 10
     local prompt_width = vim.str_utfindex(prompt, "utf-8") + 10
     local input_width = default_width > prompt_width and default_width or prompt_width
 
@@ -40,9 +42,9 @@ function M.input(opts, on_confirm, win_config)
 
     -- Place the window near cursor or at the center of the window.
     if prompt == "New Name: " then
-        win_config = vim.tbl_deep_extend("force", win_config, M.under_cursor(win_config.width))
+        win_config = vim.tbl_deep_extend("force", win_config, under_cursor)
     else
-        win_config = vim.tbl_deep_extend("force", win_config, M.window_center(win_config.width))
+        win_config = vim.tbl_deep_extend("force", win_config, window_center(0, win_config.width))
     end
 
     -- Create floating window.
@@ -52,28 +54,27 @@ function M.input(opts, on_confirm, win_config)
 
     -- Put cursor at the end of the default value
     vim.cmd("startinsert")
-    vim.api.nvim_win_set_cursor(window, { 1, vim.str_utfindex(default, "utf-8") + 1 })
+    vim.api.nvim_win_set_cursor(window, { 1, default_length + 1 })
+
+    local function close()
+        vim.cmd("stopinsert")
+        vim.api.nvim_win_close(window, true)
+    end
 
     -- Enter to confirm
     vim.keymap.set({ "n", "i", "v" }, "<cr>", function()
         local lines = vim.api.nvim_buf_get_lines(buffer, 0, 1, false)
-        vim.cmd("stopinsert")
-        -- vim.api.nvim_buf_delete(buffer, { force = true })
-        vim.api.nvim_win_close(window, true)
+        close()
         on_confirm(lines[1])
     end, { buffer = buffer })
 
     -- Esc or q to close
     vim.keymap.set("n", "<esc>", function()
-        vim.cmd("stopinsert")
-        -- vim.api.nvim_buf_delete(buffer, { force = true })
-        vim.api.nvim_win_close(window, true)
+        close()
         on_confirm(nil)
     end, { buffer = buffer })
     vim.keymap.set("n", "q", function()
-        vim.cmd("stopinsert")
-        -- vim.api.nvim_buf_delete(buffer, { force = true })
-        vim.api.nvim_win_close(window, true)
+        close()
         on_confirm(nil)
     end, { buffer = buffer })
 end
