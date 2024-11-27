@@ -16,14 +16,6 @@
         overlays = [
           inputs.gen-luarc.overlays.default
           inputs.neorocks.overlays.default
-          (final: prev: {
-            # until it's fixed for darwin
-            zls = final.stable.zls;
-            stable = import inputs.nixpkgs-stable {
-              system = final.system;
-              config = final.config;
-            };
-          })
         ];
       };
 
