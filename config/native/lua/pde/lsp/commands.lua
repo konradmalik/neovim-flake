@@ -5,7 +5,9 @@ local lsp = require("pde.lsp")
 local function parse_int_arg(args)
     local arguments = vim.split(args, "%s")
     for _, v in pairs(arguments) do
-        if v:find("^[0-9]+$") then return tonumber(v) end
+        if v:find("^[0-9]+$") then
+            return tonumber(v)
+        end
     end
     return nil
 end
@@ -30,13 +32,15 @@ local function restart_servers(filter)
                 local attached_buffers = tuple[2]
                 if client:is_stopped() then
                     for _, buf in ipairs(attached_buffers) do
-                        lsp.start(client.config, { bufnr = buf })
+                        vim.lsp.start(client.config, { bufnr = buf })
                     end
                     detach_clients[old_client_id] = nil
                 end
             end
 
-            if next(detach_clients) == nil and not timer:is_closing() then timer:close() end
+            if next(detach_clients) == nil and not timer:is_closing() then
+                timer:close()
+            end
         end)
     )
 end
@@ -71,7 +75,9 @@ end
 local function lsp_info()
     local replacement = {}
     for i, client in ipairs(vim.lsp.get_clients()) do
-        if i > 1 then table.insert(replacement, "---------------") end
+        if i > 1 then
+            table.insert(replacement, "---------------")
+        end
         table.insert(replacement, string.format("Client: %s (id: %s)", client.name, client.id))
         table.insert(replacement, string.format("Root Dir: %s", client.config.root_dir))
         local cmd_str
@@ -84,10 +90,7 @@ local function lsp_info()
         table.insert(replacement, cmd_str)
         table.insert(
             replacement,
-            string.format(
-                "Attached Bufs: [ %s ]",
-                table.concat(vim.tbl_keys(client.attached_buffers), ", ")
-            )
+            string.format("Attached Bufs: [ %s ]", table.concat(vim.tbl_keys(client.attached_buffers), ", "))
         )
     end
     local info = create_window("LspInfo")
@@ -144,17 +147,8 @@ end, {
     nargs = "?",
 })
 
-vim.api.nvim_create_user_command(
-    "LspLog",
-    function() vim.cmd(string.format("tabnew %s", vim.lsp.get_log_path())) end,
-    {
-        desc = "Opens the Nvim LSP client log.",
-    }
-)
-
-vim.api.nvim_create_user_command("LspAutostartToggle", function()
-    lsp.toggle_autostart()
-    print("Setting lsp autostart to: " .. tostring(lsp.is_autostart_enabled()))
+vim.api.nvim_create_user_command("LspLog", function()
+    vim.cmd(string.format("tabnew %s", vim.lsp.get_log_path()))
 end, {
-    desc = "Disables autostart of all LSPs",
+    desc = "Opens the Nvim LSP client log.",
 })
