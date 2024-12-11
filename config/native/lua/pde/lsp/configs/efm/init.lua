@@ -49,9 +49,8 @@ end
 ---Build an LspConfig table from the specified EFM plugins
 ---@param name string unique name of this efm instance
 ---@param plugins string[] names of plugins to add, ex. 'prettier'
----@param bufnr integer?
----@return vim.lsp.ClientConfig
-local function build(name, plugins, bufnr)
+---@return vim.lsp.Config
+local function build(name, plugins)
     ---@type table<string, EfmEntry[]>
     local languages = {}
     local allRootMarkers = { [".git/"] = true }
@@ -63,7 +62,9 @@ local function build(name, plugins, bufnr)
         local plugin = prepare_plugin(require("pde.lsp.configs.efm." .. v))
         local languages_entry = make_languages_entry_for_plugin(plugin)
         for key, value in pairs(languages_entry) do
-            if not languages[key] then languages[key] = {} end
+            if not languages[key] then
+                languages[key] = {}
+            end
             table.insert(languages[key], value)
         end
 
@@ -73,7 +74,9 @@ local function build(name, plugins, bufnr)
             end
         end
 
-        if not formattingEnabled and plugin.entry.formatCommand then formattingEnabled = true end
+        if not formattingEnabled and plugin.entry.formatCommand then
+            formattingEnabled = true
+        end
         if not rangeFormattingEnabled and plugin.entry.formatCanRange then
             rangeFormattingEnabled = true
         end
@@ -81,7 +84,6 @@ local function build(name, plugins, bufnr)
 
     local rootMarkers = vim.tbl_keys(allRootMarkers)
 
-    bufnr = bufnr or 0
     return {
         name = name,
         cmd = { binaries.efm() },
@@ -97,21 +99,22 @@ local function build(name, plugins, bufnr)
             rootMarkers = rootMarkers,
             languages = languages,
         },
-        root_dir = vim.fs.root(bufnr, { ".git" }),
     }
 end
 
 return {
     ---Build an LspConfig table from the specified EFM plugin
     ---@param plugin string unique name of this efm instance
-    ---@param bufnr integer?
-    ---@return vim.lsp.ClientConfig
-    config_from_single = function(plugin, bufnr) return build(plugin, { plugin }, bufnr) end,
+    ---@return vim.lsp.Config
+    config_from_single = function(plugin)
+        return build(plugin, { plugin })
+    end,
 
     ---Build an LspConfig table from the specified EFM plugins
     ---@param name string unique name of this efm instance
     ---@param plugins string[] names of plugins to add, ex. 'prettier'
-    ---@param bufnr integer?
-    ---@return vim.lsp.ClientConfig
-    config_from_multi = function(name, plugins, bufnr) return build(name, plugins, bufnr) end,
+    ---@return vim.lsp.Config
+    config_from_multi = function(name, plugins)
+        return build(name, plugins)
+    end,
 }
