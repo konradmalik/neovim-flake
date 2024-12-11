@@ -1,5 +1,3 @@
-local lsp = require("pde.lsp")
-
 ---@param args string
 ---@return number?
 local function parse_int_arg(args)
@@ -30,7 +28,7 @@ local function restart_servers(filter)
                 local attached_buffers = tuple[2]
                 if client:is_stopped() then
                     for _, buf in ipairs(attached_buffers) do
-                        lsp.start(client.config, { bufnr = buf })
+                        vim.lsp.start(client.config, { bufnr = buf })
                     end
                     detach_clients[old_client_id] = nil
                 end
@@ -151,10 +149,3 @@ vim.api.nvim_create_user_command(
         desc = "Opens the Nvim LSP client log.",
     }
 )
-
-vim.api.nvim_create_user_command("LspAutostartToggle", function()
-    lsp.toggle_autostart()
-    print("Setting lsp autostart to: " .. tostring(lsp.is_autostart_enabled()))
-end, {
-    desc = "Disables autostart of all LSPs",
-})
