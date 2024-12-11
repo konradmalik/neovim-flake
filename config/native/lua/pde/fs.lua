@@ -1,5 +1,13 @@
 local M = {}
 
+---checks if buffer is a real readable file
+---@param bufnr integer buffer to check. 0 for current
+---@return boolean true if the buffer represents a real, readable file
+M.is_buf_readable_file = function(bufnr)
+    local bufname = vim.api.nvim_buf_get_name(bufnr)
+    return vim.fn.filereadable(bufname) == 1
+end
+
 ---Get PATH executable, returns nil if not found
 ---@param binary string
 ---@return string | nil

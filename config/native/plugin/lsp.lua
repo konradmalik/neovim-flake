@@ -1,1 +1,22 @@
-require("pde.lsp").initialize_once()
+require("pde.lsp").setup({
+    enabled_configs = {
+        "clangd",
+        "efmson",
+        "gopls",
+        "golangci_lint",
+        "gopls",
+        "jsonls",
+        "ltex",
+        "lua_ls",
+        "nixd",
+        "prettier",
+        "pyright",
+        "rust_analyzer",
+        "sh",
+        "stylua",
+        "taplo",
+        "terraform-ls",
+        "yamlls",
+        "zls",
+    },
+})

@@ -208,10 +208,7 @@ in
     ];
   }
   # LSP
-  {
-    plugin = SchemaStore-nvim;
-    optional = true;
-  }
+  SchemaStore-nvim
   {
     plugin = roslyn-nvim;
     optional = true;
@@ -219,21 +216,17 @@ in
   # DAP
   {
     plugin = nvim-dap;
-    optional = true;
     deps = [
       {
         plugin = nvim-dap-ui;
-        optional = true;
         deps = [
           {
             plugin = nvim-nio;
-            optional = true;
           }
         ];
       }
       {
         plugin = nvim-dap-virtual-text;
-        optional = true;
       }
     ];
   }
