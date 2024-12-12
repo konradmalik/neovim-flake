@@ -10,6 +10,8 @@ return {
             "Never",
             "${--range-start:charStart}",
             "${--range-end:charEnd}",
+            "--stdin-filepath",
+            "'${INPUT}'",
             "-",
         },
         formatCanRange = true,
