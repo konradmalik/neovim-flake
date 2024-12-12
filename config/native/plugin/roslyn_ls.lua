@@ -2,7 +2,11 @@ require("lz.n").load({
     "roslyn.nvim",
     ft = "cs",
     after = function()
-        local lspconfig = require("pde.lsp.configs.roslyn_ls")
-        require("roslyn").setup(lspconfig.get_roslyn_config())
+        local binaries = require("pde.binaries")
+
+        require("roslyn").setup({
+            exe = binaries.roslyn_ls(),
+            config = vim.lsp.config.roslyn,
+        })
     end,
 })
