@@ -36,9 +36,7 @@ local function get_class_name_node(root_node)
         class_node = class_node:parent()
     end
 
-    if class_node then
-        return class_node:field("name")[1]
-    end
+    if class_node then return class_node:field("name")[1] end
 end
 
 ---@param root_node TSNode
@@ -54,9 +52,7 @@ local function get_namespace_name_node(root_node)
         ns_node = ns_node:parent()
     end
 
-    if ns_node then
-        return ns_node:field("name")[1]
-    end
+    if ns_node then return ns_node:field("name")[1] end
 end
 
 ---@param bufnr any
@@ -99,13 +95,9 @@ vim.lsp.config("roslyn", {
         },
     },
     commands = {
-        ["roslyn.client.peekReferences"] = function()
-            vim.lsp.buf.references()
-        end,
+        ["roslyn.client.peekReferences"] = function() vim.lsp.buf.references() end,
         ["dotnet.test.run"] = function(command, ctx)
-            if not validate_command(command) then
-                return
-            end
+            if not validate_command(command) then return end
 
             local bufnr = ctx.bufnr
             local range = command.arguments[1].range
@@ -113,7 +105,10 @@ vim.lsp.config("roslyn", {
             ensure_tree_is_parsed(bufnr)
             local root_node = get_node_at_range(bufnr, range)
             if not root_node then
-                vim.notify("cannot find root node " .. vim.inspect(range["start"]), vim.log.levels.ERROR)
+                vim.notify(
+                    "cannot find root node " .. vim.inspect(range["start"]),
+                    vim.log.levels.ERROR
+                )
                 return
             end
 

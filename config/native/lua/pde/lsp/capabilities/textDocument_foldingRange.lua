@@ -8,7 +8,8 @@ return {
     attach = function(data)
         local bufnr = data.bufnr
         local win = vim.fn.bufwinid(data.bufnr)
-        originals_per_win[win] = { vim.wo[win].foldmethod, vim.wo[win].foldexpr, vim.wo[win].foldtext }
+        originals_per_win[win] =
+            { vim.wo[win].foldmethod, vim.wo[win].foldexpr, vim.wo[win].foldtext }
         vim.wo[win].foldmethod = "expr"
         vim.wo[win].foldexpr = "v:lua.vim.lsp.foldexpr()"
         vim.wo[win].foldtext = "v:lua.vim.lsp.foldtext()"
