@@ -11,7 +11,7 @@ vim.o.foldmethod = "expr"
 -- For some reason it takes 1-2 mins to open the log when this is set.
 -- vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.o.foldexpr = "nvim_treesitter#foldexpr()"
-vim.o.foldtext = ""
+vim.o.foldtext = "v:lua.vim.treesitter.foldtext()"
 -- when enabling, start with this level
 vim.o.foldlevel = 1
 vim.o.foldenable = false
