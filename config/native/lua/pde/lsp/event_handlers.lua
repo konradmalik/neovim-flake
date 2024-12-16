@@ -21,23 +21,23 @@ M.detach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_codeLens) then
-        require("pde.lsp.capability_handlers.codelens").detach(client_id, bufnr)
+        require("pde.lsp.capabilities.textDocument_codeLens").detach(client_id, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
-        require("pde.lsp.capability_handlers.documenthighlight").detach(client_id, bufnr)
+        require("pde.lsp.capabilities.textDocument_documentHighlight").detach(client_id, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_foldingRange) then
-        require("pde.lsp.capability_handlers.folds").detach(client_id, bufnr)
+        require("pde.lsp.capabilities.textDocument_foldingRange").detach(client_id, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_formatting) then
-        require("pde.lsp.capability_handlers.format").detach(client_id, bufnr)
+        require("pde.lsp.capabilities.textDocument_formatting").detach(client_id, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_inlayHint) then
-        require("pde.lsp.capability_handlers.inlayhints").detach(client_id, bufnr)
+        require("pde.lsp.capabilities.textDocument_inlayHint").detach(client_id, bufnr)
     end
 
     local clients = vim.lsp.get_clients({ bufnr = bufnr })
@@ -81,15 +81,15 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_codeLens) then
-        require("pde.lsp.capability_handlers.codelens").attach(handler_data)
+        require("pde.lsp.capabilities.textDocument_codeLens").attach(handler_data)
     end
 
     if client_buf_supports_method(ms.textDocument_foldingRange) then
-        require("pde.lsp.capability_handlers.folds").attach(handler_data)
+        require("pde.lsp.capabilities.textDocument_foldingRange").attach(handler_data)
     end
 
     if client_buf_supports_method(ms.textDocument_formatting) then
-        require("pde.lsp.capability_handlers.format").attach(handler_data)
+        require("pde.lsp.capabilities.textDocument_formatting").attach(handler_data)
     end
 
     if client_buf_supports_method(ms.textDocument_declaration) then
@@ -101,7 +101,7 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
-        require("pde.lsp.capability_handlers.documenthighlight").attach(handler_data)
+        require("pde.lsp.capabilities.textDocument_documentHighlight").attach(handler_data)
     end
 
     if client_buf_supports_method(ms.textDocument_documentSymbol) then
@@ -134,7 +134,7 @@ M.attach = function(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_inlayHint) then
-        require("pde.lsp.capability_handlers.inlayhints").attach(handler_data)
+        require("pde.lsp.capabilities.textDocument_inlayHint").attach(handler_data)
     end
 
     vim.keymap.set("n", "grwa", vim.lsp.buf.add_workspace_folder, opts_with_desc("Add Workspace Folder"))
