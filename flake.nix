@@ -140,10 +140,6 @@
       url = "github:mbbill/undotree";
       flake = false;
     };
-    vim-fugitive = {
-      url = "github:tpope/vim-fugitive";
-      flake = false;
-    };
     which-key-nvim = {
       url = "github:folke/which-key.nvim";
       flake = false;

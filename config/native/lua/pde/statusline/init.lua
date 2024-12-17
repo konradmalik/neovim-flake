@@ -5,7 +5,7 @@ local utils = require("pde.statusline.utils")
 
 local config = {
     special = {
-        filetype = { "^git.*", "fugitive", "undotree", "diff" },
+        filetype = { "^git.*", "undotree", "diff" },
         buftype = { "nofile", "prompt", "help", "quickfix" },
     },
 }
@@ -54,14 +54,6 @@ local function setup_local_winbar_with_autocmd()
             vim.wo.winbar = winbar
         end,
         desc = "Personal: set window-local winbar",
-    })
-
-    -- fix fugitive windows scroll-sync by placing a dummy winbar in them
-    vim.api.nvim_create_autocmd("FileType", {
-        group = group,
-        pattern = { "fugitiveblame" },
-        callback = function() vim.wo.winbar = "Fugitive" end,
-        desc = "Personal: fix fugitive alignment",
     })
 end
 

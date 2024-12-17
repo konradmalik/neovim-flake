@@ -181,11 +181,6 @@ let
     nvimRequireCheck = null;
     vimCommandCheck = "UndotreeToggle";
   };
-  vim-fugitive = buildVim {
-    input = "vim-fugitive";
-    nvimRequireCheck = null;
-    vimCommandCheck = "G";
-  };
   which-key-nvim = buildVim {
     input = "which-key-nvim";
     nvimRequireCheck = "which-key";
@@ -285,10 +280,6 @@ in
   {
     plugin = undotree;
     optional = true;
-  }
-  {
-    plugin = vim-fugitive;
-    systemDeps = [ pkgs.git ];
   }
   which-key-nvim
 ]
