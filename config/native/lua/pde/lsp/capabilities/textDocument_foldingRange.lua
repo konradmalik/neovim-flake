@@ -8,11 +8,13 @@ return {
     attach = function(data)
         local bufnr = data.bufnr
         local win = vim.fn.bufwinid(data.bufnr)
-        originals_per_win[win] =
-            { vim.wo[win].foldmethod, vim.wo[win].foldexpr, vim.wo[win].foldtext }
-        vim.wo[win].foldmethod = "expr"
-        vim.wo[win].foldexpr = "v:lua.vim.lsp.foldexpr()"
-        vim.wo[win].foldtext = "v:lua.vim.lsp.foldtext()"
+        if vim.api.nvim_win_is_valid(win) then
+            originals_per_win[win] =
+                { vim.wo[win].foldmethod, vim.wo[win].foldexpr, vim.wo[win].foldtext }
+            vim.wo[win].foldmethod = "expr"
+            vim.wo[win].foldexpr = "v:lua.vim.lsp.foldexpr()"
+            vim.wo[win].foldtext = "v:lua.vim.lsp.foldtext()"
+        end
 
         local client = data.client
         local augroup = data.augroup
@@ -22,7 +24,8 @@ return {
             buffer = bufnr,
             callback = function(args)
                 if foldingimports_is_enabled and args.data.method == "textDocument/didOpen" then
-                    vim.lsp.foldclose("imports", vim.fn.bufwinid(args.buf))
+                    local auwin = vim.fn.bufwinid(args.buf)
+                    if vim.api.nvim_win_is_valid(win) then vim.lsp.foldclose("imports", auwin) end
                 end
             end,
         })
