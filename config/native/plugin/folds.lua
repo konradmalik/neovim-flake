@@ -13,5 +13,5 @@ vim.o.foldmethod = "expr"
 vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 vim.o.foldtext = "v:lua.vim.treesitter.foldtext()"
 -- when enabling, start with this level
-vim.o.foldlevel = 1
-vim.o.foldenable = false
+vim.o.foldlevel = 99
+vim.o.foldenable = true
