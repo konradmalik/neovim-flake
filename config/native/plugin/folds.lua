@@ -1,10 +1,9 @@
-vim.o.foldcolumn = "auto"
+vim.o.foldcolumn = "1"
 vim.opt.fillchars = {
     eob = " ",
-    fold = " ",
-    foldopen = "",
+    foldopen = "",
     foldsep = "┊",
-    foldclose = "",
+    foldclose = "",
 }
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"

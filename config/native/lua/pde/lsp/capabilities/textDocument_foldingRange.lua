@@ -11,6 +11,11 @@ return {
         if vim.api.nvim_win_is_valid(win) then
             originals_per_win[win] =
                 { vim.wo[win].foldmethod, vim.wo[win].foldexpr, vim.wo[win].foldtext }
+            -- NOTE this change first removes the foldcolumn
+            -- then adds it only after lsp responds with folds
+            -- which causes the current line to update, but the rest not
+            -- this has a weird effect of text moving right as we go down
+            -- a workaround is to force foldcolumn to some constant number, done in folds.lua
             vim.wo[win].foldmethod = "expr"
             vim.wo[win].foldexpr = "v:lua.vim.lsp.foldexpr()"
             vim.wo[win].foldtext = "v:lua.vim.lsp.foldtext()"

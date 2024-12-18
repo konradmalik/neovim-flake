@@ -27,15 +27,16 @@ vim.o.undodir = vim.fn.stdpath("state") .. "/undodir"
 vim.o.ignorecase = true
 vim.o.smartcase = true
 -- Keep signcolumn on by default
+-- but restrict to just 1 place
 vim.o.signcolumn = "yes"
 -- show some hidden chars
 vim.o.list = true
 vim.opt.listchars = {
     trail = "·",
-    tab = "--▷",
-    nbsp = "○",
-    extends = "◣",
-    precedes = "◢",
+    tab = "-->",
+    nbsp = "󱁐",
+    extends = "",
+    precedes = "",
     leadmultispace = "┊ ",
 }
 -- Lines of context when scrolling
