@@ -10,6 +10,7 @@ require("pde.lsp").setup({
         "lua_ls",
         "nixd",
         "prettier",
+        "pyefm",
         "pyright",
         "rust_analyzer",
         "sh",
