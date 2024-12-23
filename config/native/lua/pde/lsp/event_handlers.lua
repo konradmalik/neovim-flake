@@ -59,7 +59,7 @@ M.attach = function(client, bufnr)
 
     if client_buf_supports_method(ms.textDocument_completion) then
         local completion = require("pde.lsp.completion")
-        completion.enable(client, bufnr, { autotrigger = true })
+        completion.enable(client, bufnr, { autotrigger = false })
 
         if client_buf_supports_method(ms.completionItem_resolve) then
             completion.enable_completion_documentation(client, augroup, bufnr)
