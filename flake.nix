@@ -26,6 +26,12 @@
       url = "github:b0o/SchemaStore.nvim";
       flake = false;
     };
+    blink-cmp = {
+      url = "github:Saghen/blink.cmp";
+      inputs = {
+        flake-parts.follows = "flake-parts";
+      };
+    };
     boole-nvim = {
       url = "github:nat-418/boole.nvim";
       flake = false;
