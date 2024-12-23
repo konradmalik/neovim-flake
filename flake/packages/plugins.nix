@@ -62,6 +62,7 @@ in
 # - does not work for src in buildVimPlugin
 # - plugins internally depend on vimUtils.plenary-nvim and similar either way
 let
+  inherit (inputs'.blink-cmp.packages) blink-cmp;
   inherit (inputs'.git-conflict-nvim.packages) git-conflict-nvim;
   inherit (inputs'.incomplete-nvim.packages) incomplete-nvim;
   inherit (inputs'.lz-n.packages) lz-n-vimPlugin;
@@ -201,6 +202,11 @@ in
       }
       nvim-treesitter-textobjects
     ];
+  }
+  # completion
+  {
+    plugin = blink-cmp;
+    deps = [ friendly-snippets ];
   }
   # LSP
   SchemaStore-nvim
