@@ -6,29 +6,34 @@ local trigger_timer = assert(vim.uv.new_timer(), "cannot create timer")
 -- but then throw errors when this is executed (I look at you gopls)
 local documentation_is_enabled = true
 
-local kinds = {
+local kind_icons = {
     Text = "󰉿",
-    Method = "󰆧",
+    Method = "󰊕",
     Function = "󰊕",
     Constructor = "",
+
     Field = "󰜢",
-    Variable = "󰀫",
+    Variable = "󰆦",
+    Property = "󰖷",
+
     Class = "󰠱",
     Interface = "",
+    Struct = "󱡠",
     Module = "",
-    Property = "󰜢",
+
     Unit = "󰑭",
     Value = "󰎠",
     Enum = "",
-    Keyword = "󰌋",
-    Snippet = "",
+    EnumMember = "",
+
+    Keyword = "󰻾",
+    Constant = "󰏿",
+
+    Snippet = "󱄽",
     Color = "󰏘",
     File = "󰈙",
     Reference = "󰈇",
     Folder = "󰉋",
-    EnumMember = "",
-    Constant = "󰏿",
-    Struct = "󰙅",
     Event = "",
     Operator = "󰆕",
     TypeParameter = "",
@@ -38,7 +43,7 @@ local initialized = false
 local function initialize_once()
     if initialized then return end
     for i, v in ipairs(vim.lsp.protocol.CompletionItemKind) do
-        vim.lsp.protocol.CompletionItemKind[i] = kinds[v]
+        vim.lsp.protocol.CompletionItemKind[i] = kind_icons[v]
     end
     initialized = true
 end
@@ -58,11 +63,15 @@ end
 
 local M = {}
 
+M.kind_icons = kind_icons
+
 ---@param client vim.lsp.Client
 ---@param bufnr integer
-M.enable = function(client, bufnr)
+---@param opts vim.lsp.completion.BufferOpts?
+M.enable = function(client, bufnr, opts)
     initialize_once()
-    vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
+    opts = opts or { autotrigger = false }
+    vim.lsp.completion.enable(true, client.id, bufnr, opts)
 
     ---@param mode string|string[]
     ---@param lhs string

@@ -1,11 +1,7 @@
 local M = {}
 
----@class LspConfig
----@field enabled_configs string[] list of config names from {rtp}/lsp/*.lua
-
 ---Initialize lsp configurations
----@param config LspConfig
-function M.setup(config)
+function M.setup()
     require("pde.lsp.commands")
 
     require("pde.lsp.progress")
@@ -36,16 +32,6 @@ function M.setup(config)
             end
         end,
     })
-
-    vim.lsp.config("*", {
-        root_markers = {
-            ".git",
-        },
-    })
-
-    for _, name in ipairs(config.enabled_configs or {}) do
-        vim.lsp.enable(name, true)
-    end
 end
 
 return M
