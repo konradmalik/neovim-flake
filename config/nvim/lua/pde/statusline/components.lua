@@ -136,7 +136,7 @@ M.fileinfo = function(active)
 
     local text = wrap_hl(ihl, icon) .. " " .. wrap_hl(hl, filename)
 
-    if vim.bo[bufnr].modified then return text .. wrap_hl(colors.diag_ok, icons.ui.Square) end
+    if vim.bo[bufnr].modified then return text .. wrap_hl(colors.diag_ok, icons.git.Mod) end
 
     if vim.bo[bufnr].readonly then text = text .. wrap_hl(colors.diag_warn, icons.ui.Lock) end
     if not vim.bo[bufnr].modifiable then
@@ -211,7 +211,7 @@ M.LSP_status = function()
     local numClients = #clients
     if numClients == 0 then return "" end
 
-    local icon = numClients > 1 and icons.ui.CheckAll or icons.ui.Check
+    local icon = numClients > 1 and icons.ui.HexagonAll or icons.ui.Hexagon
     if numClients >= 3 then return wrap_hl(colors.green, icon .. " " .. numClients .. " LSPs") end
 
     local texts = { icon }
@@ -243,7 +243,7 @@ do
     local hostname
     M.hostname = function()
         if not hostname then
-            hostname = wrap_hl(colors.blue, icons.ui.Laptop .. " " .. vim.fn.hostname())
+            hostname = wrap_hl(colors.blue, icons.ui.Terminal .. " " .. vim.fn.hostname())
         end
         return hostname
     end

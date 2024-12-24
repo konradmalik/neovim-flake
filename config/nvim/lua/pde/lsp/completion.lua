@@ -7,35 +7,44 @@ local trigger_timer = assert(vim.uv.new_timer(), "cannot create timer")
 local documentation_is_enabled = true
 
 local kind_icons = {
-    Text = "󰉿",
-    Method = "󰊕",
-    Function = "󰊕",
     Constructor = "",
+    Function = "󰊕",
+    Method = "󰊕",
 
     Field = "󰜢",
-    Variable = "󰆦",
     Property = "󰖷",
+    Variable = "󰆦",
 
     Class = "󰠱",
-    Interface = "",
-    Struct = "󱡠",
+    Interface = "",
     Module = "",
+    Namespace = "",
+    Object = "",
+    Package = "",
+    Struct = "󱡠",
 
+    Enum = "",
+    EnumMember = "",
     Unit = "󰑭",
     Value = "󰎠",
-    Enum = "",
-    EnumMember = "",
 
-    Keyword = "󰻾",
+    Array = "",
+    Boolean = "",
     Constant = "󰏿",
+    Keyword = "󰻾",
+    Null = "󰟢",
+    Number = "",
+    String = "",
+    Text = "",
 
-    Snippet = "󱄽",
     Color = "󰏘",
-    File = "󰈙",
-    Reference = "󰈇",
-    Folder = "󰉋",
     Event = "",
+    File = "󰈙",
+    Folder = "󰉋",
+    Key = "",
     Operator = "󰆕",
+    Reference = "",
+    Snippet = "󱄽",
     TypeParameter = "",
 }
 

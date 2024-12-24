@@ -1,24 +1,23 @@
 return {
     documents = {
         FileContents = "",
-        Folder = "",
+        Folder = "󰉋",
     },
     git = {
         Add = "",
         Mod = "",
         Remove = "",
-        Branch = "",
+        Branch = "󰘬",
     },
     ui = {
-        Check = "󰄬",
-        CheckAll = "󰄭",
-        Lock = "",
-        FilledLock = "",
-        Square = "",
-        Bug = "",
+        Hexagon = "󰋘",
+        HexagonAll = "󰛡",
+        Lock = "󰍁",
+        FilledLock = "󰌾",
+        Bug = "󰃤",
         LeftHalf = "",
         RightHalf = "",
-        Laptop = "",
+        Terminal = "",
         Animations = {
             -- keep those odd
             Fill = {
@@ -46,8 +45,8 @@ return {
         Neovim = "",
     },
     oss = {
-        Linux = "",
-        Windows = "",
-        Mac = "",
+        Linux = "󰌽",
+        Windows = "󰖳",
+        Mac = "󰀵",
     },
 }
