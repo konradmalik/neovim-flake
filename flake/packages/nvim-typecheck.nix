@@ -10,8 +10,8 @@ let
   luvit-meta = fetchFromGitHub {
     owner = "Bilal2453";
     repo = "luvit-meta";
-    rev = "ce76f6f6cdc9201523a5875a4471dcfe0186eb60";
-    hash = "sha256-zAAptV/oLuLAAsa2zSB/6fxlElk4+jNZd/cPr9oxFig=";
+    rev = "57d464c4acb5c2e66bd4145060f5dc9e96a7bbb7";
+    hash = "sha256-c6AFyWwWzG8WyhFqo8F3+aa8mZYtRrdPizmwf9a5yQk=";
   };
 in
 stdenv.mkDerivation {
@@ -20,8 +20,8 @@ stdenv.mkDerivation {
   src = fetchFromGitHub {
     owner = "stevearc";
     repo = "nvim-typecheck-action";
-    rev = "ed62b8e40283bad58cad8e7743045705104b8070";
-    hash = "sha256-uLaux4KJD3dIQaBc1EOjEwJ0Ga64WaMdSsFi2IrOFKI=";
+    rev = "d2d873b941473ca3b4c6df05f8ac55d6d63159b0";
+    hash = "sha256-KSFac9MSO8jfraF9R7R9SG3RBHAUvIRcCZZBHu3QWEA=";
   };
 
   postPatch = ''
