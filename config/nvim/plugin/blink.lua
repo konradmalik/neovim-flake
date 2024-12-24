@@ -8,13 +8,16 @@ require("blink.cmp").setup({
         documentation = {
             auto_show = true,
         },
-        -- don't show automatically in cmdline
-        menu = { auto_show = function(ctx) return ctx.mode ~= "cmdline" end },
     },
 
     fuzzy = {
         prebuilt_binaries = {
             download = false,
         },
+    },
+
+    sources = {
+        -- Disable cmdline completions
+        cmdline = {},
     },
 })
