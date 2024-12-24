@@ -1,10 +1,10 @@
 .PHONY: luacheck
 luacheck:
-	@luacheck --codes --no-cache ./config/native
+	@luacheck --codes --no-cache ./config/nvim
 
 .PHONY: typecheck
 typecheck:
-	@nvim-typecheck ./config/native
+	@nvim-typecheck ./config/nvim
 
 .PHONY: fmt
 fmt:

@@ -6,9 +6,9 @@
   onlyNix ? false,
 }:
 let
-  native = stdenvNoCC.mkDerivation {
-    name = "neovim-pde-native-config";
-    src = ./native;
+  nvim = stdenvNoCC.mkDerivation {
+    name = "neovim-pde-nvim-config";
+    src = ./nvim;
     dontBuild = true;
     installPhase = ''
       cp -r $src $out
@@ -23,5 +23,5 @@ let
 in
 symlinkJoin {
   name = "neovim-pde-config";
-  paths = nix ++ lib.optionals (!onlyNix) [ native ];
+  paths = nix ++ lib.optionals (!onlyNix) [ nvim ];
 }

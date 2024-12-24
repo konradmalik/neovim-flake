@@ -13,7 +13,7 @@
             +
               # bash
               ''
-                ln -fs ${self'.packages.full-luarc-json} ./config/native/.luarc.json
+                ln -fs ${self'.packages.full-luarc-json} ./config/nvim/.luarc.json
                 ln -fs ${self'.packages.no-plugins-luarc-json} ./.luarc.json
               '';
           packages =

@@ -1,4 +1,5 @@
 !.github
 !**/.luarc.json
+!**/.busted
 flake.lock
 files/spell/*.spl

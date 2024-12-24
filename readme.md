@@ -22,7 +22,7 @@ to configure Neovim.
 ## Things to note
 
 -   Uses `NVIM_APPNAME` to differentiate from other Neovim instances. It's set to `neovim-pde` or `neovim-pde-hm` for
-    home-manager or `native` when running in "dev mode" (configurable).
+    home-manager (configurable) or `nvim` when running in "dev mode".
 
 ### Home Manager
 
@@ -48,7 +48,7 @@ You always need to rebuild it, but `nix build` and then `./result/bin/nvim` is q
 
 Another solution implemented in this repo is `nvim-dev` command that becomes available inside devShell here.
 It runs the neovim package defined in the repo with plugins and `nix`-generated lua files provided, but the native lua
-config gets read "live" from `./config/native` here in the repo. This allows for instant feedback and dynamic
+config gets read "live" from `./config/nvim` here in the repo. This allows for instant feedback and dynamic
 development just like when using neovim without nix.
 
 ## Notes

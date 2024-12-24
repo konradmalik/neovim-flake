@@ -1,7 +1,7 @@
 return {
     _all = {
         coverage = false,
-        lpath = "config/native/lua/?.lua;config/native/lua/?/init.lua",
+        lpath = "config/nvim/lua/?.lua;config/nvim/lua/?/init.lua",
     },
     default = {
         verbose = true,

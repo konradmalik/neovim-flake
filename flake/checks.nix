@@ -16,7 +16,7 @@
                 path = fs.toSource {
                   root = ./..;
                   fileset = fs.unions [
-                    ./../config/native
+                    ./../config/nvim
                     ./../.luacheckrc
                   ];
                 };
@@ -30,10 +30,10 @@
         in
         {
           luacheck = makeCheckJob "luacheck" ''
-            ${pkgs.lua.pkgs.luacheck}/bin/luacheck --codes --no-cache ./config/native
+            ${pkgs.lua.pkgs.luacheck}/bin/luacheck --codes --no-cache ./config/nvim
           '';
           typecheck = makeCheckJob "typecheck" ''
-            ${self'.packages.nvim-typecheck}/bin/nvim-typecheck ./config/native
+            ${self'.packages.nvim-typecheck}/bin/nvim-typecheck ./config/nvim
           '';
         };
     };
