@@ -1,0 +1,11 @@
+{
+    "name": "neovim-pde-snippets",
+    "contributes": {
+        "snippets": [
+            {
+                "language": "all",
+                "path": "./all.json"
+            }
+        ]
+    }
+}
