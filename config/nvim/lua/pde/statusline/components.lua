@@ -1,5 +1,5 @@
-local devicons = require("nvim-web-devicons")
 local icons = require("pde.statusline.icons")
+local mini_icons = require("mini.icons")
 local utils = require("pde.statusline.utils")
 
 ---@param hl string
@@ -111,29 +111,21 @@ M.fileinfo = function(active)
     local bufnr = utils.stbufnr()
     local bufname = vim.api.nvim_buf_get_name(bufnr)
 
-    local filename
-    local extension
-    if bufname == "" then
-        filename = "[No Name]"
-        extension = ""
-    else
-        filename = vim.fn.fnamemodify(bufname, ":.") or ""
-        extension = vim.fn.fnamemodify(bufname, ":e") or ""
-    end
-
-    local icon, color = devicons.get_icon_color(bufname, extension, { default = true })
-
-    local ihl
+    local icon, ihl, _ = mini_icons.get("file", bufname)
     local hl
     if not active then
         ihl = colors.gray
         hl = colors.gray
     else
-        ihl = "StFileInfo"
-        vim.api.nvim_set_hl(0, ihl, { fg = color })
         hl = colors.text
     end
 
+    local filename
+    if bufname == "" then
+        filename = "[No Name]"
+    else
+        filename = vim.fn.fnamemodify(bufname, ":.") or ""
+    end
     local text = wrap_hl(ihl, icon) .. " " .. wrap_hl(hl, filename)
 
     if vim.bo[bufnr].modified then return text .. wrap_hl(colors.diag_ok, icons.git.Mod) end

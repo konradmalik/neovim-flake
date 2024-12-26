@@ -71,6 +71,10 @@
       url = "github:nvim-neorocks/lz.n";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    mini-icons = {
+      url = "github:echasnovski/mini.icons";
+      flake = false;
+    };
     neo-tree-nvim = {
       url = "github:nvim-neo-tree/neo-tree.nvim";
       flake = false;
@@ -109,10 +113,6 @@
     };
     nvim-treesitter-textobjects = {
       url = "github:nvim-treesitter/nvim-treesitter-textobjects";
-      flake = false;
-    };
-    nvim-web-devicons = {
-      url = "github:kyazdani42/nvim-web-devicons";
       flake = false;
     };
     plenary-nvim = {

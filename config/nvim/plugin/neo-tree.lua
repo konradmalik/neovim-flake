@@ -1,4 +1,5 @@
 local keymap = vim.keymap
+local mini_icons = require("mini.icons")
 local opts_with_desc = function(desc) return { desc = "[NeoTree] " .. desc } end
 
 keymap.set(
@@ -19,10 +20,28 @@ neo_tree.setup({
     },
     sort_case_insensitive = true, -- used when sorting files and directories in the tree
     default_component_configs = {
+        icon = {
+            provider = function(icon, node) -- setup a custom icon provider
+                local text, hl = mini_icons.get(node.type, node.name)
+                if node:is_expanded() then text = nil end
+
+                if text then icon.text = text end
+                if hl then icon.highlight = hl end
+            end,
+        },
         indent = {
             -- indent guides
             with_markers = true,
         },
+        kind_icon = {
+            provider = function(icon, node)
+                icon.text, icon.highlight = mini_icons.get("lsp", node.extra.kind.name)
+            end,
+        },
+    },
+    event_handlers = {
+        { event = events.FILE_MOVED, handler = on_move },
+        { event = events.FILE_RENAMED, handler = on_move },
     },
     filesystem = {
         filtered_items = {
@@ -34,9 +53,5 @@ neo_tree.setup({
         follow_current_file = {
             enabled = true,
         },
-    },
-    event_handlers = {
-        { event = events.FILE_MOVED, handler = on_move },
-        { event = events.FILE_RENAMED, handler = on_move },
     },
 })

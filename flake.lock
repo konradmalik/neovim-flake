@@ -1095,6 +1095,22 @@
         "type": "github"
       }
     },
+    "mini-icons": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1734008284,
+        "narHash": "sha256-RxaOntmnL/xy8lYu3fTBve3MV7ZTRc/xSrp5psU/YW0=",
+        "owner": "echasnovski",
+        "repo": "mini.icons",
+        "rev": "44c0160526f7ae17ca8e8eab9ab235d047fcf7a6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "echasnovski",
+        "repo": "mini.icons",
+        "type": "github"
+      }
+    },
     "neo-tree-nvim": {
       "flake": false,
       "locked": {
@@ -1695,22 +1711,6 @@
         "type": "github"
       }
     },
-    "nvim-web-devicons": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1734330868,
-        "narHash": "sha256-OULD8dLI3Oakg9rgs4h8zXozOmX0aiovBNk8kD0nDXY=",
-        "owner": "kyazdani42",
-        "repo": "nvim-web-devicons",
-        "rev": "0eb18da56e2ba6ba24de7130a12bcc4e31ad11cb",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kyazdani42",
-        "repo": "nvim-web-devicons",
-        "type": "github"
-      }
-    },
     "plenary-nvim": {
       "flake": false,
       "locked": {
@@ -1761,6 +1761,7 @@
         "incomplete-nvim": "incomplete-nvim",
         "kanagawa-nvim": "kanagawa-nvim",
         "lz-n": "lz-n",
+        "mini-icons": "mini-icons",
         "neo-tree-nvim": "neo-tree-nvim",
         "neorocks": "neorocks_2",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
@@ -1774,7 +1775,6 @@
         "nvim-treesitter": "nvim-treesitter",
         "nvim-treesitter-context": "nvim-treesitter-context",
         "nvim-treesitter-textobjects": "nvim-treesitter-textobjects",
-        "nvim-web-devicons": "nvim-web-devicons",
         "plenary-nvim": "plenary-nvim",
         "roslyn-nvim": "roslyn-nvim",
         "snacks-nvim": "snacks-nvim",

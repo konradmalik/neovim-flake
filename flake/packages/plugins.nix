@@ -88,6 +88,10 @@ let
     input = "kanagawa-nvim";
     nvimRequireCheck = "kanagawa";
   };
+  mini-icons = buildVim {
+    input = "mini-icons";
+    nvimRequireCheck = "mini.icons";
+  };
   neo-tree-nvim = buildVim {
     input = "neo-tree-nvim";
     nvimRequireCheck = "neo-tree";
@@ -131,7 +135,6 @@ let
     input = "nvim-treesitter-textobjects";
     dependencies = [ nvim-treesitter ];
   };
-  nvim-web-devicons = buildVim { input = "nvim-web-devicons"; };
   plenary-nvim =
     (buildNeovim {
       input = "plenary-nvim";
@@ -189,7 +192,7 @@ let
 in
 [
   # base
-  nvim-web-devicons
+  mini-icons
   plenary-nvim
   lz-n-vimPlugin
   # treesitter
@@ -251,7 +254,6 @@ in
   {
     plugin = neo-tree-nvim;
     deps = [
-      nvim-web-devicons
       plenary-nvim
       nui-nvim
     ];

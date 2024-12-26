@@ -1,3 +1,4 @@
+local mini_icons = require("mini.icons")
 local docs_debounce_ms = 250
 local docs_timer = assert(vim.uv.new_timer(), "cannot create timer")
 local trigger_debounce_ms = 250
@@ -6,54 +7,10 @@ local trigger_timer = assert(vim.uv.new_timer(), "cannot create timer")
 -- but then throw errors when this is executed (I look at you gopls)
 local documentation_is_enabled = true
 
-local kind_icons = {
-    Constructor = "",
-    Function = "󰊕",
-    Method = "󰊕",
-
-    Field = "󰜢",
-    Property = "󰖷",
-    Variable = "󰆦",
-
-    Class = "󰠱",
-    Interface = "",
-    Module = "",
-    Namespace = "",
-    Object = "",
-    Package = "",
-    Struct = "󱡠",
-
-    Enum = "",
-    EnumMember = "",
-    Unit = "󰑭",
-    Value = "󰎠",
-
-    Array = "",
-    Boolean = "",
-    Constant = "󰏿",
-    Keyword = "󰻾",
-    Null = "󰟢",
-    Number = "",
-    String = "",
-    Text = "",
-
-    Color = "󰏘",
-    Event = "",
-    File = "󰈙",
-    Folder = "󰉋",
-    Key = "",
-    Operator = "󰆕",
-    Reference = "",
-    Snippet = "󱄽",
-    TypeParameter = "",
-}
-
 local initialized = false
 local function initialize_once()
     if initialized then return end
-    for i, v in ipairs(vim.lsp.protocol.CompletionItemKind) do
-        vim.lsp.protocol.CompletionItemKind[i] = kind_icons[v]
-    end
+    mini_icons.tweak_lsp_kind("replace")
     initialized = true
 end
 
@@ -71,8 +28,6 @@ local function feedkeys(keys)
 end
 
 local M = {}
-
-M.kind_icons = kind_icons
 
 ---@param client vim.lsp.Client
 ---@param bufnr integer
