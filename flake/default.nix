@@ -22,12 +22,6 @@
         overlays = [
           inputs.gen-luarc.overlays.default
           inputs.neorocks.overlays.default
-          (final: prev: {
-            # FIXME https://nixpk.gs/pr-tracker.html?pr=368248
-            lua-language-server =
-              (builtins.getFlake "github:nixos/nixpkgs/1a9767900c410ce390d4eee9c70e59dd81ddecb5")
-              .legacyPackages.${prev.system}.lua-language-server;
-          })
         ];
       };
 
