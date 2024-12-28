@@ -46,7 +46,6 @@
       inputs = {
         flake-parts.follows = "flake-parts";
         gen-luarc.follows = "gen-luarc";
-        neorocks.follows = "neorocks";
         nixpkgs.follows = "nixpkgs";
       };
     };
@@ -59,7 +58,6 @@
       inputs = {
         flake-parts.follows = "flake-parts";
         gen-luarc.follows = "gen-luarc";
-        neorocks.follows = "neorocks";
         nixpkgs.follows = "nixpkgs";
       };
     };
