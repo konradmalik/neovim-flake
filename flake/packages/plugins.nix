@@ -65,7 +65,6 @@ let
   inherit (inputs'.blink-cmp.packages) blink-cmp;
   inherit (inputs'.git-conflict-nvim.packages) git-conflict-nvim;
   inherit (inputs'.incomplete-nvim.packages) incomplete-nvim;
-  inherit (inputs'.lz-n.packages) lz-n-vimPlugin;
   SchemaStore-nvim = buildVim {
     input = "SchemaStore-nvim";
     nvimRequireCheck = "schemastore";
@@ -194,15 +193,11 @@ in
   # base
   mini-icons
   plenary-nvim
-  lz-n-vimPlugin
   # treesitter
   {
     plugin = nvim-treesitter;
     deps = [
-      {
-        plugin = nvim-treesitter-context;
-        optional = true;
-      }
+      nvim-treesitter-context
       nvim-treesitter-textobjects
     ];
   }
@@ -213,21 +208,14 @@ in
   }
   # LSP
   SchemaStore-nvim
-  {
-    plugin = roslyn-nvim;
-    optional = true;
-  }
+  roslyn-nvim
   # DAP
   {
     plugin = nvim-dap;
     deps = [
       {
         plugin = nvim-dap-ui;
-        deps = [
-          {
-            plugin = nvim-nio;
-          }
-        ];
+        deps = [ nvim-nio ];
       }
       {
         plugin = nvim-dap-virtual-text;
@@ -261,7 +249,6 @@ in
   }
   {
     plugin = todo-comments-nvim;
-    optional = true;
     deps = [ plenary-nvim ];
   }
   # snippets
@@ -271,23 +258,16 @@ in
   }
   # misc
   snacks-nvim
-  {
-    plugin = boole-nvim;
-    optional = true;
-  }
+  boole-nvim
   {
     plugin = git-conflict-nvim;
     systemDeps = [ pkgs.git ];
   }
   {
     plugin = gitsigns-nvim;
-    optional = true;
     systemDeps = [ pkgs.git ];
   }
   nvim-luaref
-  {
-    plugin = undotree;
-    optional = true;
-  }
+  undotree
   which-key-nvim
 ]

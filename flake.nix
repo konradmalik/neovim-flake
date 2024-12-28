@@ -67,10 +67,6 @@
       url = "github:rebelot/kanagawa.nvim";
       flake = false;
     };
-    lz-n = {
-      url = "github:nvim-neorocks/lz.n";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     mini-icons = {
       url = "github:echasnovski/mini.icons";
       flake = false;
