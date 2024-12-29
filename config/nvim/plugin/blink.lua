@@ -1,10 +1,6 @@
 local mini_icons = require("mini.icons")
 
 require("blink.cmp").setup({
-    appearance = {
-        nerd_font_variant = "normal",
-    },
-
     completion = {
         documentation = {
             auto_show = true,
@@ -16,6 +12,10 @@ require("blink.cmp").setup({
                         text = function(ctx)
                             local kind_icon, _, _ = mini_icons.get("lsp", ctx.kind)
                             return kind_icon .. ctx.icon_gap
+                        end,
+                        highlight = function(ctx)
+                            local _, hl, _ = mini_icons.get("lsp", ctx.kind)
+                            return hl
                         end,
                     },
                 },
