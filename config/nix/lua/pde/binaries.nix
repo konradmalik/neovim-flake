@@ -5,43 +5,64 @@ in
 pkgs.writeTextDir "lua/pde/binaries.lua" # lua
   ''
     local fs = require("pde.fs")
-    return {
+
+    local nix = {
         -- formatters
-        black = function() return fs.from_path_or_default("black", "${lib.getExe pkgs.black}") end,
-        isort = function() return fs.from_path_or_default("isort", "${lib.getExe pkgs.isort}") end,
-        nixfmt = function() return "${lib.getExe pkgs.nixfmt-rfc-style}" end,
-        prettier = function() return fs.from_path_or_default("prettier", "${lib.getExe pkgs.nodePackages.prettier}") end,
-        rustfmt = function() return "${lib.getExe pkgs.rustfmt}" end,
-        shfmt = function() return "${lib.getExe pkgs.shfmt}" end,
-        stylua = function() return fs.from_path_or_default("stylua", "${lib.getExe pkgs.stylua}") end,
-        taplo = function() return fs.from_path_or_default("taplo", "${lib.getExe pkgs.taplo}") end,
+        black = "${lib.getExe pkgs.black}",
+        isort = "${lib.getExe pkgs.isort}",
+        nixfmt = "${lib.getExe pkgs.nixfmt-rfc-style}",
+        prettier = "${lib.getExe pkgs.nodePackages.prettier}",
+        rustfmt = "${lib.getExe pkgs.rustfmt}",
+        shfmt = "${lib.getExe pkgs.shfmt}",
+        stylua = "${lib.getExe pkgs.stylua}",
+        taplo = "${lib.getExe pkgs.taplo}",
 
         -- linters
-        golangci_lint = function() return fs.from_path_or_default("golangci-lint", "${lib.getExe pkgs.golangci-lint}") end,
-        jq = function() return "${lib.getExe pkgs.jq}" end,
-        shellcheck = function() return "${lib.getExe pkgs.shellcheck}" end,
+        golangci_lint = "${lib.getExe pkgs.golangci-lint}",
+        jq = "${lib.getExe pkgs.jq}",
+        shellcheck = "${lib.getExe pkgs.shellcheck}",
 
         -- lsps
-        clangd = function() return "${lib.getExe' pkgs.clang-tools "clangd"}" end,
-        efm = function() return '${lib.getExe pkgs.efm-langserver}' end,
-        gopls = function() return "${lib.getExe pkgs.gopls}" end,
-        jsonls = function() return "${lib.getExe pkgs.nodePackages.vscode-json-languageserver}" end,
-        ltex_ls = function() return "${lib.getExe' pkgs.ltex-ls "ltex-ls"}" end,
-        lua_ls = function() return "${lib.getExe pkgs.lua-language-server}" end,
-        nixd = function() return "${lib.getExe pkgs.nixd}" end,
-        pyright = function() return "${lib.getExe' pkgs.pyright "pyright-langserver"}" end,
-        roslyn_ls = function() return "${lib.getExe pkgs.roslyn-ls}" end,
-        rust_analyzer = function() return "${lib.getExe pkgs.rust-analyzer}" end,
-        terraformls = function() return "${lib.getExe pkgs.terraform-ls}" end,
-        yamlls = function() return "${lib.getExe pkgs.yaml-language-server}" end,
-        zls = function() return "${lib.getExe pkgs.zls}" end,
+        clangd = "${lib.getExe' pkgs.clang-tools "clangd"}",
+        efm = "${lib.getExe pkgs.efm-langserver}",
+        gopls = "${lib.getExe pkgs.gopls}",
+        jsonls = "${lib.getExe pkgs.nodePackages.vscode-json-languageserver}",
+        ltex_ls = "${lib.getExe' pkgs.ltex-ls "ltex-ls"}",
+        lua_ls = "${lib.getExe pkgs.lua-language-server}",
+        nixd = "${lib.getExe pkgs.nixd}",
+        pyright = "${lib.getExe' pkgs.pyright "pyright-langserver"}",
+        roslyn_ls = "${lib.getExe pkgs.roslyn-ls}",
+        rust_analyzer = "${lib.getExe pkgs.rust-analyzer}",
+        terraformls = "${lib.getExe pkgs.terraform-ls}",
+        yamlls = "${lib.getExe pkgs.yaml-language-server}",
+        zls = "${lib.getExe pkgs.zls}",
 
         -- debuggers
-        debugpy = function() return '${debugpy}/bin/python' end,
-        delve = function() return '${lib.getExe' pkgs.delve "dlv-dap"}' end,
-        netcoredbg = function() return '${lib.getExe pkgs.netcoredbg}' end,
+        debugpy = "${debugpy}/bin/python",
+        delve = "${lib.getExe' pkgs.delve "dlv-dap"}",
+        netcoredbg = "${lib.getExe pkgs.netcoredbg}",
 
         -- other
-        node = function() return '${lib.getExe pkgs.nodejs-slim}' end,
+        node = "${lib.getExe pkgs.nodejs-slim}",
     }
+
+    local function get_lazily(binary)
+      return function()
+        local exe = fs.from_path_or_default(binary, nix[binary])
+        if not exe then
+          vim.notify("cannot find '" .. binary .. "' binary in PATH nor in binaries.lua", vim.log.levels.ERROR)
+        end
+        return exe
+      end
+    end
+
+    local ret = {}
+
+    setmetatable(ret, {
+      __index = function(tbl, key)
+        return get_lazily(key)
+      end,
+    })
+
+    return ret
   ''
