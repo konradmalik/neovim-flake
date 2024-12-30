@@ -13,6 +13,7 @@ local format = function(clientid, bufnr)
         async = false,
         id = clientid,
         bufnr = bufnr,
+        timeout_ms = 2000,
     })
 end
 
