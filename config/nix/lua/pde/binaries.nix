@@ -46,12 +46,20 @@ pkgs.writeTextDir "lua/pde/binaries.lua" # lua
         node = "${lib.getExe pkgs.nodejs-slim}",
     }
 
+    local cache = {}
+
     local function get_lazily(binary)
       return function()
+        local cached = cache[binary]
+        if cached then
+          return cached
+        end
+
         local exe = fs.from_path_or_default(binary, nix[binary])
         if not exe then
           vim.notify("cannot find '" .. binary .. "' binary in PATH nor in binaries.lua", vim.log.levels.ERROR)
         end
+        cache[binary] = exe
         return exe
       end
     end

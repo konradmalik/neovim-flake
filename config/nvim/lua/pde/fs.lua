@@ -1,6 +1,3 @@
----@type table<string,string>
-local cache = {}
-
 local M = {}
 
 ---checks if buffer is a real readable file
@@ -15,18 +12,7 @@ end
 ---@param binary string
 ---@return string | nil
 M.path_executable = function(binary)
-    local cached = cache[binary]
-    if cached and cached ~= "" then
-        return cached
-    end
-
-    if cached == "" then
-        return nil
-    end
-
     local exe = vim.fn.exepath(binary)
-    cache[binary] = exe
-
     if exe == "" then return nil end
     return exe
 end
