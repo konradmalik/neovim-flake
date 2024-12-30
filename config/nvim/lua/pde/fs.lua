@@ -20,6 +20,10 @@ M.path_executable = function(binary)
         return cached
     end
 
+    if cached == "" then
+        return nil
+    end
+
     local exe = vim.fn.exepath(binary)
     cache[binary] = exe
 
