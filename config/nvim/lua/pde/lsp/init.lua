@@ -3,8 +3,8 @@ local M = {}
 ---Initialize lsp configurations
 function M.setup()
     require("pde.lsp.commands")
-
     require("pde.lsp.progress")
+
     local group = vim.api.nvim_create_augroup("personal-lsp", { clear = true })
 
     vim.api.nvim_create_autocmd("LspAttach", {

@@ -10,28 +10,24 @@ local float_bufnr
 ---@type integer? winid of the progress window
 local float_winid
 ---@type string? last received message. If progress message is nil, then the last one is still valid
-local last_message
+local previous_message
 
 ---@alias LspProgress lsp.WorkDoneProgressBegin|lsp.WorkDoneProgressReport|lsp.WorkDoneProgressEnd
 
 ---Get the progress message for all clients
 ---@param progress LspProgress
----@return string?
+---@return string
 local function get_lsp_progress_msg(progress)
-    local message = progress.message or last_message
-    last_message = message
+    local text = progress.title
 
-    if progress.title and message then
-        message = progress.title .. ": " .. message
-    elseif progress.title then
-        message = progress.title
-    end
+    local message = progress.message or previous_message
+    previous_message = message
 
-    if progress.percentage and message then
-        message = "[" .. progress.percentage .. "%] " .. message
-    end
+    if message then text = text .. ": " .. message end
 
-    return message
+    if progress.percentage then text = "[" .. progress.percentage .. "%] " .. text end
+
+    return text
 end
 
 ---@param progress LspProgress
