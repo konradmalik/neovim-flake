@@ -30,26 +30,30 @@ local function get_or_create_window(bufnr)
     return winnr
 end
 
----just one global buffer
+---@type integer? just one global buffer
 local runner_bufnr
+---@return integer
 local function get_or_create_buffer()
     if not runner_bufnr or not vim.api.nvim_buf_is_valid(runner_bufnr) then
         runner_bufnr = vim.api.nvim_create_buf(false, true)
+        if runner_bufnr == 0 then
+            vim.notify("cannot create runner buffer", vim.log.levels.ERROR)
+            runner_bufnr = -1
+        end
+        vim.bo[runner_bufnr].syntax = "markdown"
+        vim.treesitter.start(runner_bufnr, "markdown")
+        return runner_bufnr
     end
-end
 
--- sometimes data comes in the form of {""} or {123,""}
--- which adds extraneous new lines when setting buf lines
----@param data string[] data; changed in-place
-local function filter_out_trailing_empty_string(data)
-    local count = #data
-    local last = data[count]
-    if last == "" then table.remove(data, count) end
+    return runner_bufnr
 end
 
 ---@class RunOpts
 ---@field bufnr integer? buffer to save the output it. If not provided, will use a dedicated runner's buffer.
 ---@field cwd string? working directory. Current if nil.
+
+---@type vim.SystemObj?
+local system_object
 
 ---Runs a given command and saves it's output in the provided buffer.
 ---The buffer contents will be entirely replaced.
@@ -59,53 +63,78 @@ local function run(cmd, opts)
     local bufnr = opts.bufnr
     local cwd = opts.cwd
 
+    if system_object then
+        if not system_object:is_closing() then system_object:kill(9) end
+        system_object:wait()
+        system_object = nil
+    end
+
     if not bufnr then
-        get_or_create_buffer()
-        bufnr = runner_bufnr
+        bufnr = get_or_create_buffer()
     elseif bufnr and not vim.api.nvim_buf_is_valid(bufnr) then
         vim.notify("invalid bufnr: " .. bufnr, vim.log.levels.ERROR)
     end
     get_or_create_window(bufnr)
 
-    local cmd_str
-    if type(cmd) == "table" then
-        cmd_str = table.concat(cmd, " ")
-    else
-        cmd_str = cmd
-    end
+    if type(cmd) == "string" then cmd = { cmd } end
+    local cmd_str = table.concat(cmd, " ")
 
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {
-        "Command: '" .. cmd_str .. "'",
-        "Working dir: '" .. vim.uv.cwd() .. "'",
+        "Command:",
+        "```bash",
+        cmd_str,
+        "```",
+        "",
+        "Working dir:",
+        "```bash",
+        cwd,
+        "```",
         "",
     })
 
-    ---@param data string[]
+    ---@param data string
     local on_data = function(_, data)
         if data then
-            filter_out_trailing_empty_string(data)
-            vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, data)
-            local winid = get_or_create_window(bufnr)
-            if winid and not is_active_win(winid) then scroll_to_bottom(winid) end
+            data = data:gsub("\n+", "")
+            vim.schedule(function()
+                vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, { data })
+                local winid = get_or_create_window(bufnr)
+                if winid and not is_active_win(winid) then scroll_to_bottom(winid) end
+            end)
         end
     end
 
-    ---@param data integer exit code
-    local on_exit = function(_, data)
-        vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, { "Exit code: " .. data })
-        local winid = get_or_create_window(bufnr)
-        if winid and not is_active_win(winid) then scroll_to_bottom(winid) end
+    ---@param data vim.SystemCompleted
+    local on_exit = function(data)
+        vim.schedule(function()
+            vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, { "Exit code: " .. data.code })
+            local winid = get_or_create_window(bufnr)
+            if winid and not is_active_win(winid) then scroll_to_bottom(winid) end
+        end)
+        system_object = nil
     end
 
-    vim.fn.jobstart(cmd, {
+    system_object = vim.system(cmd, {
         cwd = cwd,
-        on_stdout = on_data,
-        on_stderr = on_data,
-        on_exit = on_exit,
-        stdout_buffered = false,
-        stderr_buffered = false,
-    })
+        text = true,
+        stdout = on_data,
+        stderr = on_data,
+    }, on_exit)
 end
+
+vim.api.nvim_create_user_command("RunnerShowBuffer", function()
+    if not runner_bufnr then
+        vim.notify("runner_bufnr does not exist yet", vim.log.levels.INFO)
+        return
+    end
+
+    local winid = get_or_create_window(runner_bufnr)
+    if not winid then return end
+
+    vim.api.nvim_set_current_win(winid)
+end, {
+    desc = "Loads runner output buffer in the current window if not loaded anywhere and if buffer exists",
+})
 
 return {
     run = run,
