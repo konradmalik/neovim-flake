@@ -1,4 +1,3 @@
--- TODO https://github.com/neovim/neovim/issues/31640
 local runner = require("pde.runner")
 
 ---@param command lsp.Command
@@ -73,7 +72,7 @@ local function ensure_tree_is_parsed(bufnr)
     end
 end
 
-return {
+vim.lsp.config("roslyn", {
     settings = {
         ["csharp|completion"] = {
             dotnet_provide_regex_completions = false,
@@ -132,4 +131,4 @@ return {
             testRun(client.root_dir, root_name)
         end,
     },
-}
+})
