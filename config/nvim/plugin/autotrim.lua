@@ -1,13 +1,14 @@
 local trim_is_enabled = true
 
-local trim_is_enabled_in_editorconfig = function()
-    local ed = vim.b.editorconfig
+---@param buf integer
+local trim_is_enabled_in_editorconfig = function(buf)
+    local ed = vim.b[buf].editorconfig
     if ed then return ed.trim_trailing_whitespace end
     return false
 end
 
 vim.api.nvim_create_user_command("AutoTrimToggle", function()
-    if trim_is_enabled_in_editorconfig() then
+    if trim_is_enabled_in_editorconfig(0) then
         vim.notify(
             "Cannot toggle autotrim because it's forced by editorconfig",
             vim.log.levels.WARN
@@ -20,12 +21,14 @@ end, {
     desc = "Enable/disable autotrimming whitespace on buffer save",
 })
 
--- Deletes all trailing whitespace in a file if it's not binary nor a diff.
-local trim_trailing_whitespace = function()
-    if not vim.bo.binary and vim.bo.filetype ~= "diff" then
-        local pos = vim.api.nvim_win_get_cursor(0)
-        vim.cmd([[keeppatterns %s/\s\+$//e]])
-        vim.api.nvim_win_set_cursor(0, pos)
+---Deletes all trailing whitespace in a file if it's not binary nor a diff.
+---@param buf integer
+local trim_trailing_whitespace = function(buf)
+    if not vim.bo[buf].binary and vim.bo[buf].filetype ~= "diff" then
+        local view = vim.fn.winsaveview()
+        vim.api.nvim_command("silent! undojoin")
+        vim.api.nvim_command("silent keepjumps keeppatterns %s/\\s\\+$//e")
+        vim.fn.winrestview(view)
     end
 end
 
@@ -33,12 +36,13 @@ local group = vim.api.nvim_create_augroup("personal-autotrim", { clear = true })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
     group = group,
-    callback = function()
+    callback = function(ev)
         if not trim_is_enabled then return end
-        if trim_is_enabled_in_editorconfig() then
+        local bufnr = ev.buf
+        if trim_is_enabled_in_editorconfig(bufnr) then
             -- let native neovim handle it
             return
         end
-        trim_trailing_whitespace()
+        trim_trailing_whitespace(bufnr)
     end,
 })
