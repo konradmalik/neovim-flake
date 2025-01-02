@@ -13,16 +13,16 @@ $ nix run github:konradmalik/neovim-flake
 
 ## Assumptions
 
--   keeps all Neovim config in lua as it's supposed to be
--   uses nix for system dependencies, plugins and packaging
+- keeps all Neovim config in lua as it's supposed to be
+- uses nix for system dependencies, plugins and packaging
 
 That way nix is a layer on top, just used for packaging and reproducibility. It does not interfere with the standard way
 to configure Neovim.
 
 ## Things to note
 
--   Uses `NVIM_APPNAME` to differentiate from other Neovim instances. It's set to `neovim-pde` or `neovim-pde-hm` for
-    home-manager (configurable) or `nvim` when running in "dev mode".
+- Uses `NVIM_APPNAME` to differentiate from other Neovim instances. It's set to `neovim-pde` or `neovim-pde-hm` for
+  home-manager (configurable) or `nvim` when running in "dev mode".
 
 ### Home Manager
 
@@ -63,4 +63,5 @@ What I don't like in those "nixvim" flakes is that people most often use only ni
 
 Inspired by:
 
--   https://primamateria.github.io/blog/neovim-nix/
+- https://primamateria.github.io/blog/neovim-nix/
+
