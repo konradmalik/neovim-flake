@@ -1,4 +1,5 @@
 local telescope = require("telescope")
+local themes = require("telescope.themes")
 
 telescope.setup({
     defaults = {
@@ -8,7 +9,7 @@ telescope.setup({
     },
     extensions = {
         ["ui-select"] = {
-            require("telescope.themes").get_dropdown(),
+            themes.get_dropdown(),
         },
     },
 })
@@ -20,19 +21,22 @@ telescope.load_extension("ui-select")
 local opts_with_desc = function(desc) return { desc = "[Telescope] " .. desc } end
 
 local builtin = require("telescope.builtin")
-local themes = require("telescope.themes")
 
 vim.keymap.set("n", "<leader>ff", builtin.find_files, opts_with_desc("[F]ind [F]iles"))
 vim.keymap.set("n", "<leader>fi", builtin.git_files, opts_with_desc("Find (G[i]t) Files"))
 vim.keymap.set("n", "<leader>fg", builtin.live_grep, opts_with_desc("Live [G]rep"))
 vim.keymap.set("n", "<leader>f*", builtin.grep_string, opts_with_desc("Grep word under cursor"))
-vim.keymap.set("n", "<leader>f/", function()
-    -- You can pass additional configuration to telescope to change theme, layout, etc.
-    builtin.current_buffer_fuzzy_find(themes.get_dropdown({
-        winblend = 10,
-        previewer = false,
-    }))
-end, opts_with_desc("[/] Fuzzily search in current buffer"))
+vim.keymap.set(
+    "n",
+    "<leader>f/",
+    function()
+        builtin.current_buffer_fuzzy_find(themes.get_dropdown({
+            winblend = 10,
+            previewer = false,
+        }))
+    end,
+    opts_with_desc("[/] Fuzzily search in current buffer")
+)
 vim.keymap.set("n", "<leader>fb", builtin.buffers, opts_with_desc("[B]uffers"))
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, opts_with_desc("[H]elp Tags"))
 vim.keymap.set("n", "<leader>fq", builtin.diagnostics, opts_with_desc("Diagnostics"))

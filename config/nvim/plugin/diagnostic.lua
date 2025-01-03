@@ -4,7 +4,6 @@ vim.diagnostic.config({
         wrap = true,
     },
     virtual_text = {
-        -- prefix = icons.ui.Square,
         source = "if_many",
         spacing = 4,
     },
