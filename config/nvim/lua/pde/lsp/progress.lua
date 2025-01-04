@@ -168,8 +168,8 @@ local function lsp_progress_handler(args)
 
     -- Create buffer for the floating window showing the progress message and the timer used to close
     -- the window when progress report is done.
-    if not cur_client.bufnr then cur_client.bufnr = vim.api.nvim_create_buf(false, true) end
-    if not cur_client.timer then cur_client.timer = vim.uv.new_timer() end
+    cur_client.bufnr = cur_client.bufnr or vim.api.nvim_create_buf(false, true)
+    cur_client.timer = cur_client.timer or vim.uv.new_timer()
 
     -- Get the formatted progress message
     ---@type LspProgress
