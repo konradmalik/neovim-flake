@@ -80,11 +80,18 @@ local function close_buffer(bufnr)
     return false
 end
 
+---@param idx integer
+local function get_spinner_idx(idx)
+    idx = idx == #icons.spinner * 4 and 1 or idx + 1
+    return math.ceil(idx / 4)
+end
+
 --- Assemble the output progress message and set the flag to mark if it's completed.
 --- * General: ⣾ [client_name] title: message ( 5%)
 --- * Done:     [client_name] title: done!
 ---@param client ProgressClient
 ---@param progress LspProgress
+---@return string
 local function create_message(client, progress)
     local message = "[" .. client.name .. "]"
     local title = progress.title
@@ -101,12 +108,9 @@ local function create_message(client, progress)
     local pct = progress.percentage
     if raw_msg then message = message .. " " .. raw_msg end
     if pct then message = string.format("%s (%3d%%)", message, pct) end
-    -- Spinner
-    local idx = client.spinner_idx
-    idx = idx == #icons.spinner * 4 and 1 or idx + 1
-    message = icons.spinner[math.ceil(idx / 4)] .. " " .. message
-    client.spinner_idx = idx
-    return message
+
+    client.spinner_idx = get_spinner_idx(client.spinner_idx)
+    return icons.spinner[client.spinner_idx] .. " " .. message
 end
 
 --- Create a new window or update the existing one
@@ -128,7 +132,6 @@ local function create_or_update_window(client)
             focusable = false,
             style = "minimal",
             noautocmd = true,
-            border = "none",
         })
         vim.wo[winid].winhl = highlight
         client.winid = winid
@@ -142,12 +145,11 @@ end
 ---@param client ProgressClient
 local function show_message(client)
     create_or_update_window(client)
-    -- Write the message into the buffer
     vim.api.nvim_buf_set_lines(client.bufnr, 0, 1, false, { client.message })
 end
 
 -- Display the progress message
-local function handler(args)
+local function lsp_progress_handler(args)
     local client_id = args.data.client_id
 
     -- Initialize the properties
@@ -227,12 +229,11 @@ end
 local group = vim.api.nvim_create_augroup("lsp_progress", { clear = true })
 vim.api.nvim_create_autocmd({ "LspProgress" }, {
     group = group,
-    callback = function(args) handler(args) end,
+    callback = lsp_progress_handler,
 })
 
 vim.api.nvim_create_autocmd("VimResized", {
     group = group,
-    pattern = "*",
     callback = function()
         for _, c in ipairs(clients) do
             if c.is_done then win_update_config(c) end
