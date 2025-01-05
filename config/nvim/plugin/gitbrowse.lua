@@ -13,7 +13,7 @@ local opts_with_desc = function(desc) return { desc = "[gitbrowse] " .. desc } e
 
 vim.keymap.set(
     { "n", "v" },
-    "<leader>go",
+    "<leader>gof",
     function() gitbrowse.open(config) end,
     opts_with_desc("open current file in the browser")
 )

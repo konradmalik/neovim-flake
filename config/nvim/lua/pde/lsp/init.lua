@@ -20,6 +20,10 @@ local function detach(client, bufnr)
         require("pde.lsp.capabilities.textDocument_codeLens").detach(client_id, bufnr)
     end
 
+    if client_buf_supports_method(ms.textDocument_completion) then
+        require("pde.lsp.capabilities.textDocument_completion").detach(client_id, bufnr)
+    end
+
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
         require("pde.lsp.capabilities.textDocument_documentHighlight").detach(client_id, bufnr)
     end
@@ -56,12 +60,7 @@ local function attach(client, bufnr)
     }
 
     if client_buf_supports_method(ms.textDocument_completion) then
-        local completion = require("pde.lsp.completion")
-        completion.enable(client, bufnr, { autotrigger = false })
-
-        if client_buf_supports_method(ms.completionItem_resolve) then
-            completion.enable_completion_documentation(client, augroup, bufnr)
-        end
+        require("pde.lsp.capabilities.textDocument_completion").attach(handler_data)
     end
 
     if client_buf_supports_method(ms.textDocument_hover) then

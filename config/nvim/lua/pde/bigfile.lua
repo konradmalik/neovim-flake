@@ -6,16 +6,17 @@ local M = {}
 local defaults = {
     notify = true, -- show notification when big file detected
     size = 1.5 * 1024 * 1024, -- 1.5MB
-    -- Enable or disable features when big file detected
-    ---@param ctx {buf: number, ft:string}
-    setup = function(ctx)
-        vim.cmd([[NoMatchParen]])
-        vim.wo[0].foldmethod = "manual"
-        vim.wo[0].statuscolumn = ""
-        vim.wo[0].conceallevel = 0
-        vim.schedule(function() vim.bo[ctx.buf].syntax = ctx.ft end)
-    end,
 }
+
+---Enable or disable features when big file detected
+---@param ctx {buf: number, ft:string}
+local function set_bigfile(ctx)
+    vim.cmd([[NoMatchParen]])
+    vim.wo[0].foldmethod = "manual"
+    vim.wo[0].statuscolumn = ""
+    vim.wo[0].conceallevel = 0
+    vim.schedule(function() vim.bo[ctx.buf].syntax = ctx.ft end)
+end
 
 ---@param config bigfile.Config?
 function M.setup(config)
@@ -43,15 +44,15 @@ function M.setup(config)
             if opts.notify then
                 local path = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(ev.buf), ":p:~:.")
                 vim.notify(
-                    ("Big file detected `%s`."):format(path),
-                    "Some Neovim features have been disabled.",
+                    ("Big file detected `%s`."):format(path)
+                        .. " Some Neovim features have been disabled.",
                     vim.log.levels.WARN
                 )
             end
             vim.api.nvim_buf_call(
                 ev.buf,
                 function()
-                    opts.setup({
+                    set_bigfile({
                         buf = ev.buf,
                         ft = vim.filetype.match({ buf = ev.buf }) or "",
                     })
