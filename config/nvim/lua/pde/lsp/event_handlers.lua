@@ -101,9 +101,18 @@ M.attach = function(client, bufnr)
     if client_buf_supports_method(ms.textDocument_documentSymbol) then
         vim.keymap.set(
             "n",
-            "grds",
+            "gO",
             telescope.lsp_document_symbols,
             opts_with_desc("Document Symbols")
+        )
+    end
+
+    if client_buf_supports_method(ms.workspace_symbol) then
+        vim.keymap.set(
+            "n",
+            "gwO",
+            telescope.lsp_dynamic_workspace_symbols,
+            opts_with_desc("Workspace Symbols")
         )
     end
 
@@ -131,15 +140,6 @@ M.attach = function(client, bufnr)
 
     if client_buf_supports_method(ms.textDocument_typeDefinition) then
         vim.keymap.set("n", "gD", telescope.lsp_type_definitions, opts_with_desc("Type Definition"))
-    end
-
-    if client_buf_supports_method(ms.workspace_symbol) then
-        vim.keymap.set(
-            "n",
-            "grws",
-            telescope.lsp_dynamic_workspace_symbols,
-            opts_with_desc("Workspace Symbols")
-        )
     end
 
     if client_buf_supports_method(ms.textDocument_inlayHint) then
