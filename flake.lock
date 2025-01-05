@@ -945,7 +945,6 @@
         "nvim-treesitter-textobjects": "nvim-treesitter-textobjects",
         "plenary-nvim": "plenary-nvim",
         "roslyn-nvim": "roslyn-nvim",
-        "snacks-nvim": "snacks-nvim",
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
         "telescope-nvim": "telescope-nvim",
         "telescope-ui-select-nvim": "telescope-ui-select-nvim",
@@ -984,22 +983,6 @@
         "owner": "rust-lang",
         "ref": "nightly",
         "repo": "rust-analyzer",
-        "type": "github"
-      }
-    },
-    "snacks-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1735622661,
-        "narHash": "sha256-wvd3Hb5of/luB6/Psw4SLcxl9h9NnpTPOqw57jY8Ufc=",
-        "owner": "folke",
-        "repo": "snacks.nvim",
-        "rev": "d312053f78b4fb55523def179ac502438dd93193",
-        "type": "github"
-      },
-      "original": {
-        "owner": "folke",
-        "repo": "snacks.nvim",
         "type": "github"
       }
     },

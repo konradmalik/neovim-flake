@@ -149,10 +149,6 @@ let
     input = "roslyn-nvim";
     nvimRequireCheck = "roslyn";
   };
-  snacks-nvim = buildVim {
-    input = "snacks-nvim";
-    nvimRequireCheck = "snacks";
-  };
   telescope-fzf-native-nvim =
     (buildVim {
       input = "telescope-fzf-native-nvim";
@@ -257,7 +253,6 @@ in
     deps = [ friendly-snippets ];
   }
   # misc
-  snacks-nvim
   boole-nvim
   {
     plugin = git-conflict-nvim;

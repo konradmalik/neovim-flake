@@ -133,6 +133,18 @@ M.attach = function(client, bufnr)
         vim.keymap.set("n", "grn", vim.lsp.buf.rename, opts_with_desc("Rename"))
     end
 
+    if
+        client_buf_supports_method(ms.workspace_willRenameFiles)
+        or client_buf_supports_method(ms.workspace_didRenameFiles)
+    then
+        vim.keymap.set(
+            "n",
+            "grfn",
+            require("pde.lsp.rename").rename_file,
+            opts_with_desc("Rename current file")
+        )
+    end
+
     if client_buf_supports_method(ms.textDocument_signatureHelp) then
         vim.keymap.set("n", "grs", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
         vim.keymap.set("i", "<c-s>", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))

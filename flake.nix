@@ -117,10 +117,6 @@
       url = "github:seblj/roslyn.nvim";
       flake = false;
     };
-    snacks-nvim = {
-      url = "github:folke/snacks.nvim";
-      flake = false;
-    };
     telescope-fzf-native-nvim = {
       url = "github:nvim-telescope/telescope-fzf-native.nvim";
       flake = false;

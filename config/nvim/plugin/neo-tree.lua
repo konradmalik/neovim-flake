@@ -12,7 +12,7 @@ keymap.set(
 local events = require("neo-tree.events")
 local neo_tree = require("neo-tree")
 
-local function on_move(data) require("snacks").rename.on_rename_file(data.source, data.destination) end
+local function on_move(data) require("pde.lsp.rename").on_rename_file(data.source, data.destination) end
 
 neo_tree.setup({
     sources = {
