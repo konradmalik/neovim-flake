@@ -25,7 +25,9 @@ let
       input,
       src ? inputs.${input},
       version ? inputs.${input}.shortRev,
-      nvimRequireCheck ? input,
+      # null means check all detected modules
+      nvimRequireCheck ? null,
+      nvimSkipModule ? null,
       vimCommandCheck ? null,
       dependencies ? [ ],
     }:
@@ -35,6 +37,7 @@ let
         src
         version
         nvimRequireCheck
+        nvimSkipModule
         vimCommandCheck
         ;
       pname = makePname input;
@@ -45,7 +48,9 @@ let
       input,
       src ? inputs.${input},
       version ? inputs.${input}.shortRev,
-      nvimRequireCheck ? input,
+      # null means check all detected modules
+      nvimRequireCheck ? null,
+      nvimSkipModule ? null,
       dependencies ? [ ],
     }:
     neovimUtils.buildNeovimPlugin {
@@ -54,6 +59,7 @@ let
         src
         version
         nvimRequireCheck
+        nvimSkipModule
         ;
       pname = makePname input;
     };
@@ -67,45 +73,39 @@ let
   inherit (inputs'.incomplete-nvim.packages) incomplete-nvim;
   SchemaStore-nvim = buildVim {
     input = "SchemaStore-nvim";
-    nvimRequireCheck = "schemastore";
   };
   boole-nvim = buildVim {
     input = "boole-nvim";
-    nvimRequireCheck = "boole";
   };
   friendly-snippets = buildVim {
     input = "friendly-snippets";
-    nvimRequireCheck = null;
   };
   gitsigns-nvim =
     (buildNeovim {
       input = "gitsigns-nvim";
-      nvimRequireCheck = "gitsigns";
     }).overrideAttrs
       { doInstallCheck = true; };
   kanagawa-nvim = buildVim {
     input = "kanagawa-nvim";
-    nvimRequireCheck = "kanagawa";
   };
   mini-icons = buildVim {
     input = "mini-icons";
-    nvimRequireCheck = "mini.icons";
   };
   neo-tree-nvim = buildVim {
     input = "neo-tree-nvim";
-    nvimRequireCheck = "neo-tree";
+    nvimRequireCheck = [
+      "neo-tree"
+      "neo-tree.events"
+    ];
   };
   nui-nvim = buildNeovim {
     input = "nui-nvim";
-    nvimRequireCheck = "nui.popup";
   };
   nvim-dap = buildVim {
     input = "nvim-dap";
-    nvimRequireCheck = "dap";
   };
   nvim-dap-ui = buildVim {
     input = "nvim-dap-ui";
-    nvimRequireCheck = "dapui";
     dependencies = [
       nvim-dap
       nvim-nio
@@ -117,18 +117,16 @@ let
   };
   nvim-luaref = buildVim {
     input = "nvim-luaref";
-    nvimRequireCheck = null;
   };
   nvim-nio = buildVim {
     input = "nvim-nio";
-    nvimRequireCheck = "nio";
   };
   nvim-treesitter = (buildVim { input = "nvim-treesitter"; }).overrideAttrs {
     passthru.dependencies = map neovimUtils.grammarToPlugin all-treesitter-grammars;
   };
   nvim-treesitter-context = buildVim {
     input = "nvim-treesitter-context";
-    nvimRequireCheck = "treesitter-context";
+    nvimSkipModule = "install_parsers";
   };
   nvim-treesitter-textobjects = buildVim {
     input = "nvim-treesitter-textobjects";
@@ -137,7 +135,6 @@ let
   plenary-nvim =
     (buildNeovim {
       input = "plenary-nvim";
-      nvimRequireCheck = "plenary";
     }).overrideAttrs
       {
         postPatch = ''
@@ -147,12 +144,10 @@ let
       };
   roslyn-nvim = buildVim {
     input = "roslyn-nvim";
-    nvimRequireCheck = "roslyn";
   };
   telescope-fzf-native-nvim =
     (buildVim {
       input = "telescope-fzf-native-nvim";
-      nvimRequireCheck = "telescope._extensions.fzf";
       dependencies = [
         telescope-nvim
         plenary-nvim
@@ -161,7 +156,6 @@ let
       { buildPhase = "make"; };
   telescope-ui-select-nvim = buildVim {
     input = "telescope-ui-select-nvim";
-    nvimRequireCheck = "telescope._extensions.ui-select";
     dependencies = [
       telescope-nvim
       plenary-nvim
@@ -169,7 +163,6 @@ let
   };
   telescope-nvim = buildNeovim {
     input = "telescope-nvim";
-    nvimRequireCheck = "telescope";
   };
   todo-comments-nvim = buildVim {
     input = "todo-comments-nvim";
@@ -177,12 +170,13 @@ let
   };
   undotree = buildVim {
     input = "undotree";
-    nvimRequireCheck = null;
     vimCommandCheck = "UndotreeToggle";
   };
   which-key-nvim = buildVim {
     input = "which-key-nvim";
-    nvimRequireCheck = "which-key";
+    nvimSkipModule = [
+      "which-key.docs"
+    ];
   };
 in
 [
