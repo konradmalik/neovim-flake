@@ -72,7 +72,8 @@ local function ensure_tree_is_parsed(bufnr)
     end
 end
 
-vim.lsp.config("roslyn", {
+---@type vim.lsp.Config
+return {
     settings = {
         ["csharp|completion"] = {
             dotnet_provide_regex_completions = false,
@@ -131,4 +132,4 @@ vim.lsp.config("roslyn", {
             testRun(client.root_dir, root_name)
         end,
     },
-})
+}

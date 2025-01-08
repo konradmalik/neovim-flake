@@ -1,7 +1,8 @@
 -- https://github.com/LuaLS/lua-language-server
 local binaries = require("pde.binaries")
 
-vim.lsp.config("lua_ls", {
+---@type vim.lsp.Config
+return {
     cmd = { binaries.lua_ls() },
     filetypes = { "lua" },
     on_init = function(client)
@@ -23,4 +24,4 @@ vim.lsp.config("lua_ls", {
         },
     },
     root_markers = { ".luarc.json" },
-})
+}

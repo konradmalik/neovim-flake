@@ -3,7 +3,8 @@
 local binaries = require("pde.binaries")
 local schemastore = require("schemastore")
 
-vim.lsp.config("jsonls", {
+---@type vim.lsp.Config
+return {
     cmd = { binaries.jsonls(), "--stdio" },
     init_options = {
         provideFormatter = false, -- use prettier instead
@@ -16,4 +17,4 @@ vim.lsp.config("jsonls", {
         },
     },
     filetypes = { "json", "jsonc" },
-})
+}

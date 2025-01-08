@@ -77,7 +77,8 @@ local function get_disabled_rules_file(language)
     return paths.get_spellfile(nil) .. "/ltex_disabled-rules_" .. language .. ".txt"
 end
 
-vim.lsp.config(name, {
+---@type vim.lsp.Config
+return {
     cmd = { binaries.ltex_ls() },
     filetypes = { "markdown" },
     before_init = function()
@@ -143,4 +144,4 @@ vim.lsp.config(name, {
             end
         end,
     },
-})
+}

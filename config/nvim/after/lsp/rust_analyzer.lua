@@ -58,7 +58,8 @@ local function runSingle(command)
     runner.run(vim.iter(cmd):flatten():totable(), { cwd = cwd })
 end
 
-vim.lsp.config(name, {
+---@type vim.lsp.Config
+return {
     cmd = { binaries.rust_analyzer() },
     filetypes = { "rust" },
     capabilities = {
@@ -119,4 +120,4 @@ vim.lsp.config(name, {
             callback = function() vim.api.nvim_buf_del_user_command(buf, "CargoReload") end,
         })
     end,
-})
+}

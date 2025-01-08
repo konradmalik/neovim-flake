@@ -1,7 +1,8 @@
 -- https://github.com/golang/tools/tree/master/gopls
 local binaries = require("pde.binaries")
 
-vim.lsp.config("gopls", {
+---@type vim.lsp.Config
+return {
     cmd = { binaries.gopls() },
     -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md
     settings = {
@@ -11,4 +12,4 @@ vim.lsp.config("gopls", {
     },
     root_markers = { "go.work", "go.mod" },
     filetypes = { "go", "gomod", "gotmpl", "gowork" },
-})
+}

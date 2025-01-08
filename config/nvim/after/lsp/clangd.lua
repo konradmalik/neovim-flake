@@ -1,6 +1,7 @@
 local binaries = require("pde.binaries")
 
-vim.lsp.config("clangd", {
+---@type vim.lsp.Config
+return {
     cmd = { binaries.clangd() },
     root_markers = {
         ".clangd",
@@ -11,4 +12,4 @@ vim.lsp.config("clangd", {
         "configure.ac",
     },
     filetypes = { "c", "cpp" },
-})
+}

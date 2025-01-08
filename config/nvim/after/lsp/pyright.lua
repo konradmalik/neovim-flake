@@ -2,7 +2,8 @@
 
 local binaries = require("pde.binaries")
 
-vim.lsp.config("pyright", {
+---@type vim.lsp.Config
+return {
     cmd = { binaries.pyright(), "--stdio" },
     filetypes = { "python" },
     settings = {
@@ -22,4 +23,4 @@ vim.lsp.config("pyright", {
         "Pipfile",
         "pyrightconfig.json",
     },
-})
+}

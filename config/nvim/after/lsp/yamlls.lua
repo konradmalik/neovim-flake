@@ -2,7 +2,8 @@
 local binaries = require("pde.binaries")
 local schemastore = require("schemastore")
 
-vim.lsp.config("yamlls", {
+---@type vim.lsp.Config
+return {
     cmd = { binaries.yamlls(), "--stdio" },
     filetypes = { "yaml" },
     settings = {
@@ -32,4 +33,4 @@ vim.lsp.config("yamlls", {
             },
         },
     },
-})
+}

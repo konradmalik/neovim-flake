@@ -2,7 +2,8 @@
 
 local binaries = require("pde.binaries")
 
-vim.lsp.config("nixd", {
+---@type vim.lsp.Config
+return {
     cmd = { binaries.nixd() },
     filetypes = { "nix" },
     settings = {
@@ -13,4 +14,4 @@ vim.lsp.config("nixd", {
         },
     },
     root_markers = { "flake.nix" },
-})
+}
