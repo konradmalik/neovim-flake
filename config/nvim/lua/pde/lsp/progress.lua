@@ -37,6 +37,7 @@ local function reset(client)
     client.bufnr = nil
     client.message = nil
     client.pos = total_wins + 1
+    if client.timer then client.timer:close() end
     client.timer = nil
 end
 
@@ -166,16 +167,14 @@ local function lsp_progress_handler(args)
     end
     local cur_client = clients[client_id]
 
-    -- Create buffer for the floating window showing the progress message and the timer used to close
-    -- the window when progress report is done.
-    cur_client.bufnr = cur_client.bufnr or vim.api.nvim_create_buf(false, true)
-    cur_client.timer = cur_client.timer or vim.uv.new_timer()
-
     -- Get the formatted progress message
     ---@type LspProgress
     local progress = args.data.params.value
     cur_client.message = create_message(cur_client, progress)
 
+    -- Create buffer for the floating window showing the progress message and the timer used to close
+    -- the window when progress report is done.
+    cur_client.bufnr = cur_client.bufnr or vim.api.nvim_create_buf(false, true)
     -- Show progress message in floating window
     show_message(cur_client)
 
@@ -195,13 +194,14 @@ local function lsp_progress_handler(args)
     --    closed twice. In the code below, timer:start() will be called again and it just resets the
     --    timer, so the window will not be closed twice.
     if cur_client.is_done then
+        cur_client.timer = cur_client.timer or vim.uv.new_timer()
         cur_client.timer:start(
             keep_done_message_ms,
             100,
             vim.schedule_wrap(function()
                 -- To handle the scenario 1
                 if not cur_client.is_done and cur_client.winid then
-                    cur_client.timer:stop()
+                    if cur_client.timer then cur_client.timer:stop() end
                     return
                 end
                 -- try to close window and buffer
@@ -209,8 +209,10 @@ local function lsp_progress_handler(args)
                 close_buffer(cur_client.bufnr)
                 -- stop the timer, adjust the positions of other windows
                 -- and reset properties of the client
-                cur_client.timer:stop()
-                cur_client.timer:close()
+                if cur_client.timer then
+                    cur_client.timer:stop()
+                    cur_client.timer:close()
+                end
                 total_wins = total_wins - 1
                 -- Move all windows above this closed window down by one position
                 for _, c in ipairs(clients) do
