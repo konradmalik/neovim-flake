@@ -37,7 +37,7 @@ local function reset(client)
     client.bufnr = nil
     client.message = nil
     client.pos = total_wins + 1
-    if client.timer then client.timer:close() end
+    if client.timer and not client.timer:is_closing() then client.timer:close() end
     client.timer = nil
 end
 
@@ -211,7 +211,7 @@ local function lsp_progress_handler(args)
                 -- and reset properties of the client
                 if cur_client.timer then
                     cur_client.timer:stop()
-                    cur_client.timer:close()
+                    if not cur_client.timer:is_closing() then cur_client.timer:close() end
                 end
                 total_wins = total_wins - 1
                 -- Move all windows above this closed window down by one position
