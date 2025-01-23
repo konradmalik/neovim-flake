@@ -17,48 +17,14 @@ local function testRun(cwd, filter)
         "test",
         "--nologo",
         "--logger",
-        "console;verbosity=detailed",
+        '"console;verbosity=detailed"',
         "--verbosity",
         "quiet",
         "--clp:ErrorsOnly",
         "--filter",
-        filter,
+        '"' .. filter .. '"',
     }
     runner.run(cmd, { cwd = cwd })
-end
-
----@param root_node TSNode
----@return TSNode?
-local function get_class_node(root_node)
-    ---@type TSNode?
-    local class_node = root_node
-    while class_node and class_node:type() ~= "class_declaration" do
-        class_node = class_node:parent()
-    end
-
-    return class_node
-end
-
----@param class_node TSNode
----@return TSNode?
-local function get_namespace_node(class_node)
-    ---@type TSNode?
-    local ns_node = class_node
-    -- namespace_declaration has a tree structure -> class is defined inside
-    while ns_node and ns_node:type() ~= "namespace_declaration" do
-        ns_node = ns_node:parent()
-    end
-
-    if ns_node then return ns_node end
-
-    ns_node = class_node
-    -- file_scoped_namespace_declaration has a list structure -> class is defined below
-    -- so we need to check the siblings for namespace
-    while ns_node and ns_node:type() ~= "file_scoped_namespace_declaration" do
-        ns_node = ns_node:prev_sibling()
-    end
-
-    return ns_node
 end
 
 ---@param bufnr any
@@ -110,46 +76,43 @@ return {
             local range = command.arguments[1].range
 
             ensure_tree_is_parsed(bufnr)
-            local root_node = get_node_at_range(bufnr, range)
-            if not root_node then
-                vim.notify(
-                    "cannot find root node " .. vim.inspect(range["start"]),
-                    vim.log.levels.ERROR
-                )
-                return
-            end
-
+            local root_node = assert(get_node_at_range(bufnr, range))
             local root_name = vim.treesitter.get_node_text(root_node, bufnr)
-            local class_node = get_class_node(root_node)
 
-            if not class_node then
-                vim.notify(
-                    "cannot find class node for root " .. vim.inspect(root_name),
-                    vim.log.levels.ERROR
-                )
-                return
+            local filters = { root_name }
+            ---@param node TSNode
+            local function insert_filter(node)
+                local name_node = node:field("name")[1]
+                if not name_node:equal(root_node) then
+                    table.insert(filters, 1, vim.treesitter.get_node_text(name_node, bufnr))
+                end
+                return node:field("name")[1]
             end
 
-            local class_name_node = class_node:field("name")[1]
-            -- if class_name_node == root_node then this is a test class
-            if class_name_node and class_name_node:id() ~= root_node:id() then
-                local class_name = vim.treesitter.get_node_text(class_name_node, bufnr)
-                root_name = class_name .. "." .. root_name
+            ---@type TSNode?
+            local curr_node = root_node
+            -- gather all classes and namespaces along the way to the top
+            while curr_node and curr_node:type() ~= "compilation_unit" do
+                if curr_node:type() == "class_declaration" then insert_filter(curr_node) end
+                if curr_node:type() == "namespace_declaration" then insert_filter(curr_node) end
+
+                curr_node = curr_node:parent()
             end
 
-            local ns_node = get_namespace_node(class_node)
-            if ns_node then
-                local ns_name_node = ns_node:field("name")[1]
-                if ns_name_node then
-                    local ns_name = vim.treesitter.get_node_text(ns_name_node, bufnr)
-                    root_name = ns_name .. "." .. root_name
+            -- once we're on the top, check if we have file_scoped_namespace_declaration
+            if curr_node then
+                for node, _ in curr_node:iter_children() do
+                    if node:type() == "file_scoped_namespace_declaration" then
+                        insert_filter(node)
+                        break
+                    end
                 end
             end
 
-            local client = vim.lsp.get_client_by_id(ctx.client_id)
-            assert(client)
+            local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
 
-            testRun(client.root_dir, root_name)
+            local filter = table.concat(filters, ".")
+            testRun(client.root_dir, filter)
         end,
     },
 }
