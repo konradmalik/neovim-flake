@@ -91,6 +91,21 @@
                 Provide null to keep it in XDG state folder.
               '';
             };
+
+            devConfigurationPath = mkOption {
+              type = types.nullOr types.path;
+              default = null;
+              description = ''
+                Optional absolute path to root folder of neovim-pde configuration (e.g. 'config' folder in this
+                repository).
+                Must contain `nvim` folder inside.
+                If provided, `nvim-dev` package will be available globally across your system.
+                It allows to start neovim-pde in dev mode, which is just dynamically reading lua files from the
+                directory you provide.
+                This means no system rebuilds necessary to change your config.
+                Provide null to disable this functionality.
+              '';
+            };
           };
         };
 
@@ -104,10 +119,14 @@
                 vimAlias
                 ;
             };
+            nvim-dev = pkgs.writeShellScriptBin "nvim-dev" ''
+              export NVIM_PDE_DEV_CONFIG_PATH="${cfg.devConfigurationPath}"
+              ${lib.getExe (getSystem pkgs.system).packages.neovim-pde-dev};
+            '';
             nvimConfig = (getSystem pkgs.system).packages.config;
           in
           mkIf cfg.enable {
-            home.packages = [ nvim ];
+            home.packages = [ nvim ] ++ (optionals (cfg.devConfigurationPath != null) [ nvim-dev ]);
 
             home.sessionVariables = {
               # should be like that but many programs don't respect VISUAL in favor of EDITOR so...
