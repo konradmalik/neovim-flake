@@ -238,7 +238,7 @@ vim.api.nvim_create_autocmd("VimResized", {
     group = group,
     callback = function()
         for _, c in ipairs(clients) do
-            if c.is_done then win_update_config(c) end
+            win_update_config(c)
         end
     end,
 })
