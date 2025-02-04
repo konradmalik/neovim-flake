@@ -1,10 +1,7 @@
 vim.diagnostic.config({
     jump = {
         float = true,
-        wrap = true,
     },
-    virtual_lines = true,
-    update_in_insert = false,
     severity_sort = true,
     signs = {
         text = {
@@ -32,3 +29,19 @@ vim.api.nvim_create_user_command("DiagnosticsToggle", function()
 end, {
     desc = "Enable/disable diagnostics globally",
 })
+
+local function diagnostic_lines_toggle()
+    vim.diagnostic.config({ virtual_lines = not vim.diagnostic.config().virtual_lines })
+end
+
+vim.api.nvim_create_user_command("DiagnosticLinesToggle", function()
+    diagnostic_lines_toggle()
+    print(
+        "Setting diagnostic lines (virtual_lines) to: "
+            .. tostring(vim.diagnostic.config().virtual_lines)
+    )
+end, {
+    desc = "Enable/disable diagnostics globally",
+})
+
+vim.keymap.set("n", "<leader>dv", diagnostic_lines_toggle, opts_with_desc("Send all to QF list"))

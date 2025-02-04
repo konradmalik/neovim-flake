@@ -166,6 +166,8 @@ M.gitchanges = function()
 end
 
 M.diagnostics = function()
+    if not vim.diagnostic.is_enabled({ bufnr = utils.stbufnr() }) then return "" end
+
     local counts = vim.diagnostic.count(utils.stbufnr())
     local numErrors = counts[vim.diagnostic.severity.ERROR] or 0
     local numWarnings = counts[vim.diagnostic.severity.WARN] or 0
