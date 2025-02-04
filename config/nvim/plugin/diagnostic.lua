@@ -3,10 +3,7 @@ vim.diagnostic.config({
         float = true,
         wrap = true,
     },
-    virtual_text = {
-        source = "if_many",
-        spacing = 4,
-    },
+    virtual_lines = true,
     update_in_insert = false,
     severity_sort = true,
     signs = {
