@@ -1,5 +1,14 @@
 { lib, pkgs }:
 let
+  # FIXME once stdio lands in unstable
+  # https://github.com/NixOS/nixpkgs/pull/379787
+  inherit
+    ((builtins.getFlake "github:konradmalik/nixpkgs/1cd039866ff4728d85430ba66af60ba790a4789b")
+      .legacyPackages.${pkgs.system}
+    )
+    roslyn-ls
+    ;
+
   debugpy = pkgs.python3.withPackages (p: [ p.debugpy ]);
 in
 pkgs.writeTextDir "lua/pde/binaries.lua" # lua
@@ -31,7 +40,7 @@ pkgs.writeTextDir "lua/pde/binaries.lua" # lua
         lua_ls = "${lib.getExe pkgs.lua-language-server}",
         nixd = "${lib.getExe pkgs.nixd}",
         pyright = "${lib.getExe' pkgs.pyright "pyright-langserver"}",
-        roslyn_ls = "${lib.getExe pkgs.roslyn-ls}",
+        roslyn_ls = "${lib.getExe roslyn-ls}",
         rust_analyzer = "${lib.getExe pkgs.rust-analyzer}",
         terraformls = "${lib.getExe pkgs.terraform-ls}",
         yamlls = "${lib.getExe pkgs.yaml-language-server}",
