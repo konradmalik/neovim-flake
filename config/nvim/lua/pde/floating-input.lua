@@ -62,20 +62,20 @@ function M.input(opts, on_confirm, win_config)
     vim.keymap.set({ "n", "i", "v" }, "<cr>", function()
         local lines = vim.api.nvim_buf_get_lines(buffer, 0, 1, false)
         vim.cmd("stopinsert")
-        on_confirm(lines[1])
         vim.api.nvim_win_close(window, true)
+        on_confirm(lines[1])
     end, { buffer = buffer })
 
     -- Esc or q to close
     vim.keymap.set("n", "<esc>", function()
-        on_confirm(nil)
         vim.cmd("stopinsert")
         vim.api.nvim_win_close(window, true)
+        on_confirm(nil)
     end, { buffer = buffer })
     vim.keymap.set("n", "q", function()
-        on_confirm(nil)
         vim.cmd("stopinsert")
         vim.api.nvim_win_close(window, true)
+        on_confirm(nil)
     end, { buffer = buffer })
 end
 
