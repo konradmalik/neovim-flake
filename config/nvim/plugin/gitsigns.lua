@@ -40,12 +40,5 @@ gitsigns.setup({
         vim.keymap.set("n", "<leader>gr", gitsigns.reset_hunk, opts_with_desc("Reset Hunk"))
         vim.keymap.set("n", "<leader>gR", gitsigns.reset_buffer, opts_with_desc("Reset Buffer"))
         vim.keymap.set("n", "<leader>gs", gitsigns.stage_hunk, opts_with_desc("Stage Hunk"))
-        vim.keymap.set(
-            "n",
-            "<leader>gu",
-            gitsigns.undo_stage_hunk,
-            opts_with_desc("Undo Stage Hunk")
-        )
     end,
 })
-
