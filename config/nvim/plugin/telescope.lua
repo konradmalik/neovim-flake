@@ -3,9 +3,20 @@ local themes = require("telescope.themes")
 
 telescope.setup({
     defaults = {
-        wrap_results = true,
-        selection_caret = "󱞩 ",
-        prompt_prefix = "󰼛 ",
+        layout_strategy = "vertical",
+        layout_config = {
+            vertical = {
+                height = 0.9,
+                width = 0.9,
+            },
+        },
+        prompt_prefix = " ",
+        selection_caret = "󰁕 ",
+        path_display = {
+            filename_first = {
+                reverse_directories = true,
+            },
+        },
     },
     extensions = {
         ["ui-select"] = {
