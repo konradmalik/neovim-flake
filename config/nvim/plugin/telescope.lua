@@ -1,3 +1,4 @@
+local layout = require("telescope.actions.layout")
 local telescope = require("telescope")
 local themes = require("telescope.themes")
 
@@ -10,13 +11,21 @@ telescope.setup({
                 width = 0.9,
             },
         },
-        prompt_prefix = " ",
-        selection_caret = "󰁕 ",
+        mappings = {
+            i = {
+                ["<C-p>"] = layout.toggle_preview,
+            },
+        },
         path_display = {
             filename_first = {
                 reverse_directories = true,
             },
         },
+        preview = {
+            hide_on_startup = true, -- hide previewer when picker starts
+        },
+        prompt_prefix = " ",
+        selection_caret = "󰁕 ",
     },
     extensions = {
         ["ui-select"] = {
