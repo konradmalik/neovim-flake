@@ -132,6 +132,9 @@ let
     input = "nvim-treesitter-textobjects";
     dependencies = [ nvim-treesitter ];
   };
+  oil-nvim = buildVim {
+    input = "oil-nvim";
+  };
   plenary-nvim =
     (buildNeovim {
       input = "plenary-nvim";
@@ -237,6 +240,7 @@ in
     ];
     systemDeps = [ pkgs.git ];
   }
+  oil-nvim
   {
     plugin = todo-comments-nvim;
     deps = [ plenary-nvim ];

@@ -880,6 +880,22 @@
         "type": "github"
       }
     },
+    "oil-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1737911936,
+        "narHash": "sha256-qrtBfIAJRBdxOBgAu7Q97SpCxdTX+jCmaAaZ5bXBohw=",
+        "owner": "stevearc",
+        "repo": "oil.nvim",
+        "rev": "add50252b5e9147c0a09d36480d418c7e2737472",
+        "type": "github"
+      },
+      "original": {
+        "owner": "stevearc",
+        "repo": "oil.nvim",
+        "type": "github"
+      }
+    },
     "plenary-nvim": {
       "flake": false,
       "locked": {
@@ -922,6 +938,7 @@
         "nvim-treesitter": "nvim-treesitter",
         "nvim-treesitter-context": "nvim-treesitter-context",
         "nvim-treesitter-textobjects": "nvim-treesitter-textobjects",
+        "oil-nvim": "oil-nvim",
         "plenary-nvim": "plenary-nvim",
         "roslyn-nvim": "roslyn-nvim",
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
