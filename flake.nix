@@ -69,14 +69,6 @@
       url = "github:echasnovski/mini.icons";
       flake = false;
     };
-    neo-tree-nvim = {
-      url = "github:nvim-neo-tree/neo-tree.nvim";
-      flake = false;
-    };
-    nui-nvim = {
-      url = "github:MunifTanjim/nui.nvim";
-      flake = false;
-    };
     nvim-dap = {
       url = "github:mfussenegger/nvim-dap";
       flake = false;

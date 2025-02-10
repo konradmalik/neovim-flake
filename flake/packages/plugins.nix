@@ -91,16 +91,6 @@ let
   mini-icons = buildVim {
     input = "mini-icons";
   };
-  neo-tree-nvim = buildVim {
-    input = "neo-tree-nvim";
-    nvimRequireCheck = [
-      "neo-tree"
-      "neo-tree.events"
-    ];
-  };
-  nui-nvim = buildNeovim {
-    input = "nui-nvim";
-  };
   nvim-dap = buildVim {
     input = "nvim-dap";
   };
@@ -232,14 +222,6 @@ in
   }
   # UI
   kanagawa-nvim
-  {
-    plugin = neo-tree-nvim;
-    deps = [
-      plenary-nvim
-      nui-nvim
-    ];
-    systemDeps = [ pkgs.git ];
-  }
   oil-nvim
   {
     plugin = todo-comments-nvim;
