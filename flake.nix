@@ -125,10 +125,6 @@
       url = "github:nvim-telescope/telescope.nvim";
       flake = false;
     };
-    todo-comments-nvim = {
-      url = "github:folke/todo-comments.nvim";
-      flake = false;
-    };
     undotree = {
       url = "github:mbbill/undotree";
       flake = false;

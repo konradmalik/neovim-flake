@@ -910,7 +910,6 @@
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
         "telescope-nvim": "telescope-nvim",
         "telescope-ui-select-nvim": "telescope-ui-select-nvim",
-        "todo-comments-nvim": "todo-comments-nvim",
         "undotree": "undotree",
         "which-key-nvim": "which-key-nvim"
       }
@@ -993,22 +992,6 @@
       "original": {
         "owner": "nvim-telescope",
         "repo": "telescope-ui-select.nvim",
-        "type": "github"
-      }
-    },
-    "todo-comments-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1736873412,
-        "narHash": "sha256-at9OSBtQqyiDdxKdNn2x6z4k8xrDD90sACKEK7uKNUM=",
-        "owner": "folke",
-        "repo": "todo-comments.nvim",
-        "rev": "304a8d204ee787d2544d8bc23cd38d2f929e7cc5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "folke",
-        "repo": "todo-comments.nvim",
         "type": "github"
       }
     },

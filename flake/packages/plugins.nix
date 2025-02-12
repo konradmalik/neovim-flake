@@ -157,10 +157,6 @@ let
   telescope-nvim = buildNeovim {
     input = "telescope-nvim";
   };
-  todo-comments-nvim = buildVim {
-    input = "todo-comments-nvim";
-    nvimRequireCheck = "todo-comments";
-  };
   undotree = buildVim {
     input = "undotree";
     vimCommandCheck = "UndotreeToggle";
@@ -223,10 +219,6 @@ in
   # UI
   kanagawa-nvim
   oil-nvim
-  {
-    plugin = todo-comments-nvim;
-    deps = [ plenary-nvim ];
-  }
   # snippets
   {
     plugin = incomplete-nvim;
