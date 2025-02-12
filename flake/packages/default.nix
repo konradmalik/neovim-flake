@@ -41,7 +41,7 @@
 
         inherit neovim-pde config;
         neovim-pde-dev = pkgs.callPackage ./neovim-pde-dev.nix { inherit neovim-pde config; };
-        nvim-typecheck = pkgs.callPackage ./nvim-typecheck.nix { neovim = neovimNightly; };
+        nvim-typecheck = pkgs.callPackage ./nvim-typecheck.nix { };
         full-luarc-json = pkgs.mk-luarc-json {
           nvim = neovimNightly;
           inherit plugins;

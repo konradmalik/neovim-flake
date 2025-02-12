@@ -1,14 +1,21 @@
 {
   perSystem =
-    { pkgs, self', ... }:
+    {
+      pkgs,
+      lib,
+      self',
+      ...
+    }:
     {
       checks =
         let
-          fs = pkgs.lib.fileset;
+          fs = lib.fileset;
           makeCheckJob =
             name: cmd:
             pkgs.stdenvNoCC.mkDerivation {
               inherit name;
+
+              checkInputs = [ pkgs.neovim ];
               dontBuild = true;
               dontConfigure = true;
               src = builtins.path {
@@ -22,7 +29,14 @@
                 };
               };
               doCheck = true;
-              checkPhase = cmd;
+              preCheck = ''
+                cp ${self'.packages.full-luarc-json} ./config/nvim/.luarc.json
+              '';
+              checkPhase = ''
+                runHook preCheck
+                ${cmd}
+                runHook postCheck
+              '';
               installPhase = ''
                 touch "$out"
               '';
@@ -30,10 +44,10 @@
         in
         {
           luacheck = makeCheckJob "luacheck" ''
-            ${pkgs.lua.pkgs.luacheck}/bin/luacheck --codes --no-cache ./config/nvim
+            ${lib.getExe pkgs.lua.pkgs.luacheck} --codes --no-cache ./config/nvim
           '';
           typecheck = makeCheckJob "typecheck" ''
-            ${self'.packages.nvim-typecheck}/bin/nvim-typecheck ./config/nvim
+            ${lib.getExe self'.packages.nvim-typecheck} ./config/nvim
           '';
         };
     };
