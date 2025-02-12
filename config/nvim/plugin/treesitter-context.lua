@@ -1,2 +1,1 @@
 require("treesitter-context").setup()
-
