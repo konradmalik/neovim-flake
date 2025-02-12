@@ -7,6 +7,7 @@ end
 local M = {}
 
 function M.setup()
+    ---@diagnostic disable-next-line: missing-fields
     require("nvim-dap-virtual-text").setup({
         enabled = true,
         enabled_commands = true,

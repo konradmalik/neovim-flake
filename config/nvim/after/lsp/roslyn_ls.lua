@@ -73,6 +73,7 @@ return {
             if not validate_command(command) then return end
 
             local bufnr = ctx.bufnr
+            ---@diagnostic disable-next-line: undefined-field
             local range = command.arguments[1].range
 
             ensure_tree_is_parsed(bufnr)
