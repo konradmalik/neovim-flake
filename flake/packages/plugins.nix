@@ -3,7 +3,6 @@
   lib,
   vimUtils,
   neovimUtils,
-  all-treesitter-grammars,
   inputs,
   inputs',
 }:
@@ -111,9 +110,7 @@ let
   nvim-nio = buildVim {
     input = "nvim-nio";
   };
-  nvim-treesitter = (buildVim { input = "nvim-treesitter"; }).overrideAttrs {
-    passthru.dependencies = map neovimUtils.grammarToPlugin all-treesitter-grammars;
-  };
+  nvim-treesitter = (buildVim { input = "nvim-treesitter"; });
   nvim-treesitter-context = buildVim {
     input = "nvim-treesitter-context";
     nvimSkipModule = "install_parsers";
@@ -178,6 +175,14 @@ in
     deps = [
       nvim-treesitter-context
       nvim-treesitter-textobjects
+    ];
+    systemDeps = [
+      # for grammars download
+      pkgs.curl
+      # for grammars compilation
+      pkgs.gcc
+      # for auto grammar detection and install
+      pkgs.tree-sitter
     ];
   }
   # completion

@@ -19,7 +19,6 @@
               inputs
               inputs'
               ;
-            all-treesitter-grammars = pkgs.vimPlugins.nvim-treesitter.allGrammars;
           }
         );
       };

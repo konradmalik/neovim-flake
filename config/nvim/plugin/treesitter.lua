@@ -1,5 +1,13 @@
+local parsers_dir = vim.fn.stdpath("state") .. "/site"
+vim.o.runtimepath = parsers_dir .. "," .. vim.o.runtimepath
+
+require("pde.loader").add_to_on_reset(function() vim.fn.delete(parsers_dir, "rf") end)
+
 ---@diagnostic disable-next-line: missing-fields
 require("nvim-treesitter.configs").setup({
+    ensure_installed = {},
+    auto_install = true,
+    parser_install_dir = parsers_dir,
     highlight = {
         enable = true,
     },
