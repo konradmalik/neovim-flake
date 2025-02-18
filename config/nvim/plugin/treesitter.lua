@@ -1,4 +1,8 @@
-local parsers_dir = vim.fn.stdpath("state") .. "/site"
+--- @type string
+---@diagnostic disable-next-line: assign-type-mismatch
+local state = vim.fn.stdpath("state")
+local parsers_dir = vim.fs.joinpath(state, "site")
+
 vim.o.runtimepath = parsers_dir .. "," .. vim.o.runtimepath
 
 require("pde.loader").add_to_on_reset(function() vim.fn.delete(parsers_dir, "rf") end)

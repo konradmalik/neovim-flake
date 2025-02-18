@@ -4,8 +4,10 @@ local cached_state
 
 ---@return string
 local function get_file_path()
+    ---@type string
+    ---@diagnostic disable-next-line: assign-type-mismatch
     local data = vim.fn.stdpath("data")
-    return data .. "/" .. state_name
+    return vim.fs.joinpath(data, state_name)
 end
 
 ---@param state table

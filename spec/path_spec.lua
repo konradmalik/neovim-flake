@@ -15,7 +15,7 @@ local function clear(dir) os.execute("rm -rf " .. dir) end
 ---@param dir string
 local function fake_stdpath(dir)
     ---@diagnostic disable-next-line: duplicate-set-field
-    vim.fn.stdpath = function(what) return dir .. "/" .. what end
+    vim.fn.stdpath = function(what) return vim.fs.joinpath(dir, what) end
 end
 
 describe("paths", function()

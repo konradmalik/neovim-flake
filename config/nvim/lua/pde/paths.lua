@@ -7,7 +7,7 @@ local function get_and_ensure(name)
     ---@diagnostic disable-next-line: assign-type-mismatch
     local state = vim.fn.stdpath("state")
 
-    local path = state .. "/" .. name
+    local path = vim.fs.joinpath(state, name)
     if vim.fn.isdirectory(path) == 0 then vim.fn.mkdir(path, "p") end
 
     return path
@@ -34,6 +34,6 @@ return {
             cache["spell"] = spellfile_parent
         end
         if not lang then return spellfile_parent end
-        return spellfile_parent .. "/" .. lang .. ".utf-8.add"
+        return vim.fs.joinpath(spellfile_parent, lang .. ".utf-8.add")
     end,
 }

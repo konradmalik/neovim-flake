@@ -22,7 +22,10 @@ vim.o.swapfile = false
 vim.o.backup = false
 -- Save undo history
 vim.o.undofile = true
-vim.o.undodir = vim.fn.stdpath("state") .. "/undodir"
+--- @type string
+---@diagnostic disable-next-line: assign-type-mismatch
+local state = vim.fn.stdpath("state")
+vim.o.undodir = vim.fs.joinpath(state, "undodir")
 -- Case insensitive searching UNLESS /C or capital in search
 vim.o.ignorecase = true
 vim.o.smartcase = true

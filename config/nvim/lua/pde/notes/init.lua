@@ -6,7 +6,7 @@ local opts_with_desc = function(desc) return { desc = "[notes] " .. desc } end
 
 ---@type NotesConfig
 local default_config = {
-    base_path = function() return vim.uv.os_tmpdir() .. "/notes" end,
+    base_path = function() return vim.fs.joinpath(vim.uv.os_tmpdir(), "notes") end,
     quicknotes = "notes.md",
 }
 
@@ -18,7 +18,7 @@ local set_keymaps = function(config)
     vim.keymap.set(
         "n",
         "<leader>nq",
-        function() open_quicknotes(config.base_path() .. "/" .. config.quicknotes) end,
+        function() open_quicknotes(vim.fs.joinpath(config.base_path(), config.quicknotes)) end,
         opts_with_desc("Open quick-notes file")
     )
 end

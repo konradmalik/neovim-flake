@@ -21,8 +21,8 @@ local file_by_offset = function(offset)
     if not files then return end
     local current = vim.fn.expand("%:t")
     if current == "" then
-        if offset < 0 then return dir .. "/" .. files[1] end
-        return dir .. "/" .. files[#files]
+        if offset < 0 then return vim.fs.joinpath(dir, files[1]) end
+        return vim.fs.joinpath(dir, files[#files])
     else
         local index = vim.fn.index(files, current) + 1
         if index == 0 then return end
@@ -32,7 +32,7 @@ local file_by_offset = function(offset)
         elseif index > #files then
             index = #files
         end
-        return dir .. "/" .. files[index]
+        return vim.fs.joinpath(dir, files[index])
     end
 end
 

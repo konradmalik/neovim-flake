@@ -27,7 +27,7 @@ function M.rename_file(opts)
         completion = "file",
     }, function(new)
         if not new or new == "" or new == extra then return end
-        new = vim.fs.normalize(root .. "/" .. new)
+        new = vim.fs.normalize(vim.fs.joinpath(root, new))
         vim.fn.mkdir(vim.fs.dirname(new), "p")
         M.on_rename_file(old, new, function()
             vim.fn.rename(old, new)
