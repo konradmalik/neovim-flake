@@ -1,7 +1,5 @@
---- @type string
----@diagnostic disable-next-line: assign-type-mismatch
-local state = vim.fn.stdpath("state")
-local parsers_dir = vim.fs.joinpath(state, "site")
+local paths = require("pde.paths")
+local parsers_dir = paths.get_and_ensure("site")
 
 vim.o.runtimepath = parsers_dir .. "," .. vim.o.runtimepath
 
