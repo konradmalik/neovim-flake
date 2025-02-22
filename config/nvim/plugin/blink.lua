@@ -30,7 +30,7 @@ require("blink.cmp").setup({
         },
     },
 
-    sources = {
-        cmdline = {},
+    cmdline = {
+        sources = {},
     },
 })
