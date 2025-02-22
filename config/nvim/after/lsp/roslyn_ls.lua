@@ -73,10 +73,10 @@ return {
             if not validate_command(command) then return end
 
             local bufnr = ctx.bufnr
+            ensure_tree_is_parsed(bufnr)
+
             ---@diagnostic disable-next-line: undefined-field
             local range = command.arguments[1].range
-
-            ensure_tree_is_parsed(bufnr)
             local root_node = assert(get_node_at_range(bufnr, range))
             local root_name = vim.treesitter.get_node_text(root_node, bufnr)
 
@@ -87,15 +87,18 @@ return {
                 if not name_node:equal(root_node) then
                     table.insert(filters, 1, vim.treesitter.get_node_text(name_node, bufnr))
                 end
-                return node:field("name")[1]
             end
 
             ---@type TSNode?
             local curr_node = root_node
             -- gather all classes and namespaces along the way to the top
             while curr_node and curr_node:type() ~= "compilation_unit" do
-                if curr_node:type() == "class_declaration" then insert_filter(curr_node) end
-                if curr_node:type() == "namespace_declaration" then insert_filter(curr_node) end
+                if
+                    curr_node:type() == "class_declaration"
+                    or curr_node:type() == "namespace_declaration"
+                then
+                    insert_filter(curr_node)
+                end
 
                 curr_node = curr_node:parent()
             end
@@ -110,9 +113,8 @@ return {
                 end
             end
 
-            local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
-
             local filter = table.concat(filters, ".")
+            local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
             testRun(client.root_dir, filter)
         end,
     },
