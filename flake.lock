@@ -911,6 +911,7 @@
         "telescope-nvim": "telescope-nvim",
         "telescope-ui-select-nvim": "telescope-ui-select-nvim",
         "undotree": "undotree",
+        "vim-fugitive": "vim-fugitive",
         "which-key-nvim": "which-key-nvim"
       }
     },
@@ -1029,6 +1030,22 @@
       "original": {
         "owner": "mbbill",
         "repo": "undotree",
+        "type": "github"
+      }
+    },
+    "vim-fugitive": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1740005044,
+        "narHash": "sha256-1AteNwnc7lCHLIwM8Ejm2T9VTIDM+CeAfvAUeSQRFKE=",
+        "owner": "tpope",
+        "repo": "vim-fugitive",
+        "rev": "4a745ea72fa93bb15dd077109afbb3d1809383f2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tpope",
+        "repo": "vim-fugitive",
         "type": "github"
       }
     },
