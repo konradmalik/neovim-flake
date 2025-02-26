@@ -31,6 +31,6 @@ require("blink.cmp").setup({
     },
 
     cmdline = {
-        sources = {},
+        enabled = false,
     },
 })
