@@ -1,3 +1,4 @@
+-- it's in after to replace fugitive
 local gitbrowse = require("pde.gitbrowse")
 local config = {
     config = function(opts, _)
@@ -9,11 +10,8 @@ local config = {
     end,
 }
 
-local opts_with_desc = function(desc) return { desc = "[gitbrowse] " .. desc } end
-
-vim.keymap.set(
-    { "n", "v" },
-    "<leader>gof",
-    function() gitbrowse.open(config) end,
-    opts_with_desc("open current file in the browser")
-)
+vim.api.nvim_create_user_command("GBrowse", function(params)
+    local opts =
+        vim.tbl_extend("force", config, { line_start = params.line1, line_end = params.line2 })
+    gitbrowse.open(opts)
+end, { desc = "[gitbrowse] open current file in the browser", range = true })
