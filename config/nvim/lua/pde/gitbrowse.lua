@@ -2,14 +2,19 @@
 local M = {}
 
 ---@class gitbrowse.Config
----@field url_patterns? table<string, table<string, string|fun(fields:gitbrowse.Fields):string>>
 local defaults = {
     notify = true, -- show notification on open
     -- Handler to open the url in a browser
     ---@param url string
-    open = function(url) vim.ui.open(url) end,
-    ---@type "repo" | "branch" | "file" | "commit"
-    what = "file", -- what to open. not all remotes support all types
+    open = function(url)
+        if vim.fn.has("nvim-0.10") == 0 then
+            require("lazy.util").open(url, { system = true })
+            return
+        end
+        vim.ui.open(url)
+    end,
+    ---@type "repo" | "branch" | "file" | "commit" | "permalink"
+    what = "commit", -- what to open. not all remotes support all types
     branch = nil, ---@type string?
     line_start = nil, ---@type number?
     line_end = nil, ---@type number?
@@ -20,6 +25,7 @@ local defaults = {
       { "^git@(.+):(.+)%.git$"              , "https://%1/%2" },
       { "^git@(.+):(.+)$"                   , "https://%1/%2" },
       { "^git@(.+)/(.+)$"                   , "https://%1/%2" },
+      { "^org%-%d+@(.+):(.+)%.git$"         , "https://%1/%2" },
       { "^ssh://git@(.*)$"                  , "https://%1" },
       { "^ssh://([^:/]+)(:%d+)/(.*)$"       , "https://%1/%3" },
       { "^ssh://([^/]+)/(.*)$"              , "https://%1/%2" },
@@ -33,20 +39,38 @@ local defaults = {
         ["github%.com"] = {
             branch = "/tree/{branch}",
             file = "/blob/{branch}/{file}#L{line_start}-L{line_end}",
+            permalink = "/blob/{commit}/{file}#L{line_start}-L{line_end}",
             commit = "/commit/{commit}",
         },
         ["gitlab%.com"] = {
             branch = "/-/tree/{branch}",
             file = "/-/blob/{branch}/{file}#L{line_start}-L{line_end}",
+            permalink = "/-/blob/{commit}/{file}#L{line_start}-L{line_end}",
             commit = "/-/commit/{commit}",
         },
         ["bitbucket%.org"] = {
             branch = "/src/{branch}",
             file = "/src/{branch}/{file}#lines-{line_start}-L{line_end}",
+            permalink = "/src/{commit}/{file}#lines-{line_start}-L{line_end}",
             commit = "/commits/{commit}",
+        },
+        ["git.sr.ht"] = {
+            branch = "/tree/{branch}",
+            file = "/tree/{branch}/item/{file}",
+            permalink = "/tree/{commit}/item/{file}#L{line_start}",
+            commit = "/commit/{commit}",
         },
     },
 }
+
+---@param configf? fun(gitbrowse.Config)
+function M.setup(configf)
+    if configf then configf(defaults) end
+end
+
+---@param opts? gitbrowse.Config
+---@return gitbrowse.Config
+local function resolve_opts(opts) return vim.tbl_deep_extend("force", defaults, opts or {}) end
 
 ---@class gitbrowse.Fields
 ---@field branch? string
@@ -54,12 +78,13 @@ local defaults = {
 ---@field line_start? number
 ---@field line_end? number
 ---@field commit? string
+---@field line_count? number
 
 ---@private
 ---@param remote string
 ---@param opts? gitbrowse.Config
 function M.get_repo(remote, opts)
-    opts = vim.tbl_deep_extend("force", defaults, opts or {})
+    opts = resolve_opts(opts)
     local ret = remote
     for _, pattern in ipairs(opts.remote_patterns) do
         ret = ret:gsub(pattern[1], pattern[2]) --[[@as string]]
@@ -71,7 +96,7 @@ end
 ---@param fields gitbrowse.Fields
 ---@param opts? gitbrowse.Config
 function M.get_url(repo, fields, opts)
-    opts = vim.tbl_deep_extend("force", defaults, opts or {})
+    opts = resolve_opts(opts)
     for remote, patterns in pairs(opts.url_patterns) do
         if repo:find(remote) then
             local pattern = patterns[opts.what]
@@ -94,7 +119,7 @@ end
 local function system(cmd, err)
     local proc = vim.fn.system(cmd)
     if vim.v.shell_error ~= 0 then
-        vim.notify(err .. " " .. proc, vim.log.levels.ERROR)
+        vim.notify(vim.inspect({ err, proc }), vim.log.levels.ERROR, { title = "Git Browse" })
         error("__ignore__")
     end
     return vim.split(vim.trim(proc), "\n")
@@ -117,12 +142,11 @@ end
 
 ---@param opts? gitbrowse.Config
 function M._open(opts)
-    opts = vim.tbl_deep_extend("force", defaults, opts or {})
+    opts = resolve_opts(opts)
     local file = vim.api.nvim_buf_get_name(0) ---@type string?
     file = file and (vim.uv.fs_stat(file) or {}).type == "file" and vim.fs.normalize(file) or nil
     local cwd = file and vim.fn.fnamemodify(file, ":h") or vim.fn.getcwd()
-    local word = vim.fn.expand("<cword>")
-    local is_commit = is_valid_commit_hash(word, cwd)
+
     ---@type gitbrowse.Fields
     local fields = {
         branch = opts.branch or system(
@@ -135,8 +159,17 @@ function M._open(opts)
         )[1],
         line_start = opts.line_start,
         line_end = opts.line_end,
-        commit = is_commit and word or nil,
     }
+
+    if opts.what == "permalink" then
+        fields.commit = system(
+            { "git", "-C", cwd, "log", "-n", "1", "--pretty=format:%H", "--", file },
+            "Failed to get latest commit of file"
+        )[1]
+    else
+        local word = vim.fn.expand("<cword>")
+        fields.commit = is_valid_commit_hash(word, cwd) and word or nil
+    end
 
     -- Get visual selection range if in visual mode
     if vim.fn.mode():find("[vV]") then
@@ -154,13 +187,13 @@ function M._open(opts)
         fields.line_start = fields.line_start or vim.fn.line(".")
         fields.line_end = fields.line_end or fields.line_start
     end
+    fields.line_count = fields.line_end - fields.line_start + 1
 
-    opts.what = is_commit and "commit"
-        or opts.what == "commit" and not fields.commit and "file"
-        or opts.what
-    opts.what = not is_commit and opts.what == "file" and not fields.file and "branch" or opts.what
-    opts.what = not is_commit and opts.what == "branch" and not fields.branch and "repo"
-        or opts.what
+    if not fields.commit and (opts.what == "commit" or opts.what == "permalink") then
+        opts.what = "file"
+    end
+    if not fields.commit and not fields.file then opts.what = "branch" end
+    if not fields.commit and not fields.branch then opts.what = "repo" end
 
     local remotes = {} ---@type {name:string, url:string}[]
 
@@ -182,7 +215,8 @@ function M._open(opts)
             if opts.notify ~= false then
                 vim.notify(
                     ("Opening [%s](%s)"):format(remote.name, remote.url),
-                    vim.log.levels.INFO
+                    vim.log.levels.INFO,
+                    { title = "Git Browse" }
                 )
             end
             opts.open(remote.url)
@@ -190,7 +224,7 @@ function M._open(opts)
     end
 
     if #remotes == 0 then
-        return vim.notify("No git remotes found", vim.log.levels.ERROR)
+        return vim.notify("No git remotes found", vim.log.levels.ERROR, { title = "Git Browse" })
     elseif #remotes == 1 then
         return open(remotes[1])
     end
