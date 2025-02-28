@@ -24,12 +24,6 @@ require("blink.cmp").setup({
         },
     },
 
-    fuzzy = {
-        prebuilt_binaries = {
-            download = false,
-        },
-    },
-
     cmdline = {
         enabled = false,
     },
