@@ -132,6 +132,7 @@ local function create_or_update_window(client)
             col = vim.o.columns - #client.message,
             focusable = false,
             style = "minimal",
+            border = "none",
             noautocmd = true,
         })
         vim.wo[winid].winhl = highlight

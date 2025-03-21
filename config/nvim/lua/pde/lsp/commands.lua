@@ -53,7 +53,6 @@ local function create_window(title)
         col = math.floor((vim.o.columns - width) / 2),
         width = width,
         height = height,
-        border = "rounded",
         style = "minimal",
         noautocmd = true,
     })

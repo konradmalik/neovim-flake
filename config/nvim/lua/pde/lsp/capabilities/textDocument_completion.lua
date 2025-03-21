@@ -80,7 +80,6 @@ local function show_documentation(selected_index, result, client)
     local wininfo = vim.api.nvim__complete_set(selected_index, { info = format_docs(docs, client) })
     if vim.tbl_isempty(wininfo) or not vim.api.nvim_win_is_valid(wininfo.winid) then return end
 
-    vim.api.nvim_win_set_config(wininfo.winid, { border = "rounded" })
     vim.wo[wininfo.winid].conceallevel = 2
     vim.wo[wininfo.winid].concealcursor = "n"
 

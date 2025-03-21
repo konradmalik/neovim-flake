@@ -33,7 +33,6 @@ function M.input(opts, on_confirm, win_config)
     local default_win_config = {
         focusable = true,
         style = "minimal",
-        border = "rounded",
         width = input_width,
         height = 1,
         title = prompt,
