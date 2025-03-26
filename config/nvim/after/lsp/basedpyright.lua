@@ -1,13 +1,13 @@
--- https://github.com/microsoft/pyright
+-- https://docs.basedpyright.com/latest/configuration/language-server-settings/
 
 local binaries = require("pde.binaries")
 
 ---@type vim.lsp.Config
 return {
-    cmd = { binaries.pyright(), "--stdio" },
+    cmd = { binaries.basedpyright(), "--stdio" },
     filetypes = { "python" },
     settings = {
-        python = {
+        basedpyright = {
             analysis = {
                 autoSearchPaths = true,
                 useLibraryCodeForTypes = true,

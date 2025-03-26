@@ -12,7 +12,7 @@ local enabled_configs = {
     "nixd",
     "prettier",
     "pyefm",
-    "pyright",
+    "basedpyright",
     "rust_analyzer",
     "sh",
     "stylua",

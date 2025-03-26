@@ -30,7 +30,7 @@ pkgs.writeTextDir "lua/pde/binaries.lua" # lua
         ltex_ls = "${lib.getExe' pkgs.ltex-ls "ltex-ls"}",
         lua_ls = "${lib.getExe pkgs.lua-language-server}",
         nixd = "${lib.getExe pkgs.nixd}",
-        pyright = "${lib.getExe' pkgs.pyright "pyright-langserver"}",
+        basedpyright = "${lib.getExe' pkgs.basedpyright "basedpyright-langserver"}",
         roslyn_ls = "${lib.getExe pkgs.roslyn-ls}",
         rust_analyzer = "${lib.getExe pkgs.rust-analyzer}",
         terraformls = "${lib.getExe pkgs.terraform-ls}",
