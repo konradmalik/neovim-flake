@@ -56,6 +56,22 @@
         "type": "github"
       }
     },
+    "efmls-configs-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1739738156,
+        "narHash": "sha256-Y471LrMK/6qFiWw1o9ODNrdm8IcAILCaNTrkHxrFpko=",
+        "owner": "creativenull",
+        "repo": "efmls-configs-nvim",
+        "rev": "f769e051831782732b392da412892cd2eb9c104d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "creativenull",
+        "repo": "efmls-configs-nvim",
+        "type": "github"
+      }
+    },
     "fenix": {
       "inputs": {
         "nixpkgs": [
@@ -888,6 +904,7 @@
         "SchemaStore-nvim": "SchemaStore-nvim",
         "blink-cmp": "blink-cmp",
         "boole-nvim": "boole-nvim",
+        "efmls-configs-nvim": "efmls-configs-nvim",
         "flake-parts": "flake-parts",
         "friendly-snippets": "friendly-snippets",
         "gen-luarc": "gen-luarc",

@@ -1,3 +1,1 @@
-local config = require("pde.lsp.configs.efm").config_from_multi("sh", { "shfmt", "shellcheck" })
-config.filetypes = { "sh" }
-return config
+return require("pde.lsp.configs.efm").config_from_multi("sh", { "shfmt", "shellcheck" }, "sh")

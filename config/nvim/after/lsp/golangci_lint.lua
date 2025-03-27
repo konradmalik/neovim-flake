@@ -1,3 +1,1 @@
-local config = require("pde.lsp.configs.efm").config_from_single("golangci_lint")
-config.filetypes = { "go" }
-return config
+return require("pde.lsp.configs.efm").config_from_single("golangci_lint", "go")

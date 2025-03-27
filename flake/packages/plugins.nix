@@ -76,6 +76,14 @@ let
   boole-nvim = buildVim {
     input = "boole-nvim";
   };
+  efmls-configs-nvim = buildVim {
+    input = "efmls-configs-nvim";
+    nvimSkipModule = [
+      # requires nvim-lspconfig but I don't use it and I won't use those modules
+      "efmls-configs"
+      "efmls-configs.defaults"
+    ];
+  };
   friendly-snippets = buildVim {
     input = "friendly-snippets";
   };
@@ -196,6 +204,7 @@ in
     deps = [ friendly-snippets ];
   }
   # LSP
+  efmls-configs-nvim
   SchemaStore-nvim
   roslyn-nvim
   # DAP

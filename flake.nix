@@ -37,6 +37,10 @@
       url = "github:nat-418/boole.nvim";
       flake = false;
     };
+    efmls-configs-nvim = {
+      url = "github:creativenull/efmls-configs-nvim";
+      flake = false;
+    };
     friendly-snippets = {
       url = "github:rafamadriz/friendly-snippets";
       flake = false;
