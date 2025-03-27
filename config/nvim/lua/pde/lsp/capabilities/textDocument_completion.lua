@@ -91,7 +91,7 @@ end
 ---@param augroup integer
 ---@param bufnr integer
 local function enable_completion_documentation(client, augroup, bufnr)
-    local cancel_prev = function() end
+    local _, cancel_prev = nil, function() end
 
     vim.api.nvim_create_autocmd("CompleteChanged", {
         group = augroup,
