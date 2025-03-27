@@ -26,16 +26,26 @@ $ make test
 
 ## Assumptions
 
--   keeps all Neovim config in lua as it's supposed to be
--   uses nix for system dependencies, plugins and packaging
+- keeps all Neovim config in lua as it's supposed to be
+- uses nix for system dependencies, plugins and packaging
 
 That way nix is a layer on top, just used for packaging and reproducibility. It does not interfere with the standard way
 to configure Neovim.
 
+## Language servers, formatters, linters
+
+Those are managed by nix and appended to the end of PATH for Neovim.
+This allows Neovim to use them, but also to use other versions by prepending them to PATH.
+
+An example - you can have some project which uses an older version of `black` which formats files a bit differently.
+Assuming that this project has a devshell defined, you can just enter that devshell and run Neovim.
+The older `black` from the devshell will take precedence over the one provided by this flake, because devshell works by
+prepending to PATH.
+
 ## Things to note
 
--   Uses `NVIM_APPNAME` to differentiate from other Neovim instances. It's set to `neovim-pde` or `neovim-pde-hm` for
-    home-manager (configurable) or `nvim` when running in "dev mode".
+- Uses `NVIM_APPNAME` to differentiate from other Neovim instances. It's set to `neovim-pde` or `neovim-pde-hm` for
+  home-manager (configurable) or `nvim` when running in "dev mode".
 
 ### Home Manager
 
@@ -76,5 +86,4 @@ What I don't like in those "nixvim" flakes is that people most often use only ni
 
 Inspired by:
 
--   https://primamateria.github.io/blog/neovim-nix/
-
+- https://primamateria.github.io/blog/neovim-nix/

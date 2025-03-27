@@ -1,10 +1,9 @@
 -- https://github.com/redhat-developer/yaml-language-server
-local binaries = require("pde.binaries")
 local schemastore = require("schemastore")
 
 ---@type vim.lsp.Config
 return {
-    cmd = { binaries.yamlls(), "--stdio" },
+    cmd = { "yaml-language-server", "--stdio" },
     filetypes = { "yaml" },
     settings = {
         redhat = {

@@ -20,8 +20,6 @@
 ---@field filetypes string[]
 ---@field entry EfmEntry
 
-local binaries = require("pde.binaries")
-
 ---@param plugin EfmPlugin
 ---@return table<string, EfmEntry>
 local make_languages_entry_for_plugin = function(plugin)
@@ -82,7 +80,7 @@ local function build(name, plugins)
 
     return {
         name = name,
-        cmd = { binaries.efm() },
+        cmd = { "efm-langserver" },
         init_options = {
             documentFormatting = formattingEnabled,
             documentRangeFormatting = rangeFormattingEnabled,

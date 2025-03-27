@@ -1,9 +1,8 @@
-local binaries = require("pde.binaries")
 ---@type EfmPlugin
 return {
     filetypes = { "json" },
     entry = {
-        lintCommand = { binaries.jq() },
+        lintCommand = { "jq" },
         lintSource = "jq",
         lintStdin = true,
         lintOffset = 1,

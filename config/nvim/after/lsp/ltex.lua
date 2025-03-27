@@ -1,6 +1,5 @@
 -- https://github.com/valentjn/ltex-ls
 
-local binaries = require("pde.binaries")
 local paths = require("pde.paths")
 
 local dictionary = {}
@@ -79,7 +78,7 @@ end
 
 ---@type vim.lsp.Config
 return {
-    cmd = { binaries.ltex_ls() },
+    cmd = { "ltex-ls" },
     filetypes = { "markdown" },
     before_init = function()
         if not dictionary[current_language] then

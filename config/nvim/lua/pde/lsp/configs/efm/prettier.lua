@@ -1,4 +1,3 @@
-local binaries = require("pde.binaries")
 ---@type EfmPlugin
 return {
     filetypes = {
@@ -21,7 +20,7 @@ return {
     },
     entry = {
         formatCommand = {
-            binaries.prettier(),
+            "prettier",
             "--stdin",
             "--stdin-filepath",
             "'${INPUT}'",

@@ -1,11 +1,10 @@
-local binaries = require("pde.binaries")
 ---@type EfmPlugin
 return {
     filetypes = { "go" },
     entry = {
         prefix = "golangci-lint",
         lintCommand = {
-            binaries.golangci_lint(),
+            "golangci-lint",
             "run",
             "--color",
             "never",

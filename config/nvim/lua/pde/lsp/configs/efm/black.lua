@@ -1,10 +1,9 @@
-local binaries = require("pde.binaries")
 ---@type EfmPlugin
 return {
     filetypes = { "python" },
     entry = {
         formatCommand = {
-            binaries.black(),
+            "black",
             "--no-color",
             "--quiet",
             "-",

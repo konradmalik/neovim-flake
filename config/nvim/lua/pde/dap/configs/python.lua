@@ -1,9 +1,9 @@
-local binaries = require("pde.binaries")
 local dap = require("dap")
+local debugpy = require("pde.debugpy")
 
 dap.adapters.debugpy = {
     type = "executable",
-    command = binaries.debugpy(),
+    command = debugpy.python,
     args = { "-m", "debugpy.adapter" },
     options = {
         source_filetype = "python",

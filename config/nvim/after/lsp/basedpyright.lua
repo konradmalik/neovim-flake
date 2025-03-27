@@ -1,10 +1,8 @@
 -- https://docs.basedpyright.com/latest/configuration/language-server-settings/
 
-local binaries = require("pde.binaries")
-
 ---@type vim.lsp.Config
 return {
-    cmd = { binaries.basedpyright(), "--stdio" },
+    cmd = { "basedpyright-langserver", "--stdio" },
     filetypes = { "python" },
     settings = {
         basedpyright = {

@@ -1,9 +1,7 @@
 -- https://github.com/golang/tools/tree/master/gopls
-local binaries = require("pde.binaries")
-
 ---@type vim.lsp.Config
 return {
-    cmd = { binaries.gopls() },
+    cmd = { "gopls" },
     -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md
     settings = {
         gopls = {

@@ -1,9 +1,7 @@
 -- https://github.com/LuaLS/lua-language-server
-local binaries = require("pde.binaries")
-
 ---@type vim.lsp.Config
 return {
-    cmd = { binaries.lua_ls() },
+    cmd = { "lua-language-server" },
     filetypes = { "lua" },
     on_init = function(client)
         -- use stylua via efm, this formatter is not great and it clears diagnostic text on save

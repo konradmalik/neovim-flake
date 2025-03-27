@@ -17,7 +17,7 @@ let
 
   nix = [
     # manually handle nix templates to avoid IFD
-    (callPackage ./nix/lua/pde/binaries.nix { })
+    (callPackage ./nix/lua/pde/debugpy.nix { })
     (callPackage ./nix/lua/pde/skeletons.nix { })
   ];
 in

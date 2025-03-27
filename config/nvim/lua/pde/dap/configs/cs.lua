@@ -1,10 +1,9 @@
-local binaries = require("pde.binaries")
 local dap = require("dap")
 local pickers = require("pde.dap.pickers")
 
 dap.adapters.coreclr = {
     type = "executable",
-    command = binaries.netcoredbg(),
+    command = "netcoredbg",
     args = { "--interpreter=vscode" },
 }
 

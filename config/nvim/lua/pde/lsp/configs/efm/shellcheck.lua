@@ -1,10 +1,8 @@
-local binaries = require("pde.binaries")
-
 ---@type EfmPlugin
 return {
     filetypes = { "sh" },
     entry = {
-        lintCommand = { binaries.shellcheck(), "--color=never", "--format=gcc", "-" },
+        lintCommand = { "shellcheck", "--color=never", "--format=gcc", "-" },
         lintStdin = true,
         lintFormats = {
             "-:%l:%c: %trror: %m",

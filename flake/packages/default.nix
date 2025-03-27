@@ -30,7 +30,8 @@
       # neovim
       neovimNightly = inputs'.neovim-nightly-overlay.packages.default;
       neovim-pde = pkgs.callPackage ./neovim-pde.nix {
-        inherit config plugins systemDeps;
+        inherit config plugins;
+        systemDeps = systemDeps ++ (pkgs.callPackage ./binaries.nix { });
         neovim = neovimNightly;
       };
     in

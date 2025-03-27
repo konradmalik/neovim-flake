@@ -1,4 +1,3 @@
-local binaries = require("pde.binaries")
 local runner = require("pde.runner")
 local name = "rust_analyzer"
 
@@ -60,7 +59,7 @@ end
 
 ---@type vim.lsp.Config
 return {
-    cmd = { binaries.rust_analyzer() },
+    cmd = { "rust-analyzer" },
     filetypes = { "rust" },
     capabilities = {
         experimental = {
@@ -69,14 +68,6 @@ return {
     },
     settings = {
         ["rust-analyzer"] = {
-            rustfmt = {
-                overrideCommand = {
-                    binaries.rustfmt(),
-                    "--edition",
-                    "2021",
-                    "--",
-                },
-            },
             files = {
                 excludeDirs = {
                     "./.direnv/",
