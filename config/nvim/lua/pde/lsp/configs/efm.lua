@@ -57,8 +57,7 @@ local function build(name, configs, languages)
         end
     end
 
-    local rootMarkers = vim.tbl_keys(allRootMarkers)
-
+    ---@type vim.lsp.Config
     return {
         name = name,
         cmd = { "efm-langserver" },
@@ -71,7 +70,7 @@ local function build(name, configs, languages)
             completion = false,
         },
         settings = {
-            rootMarkers = rootMarkers,
+            rootMarkers = vim.tbl_keys(allRootMarkers),
             languages = languages_setting,
         },
         filetypes = vim.tbl_keys(languages_setting),

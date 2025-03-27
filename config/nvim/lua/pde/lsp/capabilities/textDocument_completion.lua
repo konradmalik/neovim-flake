@@ -1,6 +1,4 @@
 local mini_icons = require("mini.icons")
-local docs_debounce_ms = 250
-local docs_timer = assert(vim.uv.new_timer(), "cannot create timer")
 local trigger_debounce_ms = 250
 local trigger_timer = assert(vim.uv.new_timer(), "cannot create timer")
 -- some LSPs for some reason say they have completionItem_resolve capability
@@ -61,7 +59,7 @@ local function enable(client, bufnr, opts)
                 trigger_timer:start(
                     trigger_debounce_ms,
                     0,
-                    vim.schedule_wrap(vim.lsp.completion.trigger)
+                    vim.schedule_wrap(vim.lsp.completion.get)
                 )
                 return
             end
@@ -93,17 +91,14 @@ end
 ---@param augroup integer
 ---@param bufnr integer
 local function enable_completion_documentation(client, augroup, bufnr)
+    local cancel_prev = function() end
+
     vim.api.nvim_create_autocmd("CompleteChanged", {
         group = augroup,
         buffer = bufnr,
         callback = function()
+            cancel_prev()
             if not documentation_is_enabled then return end
-
-            docs_timer:stop()
-
-            local client_id =
-                vim.tbl_get(vim.v.completed_item, "user_data", "nvim", "lsp", "client_id")
-            if client_id ~= client.id then return end
 
             local completion_item =
                 vim.tbl_get(vim.v.completed_item, "user_data", "nvim", "lsp", "completion_item")
@@ -114,27 +109,27 @@ local function enable_completion_documentation(client, augroup, bufnr)
 
             local selected_index = complete_info.selected
 
-            docs_timer:start(
-                docs_debounce_ms,
-                0,
-                vim.schedule_wrap(function()
-                    client:request(ms.completionItem_resolve, completion_item, function(err, result)
-                        if err ~= nil then
-                            vim.notify(
-                                "Error from client "
-                                    .. client.id
-                                    .. " when getting documentation\n"
-                                    .. vim.inspect(err),
-                                vim.log.levels.WARN
-                            )
-                            -- at this stage just disable it
-                            documentation_is_enabled = false
-                            return
-                        end
+            _, cancel_prev = vim.lsp.buf_request(
+                bufnr,
+                ms.completionItem_resolve,
+                completion_item,
+                function(err, item)
+                    if err ~= nil then
+                        vim.notify(
+                            "Error from client "
+                                .. client.id
+                                .. " when getting documentation\n"
+                                .. vim.inspect(err),
+                            vim.log.levels.WARN
+                        )
+                        -- at this stage just disable it
+                        documentation_is_enabled = false
+                        return
+                    end
+                    if not item then return end
 
-                        show_documentation(selected_index, result, client)
-                    end, bufnr)
-                end)
+                    show_documentation(selected_index, item, client)
+                end
             )
         end,
     })
