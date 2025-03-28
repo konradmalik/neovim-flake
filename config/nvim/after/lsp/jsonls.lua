@@ -4,7 +4,7 @@ local schemastore = require("schemastore")
 
 ---@type vim.lsp.Config
 return {
-    cmd = { "vscode-json-language-server", "--stdio" },
+    cmd = { "vscode-json-languageserver", "--stdio" },
     init_options = {
         provideFormatter = false, -- use prettier instead
     },
