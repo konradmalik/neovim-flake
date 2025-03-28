@@ -38,7 +38,9 @@
       flake = false;
     };
     efmls-configs-nvim = {
-      url = "github:creativenull/efmls-configs-nvim";
+      url = "github:konradmalik/efmls-configs-nvim/prettier";
+      # TODO until https://github.com/creativenull/efmls-configs-nvim/pull/150
+      # url = "github:creativenull/efmls-configs-nvim";
       flake = false;
     };
     friendly-snippets = {
