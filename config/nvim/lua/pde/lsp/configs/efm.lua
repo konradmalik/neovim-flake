@@ -29,7 +29,10 @@ local function build(name, configs, languages)
     local rangeFormattingEnabled = false
 
     for _, config in ipairs(configs) do
-        local ok, entry = pcall(require, "efmls-configs.formatters." .. config)
+        local ok, entry = pcall(require, "efmls-configs." .. config)
+        if not ok then
+            ok, entry = pcall(require, "efmls-configs.formatters." .. config)
+        end
         if not ok then
             ok, entry = pcall(require, "efmls-configs.linters." .. config)
         end
