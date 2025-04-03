@@ -59,16 +59,15 @@
     "efmls-configs-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1743185229,
+        "lastModified": 1743340496,
         "narHash": "sha256-VcHGMMcNRoVqwJQFaDnBQKdc4xudZNIH4600vukKGg0=",
-        "owner": "konradmalik",
+        "owner": "creativenull",
         "repo": "efmls-configs-nvim",
-        "rev": "eb45f2172b9bb1a40121f7950f9e8e8f6dc6903a",
+        "rev": "e071a098ac1e56e349af649c25e982348f5504e5",
         "type": "github"
       },
       "original": {
-        "owner": "konradmalik",
-        "ref": "prettier",
+        "owner": "creativenull",
         "repo": "efmls-configs-nvim",
         "type": "github"
       }
