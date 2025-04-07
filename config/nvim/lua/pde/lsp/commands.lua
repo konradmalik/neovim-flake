@@ -39,60 +39,7 @@ local function restart_servers(filter)
     )
 end
 
----@param title string
----@return table
-local function create_window(title)
-    local width = 100
-    local height = 40
-
-    local bufnr = vim.api.nvim_create_buf(false, true)
-    local win_id = vim.api.nvim_open_win(bufnr, true, {
-        title = title,
-        relative = "editor",
-        row = math.floor(((vim.o.lines - height) / 2) - 1),
-        col = math.floor((vim.o.columns - width) / 2),
-        width = width,
-        height = height,
-        style = "minimal",
-        noautocmd = true,
-    })
-
-    vim.api.nvim_set_option_value("winfixbuf", true, { win = win_id })
-
-    return {
-        bufnr = bufnr,
-        win_id = win_id,
-    }
-end
-
-local function lsp_info()
-    local replacement = {}
-    for i, client in ipairs(vim.lsp.get_clients()) do
-        if i > 1 then table.insert(replacement, "---------------") end
-        table.insert(replacement, string.format("Client: %s (id: %s)", client.name, client.id))
-        table.insert(replacement, string.format("Root Dir: %s", client.config.root_dir))
-        local cmd_str
-        if type(client.config.cmd) == "function" then
-            cmd_str = "fun(dispatchers)"
-        else
-            ---@diagnostic disable-next-line: param-type-mismatch
-            cmd_str = table.concat(client.config.cmd, " ")
-        end
-        table.insert(replacement, cmd_str)
-        table.insert(
-            replacement,
-            string.format(
-                "Attached Bufs: [ %s ]",
-                table.concat(vim.tbl_keys(client.attached_buffers), ", ")
-            )
-        )
-    end
-    local info = create_window("LspInfo")
-    vim.api.nvim_buf_set_lines(info.bufnr, 0, 0, false, replacement)
-    vim.api.nvim_set_option_value("readonly", true, { buf = info.bufnr })
-end
-
-vim.api.nvim_create_user_command("LspInfo", lsp_info, {
+vim.api.nvim_create_user_command("LspInfo", "checkhealth lsp", {
     desc = "List LSP clients with their details",
 })
 
