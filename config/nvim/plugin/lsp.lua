@@ -1,6 +1,12 @@
 require("pde.lsp").setup()
 
-local enabled_configs = {
+vim.lsp.config("*", {
+    root_markers = {
+        ".git",
+    },
+})
+
+vim.lsp.enable({
     "clangd",
     "efmson",
     "gopls",
@@ -20,12 +26,4 @@ local enabled_configs = {
     "terraform-ls",
     "yamlls",
     "zls",
-}
-
-vim.lsp.config("*", {
-    root_markers = {
-        ".git",
-    },
 })
-
-vim.lsp.enable(enabled_configs)
