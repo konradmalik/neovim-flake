@@ -92,6 +92,11 @@ let
       input = "gitsigns-nvim";
     }).overrideAttrs
       { doInstallCheck = true; };
+  harpoon = buildVim {
+    input = "harpoon";
+    dependencies = [ plenary-nvim ];
+    nvimSkipModule = [ "harpoon.scratch.toggle" ];
+  };
   kanagawa-nvim = buildVim {
     input = "kanagawa-nvim";
   };
@@ -252,6 +257,10 @@ in
   {
     plugin = gitsigns-nvim;
     systemDeps = [ pkgs.git ];
+  }
+  {
+    plugin = harpoon;
+    deps = [ plenary-nvim ];
   }
   nvim-luaref
   undotree

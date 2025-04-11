@@ -486,6 +486,23 @@
         "type": "github"
       }
     },
+    "harpoon": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1739222527,
+        "narHash": "sha256-L7FvOV6KvD58BnY3no5IudiKTdgkGqhpS85RoSxtl7U=",
+        "owner": "ThePrimeagen",
+        "repo": "harpoon",
+        "rev": "ed1f853847ffd04b2b61c314865665e1dadf22c7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ThePrimeagen",
+        "ref": "harpoon2",
+        "repo": "harpoon",
+        "type": "github"
+      }
+    },
     "hercules-ci-effects": {
       "inputs": {
         "flake-parts": "flake-parts_5",
@@ -910,6 +927,7 @@
         "gen-luarc": "gen-luarc",
         "git-conflict-nvim": "git-conflict-nvim",
         "gitsigns-nvim": "gitsigns-nvim",
+        "harpoon": "harpoon",
         "incomplete-nvim": "incomplete-nvim",
         "kanagawa-nvim": "kanagawa-nvim",
         "mini-icons": "mini-icons",
