@@ -1,4 +1,4 @@
--- https://github.com/valentjn/ltex-ls
+-- https://ltex-plus.github.io/ltex-plus/
 
 local paths = require("pde.paths")
 
@@ -6,7 +6,6 @@ local dictionary = {}
 local disabledRules = {}
 local hiddenFalsePositives = {}
 
-local name = "ltex"
 local current_language = "en-US"
 
 ---@param path string
@@ -61,7 +60,7 @@ local function handle_action(command, key, tbl)
 end
 
 local update_client_with = function(changed_settings)
-    local client = vim.lsp.get_clients({ name = name })[1]
+    local client = vim.lsp.get_clients({ name = "ltex_plus" })[1]
     if not client then return end
     client:notify("workspace/didChangeConfiguration", { settings = changed_settings })
 end
@@ -78,7 +77,7 @@ end
 
 ---@type vim.lsp.Config
 return {
-    cmd = { "ltex-ls" },
+    cmd = { "ltex-ls-plus" },
     filetypes = { "markdown" },
     before_init = function()
         if not dictionary[current_language] then

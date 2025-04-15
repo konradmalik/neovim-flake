@@ -13,7 +13,7 @@ vim.lsp.enable({
     "golangci_lint",
     "gopls",
     "jsonls",
-    "ltex",
+    "ltex_plus",
     "lua_ls",
     "nixd",
     "prettier",

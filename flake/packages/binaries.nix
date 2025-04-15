@@ -20,7 +20,7 @@ with pkgs;
   efm-langserver
   gopls
   nodePackages.vscode-json-languageserver
-  ltex-ls
+  ltex-ls-plus
   lua-language-server
   nixd
   basedpyright
