@@ -117,6 +117,9 @@ let
     input = "nvim-dap-virtual-text";
     dependencies = [ nvim-dap ];
   };
+  nvim-lspconfig = buildVim {
+    input = "nvim-lspconfig";
+  };
   nvim-luaref = buildVim {
     input = "nvim-luaref";
   };
@@ -210,6 +213,7 @@ in
   }
   # LSP
   efmls-configs-nvim
+  nvim-lspconfig
   SchemaStore-nvim
   roslyn-nvim
   # DAP

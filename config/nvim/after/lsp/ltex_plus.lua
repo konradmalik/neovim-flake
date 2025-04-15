@@ -77,7 +77,6 @@ end
 
 ---@type vim.lsp.Config
 return {
-    cmd = { "ltex-ls-plus" },
     filetypes = { "markdown" },
     before_init = function()
         if not dictionary[current_language] then

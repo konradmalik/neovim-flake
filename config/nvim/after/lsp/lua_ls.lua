@@ -1,8 +1,6 @@
 -- https://github.com/LuaLS/lua-language-server
 ---@type vim.lsp.Config
 return {
-    cmd = { "lua-language-server" },
-    filetypes = { "lua" },
     on_init = function(client)
         -- use stylua via efm, this formatter is not great and it clears diagnostic text on save
         client.server_capabilities.documentFormattingProvider = nil
@@ -21,5 +19,4 @@ return {
             },
         },
     },
-    root_markers = { ".luarc.json" },
 }

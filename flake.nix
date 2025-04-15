@@ -89,6 +89,10 @@
       url = "github:theHamsta/nvim-dap-virtual-text";
       flake = false;
     };
+    nvim-lspconfig = {
+      url = "github:neovim/nvim-lspconfig";
+      flake = false;
+    };
     nvim-luaref = {
       url = "github:milisims/nvim-luaref";
       flake = false;

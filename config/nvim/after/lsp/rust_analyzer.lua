@@ -1,16 +1,4 @@
 local runner = require("pde.runner")
-local name = "rust_analyzer"
-
-local function reload_workspace(bufnr)
-    local clients = vim.lsp.get_clients({ name = name, bufnr = bufnr })
-    for _, client in ipairs(clients) do
-        vim.notify("Reloading Cargo Workspace")
-        client:request("rust-analyzer/reloadWorkspace", nil, function(err)
-            if err then error(tostring(err)) end
-            vim.notify("Cargo workspace reloaded")
-        end, 0)
-    end
-end
 
 ---@param command lsp.Command
 ---@return boolean
@@ -59,13 +47,6 @@ end
 
 ---@type vim.lsp.Config
 return {
-    cmd = { "rust-analyzer" },
-    filetypes = { "rust" },
-    capabilities = {
-        experimental = {
-            serverStatusNotification = true,
-        },
-    },
     settings = {
         ["rust-analyzer"] = {
             files = {
@@ -93,22 +74,4 @@ return {
     commands = {
         ["rust-analyzer.runSingle"] = runSingle,
     },
-    root_markers = { "Cargo.toml", "rust-project.json" },
-    on_attach = function(_, buf)
-        vim.api.nvim_buf_create_user_command(
-            buf,
-            "CargoReload",
-            function() reload_workspace(buf) end,
-            { desc = "[" .. name .. "] Reload current cargo workspace" }
-        )
-
-        vim.api.nvim_create_autocmd("LspDetach", {
-            group = vim.api.nvim_create_augroup(
-                "personal-lsp-" .. name .. "-buf-" .. buf,
-                { clear = true }
-            ),
-            buffer = buf,
-            callback = function() vim.api.nvim_buf_del_user_command(buf, "CargoReload") end,
-        })
-    end,
 }

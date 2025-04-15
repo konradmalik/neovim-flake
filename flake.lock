@@ -804,6 +804,22 @@
         "type": "github"
       }
     },
+    "nvim-lspconfig": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1744642733,
+        "narHash": "sha256-NaHQLE2q5gKt1TGfRFn/MQJJQZmOcuhrGOEjIvHOvc4=",
+        "owner": "neovim",
+        "repo": "nvim-lspconfig",
+        "rev": "e39da6a820d2a700904117d29f0dd476d64262cf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "neovim",
+        "repo": "nvim-lspconfig",
+        "type": "github"
+      }
+    },
     "nvim-luaref": {
       "flake": false,
       "locked": {
@@ -937,6 +953,7 @@
         "nvim-dap": "nvim-dap",
         "nvim-dap-ui": "nvim-dap-ui",
         "nvim-dap-virtual-text": "nvim-dap-virtual-text",
+        "nvim-lspconfig": "nvim-lspconfig",
         "nvim-luaref": "nvim-luaref",
         "nvim-nio": "nvim-nio",
         "nvim-treesitter": "nvim-treesitter",
