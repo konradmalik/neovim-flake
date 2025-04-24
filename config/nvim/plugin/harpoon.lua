@@ -21,26 +21,31 @@ vim.keymap.set(
 
 vim.keymap.set(
     "n",
-    "<leader>aj",
+    "<leader>ah",
     function() harpoon:list():select(1) end,
     opts_with_desc("first entry")
 )
 vim.keymap.set(
     "n",
-    "<leader>ak",
+    "<leader>aj",
     function() harpoon:list():select(2) end,
     opts_with_desc("second entry")
 )
 vim.keymap.set(
     "n",
-    "<leader>al",
+    "<leader>ak",
     function() harpoon:list():select(3) end,
     opts_with_desc("third entry")
 )
 vim.keymap.set(
     "n",
-    "<leader>a;",
+    "<leader>al",
     function() harpoon:list():select(4) end,
     opts_with_desc("fourth entry")
 )
-
+vim.keymap.set(
+    "n",
+    "<leader>a;",
+    function() harpoon:list():select(5) end,
+    opts_with_desc("fourth entry")
+)
