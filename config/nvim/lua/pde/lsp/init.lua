@@ -183,6 +183,12 @@ function M.setup()
     require("pde.lsp.commands")
     require("pde.lsp.progress")
 
+    vim.lsp.config("*", {
+        root_markers = {
+            ".git",
+        },
+    })
+
     local group = vim.api.nvim_create_augroup("personal-lsp", { clear = true })
 
     vim.api.nvim_create_autocmd("LspAttach", {

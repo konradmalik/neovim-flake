@@ -1,11 +1,5 @@
 require("pde.lsp").setup()
 
-vim.lsp.config("*", {
-    root_markers = {
-        ".git",
-    },
-})
-
 vim.lsp.enable({
     "clangd",
     "efmson",
