@@ -13,6 +13,7 @@ vim.lsp.enable({
     "prettier",
     "pyefm",
     "basedpyright",
+    "roslyn_ls",
     "rust_analyzer",
     "sh",
     "stylua",

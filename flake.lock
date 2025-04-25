@@ -807,11 +807,11 @@
     "nvim-lspconfig": {
       "flake": false,
       "locked": {
-        "lastModified": 1745416241,
-        "narHash": "sha256-qbWDjb5Twow/KMr9x0mK4PJzgc3JzPwKYGwULfAHGUA=",
+        "lastModified": 1745606877,
+        "narHash": "sha256-sQPQU3Pv+B16Itkt+oCM56Li8rOlRRDG2xQArNODX/A=",
         "owner": "neovim",
         "repo": "nvim-lspconfig",
-        "rev": "8b0f47d851ee5343d38fe194a06ad16b9b9bd086",
+        "rev": "f875e581b67fa21417cc6836fe68273e42b6b1b1",
         "type": "github"
       },
       "original": {
@@ -961,29 +961,12 @@
         "nvim-treesitter-textobjects": "nvim-treesitter-textobjects",
         "oil-nvim": "oil-nvim",
         "plenary-nvim": "plenary-nvim",
-        "roslyn-nvim": "roslyn-nvim",
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
         "telescope-nvim": "telescope-nvim",
         "telescope-ui-select-nvim": "telescope-ui-select-nvim",
         "undotree": "undotree",
         "vim-fugitive": "vim-fugitive",
         "which-key-nvim": "which-key-nvim"
-      }
-    },
-    "roslyn-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1745515849,
-        "narHash": "sha256-B+6GrmC4AhmAII2Y1q3ALL3GAaXksXkpiCsU191l/ak=",
-        "owner": "seblj",
-        "repo": "roslyn.nvim",
-        "rev": "817983daa584d21f45d937928c87ba165b2a601a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "seblj",
-        "repo": "roslyn.nvim",
-        "type": "github"
       }
     },
     "rust-analyzer-src": {
