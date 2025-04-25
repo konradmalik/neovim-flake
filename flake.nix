@@ -90,7 +90,9 @@
       flake = false;
     };
     nvim-lspconfig = {
-      url = "github:neovim/nvim-lspconfig";
+      # url = "github:neovim/nvim-lspconfig";
+      # FIXME: until https://github.com/neovim/nvim-lspconfig/issues/3776 closed
+      url = "github:konradmalik/nvim-lspconfig";
       flake = false;
     };
     nvim-luaref = {
