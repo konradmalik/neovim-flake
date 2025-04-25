@@ -18,7 +18,7 @@ vim.lsp.enable({
     "sh",
     "stylua",
     "taplo",
-    "terraform-ls",
+    "terraformls",
     "yamlls",
     "zls",
 })
