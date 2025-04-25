@@ -24,6 +24,10 @@ local function detach(client, bufnr)
         require("pde.lsp.capabilities.textDocument_completion").detach(client_id, bufnr)
     end
 
+    if client_buf_supports_method(ms.textDocument_documentColor) then
+        vim.lsp.document_color.enable(false, bufnr)
+    end
+
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
         require("pde.lsp.capabilities.textDocument_documentHighlight").detach(client_id, bufnr)
     end
@@ -89,6 +93,10 @@ local function attach(client, bufnr)
 
     if client_buf_supports_method(ms.textDocument_definition) then
         vim.keymap.set("n", "<c-]>", telescope.lsp_definitions, opts_with_desc("Go To Definition"))
+    end
+
+    if client_buf_supports_method(ms.textDocument_documentColor) then
+        vim.lsp.document_color.enable(true, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
