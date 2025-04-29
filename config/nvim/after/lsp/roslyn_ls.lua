@@ -46,6 +46,13 @@ end
 
 ---@type vim.lsp.Config
 return {
+    settings = {
+        -- avoid fullSolution because it's slow for large codebases
+        ["csharp|background_analysis"] = {
+            dotnet_analyzer_diagnostics_scope = "openFiles",
+            dotnet_compiler_diagnostics_scope = "openFiles",
+        },
+    },
     commands = {
         ["roslyn.client.peekReferences"] = function() vim.lsp.buf.references() end,
         ["dotnet.test.run"] = function(command, ctx)
