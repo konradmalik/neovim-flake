@@ -17,23 +17,23 @@ end
 local function pumvisible() return tonumber(vim.fn.pumvisible()) ~= 0 end
 
 ---@param docs string
----@param client vim.lsp.Client
+---@param client string
 ---@return string
-local function format_docs(docs, client) return docs .. "\n\n_source: " .. client.name .. "_" end
+local function format_docs(docs, client) return docs .. "\n\n_client: " .. client .. "_" end
 
 ---@param keys string
 local function feedkeys(keys)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), "n", false)
 end
 
----@param client vim.lsp.Client
+---@param client_id integer
 ---@param bufnr integer
 ---@param opts vim.lsp.completion.BufferOpts?
-local function enable(client, bufnr, opts)
+local function enable(client_id, bufnr, opts)
     initialize_once()
 
-    opts = opts or { autotrigger = false }
-    vim.lsp.completion.enable(true, client.id, bufnr, opts)
+    opts = opts or {}
+    vim.lsp.completion.enable(true, client_id, bufnr, opts)
 
     ---@param mode string|string[]
     ---@param lhs string
@@ -71,7 +71,7 @@ end
 
 ---@param selected_index integer
 ---@param result table
----@param client vim.lsp.Client
+---@param client string
 local function show_documentation(selected_index, result, client)
     local docs = vim.tbl_get(result, "documentation", "value")
     if not docs then return end
@@ -88,7 +88,7 @@ local function show_documentation(selected_index, result, client)
     vim.treesitter.start(wininfo.bufnr, "markdown")
 end
 
----@param client vim.lsp.Client
+---@param client string
 ---@param augroup integer
 ---@param bufnr integer
 local function enable_completion_documentation(client, augroup, bufnr)
@@ -118,7 +118,7 @@ local function enable_completion_documentation(client, augroup, bufnr)
                     if err ~= nil then
                         vim.notify(
                             "Error from client "
-                                .. client.id
+                                .. client
                                 .. " when getting documentation\n"
                                 .. vim.inspect(err),
                             vim.log.levels.WARN
@@ -143,10 +143,10 @@ return {
         local bufnr = data.bufnr
         local client = data.client
 
-        enable(client, bufnr, { autotrigger = false })
+        enable(client.id, bufnr, { autotrigger = false })
 
         if client:supports_method(ms.completionItem_resolve, bufnr) then
-            enable_completion_documentation(client, augroup, bufnr)
+            enable_completion_documentation(client.name, augroup, bufnr)
         end
     end,
 
