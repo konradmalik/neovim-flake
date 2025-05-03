@@ -1,4 +1,4 @@
 vim.o.shortmess = vim.o.shortmess .. "c"
-vim.opt.completeopt = { "menuone", "popup", "noinsert", "noselect", "fuzzy" }
+vim.o.completeopt = "menuone,noinsert,noselect,popup,fuzzy"
 
 require("incomplete").setup()

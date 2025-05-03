@@ -53,8 +53,9 @@ local function enable(client, bufnr, opts)
     -- this solves it
     for _, keys in ipairs({ "<BS>", "<C-h>", "<C-w>" }) do
         keymap("i", keys, function()
-            if pumvisible() then
-                trigger_timer:stop()
+            local in_context = pumvisible() or trigger_timer:get_due_in() > 0
+            trigger_timer:stop()
+            if in_context then
                 feedkeys(keys)
                 trigger_timer:start(
                     trigger_debounce_ms,
