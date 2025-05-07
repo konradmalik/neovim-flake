@@ -1,6 +1,17 @@
 local mini_icons = require("mini.icons")
 
 require("blink.cmp").setup({
+    sources = {
+        providers = {
+            snippets = {
+                opts = {
+                    search_paths = vim.iter(vim.fn.stdpath("config_dirs"))
+                        :map(function(d) return vim.fs.joinpath(d, "snippets") end)
+                        :totable(),
+                },
+            },
+        },
+    },
     completion = {
         documentation = {
             auto_show = true,
