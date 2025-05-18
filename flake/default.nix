@@ -12,12 +12,6 @@
     { system, pkgs, ... }:
     {
       _module.args.pkgs = import inputs.nixpkgs {
-        config = {
-          permittedInsecurePackages = [
-            # from roslyn-ls
-            "dotnet-sdk-6.0.428"
-          ];
-        };
         inherit system;
         overlays = [
           inputs.gen-luarc.overlays.default
