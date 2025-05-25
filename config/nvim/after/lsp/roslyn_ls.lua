@@ -53,6 +53,48 @@ return {
             dotnet_compiler_diagnostics_scope = "openFiles",
         },
     },
+    handlers = {
+        ["workspace/_roslyn_projectNeedsRestore"] = function(_, result, ctx)
+            -- FIXME: workaround for roslyn_ls bug (sends here .cs files for some reason)
+            -- started around 5.0.0-1.25263.3
+            local project_file_paths = vim.tbl_get(result, "projectFilePaths") or {}
+            if
+                vim.iter(project_file_paths)
+                    :any(function(path) return vim.endswith(path, ".cs") end)
+            then
+                -- remove cs files and check if empty afterwards
+                -- we could simply filter it out, but empty list would mean "restore-all"
+                -- and it's not what we want since csprojs will come in later requests
+                project_file_paths = vim.iter(project_file_paths)
+                    :filter(function(path) return not vim.endswith(path, ".cs") end)
+                    :totable()
+                if vim.tbl_isempty(project_file_paths) then
+                    ---@type lsp.ResponseError
+                    return { code = 0, message = "" }
+                end
+            end
+
+            local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+
+            client:request(
+                ---@diagnostic disable-next-line: param-type-mismatch
+                "workspace/_roslyn_restore",
+                { projectFilePaths = project_file_paths },
+                function(err, response)
+                    if err then
+                        vim.notify(err.message, vim.log.levels.ERROR, { title = "roslyn_ls" })
+                    end
+                    if response then
+                        for _, v in ipairs(response) do
+                            vim.notify(v.message, vim.log.levels.INFO, { title = "roslyn_ls" })
+                        end
+                    end
+                end
+            )
+
+            return vim.NIL
+        end,
+    },
     commands = {
         ["roslyn.client.peekReferences"] = function() vim.lsp.buf.references() end,
         ["dotnet.test.run"] = function(command, ctx)
