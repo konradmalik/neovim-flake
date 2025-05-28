@@ -126,10 +126,14 @@ let
   nvim-nio = buildVim {
     input = "nvim-nio";
   };
-  nvim-treesitter = (buildVim { input = "nvim-treesitter"; });
+  nvim-treesitter = buildVim {
+    input = "nvim-treesitter";
+    nvimSkipModule = [ "nvim-treesitter._meta.parsers" ];
+  };
+
   nvim-treesitter-context = buildVim {
     input = "nvim-treesitter-context";
-    nvimSkipModule = "install_parsers";
+    nvimSkipModule = [ "install_parsers" ];
   };
   nvim-treesitter-textobjects = buildVim {
     input = "nvim-treesitter-textobjects";
@@ -194,13 +198,12 @@ in
       nvim-treesitter-context
       nvim-treesitter-textobjects
     ];
-    systemDeps = [
-      # for grammars download
-      pkgs.curl
-      # for grammars compilation
-      pkgs.gcc
-      # for auto grammar detection and install
-      pkgs.tree-sitter
+    systemDeps = with pkgs; [
+      curl
+      gcc
+      gnutar
+      nodejs
+      tree-sitter
     ];
   }
   # completion
