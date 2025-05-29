@@ -1,7 +1,6 @@
 local paths = require("pde.paths")
 local parsers_dir = paths.get_and_ensure("site")
 local treesitter = require("nvim-treesitter")
-local treesitter_config = require("nvim-treesitter.config")
 local _15s = 15000
 
 require("pde.loader").add_to_on_reset(function() vim.fn.delete(parsers_dir, "rf") end)
@@ -13,13 +12,19 @@ treesitter.setup({
 local group = vim.api.nvim_create_augroup("pde-treesitter", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
     group = group,
-    pattern = treesitter_config.get_available(),
+    pattern = "*",
     callback = function(args)
         local ft = args.match
-        local bufnr = args.buf
+        local lang = vim.treesitter.language.get_lang(ft)
+        if not lang then return end
 
-        treesitter.install({ ft }):wait(_15s)
-        vim.treesitter.start(bufnr, ft)
+        treesitter.install({ lang }):wait(_15s)
+
+        local ok, _ = vim.treesitter.language.add(lang)
+        if not ok then return end
+
+        local bufnr = args.buf
+        vim.treesitter.start(bufnr, lang)
 
         vim.bo[bufnr].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 
