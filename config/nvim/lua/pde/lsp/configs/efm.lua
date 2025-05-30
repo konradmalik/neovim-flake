@@ -24,7 +24,7 @@
 local function build(name, configs, languages)
     ---@type table<string, EfmEntry[]>
     local languages_setting = {}
-    local allRootMarkers = { [".git/"] = true }
+    local allRootMarkers = {}
     local formattingEnabled = false
     local rangeFormattingEnabled = false
 
@@ -77,6 +77,7 @@ local function build(name, configs, languages)
             languages = languages_setting,
         },
         filetypes = vim.tbl_keys(languages_setting),
+        workspace_required = false,
     }
 end
 

@@ -1,5 +1,4 @@
 -- https://github.com/hrsh7th/vscode-langservers-extracted
-
 local schemastore = require("schemastore")
 
 ---@type vim.lsp.Config
