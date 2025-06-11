@@ -27,7 +27,7 @@
       flake = false;
     };
     blink-cmp = {
-      url = "github:Saghen/blink.cmp/02d5e15a5fe3d1ea505052a782dc6f1f0671f5ec";
+      url = "github:Saghen/blink.cmp";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
