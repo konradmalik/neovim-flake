@@ -24,7 +24,9 @@ with pkgs;
   lua-language-server
   nixd
   basedpyright
-  roslyn-ls
+  ((builtins.getFlake "github:konradmalik/nixpkgs/0701c18b5670f0a1f972e9546e8bfa4b22defc82")
+    .legacyPackages.${pkgs.system}.roslyn-ls
+  )
   rust-analyzer
   terraform-ls
   yaml-language-server
