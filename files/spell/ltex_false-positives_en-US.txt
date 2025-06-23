@@ -1,1 +1,0 @@
-{"rule":"PHRASE_REPETITION","sentence":"^\\QActions Status Actions Status\\E$"}

@@ -16,14 +16,14 @@ with pkgs;
   shellcheck
 
   # lsps
+  basedpyright
   clang-tools
   efm-langserver
   gopls
-  nodePackages.vscode-json-languageserver
-  ltex-ls-plus
+  harper
   lua-language-server
   nixd
-  basedpyright
+  nodePackages.vscode-json-languageserver
   roslyn-ls
   rust-analyzer
   terraform-ls

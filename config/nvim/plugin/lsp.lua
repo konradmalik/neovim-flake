@@ -1,18 +1,18 @@
 require("pde.lsp").setup()
 
 vim.lsp.enable({
+    "basedpyright",
     "clangd",
     "efmson",
-    "gopls",
     "golangci_lint",
     "gopls",
+    "gopls",
+    "harper_ls",
     "jsonls",
-    "ltex_plus",
     "lua_ls",
     "nixd",
     "prettier",
     "pyefm",
-    "basedpyright",
     "roslyn_ls",
     "rust_analyzer",
     "sh",
