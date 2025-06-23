@@ -1,10 +1,6 @@
 { pkgs }:
 with pkgs;
 [
-  # general
-  # for faster filewatching in lsps
-  inotify-tools
-
   # formatters
   black
   isort
@@ -38,4 +34,8 @@ with pkgs;
   # debuggers
   delve
   netcoredbg
+]
+++ lib.optionals stdenvNoCC.isLinux [
+  # for faster filewatching in lsps
+  inotify-tools
 ]
