@@ -1,6 +1,11 @@
 { pkgs }:
 with pkgs;
 [
+  # general
+  # for faster filewatching in lsps
+  inotify-tools
+
+  # formatters
   black
   isort
   nixfmt-rfc-style

@@ -22,16 +22,18 @@
           }
         );
       };
-      inherit (dependencies) plugins systemDeps;
+      inherit (dependencies) plugins;
+      pluginsSystemDeps = dependencies.systemDeps;
 
       # config
       config = pkgs.callPackage ../../config { };
 
       # neovim
+      neovimSystemDeps = pluginsSystemDeps ++ (pkgs.callPackage ./binaries.nix { });
       neovimNightly = inputs'.neovim-nightly-overlay.packages.default;
       neovim-pde = pkgs.callPackage ./neovim-pde.nix {
         inherit config plugins;
-        systemDeps = systemDeps ++ (pkgs.callPackage ./binaries.nix { });
+        systemDeps = neovimSystemDeps;
         neovim = neovimNightly;
       };
     in
