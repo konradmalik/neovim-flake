@@ -78,11 +78,7 @@ let
   };
   efmls-configs-nvim = buildVim {
     input = "efmls-configs-nvim";
-    nvimSkipModule = [
-      # requires nvim-lspconfig but I don't use it and I won't use those modules
-      "efmls-configs"
-      "efmls-configs.defaults"
-    ];
+    dependencies = [ nvim-lspconfig ];
   };
   friendly-snippets = buildVim {
     input = "friendly-snippets";
