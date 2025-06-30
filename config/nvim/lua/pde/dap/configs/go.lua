@@ -4,7 +4,7 @@ dap.adapters.delve = {
     type = "server",
     port = "$${port}",
     executable = {
-        command = "delve",
+        command = "dlv",
         args = { "dap", "-l", "127.0.0.1:$${port}" },
     },
 }
