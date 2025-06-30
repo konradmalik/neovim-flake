@@ -135,10 +135,6 @@ let
     input = "nvim-treesitter-context";
     nvimSkipModule = [ "install_parsers" ];
   };
-  nvim-treesitter-textobjects = buildVim {
-    input = "nvim-treesitter-textobjects";
-    dependencies = [ nvim-treesitter ];
-  };
   oil-nvim = buildVim {
     input = "oil-nvim";
   };
@@ -196,7 +192,6 @@ in
     plugin = nvim-treesitter;
     deps = [
       nvim-treesitter-context
-      nvim-treesitter-textobjects
     ];
     systemDeps = with pkgs; [
       curl

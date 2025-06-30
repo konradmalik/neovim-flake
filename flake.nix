@@ -109,10 +109,6 @@
       url = "github:nvim-treesitter/nvim-treesitter-context";
       flake = false;
     };
-    nvim-treesitter-textobjects = {
-      url = "github:nvim-treesitter/nvim-treesitter-textobjects/main";
-      flake = false;
-    };
     oil-nvim = {
       url = "github:stevearc/oil.nvim";
       flake = false;
