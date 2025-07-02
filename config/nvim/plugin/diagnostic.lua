@@ -50,4 +50,10 @@ end, {
     desc = "Enable/disable diagnostics globally",
 })
 
-vim.keymap.set("n", "<leader>dv", diagnostic_lines_toggle, opts_with_desc("Send all to QF list"))
+vim.keymap.set(
+    "n",
+    "<leader>dv",
+    diagnostic_lines_toggle,
+    opts_with_desc("Toggle diagnostic lines")
+)
+

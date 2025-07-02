@@ -45,7 +45,7 @@ local function detach(client, bufnr)
     end
 
     local clients = vim.lsp.get_clients({ bufnr = bufnr })
-    -- don't remove if more than 1 client attached
+    -- Don't remove if more than 1 client attached
     -- 1 is allowed, since detach runs just before detaching from buffer
     if #clients <= 1 then keymapper.clear(bufnr) end
 end
