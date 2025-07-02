@@ -3,11 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay";
-      # inputs.neovim-src.url = "github:neovim/neovim/731e616";
-      inputs.neovim-src.url = "github:neovim/neovim/4369d7d9a7804b8f9c2254da9f153d428115334a";
-    };
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
     neorocks = {
       url = "github:nvim-neorocks/neorocks";
@@ -58,7 +54,9 @@
       };
     };
     gitsigns-nvim = {
-      url = "github:lewis6991/gitsigns.nvim";
+      # url = "github:lewis6991/gitsigns.nvim";
+      # see https://github.com/lewis6991/gitsigns.nvim/pull/1350 and https://github.com/neovim/neovim/issues/34730
+      url = "github:arminfro/gitsigns.nvim/f876d6ba89e0124b98535c20917fcf64122b389c";
       flake = false;
     };
     harpoon = {
