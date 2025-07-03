@@ -54,9 +54,7 @@
       };
     };
     gitsigns-nvim = {
-      # url = "github:lewis6991/gitsigns.nvim";
-      # see https://github.com/lewis6991/gitsigns.nvim/pull/1350 and https://github.com/neovim/neovim/issues/34730
-      url = "github:arminfro/gitsigns.nvim/f876d6ba89e0124b98535c20917fcf64122b389c";
+      url = "github:lewis6991/gitsigns.nvim";
       flake = false;
     };
     harpoon = {
