@@ -20,12 +20,6 @@ vim.keymap.set(
 -- registers
 vim.keymap.set(
     "v",
-    "<leader>p",
-    '"_dP',
-    funs.opts_with_desc("Replace selected by pasting and keep pasted in the register")
-)
-vim.keymap.set(
-    "v",
     "<leader>d",
     [["_d]],
     funs.opts_with_desc("delete without replacing your register")
