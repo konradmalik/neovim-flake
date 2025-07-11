@@ -15,6 +15,8 @@ gitsigns.setup({
         vim.keymap.set(
             "n",
             "<leader>gq",
+            -- FIXME: looks like a type problem with async, revisit after some time
+            ---@diagnostic disable-next-line: param-type-mismatch
             function() gitsigns.setqflist("all") end,
             opts_with_desc("All Hunks to qf list")
         )
@@ -27,12 +29,16 @@ gitsigns.setup({
         vim.keymap.set(
             "n",
             "<leader>gj",
+            -- FIXME: looks like a type problem with async, revisit after some time
+            ---@diagnostic disable-next-line: param-type-mismatch
             function() gitsigns.nav_hunk("next") end,
             opts_with_desc("Next Hunk")
         )
         vim.keymap.set(
             "n",
             "<leader>gk",
+            -- FIXME: looks like a type problem with async, revisit after some time
+            ---@diagnostic disable-next-line: param-type-mismatch
             function() gitsigns.nav_hunk("prev") end,
             opts_with_desc("Prev Hunk")
         )
