@@ -69,14 +69,6 @@ function M.attach(client, bufnr)
         require("pde.lsp.capabilities.textDocument_completion").attach(handler_data)
     end
 
-    if client_buf_supports_method(ms.textDocument_hover) then
-        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts_with_desc("Hover Documentation"))
-    end
-
-    if client_buf_supports_method(ms.textDocument_codeAction) then
-        vim.keymap.set({ "n", "x" }, "gra", vim.lsp.buf.code_action, opts_with_desc("Code Action"))
-    end
-
     if client_buf_supports_method(ms.textDocument_codeLens) then
         require("pde.lsp.capabilities.textDocument_codeLens").attach(handler_data)
     end
@@ -90,7 +82,7 @@ function M.attach(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_declaration) then
-        vim.keymap.set("n", "gd", vim.lsp.buf.declaration, opts_with_desc("Go To Declaration"))
+        vim.keymap.set("n", "grd", vim.lsp.buf.declaration, opts_with_desc("Go To Declaration"))
     end
 
     if client_buf_supports_method(ms.textDocument_definition) then
@@ -136,10 +128,6 @@ function M.attach(client, bufnr)
         vim.keymap.set("n", "grr", telescope.lsp_references, opts_with_desc("Go To References"))
     end
 
-    if client_buf_supports_method(ms.textDocument_rename) then
-        vim.keymap.set("n", "grn", vim.lsp.buf.rename, opts_with_desc("Rename"))
-    end
-
     if
         client_buf_supports_method(ms.workspace_willRenameFiles)
         or client_buf_supports_method(ms.workspace_didRenameFiles)
@@ -154,11 +142,15 @@ function M.attach(client, bufnr)
 
     if client_buf_supports_method(ms.textDocument_signatureHelp) then
         vim.keymap.set("n", "grs", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
-        vim.keymap.set("i", "<c-s>", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
     end
 
     if client_buf_supports_method(ms.textDocument_typeDefinition) then
-        vim.keymap.set("n", "gD", telescope.lsp_type_definitions, opts_with_desc("Type Definition"))
+        vim.keymap.set(
+            "n",
+            "grt",
+            telescope.lsp_type_definitions,
+            opts_with_desc("Type Definition")
+        )
     end
 
     if client_buf_supports_method(ms.textDocument_inlayHint) then
