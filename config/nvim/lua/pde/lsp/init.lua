@@ -4,7 +4,6 @@ local M = {}
 
 ---Initialize lsp configurations
 function M.setup()
-    require("pde.lsp.autoclose")
     require("pde.lsp.commands")
     require("pde.lsp.progress")
 
