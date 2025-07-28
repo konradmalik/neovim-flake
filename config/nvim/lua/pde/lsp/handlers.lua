@@ -7,7 +7,7 @@ local ms = vim.lsp.protocol.Methods
 
 ---@class CapabilityHandler
 ---@field attach fun(data: HandlerData)
----@field detach fun(client_id: integer, bufnr: integer)
+---@field detach fun(client_id: integer?, bufnr: integer)
 
 local M = {}
 
@@ -18,6 +18,14 @@ function M.detach(client, bufnr)
     augroups.del_autocmds_for_buf(client, bufnr)
     local function client_buf_supports_method(method) return client:supports_method(method, bufnr) end
 
+    local all_clients = vim.lsp.get_clients({ bufnr = bufnr })
+    local function any_client_buf_supports_method(method)
+        for _, c in ipairs(all_clients) do
+            if c:supports_method(method, bufnr) then return true end
+        end
+        return false
+    end
+
     if client_buf_supports_method(ms.textDocument_codeLens) then
         require("pde.lsp.capabilities.textDocument_codeLens").detach(client_id, bufnr)
     end
@@ -26,30 +34,37 @@ function M.detach(client, bufnr)
         require("pde.lsp.capabilities.textDocument_completion").detach(client_id, bufnr)
     end
 
-    if client_buf_supports_method(ms.textDocument_documentColor) then
+    if any_client_buf_supports_method(ms.textDocument_documentColor) then
         vim.lsp.document_color.enable(false, bufnr)
     end
 
-    if client_buf_supports_method(ms.textDocument_documentHighlight) then
-        require("pde.lsp.capabilities.textDocument_documentHighlight").detach(client_id, bufnr)
+    if any_client_buf_supports_method(ms.textDocument_documentHighlight) then
+        require("pde.lsp.capabilities.textDocument_documentHighlight").detach(nil, bufnr)
     end
 
-    if client_buf_supports_method(ms.textDocument_foldingRange) then
-        require("pde.lsp.capabilities.textDocument_foldingRange").detach(client_id, bufnr)
+    if any_client_buf_supports_method(ms.textDocument_foldingRange) then
+        require("pde.lsp.capabilities.textDocument_foldingRange").detach(nil, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_formatting) then
         require("pde.lsp.capabilities.textDocument_formatting").detach(client_id, bufnr)
     end
 
-    if client_buf_supports_method(ms.textDocument_inlayHint) then
-        require("pde.lsp.capabilities.textDocument_inlayHint").detach(client_id, bufnr)
+    if any_client_buf_supports_method(ms.textDocument_inlayHint) then
+        require("pde.lsp.capabilities.textDocument_inlayHint").detach(nil, bufnr)
     end
 
-    local clients = vim.lsp.get_clients({ bufnr = bufnr })
+    if any_client_buf_supports_method(ms.textDocument_linkedEditingRange) then
+        vim.lsp.linked_editing_range.enable(false, { bufnr = bufnr })
+    end
+
+    if any_client_buf_supports_method(ms.textDocument_semanticTokens_full) then
+        vim.lsp.semantic_tokens.enable(false, { bufnr = bufnr })
+    end
+
     -- Don't remove if more than 1 client attached
     -- 1 is allowed, since detach runs just before detaching from buffer
-    if #clients <= 1 then keymapper.clear(bufnr) end
+    if #all_clients <= 1 then keymapper.clear(bufnr) end
 end
 
 ---@param client vim.lsp.Client
@@ -122,6 +137,14 @@ function M.attach(client, bufnr)
             telescope.lsp_implementations,
             opts_with_desc("Go To Implementation")
         )
+    end
+
+    if client_buf_supports_method(ms.textDocument_linkedEditingRange) then
+        vim.lsp.linked_editing_range.enable(true, { bufnr = bufnr })
+    end
+
+    if client_buf_supports_method(ms.textDocument_semanticTokens_full) then
+        vim.lsp.semantic_tokens.enable(true, { bufnr = bufnr })
     end
 
     if client_buf_supports_method(ms.textDocument_references) then
