@@ -57,10 +57,6 @@
       url = "github:lewis6991/gitsigns.nvim";
       flake = false;
     };
-    harpoon = {
-      url = "github:ThePrimeagen/harpoon/harpoon2";
-      flake = false;
-    };
     incomplete-nvim = {
       url = "github:konradmalik/incomplete.nvim";
       inputs = {
