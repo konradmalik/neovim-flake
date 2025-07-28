@@ -1,3 +1,4 @@
+local actions = require("telescope.actions")
 local layout = require("telescope.actions.layout")
 local telescope = require("telescope")
 local themes = require("telescope.themes")
@@ -14,6 +15,10 @@ telescope.setup({
         mappings = {
             i = {
                 ["<C-p>"] = layout.toggle_preview,
+                ["<C-Q>"] = actions.send_selected_to_qflist,
+            },
+            n = {
+                ["<C-Q>"] = actions.send_selected_to_qflist,
             },
         },
         path_display = {
