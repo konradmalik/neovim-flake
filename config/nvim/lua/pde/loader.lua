@@ -8,7 +8,7 @@ vim.api.nvim_create_user_command("CacheReset", function()
     for _, f in ipairs(on_reset) do
         f()
     end
-end, { desc = "Reset vim.loader cache" })
+end, { desc = "Reset vim.loader cache and do other maintenance tasks" })
 
 local M = {}
 
