@@ -56,4 +56,3 @@ vim.keymap.set(
     diagnostic_lines_toggle,
     opts_with_desc("Toggle diagnostic lines")
 )
-

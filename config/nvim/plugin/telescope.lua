@@ -15,10 +15,17 @@ telescope.setup({
         mappings = {
             i = {
                 ["<C-p>"] = layout.toggle_preview,
-                ["<C-Q>"] = actions.send_selected_to_qflist,
+                ["<C-q>"] = function(buf)
+                    actions.smart_send_to_qflist(buf)
+                    actions.open_qflist(buf)
+                end,
             },
             n = {
-                ["<C-Q>"] = actions.send_selected_to_qflist,
+                ["<C-p>"] = layout.toggle_preview,
+                ["<C-q>"] = function(buf)
+                    actions.smart_send_to_qflist(buf)
+                    actions.open_qflist(buf)
+                end,
             },
         },
         path_display = {
