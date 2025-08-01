@@ -3,6 +3,18 @@ local layout = require("telescope.actions.layout")
 local telescope = require("telescope")
 local themes = require("telescope.themes")
 
+local in_mappings = {
+    ["<C-p>"] = layout.toggle_preview,
+    ["<C-q>"] = function(buf)
+        actions.smart_send_to_qflist(buf)
+        actions.open_qflist(buf)
+    end,
+    ["<C-e>"] = function(buf)
+        actions.smart_add_to_qflist(buf)
+        actions.open_qflist(buf)
+    end,
+}
+
 telescope.setup({
     defaults = {
         layout_strategy = "vertical",
@@ -13,20 +25,8 @@ telescope.setup({
             },
         },
         mappings = {
-            i = {
-                ["<C-p>"] = layout.toggle_preview,
-                ["<C-q>"] = function(buf)
-                    actions.smart_send_to_qflist(buf)
-                    actions.open_qflist(buf)
-                end,
-            },
-            n = {
-                ["<C-p>"] = layout.toggle_preview,
-                ["<C-q>"] = function(buf)
-                    actions.smart_send_to_qflist(buf)
-                    actions.open_qflist(buf)
-                end,
-            },
+            i = in_mappings,
+            n = in_mappings,
         },
         path_display = {
             filename_first = {
