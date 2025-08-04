@@ -27,6 +27,10 @@ function M.detach(client, bufnr)
         return false
     end
 
+    local function client_yes_others_not_buf_supports_method(method)
+        return client_buf_supports_method(method) and not other_client_buf_supports_method(method)
+    end
+
     if client_buf_supports_method(ms.textDocument_codeLens) then
         require("pde.lsp.capabilities.textDocument_codeLens").detach(client_id, bufnr)
     end
@@ -35,15 +39,15 @@ function M.detach(client, bufnr)
         require("pde.lsp.capabilities.textDocument_completion").detach(client_id, bufnr)
     end
 
-    if not other_client_buf_supports_method(ms.textDocument_documentColor) then
+    if client_yes_others_not_buf_supports_method(ms.textDocument_documentColor) then
         vim.lsp.document_color.enable(false, bufnr)
     end
 
-    if not other_client_buf_supports_method(ms.textDocument_documentHighlight) then
+    if client_yes_others_not_buf_supports_method(ms.textDocument_documentHighlight) then
         require("pde.lsp.capabilities.textDocument_documentHighlight").detach(nil, bufnr)
     end
 
-    if not other_client_buf_supports_method(ms.textDocument_foldingRange) then
+    if client_yes_others_not_buf_supports_method(ms.textDocument_foldingRange) then
         require("pde.lsp.capabilities.textDocument_foldingRange").detach(nil, bufnr)
     end
 
@@ -51,15 +55,15 @@ function M.detach(client, bufnr)
         require("pde.lsp.capabilities.textDocument_formatting").detach(client_id, bufnr)
     end
 
-    if not other_client_buf_supports_method(ms.textDocument_inlayHint) then
+    if client_yes_others_not_buf_supports_method(ms.textDocument_inlayHint) then
         require("pde.lsp.capabilities.textDocument_inlayHint").detach(nil, bufnr)
     end
 
-    if not other_client_buf_supports_method(ms.textDocument_linkedEditingRange) then
+    if client_yes_others_not_buf_supports_method(ms.textDocument_linkedEditingRange) then
         vim.lsp.linked_editing_range.enable(false, { bufnr = bufnr })
     end
 
-    if not other_client_buf_supports_method(ms.textDocument_semanticTokens_full) then
+    if client_yes_others_not_buf_supports_method(ms.textDocument_semanticTokens_full) then
         vim.lsp.semantic_tokens.enable(false, { bufnr = bufnr })
     end
 
