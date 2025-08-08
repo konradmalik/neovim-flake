@@ -56,6 +56,24 @@
         "type": "github"
       }
     },
+    "efm-langserver": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1754690240,
+        "narHash": "sha256-DWl7oTcyVrbRHNxe4Q+VAa0j9GsiTk/4ydxxz92Tg8E=",
+        "owner": "konradmalik",
+        "repo": "efm-langserver",
+        "rev": "32e68476fd1b0d7bc1e232787b562dad77d9b3c7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "konradmalik",
+        "repo": "efm-langserver",
+        "type": "github"
+      }
+    },
     "efmls-configs-nvim": {
       "flake": false,
       "locked": {
@@ -365,7 +383,7 @@
       "inputs": {
         "flake-compat": "flake-compat_3",
         "gitignore": "gitignore_2",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs_2"
       },
       "locked": {
         "lastModified": 1754416808,
@@ -615,7 +633,7 @@
         "git-hooks": "git-hooks_3",
         "hercules-ci-effects": "hercules-ci-effects",
         "neovim-src": "neovim-src",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs_3",
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
@@ -650,15 +668,15 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1754340878,
-        "narHash": "sha256-lgmUyVQL9tSnvvIvBp7x1euhkkCho7n3TMzgjdvgPoU=",
-        "owner": "NixOS",
+        "lastModified": 1754393734,
+        "narHash": "sha256-fbnmAwTQkuXHKBlcL5Nq1sMAzd3GFqCOQgEQw6Hy0Ak=",
+        "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "cab778239e705082fe97bb4990e0d24c50924c04",
+        "rev": "a683adc19ff5228af548c6539dbc3440509bfed3",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
+        "owner": "nixos",
         "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
         "type": "github"
@@ -724,6 +742,22 @@
       }
     },
     "nixpkgs_3": {
+      "locked": {
+        "lastModified": 1754340878,
+        "narHash": "sha256-lgmUyVQL9tSnvvIvBp7x1euhkkCho7n3TMzgjdvgPoU=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "cab778239e705082fe97bb4990e0d24c50924c04",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_4": {
       "locked": {
         "lastModified": 1754393734,
         "narHash": "sha256-fbnmAwTQkuXHKBlcL5Nq1sMAzd3GFqCOQgEQw6Hy0Ak=",
@@ -905,6 +939,7 @@
         "SchemaStore-nvim": "SchemaStore-nvim",
         "blink-cmp": "blink-cmp",
         "boole-nvim": "boole-nvim",
+        "efm-langserver": "efm-langserver",
         "efmls-configs-nvim": "efmls-configs-nvim",
         "flake-parts": "flake-parts",
         "friendly-snippets": "friendly-snippets",
@@ -916,7 +951,7 @@
         "mini-icons": "mini-icons",
         "neorocks": "neorocks",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
-        "nixpkgs": "nixpkgs_3",
+        "nixpkgs": "nixpkgs_4",
         "nvim-dap": "nvim-dap",
         "nvim-dap-ui": "nvim-dap-ui",
         "nvim-dap-virtual-text": "nvim-dap-virtual-text",

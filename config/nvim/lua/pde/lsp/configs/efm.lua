@@ -11,8 +11,6 @@
 ---@field lintIgnoreExitCode? boolean
 ---@field lintDebounce? string time spec like 2s
 ---@field lintOffset? integer
----@field hoverCommand? string[]|string
----@field hoverStdin? boolean
 ---@field lintCategoryMap? { I: string, R: string, C: string, W: string, E: string, F: string }
 ---@field rootMarkers? string[]
 
@@ -67,10 +65,6 @@ local function build(name, configs, languages)
         init_options = {
             documentFormatting = formattingEnabled,
             documentRangeFormatting = rangeFormattingEnabled,
-            hover = false,
-            documentSymbol = false,
-            codeAction = false,
-            completion = false,
         },
         settings = {
             rootMarkers = vim.tbl_keys(allRootMarkers),

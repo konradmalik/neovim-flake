@@ -29,7 +29,9 @@
       config = pkgs.callPackage ../../config { };
 
       # neovim
-      neovimSystemDeps = pluginsSystemDeps ++ (pkgs.callPackage ./binaries.nix { });
+      neovimSystemDeps =
+        pluginsSystemDeps
+        ++ (pkgs.callPackage ./binaries.nix { efm-langserver = inputs'.efm-langserver.packages.default; });
       neovimNightly = inputs'.neovim-nightly-overlay.packages.default;
       neovim-pde = pkgs.callPackage ./neovim-pde.nix {
         inherit config plugins;
