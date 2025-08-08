@@ -12,7 +12,7 @@ with pkgs;
   taplo
 
   # linters
-  golangci-lint
+  golangci-lint-langserver
   jq
   shellcheck
 

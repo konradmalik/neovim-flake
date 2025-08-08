@@ -4,7 +4,7 @@ vim.lsp.enable({
     "basedpyright",
     "clangd",
     "efmson",
-    "golangci_lint",
+    "golangci_lint_ls",
     "gopls",
     "gopls",
     "harper_ls",
