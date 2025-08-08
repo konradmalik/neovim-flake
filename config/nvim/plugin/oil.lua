@@ -12,6 +12,9 @@ oil.setup({
             opts = { only_matching_search = true },
         },
     },
+    view_options = {
+        show_hidden = true,
+    },
 })
 
 vim.keymap.set("n", "-", oil.open, { desc = "Open parent directory" })
