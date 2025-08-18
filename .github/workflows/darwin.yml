@@ -10,7 +10,7 @@ jobs:
     # latest x86_64-darwin
     runs-on: macos-13
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
@@ -24,7 +24,7 @@ jobs:
     needs:
       - flake-check
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
@@ -43,7 +43,7 @@ jobs:
     needs:
       - build-shell
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
@@ -57,7 +57,7 @@ jobs:
     needs:
       - tests
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
