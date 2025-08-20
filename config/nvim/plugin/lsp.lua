@@ -10,6 +10,7 @@ vim.lsp.enable({
     "harper_ls",
     "jsonls",
     "lua_ls",
+    "marksman",
     "nixd",
     "prettier",
     "pyefm",

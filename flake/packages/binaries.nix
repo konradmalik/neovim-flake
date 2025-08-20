@@ -23,6 +23,7 @@ with pkgs;
   gopls
   harper
   lua-language-server
+  marksman
   nixd
   nodePackages.vscode-json-languageserver
   roslyn-ls
