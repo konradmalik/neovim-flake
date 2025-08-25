@@ -61,11 +61,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1756106784,
-        "narHash": "sha256-ITE5FnskoTfCwfTTagspXDmtbvuiAdUTwMscygaTzYE=",
+        "lastModified": 1756110148,
+        "narHash": "sha256-jgDzCa5YWFgHd/sczlGol0enzU+URwnQFs2BiJGLxYQ=",
         "owner": "konradmalik",
         "repo": "efm-langserver",
-        "rev": "b2cd4ad2f02c42a456b7c1d573a7c53393706922",
+        "rev": "5e2a39fd32483c44075f40b808e676accaf94360",
         "type": "github"
       },
       "original": {
