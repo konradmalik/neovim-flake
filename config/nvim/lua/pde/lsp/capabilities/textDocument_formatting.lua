@@ -27,7 +27,12 @@ return {
         local existing_client = buffer_to_client[bufnr]
         if existing_client and existing_client ~= client.id then
             vim.notify(
-                "buffer " .. bufnr .. " already has formatting via client " .. existing_client,
+                "cannot format using client "
+                    .. client.id
+                    .. "; buffer "
+                    .. bufnr
+                    .. " already has formatting via client "
+                    .. existing_client,
                 vim.log.levels.ERROR
             )
             return

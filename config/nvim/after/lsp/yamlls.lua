@@ -3,6 +3,11 @@ local schemastore = require("schemastore")
 
 ---@type vim.lsp.Config
 return {
+    on_init = function(client)
+        -- BUG: since recently, even though yaml.format.enable = false, yamlls reports formatting capability
+        client.server_capabilities.documentFormattingProvider = nil
+        client.server_capabilities.documentRangeFormattingProvider = nil
+    end,
     settings = {
         redhat = {
             telemetry = {
