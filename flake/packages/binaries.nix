@@ -26,7 +26,10 @@ with pkgs;
   marksman
   nixd
   nodePackages.vscode-json-languageserver
-  roslyn-ls
+  # TODO until fixed on unstable
+  ((builtins.getFlake "github:NixOS/nixpkgs/596312aae91421d6923f18cecce934a7d3bfd6b8")
+    .legacyPackages.${pkgs.system}.roslyn-ls
+  )
   rust-analyzer
   terraform-ls
   yaml-language-server
