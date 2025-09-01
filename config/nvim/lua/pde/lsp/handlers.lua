@@ -39,6 +39,10 @@ function M.detach(client, bufnr)
         require("pde.lsp.capabilities.textDocument_completion").detach(client_id, bufnr)
     end
 
+    if client_buf_supports_method(ms.textDocument_inlineCompletion) then
+        vim.lsp.inline_completion.enable(false, { client_id = client_id, bufnr = bufnr })
+    end
+
     if client_yes_others_not_buf_supports_method(ms.textDocument_documentColor) then
         vim.lsp.document_color.enable(false, bufnr)
     end
@@ -91,6 +95,10 @@ function M.attach(client, bufnr)
 
     if client_buf_supports_method(ms.textDocument_completion) then
         require("pde.lsp.capabilities.textDocument_completion").attach(handler_data)
+    end
+
+    if client_buf_supports_method(ms.textDocument_inlineCompletion) then
+        vim.lsp.inline_completion.enable(true, { client_id = client.id, bufnr = bufnr })
     end
 
     if client_buf_supports_method(ms.textDocument_codeLens) then
