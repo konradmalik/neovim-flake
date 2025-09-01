@@ -4,6 +4,8 @@ local M = {}
 
 ---Initialize lsp configurations
 function M.setup()
+    vim.lsp.config("*", { capabilities = require("pde.lsp.capabilities") })
+
     require("pde.lsp.commands")
     require("pde.lsp.progress")
 

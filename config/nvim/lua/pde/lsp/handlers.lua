@@ -55,6 +55,10 @@ function M.detach(client, bufnr)
         require("pde.lsp.capabilities.textDocument_formatting").detach(client_id, bufnr)
     end
 
+    if client_buf_supports_method(ms.textDocument_onTypeFormatting) then
+        vim.lsp.on_type_formatting.enable(false, { client_id = client_id })
+    end
+
     if client_yes_others_not_buf_supports_method(ms.textDocument_inlayHint) then
         require("pde.lsp.capabilities.textDocument_inlayHint").detach(nil, bufnr)
     end
@@ -99,6 +103,10 @@ function M.attach(client, bufnr)
 
     if client_buf_supports_method(ms.textDocument_formatting) then
         require("pde.lsp.capabilities.textDocument_formatting").attach(handler_data)
+    end
+
+    if client_buf_supports_method(ms.textDocument_onTypeFormatting) then
+        vim.lsp.on_type_formatting.enable(true, { client_id = client.id })
     end
 
     if client_buf_supports_method(ms.textDocument_declaration) then
