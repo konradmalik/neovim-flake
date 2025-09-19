@@ -30,7 +30,10 @@ with pkgs;
   rust-analyzer
   terraform-ls
   yaml-language-server
-  zls
+  # TODO until fixed on unstable
+  ((builtins.getFlake "github:NixOS/nixpkgs/84c256e42600cb0fdf25763b48d28df2f25a0c8b")
+    .legacyPackages.${pkgs.system}.zls
+  )
 
   # debuggers
   delve
