@@ -1,4 +1,4 @@
--- https://github.com/mattn/efm-langserver
+-- https://github.com/konradmalik/efm-langserver
 
 ---@class EfmEntry
 ---@field formatCommand? string[]|string
