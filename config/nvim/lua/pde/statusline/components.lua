@@ -91,6 +91,12 @@ M.align = "%="
 
 M.cut = "%<"
 
+M.busy = function()
+    local busy = vim.bo[utils.stbufnr()].busy
+    if busy == 0 then return "" end
+    return wrap_hl(colors.purple, "<buffer is busy>")
+end
+
 M.mode = function()
     local m = modes[vim.api.nvim_get_mode().mode]
 

@@ -68,7 +68,7 @@ end
 local M = {}
 
 M.statusline = function()
-    if is_special(utils.stbufnr()) then return components.filetype() end
+    if is_special(utils.stbufnr()) then return components.filetype() .. components.busy() end
 
     return components.mode()
         .. components.space
@@ -77,6 +77,8 @@ M.statusline = function()
         .. components.space
         .. components.gitchanges()
         .. components.cut
+        .. components.align
+        .. components.busy()
         .. components.align
         .. components.DAP_status()
         .. components.align
