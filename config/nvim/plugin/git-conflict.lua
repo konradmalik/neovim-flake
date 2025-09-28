@@ -1,23 +1,13 @@
 local cmd = require("git-conflict.commands")
-local gc = require("git-conflict")
+
+require("git-conflict").setup()
+
 local opts_with_desc = function(desc) return { desc = "[GitConflict] " .. desc } end
 local function buf_opts_with_desc(bufnr, desc)
     local opts = opts_with_desc(desc)
     opts.buffer = bufnr
     return opts
 end
-
-gc.setup()
-
-local group = vim.api.nvim_create_augroup("GitConflict", { clear = true })
-
-vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost" }, {
-    group = group,
-    callback = function(args)
-        local buf = args.buf
-        gc.refresh(buf)
-    end,
-})
 
 vim.keymap.set("n", "]x", cmd.buf_next_conflict, opts_with_desc("Next Conflict"))
 vim.keymap.set("n", "[x", cmd.buf_prev_conflict, opts_with_desc("Previous Conflict"))
@@ -29,7 +19,7 @@ vim.keymap.set(
 )
 
 vim.api.nvim_create_autocmd("User", {
-    group = group,
+    group = vim.api.nvim_create_augroup("GitConflict", { clear = true }),
     pattern = "GitConflict",
     callback = function(args)
         local buf = args.buf
