@@ -321,11 +321,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1758263636,
-        "narHash": "sha256-uGnjUsfEhctmrmGSkOgkHXb+Wv2dOjnBCmezmfMHzDA=",
+        "lastModified": 1759082289,
+        "narHash": "sha256-rFL1eTMZ+7OCGvbGo9r96VpWidwF+/Fwua6iMuxG1dI=",
         "owner": "konradmalik",
         "repo": "git-conflict.nvim",
-        "rev": "2316130694539596f1447705a81f1e2b87522abe",
+        "rev": "c0ce4a08bf53a923414619e29cbd2bc0c6b1a761",
         "type": "github"
       },
       "original": {
