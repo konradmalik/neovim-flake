@@ -1,5 +1,7 @@
 local actions = require("telescope.actions")
 local layout = require("telescope.actions.layout")
+local lga_actions = require("telescope-live-grep-args.actions")
+local lga_shortcuts = require("telescope-live-grep-args.shortcuts")
 local telescope = require("telescope")
 local themes = require("telescope.themes")
 
@@ -43,11 +45,21 @@ telescope.setup({
         ["ui-select"] = {
             themes.get_dropdown(),
         },
+        live_grep_args = {
+            mappings = {
+                i = {
+                    ["<C-k>"] = lga_actions.quote_prompt(),
+                    ["<C-t>"] = lga_actions.quote_prompt({ postfix = " --type " }),
+                    ["<C-space>"] = actions.to_fuzzy_refine,
+                },
+            },
+        },
     },
 })
 -- To get extensions loaded and working with telescope, you need to call
 -- load_extension, somewhere after setup function:
 telescope.load_extension("fzf")
+telescope.load_extension("live_grep_args")
 telescope.load_extension("ui-select")
 
 local opts_with_desc = function(desc) return { desc = "[Telescope] " .. desc } end
@@ -56,8 +68,18 @@ local builtin = require("telescope.builtin")
 
 vim.keymap.set("n", "<leader>ff", builtin.find_files, opts_with_desc("[F]ind [F]iles"))
 vim.keymap.set("n", "<leader>fi", builtin.git_files, opts_with_desc("Find (G[i]t) Files"))
-vim.keymap.set("n", "<leader>fg", builtin.live_grep, opts_with_desc("Live [G]rep"))
-vim.keymap.set("n", "<leader>f*", builtin.grep_string, opts_with_desc("Grep word under cursor"))
+vim.keymap.set(
+    "n",
+    "<leader>fg",
+    telescope.extensions.live_grep_args.live_grep_args,
+    opts_with_desc("Live [G]rep")
+)
+vim.keymap.set(
+    "n",
+    "<leader>f*",
+    lga_shortcuts.grep_word_under_cursor,
+    opts_with_desc("Grep word under cursor")
+)
 vim.keymap.set(
     "n",
     "<leader>f/",

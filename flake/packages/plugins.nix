@@ -143,20 +143,27 @@ let
     (buildVim {
       input = "telescope-fzf-native-nvim";
       dependencies = [
-        telescope-nvim
         plenary-nvim
+        telescope-nvim
       ];
     }).overrideAttrs
       { buildPhase = "make"; };
+  telescope-live-grep-args-nvim = buildVim {
+    input = "telescope-live-grep-args-nvim";
+    dependencies = [
+      plenary-nvim
+      telescope-nvim
+    ];
+  };
+  telescope-nvim = buildNeovim {
+    input = "telescope-nvim";
+  };
   telescope-ui-select-nvim = buildVim {
     input = "telescope-ui-select-nvim";
     dependencies = [
       telescope-nvim
       plenary-nvim
     ];
-  };
-  telescope-nvim = buildNeovim {
-    input = "telescope-nvim";
   };
   undotree = buildVim {
     input = "undotree";
@@ -220,6 +227,7 @@ in
     deps = [
       plenary-nvim
       telescope-fzf-native-nvim
+      telescope-live-grep-args-nvim
       telescope-ui-select-nvim
     ];
     systemDeps = [

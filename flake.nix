@@ -119,12 +119,16 @@
       url = "github:nvim-telescope/telescope-fzf-native.nvim";
       flake = false;
     };
-    telescope-ui-select-nvim = {
-      url = "github:nvim-telescope/telescope-ui-select.nvim";
+    telescope-live-grep-args-nvim = {
+      url = "github:nvim-telescope/telescope-live-grep-args.nvim";
       flake = false;
     };
     telescope-nvim = {
       url = "github:nvim-telescope/telescope.nvim";
+      flake = false;
+    };
+    telescope-ui-select-nvim = {
+      url = "github:nvim-telescope/telescope-ui-select.nvim";
       flake = false;
     };
     undotree = {

@@ -945,6 +945,7 @@
         "oil-nvim": "oil-nvim",
         "plenary-nvim": "plenary-nvim",
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
+        "telescope-live-grep-args-nvim": "telescope-live-grep-args-nvim",
         "telescope-nvim": "telescope-nvim",
         "telescope-ui-select-nvim": "telescope-ui-select-nvim",
         "undotree": "undotree",
@@ -982,6 +983,22 @@
       "original": {
         "owner": "nvim-telescope",
         "repo": "telescope-fzf-native.nvim",
+        "type": "github"
+      }
+    },
+    "telescope-live-grep-args-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1740416323,
+        "narHash": "sha256-VmX7K21v3lErm7f5I7/1rJ/+fSbFxZPrbDokra9lZpQ=",
+        "owner": "nvim-telescope",
+        "repo": "telescope-live-grep-args.nvim",
+        "rev": "b80ec2c70ec4f32571478b501218c8979fab5201",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-telescope",
+        "repo": "telescope-live-grep-args.nvim",
         "type": "github"
       }
     },
