@@ -150,12 +150,13 @@
               enable = !cfg.selfContained;
               source = nvimConfig;
               recursive = true;
-              onChange = ''
-                rm -rf ${config.xdg.cacheHome}/${cfg.appName}/luac
-              ''
-              + lib.optionalString cfg.cleanLspLog ''
-                rm -f ${config.xdg.stateHome}/${cfg.appName}/lsp.log
-              '';
+              onChange =
+                ''
+                  rm -rf ${config.xdg.cacheHome}/${cfg.appName}
+                ''
+                + lib.optionalString cfg.cleanLspLog ''
+                  rm -f ${config.xdg.stateHome}/${cfg.appName}/lsp.log
+                '';
             };
 
             programs.git.ignores = mkIf cfg.extendGitIgnores [
