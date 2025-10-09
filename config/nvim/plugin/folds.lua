@@ -4,8 +4,9 @@ vim.opt.fillchars = {
     foldopen = "",
     foldsep = "┊",
     foldclose = "",
+    foldinner = " ",
 }
 vim.o.foldmethod = "indent"
 -- when enabling, start with this level
-vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
 vim.o.foldenable = true
