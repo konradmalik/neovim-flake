@@ -948,7 +948,6 @@
         "telescope-live-grep-args-nvim": "telescope-live-grep-args-nvim",
         "telescope-nvim": "telescope-nvim",
         "telescope-ui-select-nvim": "telescope-ui-select-nvim",
-        "undotree": "undotree",
         "vim-fugitive": "vim-fugitive",
         "which-key-nvim": "which-key-nvim"
       }
@@ -1052,22 +1051,6 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "type": "github"
-      }
-    },
-    "undotree": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1759186837,
-        "narHash": "sha256-EWOH08KAWyoT9m45/B1d5aKQQJtd3k4orJbagVsxe08=",
-        "owner": "mbbill",
-        "repo": "undotree",
-        "rev": "0f1c9816975b5d7f87d5003a19c53c6fd2ff6f7f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mbbill",
-        "repo": "undotree",
         "type": "github"
       }
     },

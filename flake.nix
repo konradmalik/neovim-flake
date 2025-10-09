@@ -131,10 +131,6 @@
       url = "github:nvim-telescope/telescope-ui-select.nvim";
       flake = false;
     };
-    undotree = {
-      url = "github:mbbill/undotree";
-      flake = false;
-    };
     vim-fugitive = {
       url = "github:tpope/vim-fugitive";
       flake = false;

@@ -165,10 +165,6 @@ let
       plenary-nvim
     ];
   };
-  undotree = buildVim {
-    input = "undotree";
-    vimCommandCheck = "UndotreeToggle";
-  };
   vim-fugitive = buildVim {
     input = "vim-fugitive";
     nvimRequireCheck = null;
@@ -256,7 +252,6 @@ in
     systemDeps = [ pkgs.git ];
   }
   nvim-luaref
-  undotree
   {
     plugin = vim-fugitive;
     systemDeps = [ pkgs.git ];
