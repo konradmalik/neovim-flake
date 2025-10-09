@@ -70,6 +70,7 @@ let
   inherit (inputs'.blink-cmp.packages) blink-cmp;
   inherit (inputs'.git-conflict-nvim.packages) git-conflict-nvim;
   inherit (inputs'.incomplete-nvim.packages) incomplete-nvim;
+
   SchemaStore-nvim = buildVim {
     input = "SchemaStore-nvim";
   };
@@ -120,11 +121,13 @@ let
   nvim-treesitter = buildVim {
     input = "nvim-treesitter";
     nvimSkipModule = [ "nvim-treesitter._meta.parsers" ];
+    dependencies = [
+      (pkgs.ts-grammars.withGrammarsNvim (_: builtins.attrValues inputs'.tree-sitter-grammars.packages))
+    ];
   };
 
   nvim-treesitter-context = buildVim {
     input = "nvim-treesitter-context";
-    nvimSkipModule = [ "install_parsers" ];
   };
   oil-nvim = buildVim {
     input = "oil-nvim";
@@ -189,10 +192,8 @@ in
     ];
     systemDeps = with pkgs; [
       curl
-      gcc
       gnutar
       nodejs
-      tree-sitter
     ];
   }
   # completion

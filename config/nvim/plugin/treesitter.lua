@@ -1,10 +1,5 @@
 local group = vim.api.nvim_create_augroup("pde-treesitter", { clear = true })
 
-require("pde.loader").add_to_on_reset(function()
-    vim.cmd("TSInstall all")
-    vim.cmd("TSUpdate")
-end)
-
 vim.api.nvim_create_autocmd("FileType", {
     group = group,
     pattern = "*",

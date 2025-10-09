@@ -192,6 +192,22 @@
         "type": "github"
       }
     },
+    "flake-compat_6": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1751685974,
+        "narHash": "sha256-NKw96t+BgHIYzHUjkTK95FqYRVKB8DHpVhefWSz/kTw=",
+        "ref": "refs/heads/main",
+        "rev": "549f2762aebeff29a2e5ece7a7dc0f955281a1d1",
+        "revCount": 92,
+        "type": "git",
+        "url": "https://git.lix.systems/lix-project/flake-compat"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.lix.systems/lix-project/flake-compat"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -755,6 +771,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_5": {
+      "locked": {
+        "lastModified": 1751792365,
+        "narHash": "sha256-J1kI6oAj25IG4EdVlg2hQz8NZTBNYvIS0l4wpr9KcUo=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "1fd8bada0b6117e6c7eb54aad5813023eed37ccb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nvim-dap": {
       "flake": false,
       "locked": {
@@ -948,6 +980,7 @@
         "telescope-live-grep-args-nvim": "telescope-live-grep-args-nvim",
         "telescope-nvim": "telescope-nvim",
         "telescope-ui-select-nvim": "telescope-ui-select-nvim",
+        "tree-sitter-grammars": "tree-sitter-grammars",
         "vim-fugitive": "vim-fugitive",
         "which-key-nvim": "which-key-nvim"
       }
@@ -1030,6 +1063,25 @@
       "original": {
         "owner": "nvim-telescope",
         "repo": "telescope-ui-select.nvim",
+        "type": "github"
+      }
+    },
+    "tree-sitter-grammars": {
+      "inputs": {
+        "flake-compat": "flake-compat_6",
+        "nixpkgs": "nixpkgs_5"
+      },
+      "locked": {
+        "lastModified": 1759984218,
+        "narHash": "sha256-NrWR29FGfJpqjq+5Vk1vA9g9jqv27/emq9tyOizS5SQ=",
+        "owner": "marsam",
+        "repo": "tree-sitter-grammars",
+        "rev": "237965c5a40d26fb422b6f11378cb7ee7384a8e2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "marsam",
+        "repo": "tree-sitter-grammars",
         "type": "github"
       }
     },
