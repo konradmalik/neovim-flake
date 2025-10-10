@@ -1,7 +1,6 @@
 require("pde.lsp").setup()
 
 vim.lsp.enable({
-    "basedpyright",
     "clangd",
     "golangci_lint_ls",
     "gopls",
@@ -20,6 +19,7 @@ vim.lsp.enable({
     "stylua",
     "taplo",
     "terraformls",
+    "ty",
     "yamlls",
     "zls",
 })
