@@ -17,7 +17,6 @@ with pkgs;
   shellcheck
 
   # lsps
-  basedpyright
   clang-tools
   efm-langserver
   gopls
@@ -29,15 +28,16 @@ with pkgs;
   roslyn-ls
   rust-analyzer
   terraform-ls
+  ty
   yaml-language-server
-  # TODO until fixed on unstable
-  ((builtins.getFlake "github:NixOS/nixpkgs/84c256e42600cb0fdf25763b48d28df2f25a0c8b")
-    .legacyPackages.${pkgs.system}.zls
-  )
+  zls
 
   # debuggers
   delve
-  netcoredbg
+  # TODO until fixed on unstable
+  ((builtins.getFlake "github:NixOS/nixpkgs/2e6ba6ec4509645504c375f2ede9935d540405c6")
+    .legacyPackages.${pkgs.system}.netcoredbg
+  )
 ]
 ++ lib.optionals stdenvNoCC.isLinux [
   # for faster filewatching in lsps
