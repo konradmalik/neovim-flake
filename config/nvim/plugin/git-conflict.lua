@@ -19,7 +19,7 @@ vim.keymap.set(
 )
 
 vim.api.nvim_create_autocmd("User", {
-    group = vim.api.nvim_create_augroup("GitConflict", { clear = true }),
+    group = vim.api.nvim_create_augroup("OnGitConflict", { clear = true }),
     pattern = "GitConflict",
     callback = function(args)
         local buf = args.buf
