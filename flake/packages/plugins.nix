@@ -121,9 +121,25 @@ let
   nvim-treesitter = buildVim {
     input = "nvim-treesitter";
     nvimSkipModule = [ "nvim-treesitter._meta.parsers" ];
-    dependencies = [
-      (pkgs.ts-grammars.withGrammarsNvim (_: builtins.attrValues inputs'.tree-sitter-grammars.packages))
-    ];
+    dependencies = (
+      let
+        grammars = pkgs.ts-grammars.withGrammarsNvim (
+          _: builtins.attrValues inputs'.tree-sitter-grammars.packages
+        );
+        grammarsPlugin = pkgs.linkFarm "tree-sitter-grammars" [
+          {
+            name = "parser";
+            path = grammars;
+          }
+          # optionally, add queries from nvim-treesitter
+          {
+            name = "queries";
+            path = "${inputs.nvim-treesitter}/runtime/queries";
+          }
+        ];
+      in
+      [ grammarsPlugin ]
+    );
   };
 
   nvim-treesitter-context = buildVim {
