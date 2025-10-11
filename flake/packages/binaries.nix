@@ -37,10 +37,7 @@ with pkgs;
 
   # debuggers
   delve
-  # TODO until fixed on unstable
-  ((builtins.getFlake "github:NixOS/nixpkgs/2e6ba6ec4509645504c375f2ede9935d540405c6")
-    .legacyPackages.${pkgs.system}.netcoredbg
-  )
+  netcoredbg
 ]
 ++ lib.optionals stdenvNoCC.isLinux [
   # for faster filewatching in lsps
