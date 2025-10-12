@@ -4,16 +4,14 @@ on:
       - main
   pull_request:
 
-name: x86_64-darwin
+name: darwin
 jobs:
   flake-check:
     runs-on: macos-15-intel
     steps:
       - uses: actions/checkout@v5
-      - uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            accept-flake-config = true
+      - uses: DeterminateSystems/nix-installer-action@v20
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
       - name: Flake check
         run: nix flake check
 
@@ -23,10 +21,8 @@ jobs:
       - flake-check
     steps:
       - uses: actions/checkout@v5
-      - uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            accept-flake-config = true
+      - uses: DeterminateSystems/nix-installer-action@v20
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
       - if: ${{ !github.event.pull_request.head.repo.fork }}
         uses: cachix/cachix-action@v16
         with:
@@ -41,10 +37,8 @@ jobs:
       - build-shell
     steps:
       - uses: actions/checkout@v5
-      - uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            accept-flake-config = true
+      - uses: DeterminateSystems/nix-installer-action@v20
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
       - name: run tests
         run: nix develop --command make test
 
@@ -54,10 +48,8 @@ jobs:
       - tests
     steps:
       - uses: actions/checkout@v5
-      - uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            accept-flake-config = true
+      - uses: DeterminateSystems/nix-installer-action@v20
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
       - if: ${{ !github.event.pull_request.head.repo.fork }}
         uses: cachix/cachix-action@v16
         with:
