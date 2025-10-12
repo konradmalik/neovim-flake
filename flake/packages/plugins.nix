@@ -123,9 +123,12 @@ let
     nvimSkipModule = [ "nvim-treesitter._meta.parsers" ];
     dependencies = (
       let
-        grammars = pkgs.ts-grammars.withGrammarsNvim (
-          _: builtins.attrValues inputs'.tree-sitter-grammars.packages
-        );
+        tsPackages = builtins.attrValues inputs'.tree-sitter-grammars.packages;
+        # TODO bitbake fails on aarch64-linux
+        filteredTsPackages = builtins.filter (
+          p: !(pkgs.system == "aarch64-linux" && p.pname == "tree-sitter-bitbake")
+        ) tsPackages;
+        grammars = pkgs.ts-grammars.withGrammarsNvim (_: filteredTsPackages);
         grammarsPlugin = pkgs.linkFarm "tree-sitter-grammars" [
           {
             name = "parser";
