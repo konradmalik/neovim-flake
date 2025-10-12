@@ -143,7 +143,7 @@
   };
 
   nixConfig = {
-    extra-substituters = [
+    extra-trusted-substituters = [
       "https://konradmalik.cachix.org"
       "https://nix-community.cachix.org"
       "https://tree-sitter-grammars.cachix.org"
