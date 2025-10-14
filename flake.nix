@@ -4,7 +4,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
-    # efm-langserver.url = "git+file:///home/konrad/Code/github.com/konradmalik/efm-langserver";
     efm-langserver.url = "github:konradmalik/efm-langserver";
     tree-sitter-grammars.url = "github:marsam/tree-sitter-grammars";
 
