@@ -51,5 +51,6 @@ vim.o.updatetime = 1000
 vim.o.timeoutlen = 1000
 -- highlight the current line
 vim.o.cursorline = true
--- set default border
+-- set default borders
 vim.o.winborder = "none"
+vim.o.pumborder = "none"
