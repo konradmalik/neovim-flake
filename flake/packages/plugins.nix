@@ -123,10 +123,16 @@ let
     nvimSkipModule = [ "nvim-treesitter._meta.parsers" ];
     dependencies = (
       let
+        skippedGrammars = [
+          # https://github.com/marsam/tree-sitter-grammars/pull/4
+          "tree-sitter-bitbake"
+          # hash mismatch as of 2025-10-17
+          "tree-sitter-ssh_client_config"
+        ];
+
         tsPackages = builtins.attrValues inputs'.tree-sitter-grammars.packages;
-        # TODO bitbake fails on aarch64-linux
         filteredTsPackages = builtins.filter (
-          p: !(pkgs.system == "aarch64-linux" && p.pname == "tree-sitter-bitbake")
+          p: !builtins.any (s: s == p.pname) skippedGrammars
         ) tsPackages;
         grammars = pkgs.ts-grammars.withGrammarsNvim (_: filteredTsPackages);
         grammarsPlugin = pkgs.linkFarm "tree-sitter-grammars" [
