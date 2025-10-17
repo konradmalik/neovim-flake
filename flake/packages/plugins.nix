@@ -123,31 +123,21 @@ let
     nvimSkipModule = [ "nvim-treesitter._meta.parsers" ];
     dependencies = (
       let
-        skippedGrammars = [
-          # https://github.com/marsam/tree-sitter-grammars/pull/4
-          "tree-sitter-bitbake"
-          # hash mismatch as of 2025-10-17
-          "tree-sitter-ssh_client_config"
-        ];
-
-        tsPackages = builtins.attrValues inputs'.tree-sitter-grammars.packages;
-        filteredTsPackages = builtins.filter (
-          p: !builtins.any (s: s == p.pname) skippedGrammars
-        ) tsPackages;
-        grammars = pkgs.ts-grammars.withGrammarsNvim (_: filteredTsPackages);
-        grammarsPlugin = pkgs.linkFarm "tree-sitter-grammars" [
-          {
-            name = "parser";
-            path = grammars;
-          }
-          # optionally, add queries from nvim-treesitter
+        nvimTreesitterQueries = pkgs.linkFarm "nvim-treesitter-queries" [
           {
             name = "queries";
             path = "${inputs.nvim-treesitter}/runtime/queries";
           }
         ];
+        allGrammars = pkgs.callPackage ./tree-sitter-grammars.nix {
+          grammars = inputs'.tree-sitter-grammars.packages;
+        };
       in
-      [ grammarsPlugin ]
+      # NOTE: nvimTreesitterQueries should be first to be earlier in runtime path. They should be preferred
+      [
+        nvimTreesitterQueries
+        allGrammars
+      ]
     );
   };
 
