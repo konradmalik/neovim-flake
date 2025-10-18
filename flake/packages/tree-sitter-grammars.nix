@@ -27,7 +27,8 @@ let
         lang = toLang pkg.pname;
       in
       stdenv.mkDerivation {
-        inherit (pkg) pname version meta;
+        inherit (pkg) version meta;
+        pname = "${pkg.pname}-nvim";
         src = pkg;
         dontBuild = true;
         dontConfigure = true;
