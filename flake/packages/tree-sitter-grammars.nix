@@ -9,8 +9,20 @@ let
   skippedGrammars = [
     # https://github.com/marsam/tree-sitter-grammars/pull/4
     "tree-sitter-bitbake"
-    # hash mismatch as of 2025-10-17
+  ]
+  ++ lib.optionals stdenv.isDarwin [
+    # darwin hash mismatch/non-deterministic output as of 2025-10-19
+    "tree-sitter-kanata"
+    # darwin hash mismatch/non-deterministic output as of 2025-10-19
+    "tree-sitter-rpmspec"
+    # darwin hash mismatch/non-deterministic output as of 2025-10-17
     "tree-sitter-ssh_client_config"
+    # darwin hash mismatch/non-deterministic output as of 2025-10-19
+    "tree-sitter-tl"
+    # darwin hash mismatch/non-deterministic output as of 2025-10-19
+    "tree-sitter-tsql"
+    # darwin hash mismatch/non-deterministic output as of 2025-10-19
+    "tree-sitter-vcard"
   ];
 
   filteredGrammars = lib.filterAttrs (n: v: !builtins.any (s: s == v.pname) skippedGrammars) grammars;
