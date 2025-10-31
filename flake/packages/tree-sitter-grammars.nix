@@ -10,6 +10,10 @@ let
     # https://github.com/marsam/tree-sitter-grammars/pull/4
     "tree-sitter-bitbake"
   ]
+  ++ lib.optionals stdenv.isLinux [
+    # build failure due to missing include as of 2025-10-31
+    "tree-sitter-matlab"
+  ]
   ++ lib.optionals stdenv.isDarwin [
     # darwin hash mismatch/non-deterministic output as of 2025-10-19
     "tree-sitter-kanata"
