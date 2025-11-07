@@ -173,8 +173,11 @@ let
       telescope-nvim
     ];
   };
-  telescope-nvim = buildNeovim {
+  telescope-nvim = buildVim {
     input = "telescope-nvim";
+    dependencies = [
+      plenary-nvim
+    ];
   };
   telescope-ui-select-nvim = buildVim {
     input = "telescope-ui-select-nvim";
