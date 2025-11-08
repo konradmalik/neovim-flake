@@ -30,7 +30,7 @@
               };
               doCheck = true;
               preCheck = ''
-                cp ${self'.packages.full-luarc-json} ./config/nvim/.luarc.json
+                ln -s ${self'.packages.full-luarc-json} ./config/nvim/.luarc.json
               '';
               checkPhase = ''
                 runHook preCheck
