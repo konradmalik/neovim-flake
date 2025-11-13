@@ -134,11 +134,13 @@ M.fileinfo = function(active)
     end
     local text = wrap_hl(ihl, icon) .. " " .. wrap_hl(hl, filename)
 
-    if vim.bo[bufnr].modified then return text .. wrap_hl(colors.diag_ok, icons.git.Mod) end
+    if vim.bo[bufnr].modified then return text .. wrap_hl(colors.diag_ok, " " .. icons.git.Mod) end
 
-    if vim.bo[bufnr].readonly then text = text .. wrap_hl(colors.diag_warn, icons.ui.Lock) end
+    if vim.bo[bufnr].readonly then
+        text = text .. wrap_hl(colors.diag_warn, " " .. icons.ui.Lock)
+    end
     if not vim.bo[bufnr].modifiable then
-        text = text .. wrap_hl(colors.diag_error, icons.ui.FilledLock)
+        text = text .. wrap_hl(colors.diag_error, " " .. icons.ui.FilledLock)
     end
 
     return text
