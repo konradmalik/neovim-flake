@@ -1,7 +1,7 @@
 vim.o.shortmess = vim.o.shortmess .. "c"
 vim.o.completeopt = "menuone,noinsert,noselect,popup,fuzzy"
 vim.o.complete = "o,.,w,b,u"
-vim.o.autocomplete = false
+vim.o.autocomplete = true
 vim.o.autocompletedelay = 200
 
 vim.api.nvim_create_autocmd("BufEnter", {

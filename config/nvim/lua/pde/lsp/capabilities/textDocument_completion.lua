@@ -169,8 +169,7 @@ return {
 
         initialize_once()
 
-        -- local autotrigger = not vim.bo[bufnr].autocomplete
-        local autotrigger = false
+        local autotrigger = not vim.bo[bufnr].autocomplete
         vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = autotrigger })
         if autotrigger then trigger_on_delete(bufnr) end
 

@@ -67,7 +67,6 @@ in
 # - does not work for src in buildVimPlugin
 # - plugins internally depend on vimUtils.plenary-nvim and similar either way
 let
-  inherit (inputs'.blink-cmp.packages) blink-cmp;
   inherit (inputs'.git-conflict-nvim.packages) git-conflict-nvim;
   inherit (inputs'.incomplete-nvim.packages) incomplete-nvim;
 
@@ -213,11 +212,6 @@ in
       gnutar
       nodejs
     ];
-  }
-  # completion
-  {
-    plugin = blink-cmp;
-    deps = [ friendly-snippets ];
   }
   # LSP
   efmls-configs-nvim
