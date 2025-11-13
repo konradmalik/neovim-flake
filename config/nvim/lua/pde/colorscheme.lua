@@ -16,9 +16,13 @@ require("kanagawa").setup({
     overrides = function(colors)
         local theme = colors.theme
         return {
-            -- Dark completion (popup) menu
-            Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },
+            Pmenu = { link = "NormalFloat" },
             PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
+            PmenuKind = { link = "Pmenu" },
+            PmenuKindSel = { link = "PmenuSel" },
+            PmenuBorder = { link = "FloatBorder" },
+            PmenuExtra = { link = "Pmenu" },
+            PmenuExtraSel = { link = "PmenuSel" },
             PmenuSbar = { bg = theme.ui.bg_m1 },
             PmenuThumb = { bg = theme.ui.bg_p2 },
         }
