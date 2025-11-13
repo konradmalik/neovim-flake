@@ -3,7 +3,8 @@ local trigger_debounce_ms = 250
 local trigger_timer = assert(vim.uv.new_timer(), "cannot create timer")
 -- some LSPs for some reason say they have completionItem_resolve capability
 -- but then throw errors when this is executed (I look at you gopls)
-local documentation_is_enabled = true
+---@type table<integer, boolean>
+local documentation_is_disabled = {}
 local ms = vim.lsp.protocol.Methods
 
 local initialized = false
@@ -26,15 +27,19 @@ local function feedkeys(keys)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), "n", false)
 end
 
----@param client_id integer
 ---@param bufnr integer
----@param opts vim.lsp.completion.BufferOpts?
-local function enable(client_id, bufnr, opts)
-    initialize_once()
+---@return boolean
+local function is_popup_enabled(bufnr)
+    local options = vim.bo[bufnr].completeopt
+    if options == "" then options = vim.o.completeopt end
+    return options:find("popup") ~= nil
+end
 
-    opts = opts or {}
-    vim.lsp.completion.enable(true, client_id, bufnr, opts)
-
+--- Completion is triggered only on inserting new characters,
+--- if we delete char to adjust the match, popup disappears
+--- this solves it
+---@param bufnr integer
+local function trigger_on_delete(bufnr)
     ---@param mode string|string[]
     ---@param lhs string
     ---@param rhs string|function
@@ -48,9 +53,6 @@ local function enable(client_id, bufnr, opts)
         )
     end
 
-    -- completion is triggered only on inserting new characters,
-    -- if we delete char to adjust the match, popup disappears
-    -- this solves it
     for _, keys in ipairs({ "<BS>", "<C-h>", "<C-w>" }) do
         keymap("i", keys, function()
             local in_context = pumvisible() or trigger_timer:get_due_in() > 0
@@ -70,67 +72,89 @@ local function enable(client_id, bufnr, opts)
 end
 
 ---@param selected_index integer
----@param result table
+---@param lsp_documentation string|lsp.MarkupContent
 ---@param client string
-local function show_documentation(selected_index, result, client)
-    local docs = vim.tbl_get(result, "documentation", "value")
-    if not docs then return end
+local function set_documetation(selected_index, lsp_documentation, client)
+    local kind = lsp_documentation and lsp_documentation.kind
+    local filetype = kind == "markdown" and "markdown" or ""
+    local documentation_value = type(lsp_documentation) == "string" and lsp_documentation
+        or lsp_documentation.value
 
-    local wininfo = vim.api.nvim__complete_set(selected_index, { info = format_docs(docs, client) })
+    local wininfo = vim.api.nvim__complete_set(
+        selected_index,
+        { info = format_docs(documentation_value, client) }
+    )
     if vim.tbl_isempty(wininfo) or not vim.api.nvim_win_is_valid(wininfo.winid) then return end
 
     vim.wo[wininfo.winid].conceallevel = 2
     vim.wo[wininfo.winid].concealcursor = "n"
+    vim.api.nvim_win_set_config(wininfo.winid, {
+        border = vim.o.winborder,
+    })
 
     if not vim.api.nvim_buf_is_valid(wininfo.bufnr) then return end
 
-    vim.bo[wininfo.bufnr].syntax = "markdown"
-    vim.treesitter.start(wininfo.bufnr, "markdown")
+    vim.bo[wininfo.bufnr].filetype = filetype
+    if filetype ~= "" then vim.treesitter.start(wininfo.bufnr) end
 end
 
----@param client string
+---@class CompleteInfo
+---@field selected integer Index of selected completion entry
+
+---@param client vim.lsp.Client
 ---@param augroup integer
 ---@param bufnr integer
 local function enable_completion_documentation(client, augroup, bufnr)
-    local _, cancel_prev = nil, function() end
+    local _, req_id = nil, nil
 
     vim.api.nvim_create_autocmd("CompleteChanged", {
         group = augroup,
         buffer = bufnr,
         callback = function()
-            cancel_prev()
-            if not documentation_is_enabled then return end
+            if req_id then client:cancel_request(req_id) end
 
-            local completion_item =
-                vim.tbl_get(vim.v.completed_item, "user_data", "nvim", "lsp", "completion_item")
-            if not completion_item then return end
+            if documentation_is_disabled[client.id] or not pumvisible() then return end
+            local completed_item = vim.v.completed_item
 
+            local client_id = vim.tbl_get(completed_item, "user_data", "nvim", "lsp", "client_id")
+            if client_id ~= client.id then return end
+
+            ---@type lsp.CompletionItem
+            local lsp_completion_item =
+                vim.tbl_get(completed_item, "user_data", "nvim", "lsp", "completion_item")
+            if not lsp_completion_item or lsp_completion_item.documentation then return end
+
+            ---@type CompleteInfo
             local complete_info = vim.fn.complete_info({ "selected" })
             if vim.tbl_isempty(complete_info) then return end
 
-            local selected_index = complete_info.selected
-
-            _, cancel_prev = vim.lsp.buf_request(
-                bufnr,
+            _, req_id = client:request(
                 ms.completionItem_resolve,
-                completion_item,
-                function(err, item)
+                lsp_completion_item,
+                ---@param err lsp.ResponseError
+                ---@param resolved_item lsp.CompletionItem
+                function(err, resolved_item)
                     if err ~= nil then
                         vim.notify(
                             "Error from client "
-                                .. client
+                                .. client.name
                                 .. " when getting documentation\n"
                                 .. vim.inspect(err),
                             vim.log.levels.WARN
                         )
                         -- at this stage just disable it
-                        documentation_is_enabled = false
+                        documentation_is_disabled[client.id] = true
                         return
                     end
-                    if not item then return end
+                    if not resolved_item or not resolved_item.documentation then return end
 
-                    show_documentation(selected_index, item, client)
-                end
+                    set_documetation(
+                        complete_info.selected,
+                        resolved_item.documentation,
+                        client.name
+                    )
+                end,
+                bufnr
             )
         end,
     })
@@ -143,10 +167,15 @@ return {
         local bufnr = data.bufnr
         local client = data.client
 
-        enable(client.id, bufnr, { autotrigger = false })
+        initialize_once()
 
-        if client:supports_method(ms.completionItem_resolve, bufnr) then
-            enable_completion_documentation(client.name, augroup, bufnr)
+        -- local autotrigger = not vim.bo[bufnr].autocomplete
+        local autotrigger = false
+        vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = autotrigger })
+        if autotrigger then trigger_on_delete(bufnr) end
+
+        if is_popup_enabled(bufnr) and client:supports_method(ms.completionItem_resolve, bufnr) then
+            enable_completion_documentation(client, augroup, bufnr)
         end
     end,
 
