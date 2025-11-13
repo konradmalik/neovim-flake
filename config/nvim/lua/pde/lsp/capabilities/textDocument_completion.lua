@@ -7,10 +7,18 @@ local trigger_timer = assert(vim.uv.new_timer(), "cannot create timer")
 local documentation_is_disabled = {}
 local ms = vim.lsp.protocol.Methods
 
+---@type table<integer,string>
+local kind_map = {}
+
 local initialized = false
 local function initialize_once()
     if initialized then return end
+
     mini_icons.tweak_lsp_kind("replace")
+    for k, v in pairs(vim.lsp.protocol.CompletionItemKind) do
+        if type(k) == "string" and type(v) == "number" then kind_map[v] = k end
+    end
+
     initialized = true
 end
 
@@ -160,6 +168,13 @@ local function enable_completion_documentation(client, augroup, bufnr)
     })
 end
 
+---@param item lsp.CompletionItem
+---@return boolean
+local function is_deprecated(item)
+    return item.deprecated
+        or vim.list_contains(item.tags or {}, vim.lsp.protocol.CompletionTag.Deprecated)
+end
+
 ---@type CapabilityHandler
 return {
     attach = function(data)
@@ -170,7 +185,16 @@ return {
         initialize_once()
 
         local autotrigger = not vim.bo[bufnr].autocomplete
-        vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = autotrigger })
+        vim.lsp.completion.enable(true, client.id, bufnr, {
+            autotrigger = autotrigger,
+            convert = function(item)
+                local _, kind_hl, _ = mini_icons.get("lsp", kind_map[item.kind] or "Unknown")
+                return {
+                    abbr_hlgroup = is_deprecated(item) and "@lsp.mod.deprecated" or kind_hl,
+                    kind_hlgroup = kind_hl or nil,
+                }
+            end,
+        })
         if autotrigger then trigger_on_delete(bufnr) end
 
         if is_popup_enabled(bufnr) and client:supports_method(ms.completionItem_resolve, bufnr) then
