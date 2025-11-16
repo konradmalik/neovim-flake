@@ -13,18 +13,17 @@ require("kanagawa").setup({
             },
         },
     },
-    overrides = function(colors)
-        local theme = colors.theme
+    overrides = function(_)
         return {
-            Pmenu = { link = "NormalFloat" },
-            PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
-            PmenuKind = { link = "Pmenu" },
-            PmenuKindSel = { link = "PmenuSel" },
-            PmenuBorder = { link = "FloatBorder" },
-            PmenuExtra = { link = "Pmenu" },
-            PmenuExtraSel = { link = "PmenuSel" },
-            PmenuSbar = { bg = theme.ui.bg_m1 },
-            PmenuThumb = { bg = theme.ui.bg_p2 },
+            Pmenu = { link = "BlinkCmpMenu" },
+            PmenuSel = { link = "BlinkCmpMenuSelection" },
+            PmenuKind = { link = "BlinkCmpKind" },
+            PmenuKindSel = { link = "BlinkCmpMenuSelection" },
+            PmenuBorder = { link = "BlinkCmpMenuBorder" },
+            PmenuExtra = { link = "BlinkCmpLabel" },
+            PmenuExtraSel = { link = "BlinkCmpMenuSelection" },
+            PmenuSbar = { link = "BlinkCmpScrollBarGutter" },
+            PmenuThumb = { link = "BlinkCmpScrollBarThumb" },
         }
     end,
 })
