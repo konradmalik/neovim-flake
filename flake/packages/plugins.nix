@@ -69,6 +69,7 @@ in
 let
   inherit (inputs'.git-conflict-nvim.packages) git-conflict-nvim;
   inherit (inputs'.incomplete-nvim.packages) incomplete-nvim;
+  inherit (inputs'.nvim-treesitter.packages) nvim-treesitter;
 
   SchemaStore-nvim = buildVim {
     input = "SchemaStore-nvim";
@@ -117,29 +118,6 @@ let
   nvim-nio = buildVim {
     input = "nvim-nio";
   };
-  nvim-treesitter = buildVim {
-    input = "nvim-treesitter";
-    nvimSkipModule = [ "nvim-treesitter._meta.parsers" ];
-    dependencies = (
-      let
-        nvimTreesitterQueries = pkgs.linkFarm "nvim-treesitter-queries" [
-          {
-            name = "queries";
-            path = "${inputs.nvim-treesitter}/runtime/queries";
-          }
-        ];
-        allGrammars = pkgs.callPackage ./tree-sitter-grammars.nix {
-          grammars = inputs'.tree-sitter-grammars.packages;
-        };
-      in
-      # NOTE: nvimTreesitterQueries should be first to be earlier in runtime path. They should be preferred
-      [
-        nvimTreesitterQueries
-        allGrammars
-      ]
-    );
-  };
-
   nvim-treesitter-context = buildVim {
     input = "nvim-treesitter-context";
   };

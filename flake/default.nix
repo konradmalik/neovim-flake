@@ -16,7 +16,6 @@
         overlays = [
           inputs.gen-luarc.overlays.default
           inputs.neorocks.overlays.default
-          inputs.tree-sitter-grammars.overlays.default
         ];
       };
 

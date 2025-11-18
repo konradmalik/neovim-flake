@@ -5,7 +5,6 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     efm-langserver.url = "github:konradmalik/efm-langserver";
-    tree-sitter-grammars.url = "github:marsam/tree-sitter-grammars";
 
     neorocks = {
       url = "github:lumen-oss/neorocks";
@@ -93,8 +92,8 @@
       flake = false;
     };
     nvim-treesitter = {
-      url = "github:nvim-treesitter/nvim-treesitter/main";
-      flake = false;
+      url = "github:konradmalik/nvim-treesitter-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nvim-treesitter-context = {
       url = "github:nvim-treesitter/nvim-treesitter-context";
@@ -138,12 +137,10 @@
     extra-trusted-substituters = [
       "https://konradmalik.cachix.org"
       "https://nix-community.cachix.org"
-      "https://tree-sitter-grammars.cachix.org"
     ];
     extra-trusted-public-keys = [
       "konradmalik.cachix.org-1:9REXmCYRwPNL0kAB0IMeTxnMB1Gl9VY5I8w7UVBTtSI="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs"
-      "tree-sitter-grammars.cachix.org-1:nOrtXe5HNC1EYPgHZDZ0GNgL02yFRkh2VrXNF0PW2iY="
     ];
   };
 
