@@ -8,7 +8,7 @@
     tree-sitter-grammars.url = "github:marsam/tree-sitter-grammars";
 
     neorocks = {
-      url = "github:nvim-neorocks/neorocks";
+      url = "github:lumen-oss/neorocks";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         neovim-nightly.follows = "neovim-nightly-overlay";

@@ -303,11 +303,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1762868777,
-        "narHash": "sha256-QqS72GvguP56oKDNUckWUPNJHjsdeuXh5RyoKz0wJ+E=",
+        "lastModified": 1763319842,
+        "narHash": "sha256-YG19IyrTdnVn0l3DvcUYm85u3PaqBt6tI6VvolcuHnA=",
         "owner": "cachix",
         "repo": "git-hooks.nix",
-        "rev": "c5c3147730384576196fb5da048a6e45dee10d56",
+        "rev": "7275fa67fbbb75891c16d9dee7d88e58aea2d761",
         "type": "github"
       },
       "original": {
@@ -463,15 +463,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1763011932,
-        "narHash": "sha256-hEImzdg9HQvgdRE3XrWqFXS1IaY0ekFSAhm8h3DLXsQ=",
-        "owner": "nvim-neorocks",
+        "lastModified": 1763443895,
+        "narHash": "sha256-cnxwzqDb4Y8V7Ku92qaHCRwHGawSkgoZjGS9n30B4/0=",
+        "owner": "lumen-oss",
         "repo": "neorocks",
-        "rev": "a2c998c9ad8d2588e627de0d33374fd9fd43f439",
+        "rev": "262c87ac6ec4c80189cb624416126749c7d3a142",
         "type": "github"
       },
       "original": {
-        "owner": "nvim-neorocks",
+        "owner": "lumen-oss",
         "repo": "neorocks",
         "type": "github"
       }
