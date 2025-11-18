@@ -69,7 +69,7 @@ in
 let
   inherit (inputs'.git-conflict-nvim.packages) git-conflict-nvim;
   inherit (inputs'.incomplete-nvim.packages) incomplete-nvim;
-  inherit (inputs'.nvim-treesitter.packages) nvim-treesitter;
+  nvim-treesitter = inputs'.nvim-treesitter.packages.nvim-treesitter.withAllGrammars;
 
   SchemaStore-nvim = buildVim {
     input = "SchemaStore-nvim";
