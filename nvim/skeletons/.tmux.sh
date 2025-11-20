@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # CHANGEME: this is skeleton file from neovim
 
-set -e
+set -euo pipefail
 
 session=$1
 

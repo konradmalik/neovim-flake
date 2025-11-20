@@ -42,16 +42,9 @@ Assuming that this project has a devshell defined, you can just enter that devsh
 The older `black` from the devshell will take precedence over the one provided by this flake, because devshell works by
 prepending to PATH.
 
-## Things to note
-
-- Uses `NVIM_APPNAME` to differentiate from other Neovim instances. It's set to `neovim-pde` or `neovim-pde-hm` for
-  home-manager (configurable) or `nvim` when running in "dev mode".
-
 ### Home Manager
 
-There is a home-manager module provided, which links the configuration to your `XDG_CONFIG_HOME` folder and loads it from there.
-
-This is the recommended way to use this flake "day-to-day" in your NixOS system.
+There is a home-manager module provided with some additional options and QOL improvements.
 
 ### Self-contained mode
 
@@ -74,16 +67,11 @@ It runs the neovim package defined in the repo with plugins and `nix`-generated 
 config gets read "live" from `./config/nvim` here in the repo. This allows for instant feedback and dynamic
 development just like when using neovim without nix.
 
-## Notes
-
-> composed of my reddit posts
-
-What's great in using Neovim through nix is a way to generate lua files from nix. It allows configuring LSP to use binaries directly from nix store as opposed to getting them from PATH, especially useful for the most common LSPs that I always expect to have.
-
-What I don't like in those "nixvim" flakes is that people most often use only nix for everything. While most certainly you can generate all of your config, all of your lua files from nix, I think it's a bad idea since you lose all completion, diagnostics, and all neodev niceness for lua.
+Note that `nvim-dev` uses `-u` flag, which means that `exrc` functionality won't work (e.g. local `.nvim.lua` files won't be loaded automatically).
 
 ## Credits
 
 Inspired by:
 
 - https://primamateria.github.io/blog/neovim-nix/
+- https://github.com/nix-community/kickstart-nix.nvim/

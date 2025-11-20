@@ -4,18 +4,18 @@
     {
       devShells.default =
         let
-          neovim-pde-dev = self'.packages.neovim-pde-dev;
+          nvim-dev = self'.packages.nvim-dev;
         in
         pkgs.mkShell {
           name = "neovim-shell";
           shellHook =
-            neovim-pde-dev.shellHook
+            nvim-dev.shellHook
             +
-              # bash
-              ''
-                ln -fs ${self'.packages.full-luarc-json} ./config/nvim/.luarc.json
-                ln -fs ${self'.packages.no-plugins-luarc-json} ./.luarc.json
-              '';
+            # bash
+            ''
+              ln -fs ${self'.packages.nvim-luarc-json} ./nvim/.luarc.json
+              ln -fs ${self'.packages.busted-luarc-json} ./spec/.luarc.json
+            '';
           packages =
             (with pkgs; [
               gnumake
@@ -25,7 +25,7 @@
             ])
             ++ [
               self'.packages.nvim-typecheck
-              neovim-pde-dev
+              nvim-dev
             ];
         };
     };

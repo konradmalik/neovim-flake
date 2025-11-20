@@ -3,14 +3,14 @@
     { pkgs, self', ... }:
     {
       apps = {
-        default = self'.apps.neovim-pde;
-        neovim-pde = {
+        default = self'.apps.nvim;
+        nvim = {
           type = "app";
-          program = pkgs.lib.getExe self'.packages.neovim-pde;
+          program = pkgs.lib.getExe self'.packages.nvim;
         };
-        neovim-pde-dev = {
+        nvim-dev = {
           type = "app";
-          program = pkgs.lib.getExe self'.packages.neovim-pde-dev;
+          program = pkgs.lib.getExe self'.packages.nvim-dev;
         };
       };
     };

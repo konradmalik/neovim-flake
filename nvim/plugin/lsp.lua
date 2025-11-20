@@ -1,4 +1,7 @@
 require("pde.lsp").setup()
+require("pde.loader").add_to_on_reset(
+    function() vim.fs.rm(vim.lsp.log.get_filename(), { force = true }) end
+)
 
 vim.lsp.enable({
     "basedpyright",

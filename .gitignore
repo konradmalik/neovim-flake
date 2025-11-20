@@ -1,4 +1,5 @@
 !flake.lock
+!nvim/skeletons/.tmux.sh
 .direnv
 result
 *.spl

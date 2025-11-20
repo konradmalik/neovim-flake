@@ -1,56 +1,67 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 {
   perSystem =
     {
       inputs',
       pkgs,
-      lib,
       ...
     }:
     let
-      # plugins
-      dependencies = pkgs.callPackage ./mkDependencies.nix {
-        pluginsList = (
-          import ./plugins.nix {
-            inherit (pkgs) vimUtils neovimUtils;
-            inherit
-              pkgs
-              lib
-              inputs
-              inputs'
-              ;
-          }
-        );
+      neovim-nightly = inputs'.neovim-nightly-overlay.packages.default;
+
+      mkNeovim = pkgs.callPackage ./mkNeovim.nix { nvim = neovim-nightly; };
+
+      mkPlugins = pkgs.callPackage ./plugins.nix { };
+
+      plugins = mkPlugins {
+        inherit
+          pkgs
+          lib
+          inputs
+          inputs'
+          ;
       };
-      inherit (dependencies) plugins;
-      pluginsSystemDeps = dependencies.systemDeps;
 
-      # config
-      config = pkgs.callPackage ../../config { };
-
-      # neovim
-      neovimSystemDeps =
-        pluginsSystemDeps
-        ++ (pkgs.callPackage ./binaries.nix { efm-langserver = inputs'.efm-langserver.packages.default; });
-      neovimNightly = inputs'.neovim-nightly-overlay.packages.default;
-      neovim-pde = pkgs.callPackage ./neovim-pde.nix {
-        inherit config plugins;
-        systemDeps = neovimSystemDeps;
-        neovim = neovimNightly;
+      extraPackages = pkgs.callPackage ./binaries.nix {
+        efm-langserver = inputs'.efm-langserver.packages.default;
       };
     in
     {
-      packages = {
-        default = neovim-pde;
+      packages = rec {
+        default = nvim;
 
-        inherit neovim-pde config;
-        neovim-pde-dev = pkgs.callPackage ./neovim-pde-dev.nix { inherit neovim-pde config; };
-        nvim-typecheck = pkgs.callPackage ./nvim-typecheck.nix { };
-        full-luarc-json = pkgs.mk-luarc-json {
-          nvim = neovimNightly;
-          inherit plugins;
+        nvim = mkNeovim {
+          inherit plugins extraPackages;
         };
-        no-plugins-luarc-json = pkgs.mk-luarc-json {
+
+        nvim-dev =
+          let
+            devPkg = mkNeovim {
+              inherit plugins extraPackages;
+              devMode = true;
+            };
+
+            devBin = pkgs.writeShellScriptBin "nvim-dev" ''
+              if [[ ! $NVIM_PDE_DEV_CONFIG_PATH ]]; then
+                echo "must set NVIM_PDE_DEV_CONFIG_PATH"
+                exit 1
+              fi
+
+              XDG_CONFIG_DIRS="$NVIM_PDE_DEV_CONFIG_PATH" \
+                ${lib.getExe devPkg} -u $NVIM_PDE_DEV_CONFIG_PATH/nvim/init.lua "$@"
+            '';
+          in
+          devBin.overrideAttrs {
+            shellHook = ''
+              export NVIM_PDE_DEV_CONFIG_PATH="$PWD"
+            '';
+          };
+        nvim-typecheck = pkgs.callPackage ./nvim-typecheck.nix { };
+        nvim-luarc-json = pkgs.mk-luarc-json {
+          inherit plugins;
+          nvim = neovim-nightly;
+        };
+        busted-luarc-json = pkgs.mk-luarc-json {
           # use not-nightly neovim because busted uses that as well
         };
       };

@@ -23,14 +23,14 @@
                 path = fs.toSource {
                   root = ./..;
                   fileset = fs.unions [
-                    ./../config/nvim
+                    ./../nvim
                     ./../.luacheckrc
                   ];
                 };
               };
               doCheck = true;
               preCheck = ''
-                ln -s ${self'.packages.full-luarc-json} ./config/nvim/.luarc.json
+                ln -s ${self'.packages.nvim-luarc-json} ./nvim/.luarc.json
               '';
               checkPhase = ''
                 runHook preCheck
@@ -44,10 +44,10 @@
         in
         {
           luacheck = makeCheckJob "luacheck" ''
-            ${lib.getExe pkgs.lua.pkgs.luacheck} --codes --no-cache ./config/nvim
+            ${lib.getExe pkgs.lua.pkgs.luacheck} --codes --no-cache ./nvim
           '';
           typecheck = makeCheckJob "typecheck" ''
-            ${lib.getExe self'.packages.nvim-typecheck} ./config/nvim
+            ${lib.getExe self'.packages.nvim-typecheck} ./nvim
           '';
         };
     };

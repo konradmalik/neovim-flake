@@ -33,6 +33,9 @@ with pkgs;
   zls
 
   # debuggers
+  (writeShellScriptBin "debugpy" ''
+    exec ${python3.withPackages (p: [ p.debugpy ])}/bin/python "$@"
+  '')
   delve
   netcoredbg
 ]
