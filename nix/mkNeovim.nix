@@ -12,7 +12,7 @@
   devMode ? false,
 }:
 let
-  config = ../../nvim;
+  config = ../nvim;
   preparedConfig = linkFarm "${appName}-config" [
     {
       name = appName;
@@ -75,6 +75,6 @@ wrapNeovimUnstable nvim (
   // {
     luaRcContent = if devMode then "" else initLua;
     wrapperArgs = neovimConfig.wrapperArgs ++ extraWrapperArgs;
-    wrapRc = true;
+    wrapRc = !devMode;
   }
 )

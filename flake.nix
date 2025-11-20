@@ -17,10 +17,6 @@
       url = "github:mrcjkb/nix-gen-luarc-json";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs";
-    };
 
     # plugins
     SchemaStore-nvim = {
@@ -42,7 +38,6 @@
     git-conflict-nvim = {
       url = "github:konradmalik/git-conflict.nvim";
       inputs = {
-        flake-parts.follows = "flake-parts";
         gen-luarc.follows = "gen-luarc";
         nixpkgs.follows = "nixpkgs";
       };
@@ -54,7 +49,6 @@
     incomplete-nvim = {
       url = "github:konradmalik/incomplete.nvim";
       inputs = {
-        flake-parts.follows = "flake-parts";
         gen-luarc.follows = "gen-luarc";
         nixpkgs.follows = "nixpkgs";
       };
@@ -146,13 +140,102 @@
 
   outputs =
     inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-      imports = [ ./flake ];
+    let
+      nvim-overlay = import ./nix { inherit inputs; };
+
+      forAllSystems =
+        function:
+        inputs.nixpkgs.lib.genAttrs
+          [
+            "x86_64-linux"
+            "aarch64-linux"
+            "x86_64-darwin"
+            "aarch64-darwin"
+          ]
+          (
+            system:
+            function (
+              import inputs.nixpkgs {
+                inherit system;
+                overlays = [
+                  nvim-overlay
+                  inputs.gen-luarc.overlays.default
+                  inputs.neorocks.overlays.default
+                  (final: prev: {
+                    efm-langserver = inputs.efm-langserver.packages.${prev.system}.default;
+                    nvim-nightly = inputs.neovim-nightly-overlay.packages.${prev.system}.default;
+                  })
+                ];
+              }
+            )
+          );
+    in
+    {
+      devShells = forAllSystems (pkgs: {
+        default = pkgs.mkShell {
+          name = "neovim-shell";
+          shellHook =
+            pkgs.nvim-dev.shellHook
+            +
+            # bash
+            ''
+              ln -fs ${pkgs.nvim-luarc-json} ./nvim/.luarc.json
+              ln -fs ${pkgs.busted-luarc-json} ./spec/.luarc.json
+            '';
+          packages =
+            (with pkgs; [
+              gnumake
+              busted-nlua
+              luajitPackages.luacheck
+              stylua
+            ])
+            ++ (with pkgs; [
+              nvim-typecheck
+              nvim-dev
+            ]);
+        };
+      });
+
+      packages = forAllSystems (pkgs: {
+        default = pkgs.nvim-pkg;
+        nvim = pkgs.nvim-pkg;
+        nvim-dev = pkgs.nvim-dev;
+      });
+
+      apps = forAllSystems (
+        pkgs:
+        let
+          inherit (pkgs) lib;
+        in
+        rec {
+          default = nvim;
+          nvim = {
+            type = "app";
+            program = lib.getExe pkgs.nvim-pkg;
+          };
+          nvim-dev = {
+            type = "app";
+            program = lib.getExe pkgs.nvim-dev;
+          };
+        }
+      );
+
+      checks = forAllSystems (
+        pkgs:
+        let
+          inherit (pkgs) lib;
+          mkCheck = pkgs.callPackage ./nix/mkCheck.nix { };
+        in
+        {
+          luacheck = mkCheck "luacheck" ''
+            ${lib.getExe pkgs.lua.pkgs.luacheck} --codes --no-cache ./nvim
+          '';
+          typecheck = mkCheck "typecheck" ''
+            ${lib.getExe pkgs.nvim-typecheck} ./nvim
+          '';
+        }
+      );
+
+      formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
     };
 }

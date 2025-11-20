@@ -1,4 +1,4 @@
-{ efm-langserver, pkgs }:
+{ pkgs }:
 with pkgs;
 [
   # formatters

@@ -3,10 +3,9 @@
   neovimUtils,
 }:
 {
+  inputs,
   pkgs,
   lib,
-  inputs,
-  inputs',
 }:
 # notes:
 # - pname matters for packadd only
@@ -77,17 +76,21 @@ let
   # - does not work for src in buildVimPlugin
   # - plugins internally depend on vimUtils.plenary-nvim and similar either way
   plugins = rec {
-    git-conflict-nvim = inputs'.git-conflict-nvim.packages.git-conflict-nvim.overrideAttrs {
-      runtimeDeps = [ pkgs.git ];
-    };
-    inherit (inputs'.incomplete-nvim.packages) incomplete-nvim;
-    nvim-treesitter = inputs'.nvim-treesitter.packages.nvim-treesitter.withAllGrammars.overrideAttrs {
-      runtimeDeps = with pkgs; [
-        curl
-        gnutar
-        nodejs
-      ];
-    };
+    git-conflict-nvim =
+      inputs.git-conflict-nvim.packages.${pkgs.system}.git-conflict-nvim.overrideAttrs
+        {
+          runtimeDeps = [ pkgs.git ];
+        };
+    inherit (inputs.incomplete-nvim.packages.${pkgs.system}) incomplete-nvim;
+    nvim-treesitter =
+      inputs.nvim-treesitter.packages.${pkgs.system}.nvim-treesitter.withAllGrammars.overrideAttrs
+        {
+          runtimeDeps = with pkgs; [
+            curl
+            gnutar
+            nodejs
+          ];
+        };
 
     SchemaStore-nvim = buildVim {
       input = "SchemaStore-nvim";
