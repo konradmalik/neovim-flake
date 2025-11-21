@@ -1,4 +1,5 @@
 {
+  stdenvNoCC,
   vimUtils,
   neovimUtils,
 }:
@@ -11,6 +12,8 @@
 # - pname matters for packadd only
 # - require() is not influenced by any of the names here
 let
+  getSystem = attrset: attrset.${stdenvNoCC.hostPlatform.system};
+
   makePname =
     str:
     if lib.strings.hasSuffix "-nvim" str then
@@ -76,14 +79,12 @@ let
   # - does not work for src in buildVimPlugin
   # - plugins internally depend on vimUtils.plenary-nvim and similar either way
   plugins = rec {
-    git-conflict-nvim =
-      inputs.git-conflict-nvim.packages.${pkgs.system}.git-conflict-nvim.overrideAttrs
-        {
-          runtimeDeps = [ pkgs.git ];
-        };
-    inherit (inputs.incomplete-nvim.packages.${pkgs.system}) incomplete-nvim;
+    git-conflict-nvim = (getSystem inputs.git-conflict-nvim.packages).git-conflict-nvim.overrideAttrs {
+      runtimeDeps = [ pkgs.git ];
+    };
+    inherit (getSystem inputs.incomplete-nvim.packages) incomplete-nvim;
     nvim-treesitter =
-      inputs.nvim-treesitter.packages.${pkgs.system}.nvim-treesitter.withAllGrammars.overrideAttrs
+      (getSystem inputs.nvim-treesitter.packages).nvim-treesitter.withAllGrammars.overrideAttrs
         {
           runtimeDeps = with pkgs; [
             curl
