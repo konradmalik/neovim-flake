@@ -79,10 +79,8 @@ let
   # - does not work for src in buildVimPlugin
   # - plugins internally depend on vimUtils.plenary-nvim and similar either way
   plugins = rec {
-    git-conflict-nvim = (getSystem inputs.git-conflict-nvim.packages).git-conflict-nvim.overrideAttrs {
-      runtimeDeps = [ pkgs.git ];
-    };
     inherit (getSystem inputs.incomplete-nvim.packages) incomplete-nvim;
+    inherit (getSystem inputs.git-conflict-nvim.packages) git-conflict-nvim;
     nvim-treesitter =
       (getSystem inputs.nvim-treesitter.packages).nvim-treesitter.withAllGrammars.overrideAttrs
         {

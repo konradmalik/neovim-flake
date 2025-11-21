@@ -162,7 +162,7 @@
                   inputs.gen-luarc.overlays.default
                   inputs.neorocks.overlays.default
                   (final: prev: {
-                    efm-langserver = inputs.efm-langserver.packages.${system}.default;
+                    inherit (inputs.efm-langserver.packages.${system}) efm-langserver;
                     nvim-nightly = inputs.neovim-nightly-overlay.packages.${system}.default;
                   })
                 ];
