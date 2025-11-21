@@ -69,12 +69,24 @@ let
     withNodeJs = false;
     withRuby = false;
   };
+
+  nvim-wrapped = wrapNeovimUnstable nvim (
+    neovimConfig
+    // {
+      luaRcContent = if devMode then "" else initLua;
+      wrapperArgs = neovimConfig.wrapperArgs ++ extraWrapperArgs;
+      wrapRc = !devMode;
+    }
+  );
+
+  isCustomAppName = appName != null && appName != "nvim";
 in
-wrapNeovimUnstable nvim (
-  neovimConfig
-  // {
-    luaRcContent = if devMode then "" else initLua;
-    wrapperArgs = neovimConfig.wrapperArgs ++ extraWrapperArgs;
-    wrapRc = !devMode;
-  }
-)
+nvim-wrapped.overrideAttrs (oa: {
+  buildPhase =
+    oa.buildPhase
+    # If a custom NVIM_APPNAME has been set, rename the `nvim` binary
+    + lib.optionalString isCustomAppName ''
+      mv $out/bin/nvim $out/bin/${lib.escapeShellArg appName}
+    '';
+  meta.mainProgram = if isCustomAppName then appName else oa.meta.mainProgram;
+})

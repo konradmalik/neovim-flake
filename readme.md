@@ -27,7 +27,7 @@ $ make test
 ## Assumptions
 
 - keeps all Neovim config in lua as it's supposed to be
-- uses nix for system dependencies, plugins and packaging
+- uses nix for system dependencies, plugins, and packaging
 
 That way nix is a layer on top, just used for packaging and reproducibility. It does not interfere with the standard way
 to configure Neovim.
@@ -42,32 +42,15 @@ Assuming that this project has a devshell defined, you can just enter that devsh
 The older `black` from the devshell will take precedence over the one provided by this flake, because devshell works by
 prepending to PATH.
 
-### Home Manager
-
-There is a home-manager module provided with some additional options and QOL improvements.
-
-### Self-contained mode
-
-When running/using `neovim-pde` from the flake directly it runs in `self-contained` mode.
-
-This means that it appends its config in nix store to your `$XDG_CONFIG_DIRS` and use `-u` flag to force-load this specific `init.lua`.
-This means that any `init.lua` in your local `$XDG_CONFIG_HOME/$NVIM_APPNAME` won't be loaded, even if `$NVIM_APPNAME` is `neovim-pde`
-(I think that `after` folders and others that don't need to be required explicitly will be loaded, so those should work if put to the proper `$NVIM_APPNAME` folder, but I've never tested this).
-
-That also means that `exrc` functionality won't work (e.g. local `.nvim.lua` files won't be loaded automatically).
-If you rely on that feature (I sometimes do) then consider using the provided home-manager module.
-
 ## Experimentation
 
 One of the cons of using Neovim in nix is - no "dirty" modifications to Neovim to try something out quickly. Experimentation becomes harder.
 You always need to rebuild it, but `nix build` and then `./result/bin/nvim` is quick and easy enough for it to not be a deal-breaker.
 
 Another solution implemented in this repo is `nvim-dev` command that becomes available inside devShell here.
-It runs the neovim package defined in the repo with plugins and `nix`-generated lua files provided, but the native lua
-config gets read "live" from `./config/nvim` here in the repo. This allows for instant feedback and dynamic
-development just like when using neovim without nix.
-
-Note that `nvim-dev` uses `-u` flag, which means that `exrc` functionality won't work (e.g. local `.nvim.lua` files won't be loaded automatically).
+It runs the neovim package defined in the repo with `plugins` and `extraPackages` provided, but the native lua
+config gets read "live" from `~/.config/nvim-dev` which is linked to `nvim` folder here in the repo.
+This allows for instant feedback and dynamic development just like when using neovim without nix.
 
 ## Credits
 
