@@ -9,7 +9,7 @@ jobs:
   flake-check:
     runs-on: macos-15-intel
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@v21
         with:
           extra-conf: |
@@ -22,7 +22,7 @@ jobs:
     needs:
       - flake-check
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@v21
         with:
           extra-conf: |
@@ -40,7 +40,7 @@ jobs:
     needs:
       - build-shell
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@v21
         with:
           extra-conf: |
@@ -53,7 +53,7 @@ jobs:
     needs:
       - tests
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@v21
         with:
           extra-conf: |
