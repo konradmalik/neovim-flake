@@ -213,10 +213,6 @@
             type = "app";
             program = lib.getExe pkgs.nvim-pkg;
           };
-          nvim-dev = {
-            type = "app";
-            program = lib.getExe pkgs.nvim-dev;
-          };
         }
       );
 
