@@ -141,7 +141,7 @@
   outputs =
     inputs:
     let
-      nvim-overlay = import ./nix { inherit inputs; };
+      nvim-overlay = import ./nix/overlay.nix { inherit inputs; };
 
       forAllSystems =
         function:

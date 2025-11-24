@@ -1,9 +1,9 @@
-{ inputs }:
-final: prev:
+{
+  pkgs,
+  lib,
+  inputs,
+}:
 let
-  pkgs = final;
-  inherit (pkgs) lib;
-
   mkNeovim = pkgs.callPackage ./mkNeovim.nix { nvim = pkgs.nvim-nightly; };
 
   mkPlugins = pkgs.callPackage ./plugins.nix { };
