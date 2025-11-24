@@ -12,16 +12,26 @@
   devMode ? false,
 }:
 let
-  config = ../nvim;
+  # config without init.lua, because we explicitly load init.lua with luaRcContent
+  configDir =
+    let
+      src = ../nvim;
+    in
+    lib.cleanSourceWith {
+      inherit src;
+      name = "${appName}-config-dir";
+      filter = path: _type: !lib.hasSuffix "/nvim/init.lua" path;
+    };
+
+  # prepend config with appName for it to be loadable from XDG_CONFIG_DIRS
   preparedConfig = linkFarm "${appName}-config" [
     {
       name = appName;
-      path = config;
+      path = configDir;
     }
   ];
 
-  initLua = builtins.readFile "${config}/init.lua";
-  # # Wrap init.lua
+  initLua = builtins.readFile ../nvim/init.lua;
   # # Bootstrap/load dev plugins
   # + lib.optionalString (devPlugins != [ ]) (
   #   ''
