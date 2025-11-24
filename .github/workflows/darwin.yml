@@ -10,7 +10,7 @@ jobs:
     runs-on: macos-15-intel
     steps:
       - uses: actions/checkout@v5
-      - uses: DeterminateSystems/nix-installer-action@v20
+      - uses: DeterminateSystems/nix-installer-action@v21
         with:
           extra-conf: |
             accept-flake-config = true
@@ -23,7 +23,7 @@ jobs:
       - flake-check
     steps:
       - uses: actions/checkout@v5
-      - uses: DeterminateSystems/nix-installer-action@v20
+      - uses: DeterminateSystems/nix-installer-action@v21
         with:
           extra-conf: |
             accept-flake-config = true
@@ -41,7 +41,7 @@ jobs:
       - build-shell
     steps:
       - uses: actions/checkout@v5
-      - uses: DeterminateSystems/nix-installer-action@v20
+      - uses: DeterminateSystems/nix-installer-action@v21
         with:
           extra-conf: |
             accept-flake-config = true
@@ -54,7 +54,7 @@ jobs:
       - tests
     steps:
       - uses: actions/checkout@v5
-      - uses: DeterminateSystems/nix-installer-action@v20
+      - uses: DeterminateSystems/nix-installer-action@v21
         with:
           extra-conf: |
             accept-flake-config = true
