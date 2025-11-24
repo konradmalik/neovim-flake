@@ -9,7 +9,7 @@ jobs:
   flake-check:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: wimpysworld/nothing-but-nix@v6
       - uses: DeterminateSystems/nix-installer-action@v21
         with:
@@ -23,7 +23,7 @@ jobs:
     needs:
       - flake-check
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: wimpysworld/nothing-but-nix@v6
       - uses: DeterminateSystems/nix-installer-action@v21
         with:
@@ -42,7 +42,7 @@ jobs:
     needs:
       - build-shell
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: wimpysworld/nothing-but-nix@v6
       - uses: DeterminateSystems/nix-installer-action@v21
         with:
@@ -62,7 +62,7 @@ jobs:
     needs:
       - tests
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: wimpysworld/nothing-but-nix@v6
       - uses: DeterminateSystems/nix-installer-action@v21
         with:
