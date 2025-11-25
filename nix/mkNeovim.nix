@@ -1,6 +1,9 @@
 {
   nvim,
   neovimUtils,
+  git,
+  stdenv,
+  sqlite,
   wrapNeovimUnstable,
   linkFarm,
   lib,
@@ -9,6 +12,9 @@
   plugins ? [ ],
   extraPackages ? [ ],
   appName ? "nvim",
+  # plugins added via vim.pack, useful for plugin development
+  # schema: { name = <name>, uri = <any git-compatible uri> }
+  devPlugins ? [ ],
   devMode ? false,
 }:
 let
@@ -31,45 +37,59 @@ let
     }
   ];
 
-  initLua = builtins.readFile ../nvim/init.lua;
-  # # Bootstrap/load dev plugins
-  # + lib.optionalString (devPlugins != [ ]) (
-  #   ''
-  #     local dev_pack_path = vim.fn.stdpath('data') .. '/site/pack/dev'
-  #     local dev_plugins_dir = dev_pack_path .. '/opt'
-  #     local dev_plugin_path
-  #   ''
-  #   + strings.concatMapStringsSep "\n" (plugin: ''
-  #     dev_plugin_path = dev_plugins_dir .. '/${plugin.name}'
-  #     if vim.fn.empty(vim.fn.glob(dev_plugin_path)) > 0 then
-  #       vim.notify('Bootstrapping dev plugin ${plugin.name} ...', vim.log.levels.INFO)
-  #       vim.cmd('!${git}/bin/git clone ${plugin.url} ' .. dev_plugin_path)
-  #     end
-  #     vim.cmd('packadd! ${plugin.name}')
-  #   '') devPlugins
+  initLua =
+    builtins.readFile ../nvim/init.lua
+    + lib.optionalString (devPlugins != [ ]) (
+      let
+        specs = lib.concatMapStringsSep ", " (
+          plugin: "{ name = '${plugin.name}', src = '${plugin.uri}'}"
+        ) devPlugins;
+        names = lib.concatMapStringsSep ", " (plugin: "'${plugin.name}'") devPlugins;
+      in
+      # lua
+      ''
+        vim.pack.add({ ${specs} }, { confirm = false, load = true })
+        vim.pack.update({ ${names} }, { force = true })
+      ''
+    );
 
-  extraWrapperArgs = [
-    "--set"
-    "NVIM_APPNAME"
-    appName
-  ]
-  ++ lib.optionals (extraPackages != [ ]) [
-    "--suffix"
-    "PATH"
-    ":"
-    "${lib.makeBinPath extraPackages}"
-  ]
-  ++ lib.optionals (!devMode) [
-    "--prefix"
-    "XDG_CONFIG_DIRS"
-    ":"
-    "${preparedConfig}"
-  ]
-  ++ lib.optionals devMode [
-    "--set"
-    "XDG_CACHE_HOME"
-    "/tmp/${appName}-cache"
-  ];
+  # sqlite is required by some plugins, just add it always
+  # git is required by vim.pack
+  externalPackages = extraPackages ++ [ sqlite ] ++ lib.optionals (devPlugins != [ ]) [ git ];
+
+  extraWrapperArgs =
+    let
+      sqliteLibExt = stdenv.hostPlatform.extensions.sharedLibrary;
+      sqliteLibPath = "${sqlite.out}/lib/libsqlite3${sqliteLibExt}";
+    in
+    [
+      "--set"
+      "NVIM_APPNAME"
+      appName
+      "--set"
+      "LIBSQLITE_CLIB_PATH"
+      "${sqliteLibPath}"
+      "--set"
+      "LIBSQLITE"
+      "${sqliteLibPath}"
+    ]
+    ++ lib.optionals (extraPackages != [ ]) [
+      "--suffix"
+      "PATH"
+      ":"
+      "${lib.makeBinPath externalPackages}"
+    ]
+    ++ lib.optionals (!devMode) [
+      "--prefix"
+      "XDG_CONFIG_DIRS"
+      ":"
+      "${preparedConfig}"
+    ]
+    ++ lib.optionals devMode [
+      "--set"
+      "XDG_CACHE_HOME"
+      "/tmp/${appName}-cache"
+    ];
 
   neovimConfig = neovimUtils.makeNeovimConfig {
     inherit plugins;
