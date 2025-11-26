@@ -79,7 +79,7 @@ local function handle_fix_all_code_action(client, data)
             data = data.arguments[1],
             scope = flavor,
         }, function(err, response)
-            if err then vim.notify(err.message, vim.log.levels.ERROR, { title = "roslyn.nvim" }) end
+            if err then vim.notify(err.message, vim.log.levels.ERROR, { title = "roslyn_ls" }) end
             if response and response.edit then
                 vim.lsp.util.apply_workspace_edit(response.edit, client.offset_encoding)
             end
@@ -87,6 +87,78 @@ local function handle_fix_all_code_action(client, data)
     end)
 end
 
+local progressToken = 0
+---@param client_id integer
+---@param value LspProgress
+local function trigger_lsp_progress(client_id, value)
+    if value.message then value.message = value.message:gsub("[\r\n]", "") end
+
+    progressToken = progressToken + 1
+    vim.api.nvim_exec_autocmds("LspProgress", {
+        data = {
+            client_id = client_id,
+            params = {
+                token = progressToken,
+                value = value,
+            },
+        },
+    })
+end
+
+local initialization_title = "Initialization"
+local restore_title = "Restore"
+
+---@param client vim.lsp.Client
+---@param target string
+local function on_init_sln(client, target)
+    trigger_lsp_progress(
+        client.id,
+        ---@type lsp.WorkDoneProgressBegin
+        {
+            title = initialization_title,
+            kind = "begin",
+            message = target,
+        }
+    )
+    ---@diagnostic disable-next-line: param-type-mismatch
+    client:notify("solution/open", {
+        solution = vim.uri_from_fname(target),
+    })
+end
+
+---@param client vim.lsp.Client
+---@param project_files string[]
+local function on_init_project(client, project_files)
+    trigger_lsp_progress(
+        client.id,
+        ---@type lsp.WorkDoneProgressBegin
+        {
+            title = initialization_title,
+            kind = "begin",
+            message = table.concat(project_files, ", "),
+        }
+    )
+    ---@diagnostic disable-next-line: param-type-mismatch
+    client:notify("project/open", {
+        projects = vim.tbl_map(function(file) return vim.uri_from_fname(file) end, project_files),
+    })
+end
+
+---@param client vim.lsp.Client
+local function refresh_diagnostics(client)
+    for buf, _ in pairs(client.attached_buffers) do
+        if vim.api.nvim_buf_is_loaded(buf) then
+            client:request(
+                vim.lsp.protocol.Methods.textDocument_diagnostic,
+                { textDocument = vim.lsp.util.make_text_document_params(buf) },
+                nil,
+                buf
+            )
+        end
+    end
+end
+
+---@type vim.lsp.Config
 return {
     settings = {
         -- avoid fullSolution because it's slow for large codebases
@@ -96,7 +168,23 @@ return {
         },
     },
     handlers = {
-        ["workspace/_roslyn_projectNeedsRestore"] = function(_, result, ctx)
+        ["workspace/projectInitializationComplete"] = function(err, _, ctx)
+            local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+            refresh_diagnostics(client)
+            local message = err and "Error: " .. err or nil
+
+            trigger_lsp_progress(
+                ctx.client_id,
+                ---@type lsp.WorkDoneProgressEnd
+                {
+                    title = initialization_title,
+                    kind = "end",
+                    message = message,
+                }
+            )
+            return vim.NIL
+        end,
+        ["workspace/_roslyn_projectNeedsRestore"] = function(err, result, ctx)
             -- FIXME: workaround for roslyn_ls bug (sends here .cs files for some reason)
             -- started around 5.0.0-1.25263.3
             local project_file_paths = vim.tbl_get(result, "projectFilePaths") or {}
@@ -116,20 +204,65 @@ return {
                 end
             end
 
-            local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+            if err then
+                trigger_lsp_progress(
+                    ctx.client_id,
+                    ---@type lsp.WorkDoneProgressEnd
+                    {
+                        title = restore_title,
+                        kind = "end",
+                        message = "Error: " .. err,
+                    }
+                )
+                return
+            end
 
+            trigger_lsp_progress(
+                ctx.client_id,
+                ---@type lsp.WorkDoneProgressBegin
+                {
+                    title = restore_title,
+                    kind = "begin",
+                }
+            )
+
+            local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
             client:request(
                 ---@diagnostic disable-next-line: param-type-mismatch
                 "workspace/_roslyn_restore",
                 { projectFilePaths = project_file_paths },
-                function(err, response)
-                    if err then
-                        vim.notify(err.message, vim.log.levels.ERROR, { title = "roslyn_ls" })
+                function(err2, response)
+                    if err2 then
+                        trigger_lsp_progress(
+                            ctx.client_id,
+                            ---@type lsp.WorkDoneProgressEnd
+                            {
+                                title = restore_title,
+                                kind = "end",
+                                message = "Error: " .. err2.message,
+                            }
+                        )
                     end
                     if response then
                         for _, v in ipairs(response) do
-                            vim.notify(v.message, vim.log.levels.INFO, { title = "roslyn_ls" })
+                            trigger_lsp_progress(
+                                ctx.client_id,
+                                ---@type lsp.WorkDoneProgressReport
+                                {
+                                    title = restore_title,
+                                    kind = "report",
+                                    message = v.message,
+                                }
+                            )
                         end
+                        trigger_lsp_progress(
+                            ctx.client_id,
+                            ---@type lsp.WorkDoneProgressEnd
+                            {
+                                title = restore_title,
+                                kind = "end",
+                            }
+                        )
                     end
                 end
             )
@@ -159,7 +292,7 @@ return {
                         ---@diagnostic disable-next-line: param-type-mismatch
                     }, function(err, response)
                         if err then
-                            vim.notify(err.message, vim.log.levels.ERROR, { title = "roslyn.nvim" })
+                            vim.notify(err.message, vim.log.levels.ERROR, { title = "roslyn_ls" })
                         end
                         if response and response.edit then
                             vim.lsp.util.apply_workspace_edit(response.edit, client.offset_encoding)
@@ -218,6 +351,28 @@ return {
             local filter = table.concat(filters, ".")
             local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
             testRun(client.root_dir, filter)
+        end,
+    },
+    on_init = {
+        function(client)
+            local root_dir = client.config.root_dir
+
+            -- try load first solution we find
+            for entry, type in vim.fs.dir(root_dir) do
+                if
+                    type == "file" and (vim.endswith(entry, ".sln") or vim.endswith(entry, ".slnx"))
+                then
+                    on_init_sln(client, vim.fs.joinpath(root_dir, entry))
+                    return
+                end
+            end
+
+            -- if no solution is found load project
+            for entry, type in vim.fs.dir(root_dir) do
+                if type == "file" and vim.endswith(entry, ".csproj") then
+                    on_init_project(client, { vim.fs.joinpath(root_dir, entry) })
+                end
+            end
         end,
     },
 }

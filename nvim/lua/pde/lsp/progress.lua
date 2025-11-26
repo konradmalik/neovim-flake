@@ -230,7 +230,7 @@ local function lsp_progress_handler(args)
 end
 
 local group = vim.api.nvim_create_augroup("lsp_progress", { clear = true })
-vim.api.nvim_create_autocmd({ "LspProgress" }, {
+vim.api.nvim_create_autocmd("LspProgress", {
     group = group,
     callback = lsp_progress_handler,
 })
