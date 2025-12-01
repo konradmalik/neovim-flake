@@ -269,6 +269,9 @@ return {
 
             return vim.NIL
         end,
+    },
+    commands = {
+        ["roslyn.client.peekReferences"] = function() vim.lsp.buf.references() end,
         ["roslyn.client.fixAllCodeAction"] = function(data, ctx)
             local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
             handle_fix_all_code_action(client, data)
@@ -301,9 +304,6 @@ return {
                 end
             end)
         end,
-    },
-    commands = {
-        ["roslyn.client.peekReferences"] = function() vim.lsp.buf.references() end,
         ["dotnet.test.run"] = function(command, ctx)
             if not validate_command(command) then return end
 
