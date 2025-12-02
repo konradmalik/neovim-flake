@@ -13,9 +13,5 @@ writeShellScriptBin "nvim-typecheck" ''
     exit 1
   fi
 
-  scratch="$(mktemp -d)"
-  ${lib.getExe lua-language-server} \
-      --metapath="$scratch" \
-      --logpath="$scratch" \
-      --check=$check_folder
+  ${lib.getExe lua-language-server} --check="$check_folder"
 ''
