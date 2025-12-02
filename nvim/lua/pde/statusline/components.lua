@@ -8,12 +8,12 @@ local utils = require("pde.statusline.utils")
 local function wrap_hl(hl, s) return "%#" .. hl .. "#" .. s .. "%*" end
 
 local colors = {
-    green = "String",
-    blue = "Function",
-    gray = "NonText",
-    orange = "Constant",
-    purple = "Statement",
-    cyan = "Special",
+    string = "String",
+    func = "Function",
+    nontext = "NonText",
+    constant = "Constant",
+    statement = "Statement",
+    special = "Special",
     diag_warn = "DiagnosticWarn",
     diag_error = "DiagnosticError",
     diag_hint = "DiagnosticHint",
@@ -37,50 +37,50 @@ local format_types = {
 }
 
 local modes = {
-    ["n"] = { "N", colors.blue },
-    ["no"] = { "N?", colors.blue },
-    ["nov"] = { "N?", colors.blue },
-    ["noV"] = { "N?", colors.blue },
-    ["no\22"] = { "N?", colors.blue },
-    ["niI"] = { "Ni", colors.blue },
-    ["niR"] = { "Nr", colors.blue },
-    ["niV"] = { "Nv", colors.blue },
-    ["nt"] = { "Nt", colors.blue },
-    ["ntT"] = { "Nt", colors.blue },
+    ["n"] = { "N", colors.func },
+    ["no"] = { "N?", colors.func },
+    ["nov"] = { "N?", colors.func },
+    ["noV"] = { "N?", colors.func },
+    ["no\22"] = { "N?", colors.func },
+    ["niI"] = { "Ni", colors.func },
+    ["niR"] = { "Nr", colors.func },
+    ["niV"] = { "Nv", colors.func },
+    ["nt"] = { "Nt", colors.func },
+    ["ntT"] = { "Nt", colors.func },
 
-    ["v"] = { "V", colors.cyan },
-    ["vs"] = { "Vs", colors.cyan },
-    ["V"] = { "V_", colors.cyan },
-    ["Vs"] = { "Vs", colors.cyan },
-    [""] = { "^V", colors.cyan },
-    ["s"] = { "^V", colors.cyan },
+    ["v"] = { "V", colors.special },
+    ["vs"] = { "Vs", colors.special },
+    ["V"] = { "V_", colors.special },
+    ["Vs"] = { "Vs", colors.special },
+    [""] = { "^V", colors.special },
+    ["s"] = { "^V", colors.special },
 
-    ["s"] = { "S", colors.purple },
-    ["S"] = { "S_", colors.purple },
-    [""] = { "^S", colors.purple },
+    ["s"] = { "S", colors.statement },
+    ["S"] = { "S_", colors.statement },
+    [""] = { "^S", colors.statement },
 
-    ["i"] = { "I", colors.green },
-    ["ic"] = { "Ic", colors.green },
-    ["ix"] = { "Ix", colors.green },
+    ["i"] = { "I", colors.string },
+    ["ic"] = { "Ic", colors.string },
+    ["ix"] = { "Ix", colors.string },
 
-    ["R"] = { "R", colors.orange },
-    ["Rc"] = { "Rc", colors.orange },
-    ["Rx"] = { "Rx", colors.orange },
-    ["Rv"] = { "Rv", colors.orange },
-    ["Rvc"] = { "Rv", colors.orange },
-    ["Rvx"] = { "Rv", colors.orange },
+    ["R"] = { "R", colors.constant },
+    ["Rc"] = { "Rc", colors.constant },
+    ["Rx"] = { "Rx", colors.constant },
+    ["Rv"] = { "Rv", colors.constant },
+    ["Rvc"] = { "Rv", colors.constant },
+    ["Rvx"] = { "Rv", colors.constant },
 
-    ["c"] = { "c", colors.orange },
-    ["cv"] = { "Ex", colors.orange },
-    ["ce"] = { "Ex", colors.orange },
-    ["r"] = { "...", colors.orange },
-    ["rm"] = { "M", colors.orange },
-    ["r?"] = { "?", colors.orange },
-    ["!"] = { "!", colors.orange },
+    ["c"] = { "c", colors.constant },
+    ["cv"] = { "Ex", colors.constant },
+    ["ce"] = { "Ex", colors.constant },
+    ["r"] = { "...", colors.constant },
+    ["rm"] = { "M", colors.constant },
+    ["r?"] = { "?", colors.constant },
+    ["!"] = { "!", colors.constant },
 
-    ["x"] = { "X", colors.purple },
+    ["x"] = { "X", colors.statement },
 
-    ["t"] = { "T", colors.blue },
+    ["t"] = { "T", colors.func },
 }
 
 local M = {}
@@ -94,7 +94,7 @@ M.cut = "%<"
 M.busy = function()
     local busy = vim.bo[utils.stbufnr()].busy
     if busy == 0 then return "" end
-    return wrap_hl(colors.purple, "<buffer is busy>")
+    return wrap_hl(colors.statement, "<buffer is busy>")
 end
 
 M.mode = function()
@@ -120,8 +120,8 @@ M.fileinfo = function(active)
     local icon, ihl, _ = mini_icons.get("file", bufname)
     local hl
     if not active then
-        ihl = colors.gray
-        hl = colors.gray
+        ihl = colors.nontext
+        hl = colors.nontext
     else
         hl = colors.text
     end
@@ -147,13 +147,13 @@ M.fileinfo = function(active)
 end
 
 M.fileformat = function()
-    return wrap_hl(colors.gray, format_types[vim.bo[utils.stbufnr()].fileformat])
+    return wrap_hl(colors.nontext, format_types[vim.bo[utils.stbufnr()].fileformat])
 end
 
 M.git = function()
     local head = vim.b[utils.stbufnr()].gitsigns_head
     if not head then return "" end
-    return wrap_hl(colors.orange, icons.git.Branch .. " " .. head)
+    return wrap_hl(colors.constant, icons.git.Branch .. " " .. head)
 end
 
 M.gitchanges = function()
@@ -205,7 +205,7 @@ end
 M.file_encoding = function()
     local encode = vim.bo[utils.stbufnr()].fileencoding
     if encode == "" then encode = "none" end
-    return wrap_hl(colors.gray, encode:lower())
+    return wrap_hl(colors.nontext, encode:lower())
 end
 
 M.LSP_status = function()
@@ -214,13 +214,13 @@ M.LSP_status = function()
     if numClients == 0 then return "" end
 
     local icon = numClients > 1 and icons.ui.HexagonAll or icons.ui.Hexagon
-    if numClients >= 3 then return wrap_hl(colors.green, icon .. " " .. numClients .. " LSPs") end
+    if numClients >= 3 then return wrap_hl(colors.string, icon .. " " .. numClients .. " LSPs") end
 
     local texts = { icon }
     for _, server in pairs(clients) do
         table.insert(texts, server.name)
     end
-    return wrap_hl(colors.green, table.concat(texts, " "))
+    return wrap_hl(colors.string, table.concat(texts, " "))
 end
 
 M.DAP_status = function()
@@ -245,7 +245,7 @@ do
     local hostname
     M.hostname = function()
         if not hostname then
-            hostname = wrap_hl(colors.blue, icons.ui.Terminal .. " " .. vim.fn.hostname())
+            hostname = wrap_hl(colors.func, icons.ui.Terminal .. " " .. vim.fn.hostname())
         end
         return hostname
     end
@@ -254,7 +254,7 @@ end
 do
     local ruler
     M.ruler = function()
-        if not ruler then ruler = wrap_hl(colors.purple, "[%7(%l/%3L%):%2c %P]") end
+        if not ruler then ruler = wrap_hl(colors.statement, "[%7(%l/%3L%):%2c %P]") end
         return ruler
     end
 end
@@ -264,7 +264,7 @@ M.scrollbar = function()
     local lines = vim.api.nvim_buf_line_count(utils.stbufnr())
     if lines == 0 then return sbar[1] end
     local i = math.floor((curr_line - 1) / lines * #sbar) + 1
-    return wrap_hl(colors.blue, sbar[i])
+    return wrap_hl(colors.func, sbar[i])
 end
 
 -- test_status = function()
