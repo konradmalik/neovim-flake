@@ -32,24 +32,6 @@
         "type": "github"
       }
     },
-    "efm-langserver": {
-      "inputs": {
-        "nixpkgs": "nixpkgs"
-      },
-      "locked": {
-        "lastModified": 1764753761,
-        "narHash": "sha256-bkTKnBsIXrJAMi0TkJmhHTjPLG5Sk9bhMh3E4+8lBLk=",
-        "owner": "konradmalik",
-        "repo": "efm-langserver",
-        "rev": "df6d2a52fe80ad03cee8d9d43d372ee0f78f2f98",
-        "type": "github"
-      },
-      "original": {
-        "owner": "konradmalik",
-        "repo": "efm-langserver",
-        "type": "github"
-      }
-    },
     "efmls-configs-nvim": {
       "flake": false,
       "locked": {
@@ -186,6 +168,24 @@
       "original": {
         "owner": "hercules-ci",
         "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "flint-ls": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1764754370,
+        "narHash": "sha256-3x0+fxIdibowToHGgdO4RRINsdiU0pg2fMWkywrHafI=",
+        "owner": "konradmalik",
+        "repo": "flint-ls",
+        "rev": "222413df5c27e4320fcf8546343789d9ad4603f5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "konradmalik",
+        "repo": "flint-ls",
         "type": "github"
       }
     },
@@ -815,8 +815,8 @@
       "inputs": {
         "SchemaStore-nvim": "SchemaStore-nvim",
         "boole-nvim": "boole-nvim",
-        "efm-langserver": "efm-langserver",
         "efmls-configs-nvim": "efmls-configs-nvim",
+        "flint-ls": "flint-ls",
         "friendly-snippets": "friendly-snippets",
         "gen-luarc": "gen-luarc",
         "git-conflict-nvim": "git-conflict-nvim",

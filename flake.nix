@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
-    efm-langserver.url = "github:konradmalik/efm-langserver";
+    flint-ls.url = "github:konradmalik/flint-ls";
 
     neorocks = {
       url = "github:lumen-oss/neorocks";
@@ -162,7 +162,7 @@
                   inputs.gen-luarc.overlays.default
                   inputs.neorocks.overlays.default
                   (final: prev: {
-                    inherit (inputs.efm-langserver.packages.${system}) efm-langserver;
+                    inherit (inputs.flint-ls.packages.${system}) flint-ls;
                     nvim-nightly = inputs.neovim-nightly-overlay.packages.${system}.default;
                   })
                 ];

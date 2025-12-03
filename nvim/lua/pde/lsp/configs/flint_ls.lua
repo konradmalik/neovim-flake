@@ -1,6 +1,6 @@
--- https://github.com/konradmalik/efm-langserver
+-- https://github.com/konradmalik/flint-ls
 
----@class EfmEntry
+---@class FlintEntry
 ---@field formatCommand? string[]|string
 ---@field formatStdin? boolean
 ---@field formatCanRange? boolean
@@ -14,13 +14,13 @@
 ---@field lintCategoryMap? { I: string, R: string, C: string, W: string, E: string, F: string }
 ---@field rootMarkers? string[]
 
----Build an LspConfig table from the specified EFM plugins
----@param name string unique name of this efm instance
+---Build an LspConfig table from the specified flint plugins
+---@param name string unique name of this flint instance
 ---@param configs string[] a list config names, ex. {'prettier', 'jq'}
 ---@param languages string[] language (ft) names, ex. {'json','jsonc'}
 ---@return vim.lsp.Config
 local function build(name, configs, languages)
-    ---@type table<string, EfmEntry[]>
+    ---@type table<string, FlintEntry[]>
     local languages_setting = {}
     local allRootMarkers = {}
     local formattingEnabled = false
@@ -61,7 +61,7 @@ local function build(name, configs, languages)
     ---@type vim.lsp.Config
     return {
         name = name,
-        cmd = { "efm-langserver" },
+        cmd = { "flint-ls" },
         init_options = {
             documentFormatting = formattingEnabled,
             documentRangeFormatting = rangeFormattingEnabled,
@@ -76,7 +76,7 @@ local function build(name, configs, languages)
 end
 
 return {
-    ---Build an LspConfig table from the specified EFM plugin
+    ---Build an LspConfig table from the specified flint plugin
     ---@param plugin string config name, ex. "prettier"
     ---@param languages string|string[] language (ft) names
     ---@return vim.lsp.Config
@@ -85,8 +85,8 @@ return {
         return build(plugin, { plugin }, languages)
     end,
 
-    ---Build an LspConfig table from the specified EFM plugins
-    ---@param name string unique name of this efm instance
+    ---Build an LspConfig table from the specified flint plugins
+    ---@param name string unique name of this flint-ls instance
     ---@param configs string[] a list config names, ex. {'prettier', 'jq'}
     ---@param languages string|string[] language (ft) names, ex. {'json','jsonc'}
     ---@return vim.lsp.Config

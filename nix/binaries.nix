@@ -19,7 +19,7 @@ with pkgs;
   # lsps
   basedpyright
   clang-tools
-  efm-langserver
+  flint-ls
   gopls
   harper
   lua-language-server

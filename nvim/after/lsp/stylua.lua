@@ -1,1 +1,1 @@
-return require("pde.lsp.configs.efm").config_from_single("stylua", "lua")
+return require("pde.lsp.configs.flint_ls").config_from_single("stylua", "lua")
