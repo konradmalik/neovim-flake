@@ -75,9 +75,23 @@ let
       pname = makePname input;
     };
 
-  # why not simple overrideAttrs?
-  # - does not work for src in buildVimPlugin
-  # - plugins internally depend on vimUtils.plenary-nvim and similar either way
+  libs = {
+    nvim-nio = buildVim {
+      input = "nvim-nio";
+    };
+
+    plenary-nvim =
+      (buildNeovim {
+        input = "plenary-nvim";
+      }).overrideAttrs
+        {
+          postPatch = ''
+            sed -Ei lua/plenary/curl.lua \
+                -e 's@(command\s*=\s*")curl(")@\1${lib.getExe pkgs.curl}\2@'
+          '';
+        };
+  };
+
   plugins = rec {
     inherit (getSystem inputs.incomplete-nvim.packages) incomplete-nvim;
     inherit (getSystem inputs.git-conflict-nvim.packages) git-conflict-nvim;
@@ -125,7 +139,7 @@ let
       input = "nvim-dap-ui";
       dependencies = [
         nvim-dap
-        nvim-nio
+        libs.nvim-nio
       ];
     };
     nvim-dap-virtual-text = buildVim {
@@ -138,30 +152,17 @@ let
     nvim-luaref = buildVim {
       input = "nvim-luaref";
     };
-    nvim-nio = buildVim {
-      input = "nvim-nio";
-    };
     nvim-treesitter-context = buildVim {
       input = "nvim-treesitter-context";
     };
     oil-nvim = buildVim {
       input = "oil-nvim";
     };
-    plenary-nvim =
-      (buildNeovim {
-        input = "plenary-nvim";
-      }).overrideAttrs
-        {
-          postPatch = ''
-            sed -Ei lua/plenary/curl.lua \
-                -e 's@(command\s*=\s*")curl(")@\1${lib.getExe pkgs.curl}\2@'
-          '';
-        };
     telescope-fzf-native-nvim =
       (buildVim {
         input = "telescope-fzf-native-nvim";
         dependencies = [
-          plenary-nvim
+          libs.plenary-nvim
           telescope-nvim
         ];
       }).overrideAttrs
@@ -169,14 +170,14 @@ let
     telescope-live-grep-args-nvim = buildVim {
       input = "telescope-live-grep-args-nvim";
       dependencies = [
-        plenary-nvim
+        libs.plenary-nvim
         telescope-nvim
       ];
     };
     telescope-nvim = buildVim {
       input = "telescope-nvim";
       dependencies = [
-        plenary-nvim
+        libs.plenary-nvim
       ];
       runtimeDeps = with pkgs; [
         git
@@ -189,7 +190,7 @@ let
       input = "telescope-ui-select-nvim";
       dependencies = [
         telescope-nvim
-        plenary-nvim
+        libs.plenary-nvim
       ];
     };
     vim-fugitive = buildVim {
