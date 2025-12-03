@@ -2,7 +2,6 @@
 
 ---@class FlintEntry
 ---@field formatCommand? string[]|string
----@field formatStdin? boolean
 ---@field formatCanRange? boolean
 ---@field lintCommand? string[]|string
 ---@field lintStdin? boolean
