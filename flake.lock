@@ -176,11 +176,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1764754370,
-        "narHash": "sha256-3x0+fxIdibowToHGgdO4RRINsdiU0pg2fMWkywrHafI=",
+        "lastModified": 1764768742,
+        "narHash": "sha256-CLkoRyT4q4/XNxKqlML1iItIdnoPa402OUvqXviblPg=",
         "owner": "konradmalik",
         "repo": "flint-ls",
-        "rev": "222413df5c27e4320fcf8546343789d9ad4603f5",
+        "rev": "22a15d63224cca0ac7e08f2e5f605f921fc1f2c1",
         "type": "github"
       },
       "original": {
