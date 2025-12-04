@@ -1,12 +1,15 @@
-local handlers = require("pde.lsp.handlers")
+local attach = require("pde.lsp.attach")
 
 local M = {}
 
 ---Initialize lsp configurations
 function M.setup()
+    vim.lsp.log.set_level(vim.log.levels.WARN)
+
     vim.lsp.config("*", { capabilities = require("pde.lsp.capabilities") })
 
     require("pde.lsp.commands")
+    require("pde.lsp.handlers")
     require("pde.lsp.progress")
 
     local group = vim.api.nvim_create_augroup("personal-lsp", { clear = true })
@@ -17,7 +20,7 @@ function M.setup()
             local client_id = args.data.client_id
             local client = vim.lsp.get_client_by_id(client_id)
             if client then
-                handlers.attach(client, args.buf)
+                attach.attach(client, args.buf)
             else
                 vim.notify("cannot find client " .. client_id, vim.log.levels.ERROR)
             end
@@ -30,7 +33,7 @@ function M.setup()
             local client_id = args.data.client_id
             local client = vim.lsp.get_client_by_id(client_id)
             if client then
-                handlers.detach(client, args.buf)
+                attach.detach(client, args.buf)
             else
                 vim.notify("cannot find client " .. client_id, vim.log.levels.ERROR)
             end
