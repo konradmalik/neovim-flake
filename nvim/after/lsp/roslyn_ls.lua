@@ -104,7 +104,7 @@ end
 ---@param client_id integer
 ---@param token integer|string
 ---@param value LspProgress
-local function trigger_lsp_progress(client_id, token, value)
+local function lsp_progress(client_id, token, value)
     if value.message then value.message = value.message:gsub("[\r\n]", "") end
 
     vim.api.nvim_exec_autocmds("LspProgress", {
@@ -118,19 +118,16 @@ local function trigger_lsp_progress(client_id, token, value)
     })
 end
 
-local initialization_title = "Initialization"
-local restore_title = "Restore"
-
 ---@param client vim.lsp.Client
 ---@param target string
 local function on_init_sln(client, target)
     initToken = initToken + 1
-    trigger_lsp_progress(
+    lsp_progress(
         client.id,
         initToken,
         ---@type lsp.WorkDoneProgressBegin
         {
-            title = initialization_title,
+            title = "Initializing solution",
             kind = "begin",
             message = target,
         }
@@ -145,12 +142,12 @@ end
 ---@param project_files string[]
 local function on_init_project(client, project_files)
     initToken = initToken + 1
-    trigger_lsp_progress(
+    lsp_progress(
         client.id,
         initToken,
         ---@type lsp.WorkDoneProgressBegin
         {
-            title = initialization_title,
+            title = "Initializing project",
             kind = "begin",
             message = table.concat(project_files, ", "),
         }
@@ -190,12 +187,11 @@ return {
             refresh_diagnostics(client)
             local message = err and "Error: " .. err or nil
 
-            trigger_lsp_progress(
+            lsp_progress(
                 ctx.client_id,
                 initToken,
                 ---@type lsp.WorkDoneProgressEnd
                 {
-                    title = initialization_title,
                     kind = "end",
                     message = message,
                 }
@@ -223,27 +219,20 @@ return {
             end
 
             local token = math.random(2000000000)
-            trigger_lsp_progress(
-                ctx.client_id,
-                token,
-                ---@type lsp.WorkDoneProgressBegin
-                {
-                    title = restore_title,
-                    kind = "begin",
-                }
-            )
+
+            ---@param value LspProgress
+            local client_lsp_progress = function(value) lsp_progress(ctx.client_id, token, value) end
+
+            client_lsp_progress({
+                title = "Restoring",
+                kind = "begin",
+            })
 
             if err then
-                trigger_lsp_progress(
-                    ctx.client_id,
-                    token,
-                    ---@type lsp.WorkDoneProgressEnd
-                    {
-                        title = restore_title,
-                        kind = "end",
-                        message = "Error: " .. err,
-                    }
-                )
+                client_lsp_progress({
+                    kind = "end",
+                    message = "Error: " .. err,
+                })
                 return
             end
 
@@ -254,39 +243,21 @@ return {
                 { projectFilePaths = project_file_paths },
                 function(err2, response)
                     if err2 then
-                        trigger_lsp_progress(
-                            ctx.client_id,
-                            token,
-                            ---@type lsp.WorkDoneProgressEnd
-                            {
-                                title = restore_title,
-                                kind = "end",
-                                message = "Error: " .. err2.message,
-                            }
-                        )
+                        client_lsp_progress({
+                            kind = "end",
+                            message = "Error: " .. err2.message,
+                        })
                     end
                     if response then
                         for _, v in ipairs(response) do
-                            trigger_lsp_progress(
-                                ctx.client_id,
-                                token,
-                                ---@type lsp.WorkDoneProgressReport
-                                {
-                                    title = restore_title,
-                                    kind = "report",
-                                    message = v.message,
-                                }
-                            )
+                            client_lsp_progress({
+                                kind = "report",
+                                message = v.message,
+                            })
                         end
-                        trigger_lsp_progress(
-                            ctx.client_id,
-                            token,
-                            ---@type lsp.WorkDoneProgressEnd
-                            {
-                                title = restore_title,
-                                kind = "end",
-                            }
-                        )
+                        client_lsp_progress({
+                            kind = "end",
+                        })
                     end
                 end
             )
