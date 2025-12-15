@@ -225,12 +225,12 @@ return {
             local token = math.random(2000000000)
             trigger_lsp_progress(
                 ctx.client_id,
-                token( ---@type lsp.WorkDoneProgressBegin
-                    {
-                        title = restore_title,
-                        kind = "begin",
-                    }
-                )
+                token,
+                ---@type lsp.WorkDoneProgressBegin
+                {
+                    title = restore_title,
+                    kind = "begin",
+                }
             )
 
             if err then
