@@ -5,7 +5,7 @@ local highlight = "Normal:NonText"
 local keep_done_message_ms = 2000
 
 local icons = {
-    spinner = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" },
+    spinner = { "⣷", "⣯", "⣟", "⡿", "⢿", "⣻", "⣽", "⣾" },
     done = "󰄬",
 }
 
@@ -21,7 +21,16 @@ local icons = {
 ---@field pos integer the position of this window counting from bottom to top
 ---@field timer uv_timer_t? used to delay the closing of the window and handle window closure during textlock
 
----Maintain properties for each client receiving the progress notifications
+---@class ProgressMessage
+---@field token string
+---@field title string
+---@field message string?
+
+---history of messages by token, because messages rely on previous values
+---@type table<string, ProgressMessage>
+local previous_messages = {}
+
+---client properties by client id
 ---@type table<integer, ProgressClient>
 local clients = {}
 
@@ -32,7 +41,7 @@ local total_wins = 0
 ---@param client ProgressClient
 local function reset(client)
     client.is_done = false
-    client.spinner_idx = 0
+    client.spinner_idx = 1
     client.winid = nil
     client.bufnr = nil
     client.message = nil
@@ -42,7 +51,7 @@ local function reset(client)
 end
 
 ---Get the row position of the current floating window. If it is the first one, it is placed just
----right above the statuslien; if not, it is placed on top of others.
+---right above the statusline; if not, it is placed on top of others.
 ---@param pos integer
 ---@return integer
 local function get_win_row(pos) return vim.o.lines - vim.o.cmdheight - 1 - pos * 3 end
@@ -81,37 +90,48 @@ local function close_buffer(bufnr)
     return false
 end
 
----@param idx integer
-local function get_spinner_idx(idx)
-    idx = idx == #icons.spinner * 4 and 1 or idx + 1
-    return math.ceil(idx / 4)
+---@param previous_idx integer?
+local function get_spinner_idx(previous_idx)
+    previous_idx = previous_idx or 1
+    return (previous_idx % #icons.spinner) + 1
 end
 
 --- Assemble the output progress message and set the flag to mark if it's completed.
 --- * General: ⣾ [client_name] title: message ( 5%)
 --- * Done:     [client_name] title: done!
 ---@param client ProgressClient
+---@param token string
 ---@param progress LspProgress
 ---@return string
-local function create_message(client, progress)
-    local message = "[" .. client.name .. "]"
-    local title = progress.title
-    if title then message = message .. " " .. title .. ":" end
+local function create_and_cache_message(client, token, progress)
+    local message_builder = "[" .. client.name .. "]"
+    local title = progress.title or vim.tbl_get(previous_messages, token, "title")
+    if title then message_builder = message_builder .. " " .. title end
 
     local kind = progress.kind
     if kind == "end" then
         client.is_done = true
-        return icons.done .. " " .. message .. " done!"
+        previous_messages[token] = nil
+
+        local message = progress.message
+        if message then message_builder = message_builder .. ": " .. message end
+        return icons.done .. " " .. message_builder
     end
 
     client.is_done = false
-    local raw_msg = progress.message
-    local pct = progress.percentage
-    if raw_msg then message = message .. " " .. raw_msg end
-    if pct then message = string.format("%s (%3d%%)", message, pct) end
+
+    local message = progress.message or vim.tbl_get(previous_messages, token, "message")
+    if message then message_builder = message_builder .. ": " .. message end
+
+    previous_messages[token] = { token = token, title = title, message = message }
+
+    local percentage = progress.percentage
+    if percentage then
+        message_builder = string.format("%s (%3d%%)", message_builder, percentage)
+    end
 
     client.spinner_idx = get_spinner_idx(client.spinner_idx)
-    return icons.spinner[client.spinner_idx] .. " " .. message
+    return icons.spinner[client.spinner_idx] .. " " .. message_builder
 end
 
 --- Create a new window or update the existing one
@@ -160,7 +180,7 @@ local function lsp_progress_handler(args)
         local new_client = {
             name = vim.lsp.get_client_by_id(client_id).name,
             is_done = false,
-            spinner_idx = 0,
+            spinner_idx = 1,
             pos = 0,
         }
         reset(new_client)
@@ -168,10 +188,10 @@ local function lsp_progress_handler(args)
     end
     local cur_client = clients[client_id]
 
-    -- Get the formatted progress message
+    local token = tostring(args.data.params.token)
     ---@type LspProgress
     local progress = args.data.params.value
-    cur_client.message = create_message(cur_client, progress)
+    cur_client.message = create_and_cache_message(cur_client, token, progress)
 
     -- Create buffer for the floating window showing the progress message and the timer used to close
     -- the window when progress report is done.

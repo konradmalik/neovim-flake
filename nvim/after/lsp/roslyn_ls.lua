@@ -1,5 +1,7 @@
 local runner = require("pde.runner")
 
+local initToken = 0
+
 ---@param command lsp.Command
 ---@return boolean
 local function validate_command(command)
@@ -99,18 +101,17 @@ local function handle_fix_all_code_action(client, data)
     end)
 end
 
-local progressToken = 0
 ---@param client_id integer
+---@param token integer|string
 ---@param value LspProgress
-local function trigger_lsp_progress(client_id, value)
+local function trigger_lsp_progress(client_id, token, value)
     if value.message then value.message = value.message:gsub("[\r\n]", "") end
 
-    progressToken = progressToken + 1
     vim.api.nvim_exec_autocmds("LspProgress", {
         data = {
             client_id = client_id,
             params = {
-                token = progressToken,
+                token = token,
                 value = value,
             },
         },
@@ -123,8 +124,10 @@ local restore_title = "Restore"
 ---@param client vim.lsp.Client
 ---@param target string
 local function on_init_sln(client, target)
+    initToken = initToken + 1
     trigger_lsp_progress(
         client.id,
+        initToken,
         ---@type lsp.WorkDoneProgressBegin
         {
             title = initialization_title,
@@ -141,8 +144,10 @@ end
 ---@param client vim.lsp.Client
 ---@param project_files string[]
 local function on_init_project(client, project_files)
+    initToken = initToken + 1
     trigger_lsp_progress(
         client.id,
+        initToken,
         ---@type lsp.WorkDoneProgressBegin
         {
             title = initialization_title,
@@ -187,6 +192,7 @@ return {
 
             trigger_lsp_progress(
                 ctx.client_id,
+                initToken,
                 ---@type lsp.WorkDoneProgressEnd
                 {
                     title = initialization_title,
@@ -216,9 +222,21 @@ return {
                 end
             end
 
+            local token = math.random(2000000000)
+            trigger_lsp_progress(
+                ctx.client_id,
+                token( ---@type lsp.WorkDoneProgressBegin
+                    {
+                        title = restore_title,
+                        kind = "begin",
+                    }
+                )
+            )
+
             if err then
                 trigger_lsp_progress(
                     ctx.client_id,
+                    token,
                     ---@type lsp.WorkDoneProgressEnd
                     {
                         title = restore_title,
@@ -229,15 +247,6 @@ return {
                 return
             end
 
-            trigger_lsp_progress(
-                ctx.client_id,
-                ---@type lsp.WorkDoneProgressBegin
-                {
-                    title = restore_title,
-                    kind = "begin",
-                }
-            )
-
             local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
             client:request(
                 ---@diagnostic disable-next-line: param-type-mismatch
@@ -247,6 +256,7 @@ return {
                     if err2 then
                         trigger_lsp_progress(
                             ctx.client_id,
+                            token,
                             ---@type lsp.WorkDoneProgressEnd
                             {
                                 title = restore_title,
@@ -259,6 +269,7 @@ return {
                         for _, v in ipairs(response) do
                             trigger_lsp_progress(
                                 ctx.client_id,
+                                token,
                                 ---@type lsp.WorkDoneProgressReport
                                 {
                                     title = restore_title,
@@ -269,6 +280,7 @@ return {
                         end
                         trigger_lsp_progress(
                             ctx.client_id,
+                            token,
                             ---@type lsp.WorkDoneProgressEnd
                             {
                                 title = restore_title,
