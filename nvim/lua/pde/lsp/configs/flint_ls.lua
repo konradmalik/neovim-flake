@@ -21,7 +21,6 @@
 local function build(name, configs, languages)
     ---@type table<string, FlintEntry[]>
     local languages_setting = {}
-    local allRootMarkers = {}
     local formattingEnabled = false
     local rangeFormattingEnabled = false
 
@@ -45,12 +44,6 @@ local function build(name, configs, languages)
             table.insert(languages_setting[lang], entry)
         end
 
-        if entry.rootMarkers then
-            for _, marker in ipairs(entry.rootMarkers) do
-                allRootMarkers[marker] = true
-            end
-        end
-
         if not formattingEnabled and entry.formatCommand then formattingEnabled = true end
         if not rangeFormattingEnabled and entry.formatCanRange then
             rangeFormattingEnabled = true
@@ -66,7 +59,6 @@ local function build(name, configs, languages)
             documentRangeFormatting = rangeFormattingEnabled,
         },
         settings = {
-            rootMarkers = vim.tbl_keys(allRootMarkers),
             languages = languages_setting,
         },
         filetypes = vim.tbl_keys(languages_setting),
