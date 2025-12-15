@@ -25,7 +25,7 @@ local icons = {
 ---@field title string
 ---@field message string?
 
---- history of messages by key, because messages rely on previous values
+--- history of messages by key, because messages may rely on previous values
 --- key here is client-name + progress token
 ---@type table<string, ProgressMessage>
 local previous_messages = {}
@@ -68,7 +68,7 @@ local function win_update_config(client)
     })
 end
 
---- Close the window delete the associated buffer
+--- Close the window and delete the associated buffer
 ---@param winid integer?
 ---@return boolean
 local function close_window(winid)
@@ -98,7 +98,7 @@ end
 
 --- Assemble the output progress message and set the flag to mark if it's completed.
 --- * General: ⣾ [client_name] title: message ( 5%)
---- * Done:     [client_name] title: done!
+--- * Done:     [client_name] title: message
 ---@param client ProgressClient
 ---@param token string
 ---@param progress LspProgress
@@ -106,9 +106,12 @@ end
 local function create_and_cache_message(client, token, progress)
     local message_key = client.name .. "-" .. token
 
-    local message_builder = "[" .. client.name .. "]"
+    local message_builder = { "[", client.name, "]" }
     local title = progress.title or vim.tbl_get(previous_messages, message_key, "title")
-    if title then message_builder = message_builder .. " " .. title end
+    if title then
+        table.insert(message_builder, " ")
+        table.insert(message_builder, title)
+    end
 
     local kind = progress.kind
     if kind == "end" then
@@ -116,24 +119,28 @@ local function create_and_cache_message(client, token, progress)
         previous_messages[message_key] = nil
 
         local message = progress.message
-        if message then message_builder = message_builder .. ": " .. message end
-        return icons.done .. " " .. message_builder
+        if message then
+            table.insert(message_builder, ": ")
+            table.insert(message_builder, message)
+        end
+        return icons.done .. " " .. table.concat(message_builder)
     end
 
     client.is_done = false
 
     local message = progress.message or vim.tbl_get(previous_messages, message_key, "message")
-    if message then message_builder = message_builder .. ": " .. message end
+    if message then
+        table.insert(message_builder, ": ")
+        table.insert(message_builder, message)
+    end
 
     previous_messages[message_key] = { title = title, message = message }
 
     local percentage = progress.percentage
-    if percentage then
-        message_builder = string.format("%s (%3d%%)", message_builder, percentage)
-    end
+    if percentage then table.insert(message_builder, string.format(" (%3d%%)", percentage)) end
 
     client.spinner_idx = get_spinner_idx(client.spinner_idx)
-    return icons.spinner[client.spinner_idx] .. " " .. message_builder
+    return icons.spinner[client.spinner_idx] .. " " .. table.concat(message_builder)
 end
 
 --- Create a new window or update the existing one
