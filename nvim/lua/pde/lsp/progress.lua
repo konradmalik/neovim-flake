@@ -22,11 +22,11 @@ local icons = {
 ---@field timer uv_timer_t? used to delay the closing of the window and handle window closure during textlock
 
 ---@class ProgressMessage
----@field token string
 ---@field title string
 ---@field message string?
 
----history of messages by token, because messages rely on previous values
+--- history of messages by key, because messages rely on previous values
+--- key here is client-name + progress token
 ---@type table<string, ProgressMessage>
 local previous_messages = {}
 
@@ -34,7 +34,7 @@ local previous_messages = {}
 ---@type table<integer, ProgressClient>
 local clients = {}
 
--- Maintain the total number of current windows
+-- the total number of current windows
 local total_wins = 0
 
 --- resets the client
@@ -104,14 +104,16 @@ end
 ---@param progress LspProgress
 ---@return string
 local function create_and_cache_message(client, token, progress)
+    local message_key = client.name .. "-" .. token
+
     local message_builder = "[" .. client.name .. "]"
-    local title = progress.title or vim.tbl_get(previous_messages, token, "title")
+    local title = progress.title or vim.tbl_get(previous_messages, message_key, "title")
     if title then message_builder = message_builder .. " " .. title end
 
     local kind = progress.kind
     if kind == "end" then
         client.is_done = true
-        previous_messages[token] = nil
+        previous_messages[message_key] = nil
 
         local message = progress.message
         if message then message_builder = message_builder .. ": " .. message end
@@ -120,10 +122,10 @@ local function create_and_cache_message(client, token, progress)
 
     client.is_done = false
 
-    local message = progress.message or vim.tbl_get(previous_messages, token, "message")
+    local message = progress.message or vim.tbl_get(previous_messages, message_key, "message")
     if message then message_builder = message_builder .. ": " .. message end
 
-    previous_messages[token] = { token = token, title = title, message = message }
+    previous_messages[message_key] = { title = title, message = message }
 
     local percentage = progress.percentage
     if percentage then
