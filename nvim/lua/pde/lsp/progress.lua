@@ -17,18 +17,14 @@ local icons = {
 ---@field spinner_idx integer current index of the spinner
 ---@field winid integer? winid of the floating window
 ---@field bufnr integer? bufnr of the floating window
----@field message string? the progress message that will be shown in the window
+---@field text string? the text that will be shown in the window
+---@field history table<string,ProgressMessage> history of messages by token, because messages may rely on previous values
 ---@field pos integer the position of this window counting from bottom to top
 ---@field timer uv_timer_t? used to delay the closing of the window and handle window closure during textlock
 
 ---@class ProgressMessage
 ---@field title string
 ---@field message string?
-
---- history of messages by key, because messages may rely on previous values
---- key here is client-name + progress token
----@type table<string, ProgressMessage>
-local previous_messages = {}
 
 ---client properties by client id
 ---@type table<integer, ProgressClient>
@@ -44,7 +40,7 @@ local function reset(client)
     client.spinner_idx = 1
     client.winid = nil
     client.bufnr = nil
-    client.message = nil
+    client.text = nil
     client.pos = total_wins + 1
     if client.timer and not client.timer:is_closing() then client.timer:close() end
     client.timer = nil
@@ -61,10 +57,10 @@ local function get_win_row(pos) return vim.o.lines - vim.o.cmdheight - 1 - pos *
 local function win_update_config(client)
     vim.api.nvim_win_set_config(client.winid, {
         relative = "editor",
-        width = #client.message,
+        width = #client.text,
         height = 1,
         row = get_win_row(client.pos),
-        col = vim.o.columns - #client.message,
+        col = vim.o.columns - #client.text,
     })
 end
 
@@ -104,10 +100,8 @@ end
 ---@param progress LspProgress
 ---@return string
 local function create_and_cache_message(client, token, progress)
-    local message_key = client.name .. "-" .. token
-
     local message_builder = { "[", client.name, "]" }
-    local title = progress.title or vim.tbl_get(previous_messages, message_key, "title")
+    local title = progress.title or vim.tbl_get(client.history, token, "title")
     if title then
         table.insert(message_builder, " ")
         table.insert(message_builder, title)
@@ -116,7 +110,7 @@ local function create_and_cache_message(client, token, progress)
     local kind = progress.kind
     if kind == "end" then
         client.is_done = true
-        previous_messages[message_key] = nil
+        client.history[token] = nil
 
         local message = progress.message
         if message then
@@ -128,13 +122,13 @@ local function create_and_cache_message(client, token, progress)
 
     client.is_done = false
 
-    local message = progress.message or vim.tbl_get(previous_messages, message_key, "message")
+    local message = progress.message or vim.tbl_get(client.history, token, "message")
     if message then
         table.insert(message_builder, ": ")
         table.insert(message_builder, message)
     end
 
-    previous_messages[message_key] = { title = title, message = message }
+    client.history[token] = { title = title, message = message }
 
     local percentage = progress.percentage
     if percentage then table.insert(message_builder, string.format(" (%3d%%)", percentage)) end
@@ -155,10 +149,10 @@ local function create_or_update_window(client)
     then
         winid = vim.api.nvim_open_win(client.bufnr, false, {
             relative = "editor",
-            width = #client.message,
+            width = #client.text,
             height = 1,
             row = get_win_row(client.pos),
-            col = vim.o.columns - #client.message,
+            col = vim.o.columns - #client.text,
             focusable = false,
             style = "minimal",
             border = "none",
@@ -176,7 +170,7 @@ end
 ---@param client ProgressClient
 local function show_message(client)
     create_or_update_window(client)
-    vim.api.nvim_buf_set_lines(client.bufnr, 0, 1, false, { client.message })
+    vim.api.nvim_buf_set_lines(client.bufnr, 0, 1, false, { client.text })
 end
 
 -- Display the progress message
@@ -191,6 +185,7 @@ local function lsp_progress_handler(args)
             is_done = false,
             spinner_idx = 1,
             pos = 0,
+            history = {},
         }
         reset(new_client)
         clients[client_id] = new_client
@@ -200,7 +195,7 @@ local function lsp_progress_handler(args)
     local token = tostring(args.data.params.token)
     ---@type LspProgress
     local progress = args.data.params.value
-    cur_client.message = create_and_cache_message(cur_client, token, progress)
+    cur_client.text = create_and_cache_message(cur_client, token, progress)
 
     -- Create buffer for the floating window showing the progress message and the timer used to close
     -- the window when progress report is done.
