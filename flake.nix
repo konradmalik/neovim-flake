@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay/f7fbc4e3d4ccea45eaa5b187884592eb42dfdbbd";
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     flint-ls.url = "github:konradmalik/flint-ls";
 
     neorocks = {
