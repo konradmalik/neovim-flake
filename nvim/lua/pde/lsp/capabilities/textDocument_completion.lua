@@ -185,6 +185,9 @@ return {
         initialize_once()
 
         local autotrigger = not vim.bo[bufnr].autocomplete
+        -- NOTE: what is this, compared to just vim.bo.autocomplete with omnifunc (that is already set without the below line)?
+        -- This enables autocommands to apply sideeffects like additionalTextEdits, snippet expansions, commands etc. on selecting completion item
+        -- Those then apply to omnifunc as well because events are triggered regardless.
         vim.lsp.completion.enable(true, client.id, bufnr, {
             autotrigger = autotrigger,
             convert = function(item)
