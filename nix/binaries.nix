@@ -17,7 +17,6 @@ with pkgs;
   shellcheck
 
   # lsps
-  basedpyright
   clang-tools
   flint-ls
   gopls
@@ -29,6 +28,7 @@ with pkgs;
   roslyn-ls
   rust-analyzer
   terraform-ls
+  ty
   yaml-language-server
   zls
 
