@@ -23,7 +23,6 @@ stdenvNoCC.mkDerivation {
   dontBuild = true;
   dontConfigure = true;
   dontFixup = true;
-  dontInstall = true;
 
   doCheck = true;
   checkInputs = [ ];
@@ -34,5 +33,9 @@ stdenvNoCC.mkDerivation {
     runHook preCheck
     ${cmd}
     runHook postCheck
+  '';
+
+  installPhase = ''
+    touch "$out"
   '';
 }
