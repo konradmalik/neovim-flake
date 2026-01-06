@@ -11,4 +11,4 @@ vim.api.nvim_create_autocmd("BufEnter", {
     end,
 })
 
-require("incomplete").setup()
+vim.o.completefunc = "v:lua.require'incomplete'.completefunc"
