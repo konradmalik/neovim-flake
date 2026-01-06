@@ -141,7 +141,15 @@
   outputs =
     inputs:
     let
-      nvim-overlay = import ./nix/overlay.nix { inherit inputs; };
+      nvim-overlay =
+        final: prev:
+        (
+          let
+            pkgs = final.pkgs;
+            lib = pkgs.lib;
+          in
+          (import ./nix { inherit pkgs lib inputs; })
+        );
 
       forAllSystems =
         function:
@@ -157,6 +165,7 @@
             function (
               import inputs.nixpkgs {
                 inherit system;
+
                 overlays = [
                   nvim-overlay
                   inputs.gen-luarc.overlays.default

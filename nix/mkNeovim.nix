@@ -26,7 +26,7 @@ let
     lib.cleanSourceWith {
       inherit src;
       name = "${appName}-config-dir";
-      filter = path: _type: !lib.hasSuffix "/nvim/init.lua" path;
+      filter = fpath: type: !lib.hasSuffix "/nvim/init.lua" fpath;
     };
 
   # prepend config with appName for it to be loadable from XDG_CONFIG_DIRS

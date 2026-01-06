@@ -30,10 +30,12 @@ in
       devMode = true;
     }).overrideAttrs
       {
-        shellHook = ''
-          # allow quick iteration of lua configs
-          ln -Tfns $PWD/nvim ~/.config/nvim-dev
-        '';
+        shellHook =
+          # bash
+          ''
+            # allow quick iteration of lua configs
+            ln -Tfns $PWD/nvim ~/.config/nvim-dev
+          '';
       };
 
   nvim-typecheck = pkgs.callPackage ./nvim-typecheck.nix { };
