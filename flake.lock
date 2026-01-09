@@ -16,22 +16,6 @@
         "type": "github"
       }
     },
-    "boole-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1688814468,
-        "narHash": "sha256-dmtvPgRb1CqOetyjUoUDJ+fruOotwY0ODBp8VN4kRAQ=",
-        "owner": "nat-418",
-        "repo": "boole.nvim",
-        "rev": "7b4a3dae28e3b2497747aa840439e9493cabdc49",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nat-418",
-        "repo": "boole.nvim",
-        "type": "github"
-      }
-    },
     "efmls-configs-nvim": {
       "flake": false,
       "locked": {
@@ -814,7 +798,6 @@
     "root": {
       "inputs": {
         "SchemaStore-nvim": "SchemaStore-nvim",
-        "boole-nvim": "boole-nvim",
         "efmls-configs-nvim": "efmls-configs-nvim",
         "flint-ls": "flint-ls",
         "friendly-snippets": "friendly-snippets",

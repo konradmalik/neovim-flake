@@ -23,10 +23,6 @@
       url = "github:b0o/SchemaStore.nvim";
       flake = false;
     };
-    boole-nvim = {
-      url = "github:nat-418/boole.nvim";
-      flake = false;
-    };
     efmls-configs-nvim = {
       url = "github:creativenull/efmls-configs-nvim";
       flake = false;

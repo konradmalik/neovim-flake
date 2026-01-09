@@ -108,9 +108,6 @@ lib.attrValues rec {
   SchemaStore-nvim = buildVim {
     input = "SchemaStore-nvim";
   };
-  boole-nvim = buildVim {
-    input = "boole-nvim";
-  };
   efmls-configs-nvim = buildVim {
     input = "efmls-configs-nvim";
     dependencies = [ nvim-lspconfig ];
