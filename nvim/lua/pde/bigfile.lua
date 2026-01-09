@@ -13,6 +13,7 @@ local defaults = {
 ---@param ctx {buf: number, ft:string}
 local function set_bigfile(ctx)
     if vim.fn.exists(":NoMatchParen") ~= 0 then vim.cmd([[NoMatchParen]]) end
+    vim.bo.autocomplete = false
     vim.wo[0].foldmethod = "manual"
     vim.wo[0].statuscolumn = ""
     vim.wo[0].conceallevel = 0
@@ -31,9 +32,11 @@ function M.setup(config)
                 function(path, buf)
                     if not path or not buf or vim.bo[buf].filetype == "bigfile" then return end
                     if path ~= vim.api.nvim_buf_get_name(buf) then return end
+
                     local size = vim.fn.getfsize(path)
                     if size <= 0 then return end
                     if size > opts.size then return "bigfile" end
+
                     local lines = vim.api.nvim_buf_line_count(buf)
                     return (size - lines) / lines > opts.line_length and "bigfile" or nil
                 end,
