@@ -49,13 +49,7 @@ jobs:
         run: nix develop --command make test
 
   build-package:
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - { system: x86_64-darwin, os: macos-15-intel }
-          - { system: aarch64-darwin, os: macos-26 }
-    runs-on: ${{ matrix.platform.os }}
+    runs-on: macos-26
     needs:
       - tests
     steps:
@@ -69,5 +63,5 @@ jobs:
         with:
           name: "konradmalik"
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-      - name: Flake build default package for ${{ matrix.platform.system }}
-        run: nix build .#packages.${{ matrix.platform.system }}.default
+      - name: Flake build default package for aarch64-darwin
+        run: nix build .#packages.aarch64-darwin.platform.system }}.default
