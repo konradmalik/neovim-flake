@@ -14,6 +14,9 @@ return {
     end,
     settings = {
         ["harper-ls"] = {
+            linters = {
+                SentenceCapitalization = false,
+            },
             userDictPath = get_user_dictionary_file("us"),
             fileDictPath = get_file_dictionary_dir(),
             isolateEnglish = true,

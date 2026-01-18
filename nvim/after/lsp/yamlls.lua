@@ -30,7 +30,7 @@ return {
                 -- we use above
                 enable = false,
                 -- https://github.com/dmitmel/dotfiles/blob/master/nvim/dotfiles/lspconfigs/yaml.lua
-                -- yamlls won't work if we disable schemaStore but don't specify url ¯\_(ツ)_/¯
+                -- yamlls won't work if we disable schemaStore but don't specify URL ¯\_(ツ)_/¯
                 url = "",
             },
         },
