@@ -2,7 +2,7 @@ local attach = require("pde.lsp.attach")
 
 local M = {}
 
----Initialize lsp configurations
+---Initialize LSP configurations
 function M.setup()
     vim.lsp.log.set_level(vim.log.levels.WARN)
 

@@ -45,12 +45,14 @@ local function reset(client)
     if client.timer and not client.timer:is_closing() then client.timer:close() end
     client.timer = nil
 end
-
 ---Get the row position of the current floating window. If it is the first one, it is placed just
 ---right above the statusline; if not, it is placed on top of others.
 ---@param pos integer
 ---@return integer
-local function get_win_row(pos) return vim.o.lines - vim.o.cmdheight - 1 - pos * 3 end
+local function get_win_row(pos)
+    local border_enabled = vim.o.winborder ~= "none" and vim.o.winborder ~= ""
+    return vim.o.lines - vim.o.cmdheight - 1 - pos * (border_enabled and 3 or 1)
+end
 
 ---Update the window config
 ---@param client ProgressClient
@@ -259,7 +261,7 @@ vim.api.nvim_create_autocmd("LspProgress", {
     callback = lsp_progress_handler,
 })
 
-vim.api.nvim_create_autocmd("VimResized", {
+vim.api.nvim_create_autocmd({ "VimResized", "TermLeave" }, {
     group = group,
     callback = function()
         for _, c in ipairs(clients) do
