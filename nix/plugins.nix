@@ -146,9 +146,6 @@ lib.attrValues rec {
   nvim-lspconfig = buildVim {
     input = "nvim-lspconfig";
   };
-  nvim-luaref = buildVim {
-    input = "nvim-luaref";
-  };
   nvim-treesitter-context = buildVim {
     input = "nvim-treesitter-context";
   };

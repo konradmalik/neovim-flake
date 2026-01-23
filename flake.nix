@@ -73,10 +73,6 @@
       url = "github:neovim/nvim-lspconfig";
       flake = false;
     };
-    nvim-luaref = {
-      url = "github:milisims/nvim-luaref";
-      flake = false;
-    };
     nvim-nio = {
       url = "github:nvim-neotest/nvim-nio";
       flake = false;
