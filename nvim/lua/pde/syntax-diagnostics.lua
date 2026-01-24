@@ -36,6 +36,10 @@ local M = {}
 
 ---Performs analysis and sets diagnostics if any
 ---@param bufnr integer
+function M.clear(bufnr) vim.diagnostic.reset(namespace, bufnr) end
+
+---Performs analysis and sets diagnostics if any
+---@param bufnr integer
 function M.diagnose(bufnr)
     if not vim.diagnostic.is_enabled({ bufnr = bufnr }) then return end
     -- don't diagnose strange stuff
