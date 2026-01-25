@@ -13,7 +13,7 @@ end, { desc = "Reset vim.loader cache and do other maintenance tasks" })
 local M = {}
 
 ---Add the given function to be run on each CacheReset command
----@param f function
+---@param f fun()
 function M.add_to_on_reset(f) table.insert(on_reset, f) end
 
 return M

@@ -1,4 +1,4 @@
--- https://github.com/folke/snacks.nvim/blob/main/lua/snacks/rename.lua
+-- based on https://github.com/folke/snacks.nvim/blob/main/lua/snacks/rename.lua
 local ms = vim.lsp.protocol.Methods
 local timeout_ms = 2000
 
