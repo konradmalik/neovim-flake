@@ -20,7 +20,7 @@ local icons = {
 ---@field text string the text that will be shown in the window
 ---@field history table<string,ProgressMessage> history of messages by token, because messages may rely on previous values
 ---@field pos integer the position of this window. 1 is the most bottom
----@field timer uv_timer_t? used to delay the closing of the window
+---@field timer uv_timer_t used to delay the closing of the window
 
 ---@class ProgressMessage
 ---@field title string
@@ -54,6 +54,7 @@ local function new_client(client_id)
         spinner_idx = 1,
         pos = total_wins + 1,
         history = {},
+        timer = vim.uv.new_timer(),
     }
 end
 
@@ -156,19 +157,13 @@ end
 --- Close the window
 ---@param client ProgressClient
 local function close_window(client)
+    client.timer:stop()
     if client.winid then
         if vim.api.nvim_win_is_valid(client.winid) then
             vim.api.nvim_win_close(client.winid, true)
         end
         client.winid = nil
         total_wins = total_wins - 1
-
-        -- timer is strictly related to a window
-        if client.timer then
-            client.timer:stop()
-            if not client.timer:is_closing() then client.timer:close() end
-        end
-        client.timer = nil
     end
 end
 
@@ -220,33 +215,24 @@ vim.api.nvim_create_autocmd("LspProgress", {
 
         if not clients[client_id] then clients[client_id] = new_client(client_id) end
         local cur_client = clients[client_id]
+        cur_client.timer:stop()
 
-        local token = tostring(args.data.params.token)
         ---@type LspProgress
         local progress = args.data.params.value
+        local token = tostring(args.data.params.token)
         create_and_cache_message(cur_client, token, progress)
 
         show_message(cur_client)
 
         -- progress is done, we can schedule closing the window
         if cur_client.is_done then
-            if cur_client.timer then
-                -- was alredy scheduled; need to cancel first
-                cur_client.timer:stop()
-            else
-                -- setup a new one otherwise
-                cur_client.timer = vim.uv.new_timer()
-            end
             -- wait for keep_done_message_ms and if not stopped - will close the window
             cur_client.timer:start(
                 keep_done_message_ms,
                 0,
                 vim.schedule_wrap(function()
                     -- new message received in the meantime, not done now
-                    if not cur_client.is_done then
-                        if cur_client.timer then cur_client.timer:stop() end
-                        return
-                    end
+                    if not cur_client.is_done then return end
 
                     -- we have go now, no way back
                     dispose_client(cur_client)
