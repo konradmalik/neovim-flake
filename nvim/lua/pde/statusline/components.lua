@@ -2,10 +2,17 @@ local icons = require("pde.statusline.icons")
 local mini_icons = require("mini.icons")
 local utils = require("pde.statusline.utils")
 
----@param hl string
----@param s string
+---@param hl string highlight name
+---@param s string string to wrap
 ---@return string
 local function wrap_hl(hl, s) return "%#" .. hl .. "#" .. s .. "%*" end
+
+---@param func_name string name of lua function in this module
+---@param s string string to wrap
+---@return string
+local function wrap_click(func_name, s)
+    return "%@v:lua.require'pde.statusline.components'." .. func_name .. "@" .. s .. "%X"
+end
 
 local colors = {
     string = "String",
@@ -153,7 +160,7 @@ end
 M.git = function()
     local head = vim.b[utils.stbufnr()].gitsigns_head
     if not head then return "" end
-    return wrap_hl(colors.constant, icons.git.Branch .. " " .. head)
+    return wrap_click("git_click", wrap_hl(colors.constant, icons.git.Branch .. " " .. head))
 end
 
 M.gitchanges = function()
@@ -170,8 +177,10 @@ M.gitchanges = function()
             and wrap_hl(colors.git_del, icons.git.Remove .. " " .. git_status.removed .. " ")
         or ""
 
-    return added .. changed .. removed
+    return wrap_click("git_click", added .. changed .. removed)
 end
+
+M.git_click = function() vim.cmd("Git") end
 
 M.diagnostics = function()
     if not vim.diagnostic.is_enabled({ bufnr = utils.stbufnr() }) then return "" end
@@ -214,14 +223,20 @@ M.LSP_status = function()
     if numClients == 0 then return "" end
 
     local icon = numClients > 1 and icons.ui.HexagonAll or icons.ui.Hexagon
-    if numClients >= 3 then return wrap_hl(colors.string, icon .. " " .. numClients .. " LSPs") end
-
-    local texts = { icon }
-    for _, server in pairs(clients) do
-        table.insert(texts, server.name)
+    local text
+    if numClients >= 3 then
+        text = icon .. " " .. numClients .. " LSPs"
+    else
+        local texts = { icon }
+        for _, server in pairs(clients) do
+            table.insert(texts, server.name)
+        end
+        text = table.concat(texts, " ")
     end
-    return wrap_hl(colors.string, table.concat(texts, " "))
+    return wrap_click("LSP_click", wrap_hl(colors.string, text))
 end
+
+M.LSP_click = function() vim.cmd("checkhealth lsp") end
 
 M.DAP_status = function()
     local ok, dap = pcall(require, "dap")
