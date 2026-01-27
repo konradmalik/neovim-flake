@@ -350,11 +350,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1768559078,
-        "narHash": "sha256-6Y3rl6nKisZZlZ25kuUO7cxkmKFLzS+xHC8bWntK454=",
+        "lastModified": 1769529199,
+        "narHash": "sha256-kNe8zAkcpboeTMb6XJW2Z8yfQBwWpqQS2Umhlif/Sck=",
         "owner": "konradmalik",
         "repo": "incomplete.nvim",
-        "rev": "0317e77ad8c93de0ebdf3e52e1cc00bcc467fbcf",
+        "rev": "8cb8ef54502479d85fe74fbb99c8f88c7d779488",
         "type": "github"
       },
       "original": {
