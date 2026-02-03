@@ -80,8 +80,6 @@ M.statusline = function()
         .. components.align
         .. components.busy()
         .. components.align
-        .. components.DAP_status()
-        .. components.align
         .. components.diagnostics()
         .. components.space
         .. components.LSP_status()

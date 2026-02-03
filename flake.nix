@@ -57,24 +57,8 @@
       url = "github:echasnovski/mini.icons";
       flake = false;
     };
-    nvim-dap = {
-      url = "github:mfussenegger/nvim-dap";
-      flake = false;
-    };
-    nvim-dap-ui = {
-      url = "github:rcarriga/nvim-dap-ui";
-      flake = false;
-    };
-    nvim-dap-virtual-text = {
-      url = "github:theHamsta/nvim-dap-virtual-text";
-      flake = false;
-    };
     nvim-lspconfig = {
       url = "github:neovim/nvim-lspconfig";
-      flake = false;
-    };
-    nvim-nio = {
-      url = "github:nvim-neotest/nvim-nio";
       flake = false;
     };
     nvim-treesitter = {

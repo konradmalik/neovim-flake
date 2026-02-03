@@ -238,12 +238,6 @@ end
 
 M.LSP_click = function() vim.cmd("checkhealth lsp") end
 
-M.DAP_status = function()
-    local ok, dap = pcall(require, "dap")
-    if not ok or not dap.session() then return "" end
-    return wrap_hl(colors.debug, icons.ui.Bug .. " " .. dap.status())
-end
-
 M.cwd = function()
     local winnr = utils.stwinnr()
     local cwd = vim.fn.getcwd(winnr)

@@ -76,10 +76,6 @@ let
     };
 
   libs = {
-    nvim-nio = buildVim {
-      input = "nvim-nio";
-    };
-
     plenary-nvim =
       (buildNeovim {
         input = "plenary-nvim";
@@ -128,20 +124,6 @@ lib.attrValues rec {
   };
   mini-icons = buildVim {
     input = "mini-icons";
-  };
-  nvim-dap = buildVim {
-    input = "nvim-dap";
-  };
-  nvim-dap-ui = buildVim {
-    input = "nvim-dap-ui";
-    dependencies = [
-      nvim-dap
-      libs.nvim-nio
-    ];
-  };
-  nvim-dap-virtual-text = buildVim {
-    input = "nvim-dap-virtual-text";
-    dependencies = [ nvim-dap ];
   };
   nvim-lspconfig = buildVim {
     input = "nvim-lspconfig";
