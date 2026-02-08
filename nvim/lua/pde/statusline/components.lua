@@ -184,25 +184,7 @@ M.git_click = function() vim.cmd("Git") end
 
 M.diagnostics = function()
     if not vim.diagnostic.is_enabled({ bufnr = utils.stbufnr() }) then return "" end
-
-    local counts = vim.diagnostic.count(utils.stbufnr())
-    local numErrors = counts[vim.diagnostic.severity.ERROR] or 0
-    local numWarnings = counts[vim.diagnostic.severity.WARN] or 0
-    local numHints = counts[vim.diagnostic.severity.HINT] or 0
-    local numInfo = counts[vim.diagnostic.severity.INFO] or 0
-
-    local errors = wrap_hl(colors.diag_error, icons.diagnostics.Error .. " " .. numErrors .. " ")
-    local warnings =
-        wrap_hl(colors.diag_warn, icons.diagnostics.Warning .. " " .. numWarnings .. " ")
-    local hints = wrap_hl(colors.diag_hint, icons.diagnostics.Hint .. " " .. numHints .. " ")
-    local info = wrap_hl(colors.diag_info, icons.diagnostics.Information .. " " .. numInfo .. " ")
-
-    errors = numErrors > 0 and errors or ""
-    warnings = numWarnings > 0 and warnings or ""
-    hints = numHints > 0 and hints or ""
-    info = numInfo > 0 and info or ""
-
-    return errors .. warnings .. hints .. info
+    return vim.diagnostic.status(utils.stbufnr())
 end
 
 M.filetype = function()

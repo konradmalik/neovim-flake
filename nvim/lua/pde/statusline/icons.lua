@@ -35,12 +35,6 @@ return {
             },
         },
     },
-    diagnostics = {
-        Error = "",
-        Warning = "",
-        Information = "",
-        Hint = "󰛨",
-    },
     misc = {
         Neovim = "",
     },

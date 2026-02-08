@@ -82,6 +82,7 @@ M.statusline = function()
         .. components.align
         .. components.diagnostics()
         .. components.space
+        .. components.space
         .. components.LSP_status()
         .. components.space
         .. components.filetype()
