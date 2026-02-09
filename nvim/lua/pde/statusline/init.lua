@@ -91,8 +91,6 @@ M.statusline = function()
         .. components.space
         .. components.file_encoding()
         .. components.space
-        .. components.hostname()
-        .. components.space
         .. components.ruler()
         .. components.space
         .. components.scrollbar()

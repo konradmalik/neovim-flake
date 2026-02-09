@@ -17,7 +17,6 @@ return {
         Bug = "󰃤",
         LeftHalf = "",
         RightHalf = "",
-        Terminal = "",
         Animations = {
             -- keep those odd
             Fill = {

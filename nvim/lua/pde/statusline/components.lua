@@ -233,16 +233,6 @@ M.cwd = function()
 end
 
 do
-    local hostname
-    M.hostname = function()
-        if not hostname then
-            hostname = wrap_hl(colors.func, icons.ui.Terminal .. " " .. vim.fn.hostname())
-        end
-        return hostname
-    end
-end
-
-do
     local ruler
     M.ruler = function()
         if not ruler then ruler = wrap_hl(colors.statement, "[%7(%l/%3L%):%2c %P]") end
