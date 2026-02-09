@@ -206,7 +206,7 @@ M.LSP_status = function()
 
     local icon = numClients > 1 and icons.ui.HexagonAll or icons.ui.Hexagon
     local text
-    if numClients >= 3 then
+    if numClients >= 4 then
         text = icon .. " " .. numClients .. " LSPs"
     else
         local texts = { icon }
