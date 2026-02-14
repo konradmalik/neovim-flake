@@ -30,13 +30,13 @@ local function copy_location(kind)
 end
 
 vim.keymap.set("n", "<leader>cf", function() copy_location("file") end, {
-    desc = "[c]opy [f]ile to clipboard",
+    desc = "[c]opy [f]ilepath to clipboard",
 })
 
 vim.keymap.set("n", "<leader>cl", function() copy_location("line") end, {
-    desc = "[c]opy file:[l]ine to clipboard",
+    desc = "[c]opy filepath:[l]ine to clipboard",
 })
 
 vim.keymap.set("n", "<leader>cp", function() copy_location("pos") end, {
-    desc = "[c]opy file:line:col [p]osition to clipboard",
+    desc = "[c]opy filepath:line:col [p]osition to clipboard",
 })

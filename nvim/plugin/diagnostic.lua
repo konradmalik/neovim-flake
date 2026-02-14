@@ -55,7 +55,7 @@ vim.api.nvim_create_user_command("DiagnosticLinesToggle", function()
             .. tostring(vim.diagnostic.config().virtual_lines)
     )
 end, {
-    desc = "Enable/disable diagnostics globally",
+    desc = "Enable/disable diagnostic lines globally",
 })
 
 vim.keymap.set(
