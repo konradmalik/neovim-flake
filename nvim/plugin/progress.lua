@@ -207,6 +207,34 @@ local function dispose_client(client)
     reset(client)
 end
 
+--- Send an OSC 9;4 escape sequence to set the terminal's progress bar.
+--- See: https://rockorager.dev/misc/osc-9-4-progress-bars/
+--- NOTE: this is a workaround for tmux, see https://www.reddit.com/r/neovim/comments/1rcvliq/ghostty_lsp_progress_bar/
+--- normally, nvim_echo should be enough, maybe it will be in the future.
+---@param state integer 0=remove, 1=default/determinate, 2=error, 3=indeterminate, 4=pause
+---@param percent integer 0-100 progress percentage (only for state 1)
+local function set_terminal_progress(state, percent)
+    local osc = string.format("\27]9;4;%d;%d\a", state, percent)
+
+    -- wrap in TMUX passthrough if needed
+    -- needs 'set-option -g allow-passthrough on' in tmux config
+    if os.getenv("TMUX") then osc = string.format("\27Ptmux;\27%s\27\\", osc) end
+
+    io.stdout:write(osc)
+    io.stdout:flush()
+end
+
+---@param progress LspProgress
+local function show_terminal_progress(progress)
+    if progress.kind == "end" then
+        set_terminal_progress(0, 0)
+    elseif progress.percentage then
+        set_terminal_progress(1, progress.percentage)
+    else
+        set_terminal_progress(3, 0)
+    end
+end
+
 local group = vim.api.nvim_create_augroup("lsp_progress", { clear = true })
 vim.api.nvim_create_autocmd("LspProgress", {
     group = group,
@@ -239,6 +267,8 @@ vim.api.nvim_create_autocmd("LspProgress", {
                 end)
             )
         end
+
+        show_terminal_progress(progress)
     end,
 })
 
