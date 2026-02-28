@@ -10,7 +10,8 @@ local function copy_location(kind)
     local cursor = vim.api.nvim_win_get_cursor(win)
 
     local line = cursor[1]
-    local col = cursor[2] + 1 -- 1-based for humans & tools
+    -- col should be 1-based
+    local col = cursor[2] + 1
 
     local text
     if kind == "file" then
@@ -24,7 +25,8 @@ local function copy_location(kind)
 
     -- System clipboard
     vim.fn.setreg("+", text)
-    vim.fn.setreg('"', text) -- also unnamed register (nice UX)
+    -- unnamed register (nice UX)
+    vim.fn.setreg('"', text)
 
     vim.notify("Copied: " .. text, vim.log.levels.INFO)
 end
