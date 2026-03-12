@@ -13,7 +13,6 @@ local icons = {
 
 ---@class ProgressClient
 ---@field name string name of the client
----@field is_done boolean whether the progress is finished
 ---@field spinner_idx integer current index of the spinner
 ---@field winid integer? winid of the floating window
 ---@field bufnr integer bufnr of the floating window
@@ -36,7 +35,6 @@ local total_wins = 0
 --- resets the client to "empty" state
 ---@param client ProgressClient
 local function reset(client)
-    client.is_done = false
     client.spinner_idx = 1
     client.text = ""
     client.pos = total_wins + 1
@@ -50,7 +48,6 @@ local function new_client(client_id)
         name = vim.lsp.get_client_by_id(client_id).name,
         bufnr = vim.api.nvim_create_buf(false, true),
         text = "",
-        is_done = false,
         spinner_idx = 1,
         pos = total_wins + 1,
         history = {},
@@ -75,7 +72,8 @@ local function get_spinner_idx(previous_idx)
     return (previous_idx % #icons.spinner) + 1
 end
 
---- Assemble the output progress message and set the flag to mark if it's completed.
+--- Assemble the output progress message and update the history.
+--- Completion is derived from the history table being empty (all tokens ended).
 --- * General: ⣾ [client_name] title: message ( 5%)
 --- * Done:     [client_name] title: message
 ---@param client ProgressClient
@@ -91,7 +89,6 @@ local function create_and_cache_message(client, token, progress)
 
     local kind = progress.kind
     if kind == "end" then
-        client.is_done = true
         client.history[token] = nil
 
         local message = progress.message
@@ -102,8 +99,6 @@ local function create_and_cache_message(client, token, progress)
         client.text = icons.done .. " " .. table.concat(message_builder)
         return
     end
-
-    client.is_done = false
 
     local message = progress.message or vim.tbl_get(client.history, token, "message")
     if message then
@@ -124,11 +119,12 @@ end
 ---@param client ProgressClient
 local function reconfigure_window(client)
     if client.winid then
+        local text_width = vim.api.nvim_strwidth(client.text)
         vim.api.nvim_win_set_config(client.winid, {
             relative = "editor",
-            col = get_win_col(#client.text),
+            col = get_win_col(text_width),
             row = get_win_row(client.pos),
-            width = #client.text,
+            width = text_width,
             height = 1,
         })
     end
@@ -138,11 +134,12 @@ end
 ---@param client ProgressClient
 local function create_window(client)
     assert(client.winid == nil, "window for " .. client.name .. " already exists")
+    local text_width = vim.api.nvim_strwidth(client.text)
     local winid = vim.api.nvim_open_win(client.bufnr, false, {
         relative = "editor",
-        col = get_win_col(#client.text),
+        col = get_win_col(text_width),
         row = get_win_row(client.pos),
-        width = #client.text,
+        width = text_width,
         height = 1,
         focusable = false,
         style = "minimal",
@@ -170,15 +167,14 @@ end
 --- Create a new window or update the existing one
 ---@param client ProgressClient
 local function ensure_window(client)
-    local winid = client.winid
     if
-        winid ~= nil
-        and vim.api.nvim_win_get_tabpage(winid) ~= vim.api.nvim_get_current_tabpage()
+        client.winid ~= nil
+        and vim.api.nvim_win_get_tabpage(client.winid) ~= vim.api.nvim_get_current_tabpage()
     then
         close_window(client)
     end
 
-    if winid == nil then
+    if client.winid == nil then
         create_window(client)
     else
         reconfigure_window(client)
@@ -252,15 +248,15 @@ vim.api.nvim_create_autocmd("LspProgress", {
 
         show_message(cur_client)
 
-        -- progress is done, we can schedule closing the window
-        if cur_client.is_done then
+        -- all tokens done, we can schedule closing the window
+        if vim.tbl_isempty(cur_client.history) then
             -- wait for keep_done_message_ms and if not stopped - will close the window
             cur_client.timer:start(
                 keep_done_message_ms,
                 0,
                 vim.schedule_wrap(function()
                     -- new message received in the meantime, not done now
-                    if not cur_client.is_done then return end
+                    if not vim.tbl_isempty(cur_client.history) then return end
 
                     -- we have go now, no way back
                     dispose_client(cur_client)
