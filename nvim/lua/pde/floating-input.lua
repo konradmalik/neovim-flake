@@ -42,16 +42,15 @@ local function create_window(config)
     return winid, bufnr
 end
 
----@param prompt string
----@param default vim.api.keyset.win_config
----@param supplied? vim.api.keyset.win_config
+---@param has_default boolean whether the input has a default value
+---@param default_config vim.api.keyset.win_config
+---@param supplied_config? vim.api.keyset.win_config
 ---@return vim.api.keyset.win_config
-local function resolve_config(prompt, default, supplied)
-    -- Apply user's window config.
-    local resolved_config = vim.tbl_deep_extend("force", default, supplied)
+local function resolve_config(has_default, default_config, supplied_config)
+    local resolved_config = vim.tbl_deep_extend("force", default_config, supplied_config or {})
 
-    -- Place the window near cursor or at the center of the window.
-    if prompt == "New Name: " then
+    -- Place the window near cursor when editing existing text, center otherwise.
+    if has_default then
         resolved_config = vim.tbl_deep_extend("force", resolved_config, under_cursor)
     else
         resolved_config =
@@ -71,8 +70,8 @@ function M.input(opts, on_confirm, win_config)
     local default = opts.default or ""
     on_confirm = on_confirm or function() end
 
-    local prompt_length = vim.str_utfindex(prompt, "utf-8")
-    local default_length = vim.str_utfindex(default, "utf-8")
+    local prompt_length = vim.api.nvim_strwidth(prompt)
+    local default_length = vim.api.nvim_strwidth(default)
     local input_width = get_input_width(prompt_length, default_length)
 
     ---@type vim.api.keyset.win_config
@@ -85,14 +84,15 @@ function M.input(opts, on_confirm, win_config)
         noautocmd = true,
     }
 
-    local window_config = resolve_config(prompt, default_win_config, win_config)
+    local window_config = resolve_config(default ~= "", default_win_config, win_config)
     local winid, bufnr = create_window(window_config)
     vim.api.nvim_buf_set_text(bufnr, 0, 0, 0, 0, { default })
     vim.cmd("startinsert")
-    vim.api.nvim_win_set_cursor(winid, { 1, default_length + 1 })
+    vim.api.nvim_win_set_cursor(winid, { 1, #default })
 
     ---@param input? string
     local close_win = function(input)
+        if not vim.api.nvim_win_is_valid(winid) then return end
         vim.cmd("stopinsert")
         vim.api.nvim_win_close(winid, true)
         on_confirm(input)
@@ -108,6 +108,7 @@ function M.input(opts, on_confirm, win_config)
     -- Esc or q to close
     vim.keymap.set("n", "<esc>", function() close_win(nil) end, { buffer = bufnr })
     vim.keymap.set("n", "q", function() close_win(nil) end, { buffer = bufnr })
+    vim.keymap.set("i", "<C-c>", function() close_win(nil) end, { buffer = bufnr })
 end
 
 return M
