@@ -42,6 +42,11 @@ local function total_wins()
     return #active_windows
 end
 
+-- checks if all current message tokens are finished
+---@param client ProgressClient
+---@return boolean
+local function is_done(client) return vim.tbl_isempty(client.history) end
+
 --- resets the client to "empty" state
 ---@param client ProgressClient
 local function reset(client)
@@ -250,28 +255,28 @@ vim.api.nvim_create_autocmd("LspProgress", {
 
         ---@type LspProgress
         local progress = args.data.params.value
+        show_terminal_progress(progress)
+
         local token = tostring(args.data.params.token)
         create_and_cache_message(cur_client, token, progress)
 
         show_message(cur_client)
 
         -- all tokens done, we can schedule closing the window
-        if vim.tbl_isempty(cur_client.history) then
+        if is_done(cur_client) then
             -- wait for keep_done_message_ms and if not stopped - will close the window
             cur_client.timer:start(
                 keep_done_message_ms,
                 0,
                 vim.schedule_wrap(function()
                     -- new message received in the meantime, not done now
-                    if not vim.tbl_isempty(cur_client.history) then return end
+                    if not is_done(cur_client) then return end
 
                     -- we have go now, no way back
                     dispose_client(cur_client)
                 end)
             )
         end
-
-        show_terminal_progress(progress)
     end,
 })
 
