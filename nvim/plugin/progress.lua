@@ -30,14 +30,24 @@ local icons = {
 local clients = {}
 
 -- the total number of current windows
-local total_wins = 0
+---@return integer
+local function total_wins()
+    local active_windows = vim.iter(vim.tbl_values(clients))
+        :filter(
+            ---@param c ProgressClient
+            ---@return boolean
+            function(c) return c.winid ~= nil end
+        )
+        :totable()
+    return #active_windows
+end
 
 --- resets the client to "empty" state
 ---@param client ProgressClient
 local function reset(client)
     client.spinner_idx = 1
     client.text = ""
-    client.pos = total_wins + 1
+    client.pos = total_wins() + 1
 end
 
 --- creates a new client
@@ -49,7 +59,7 @@ local function new_client(client_id)
         bufnr = vim.api.nvim_create_buf(false, true),
         text = "",
         spinner_idx = 1,
-        pos = total_wins + 1,
+        pos = total_wins() + 1,
         history = {},
         timer = vim.uv.new_timer(),
     }
@@ -135,7 +145,7 @@ end
 local function create_window(client)
     assert(client.winid == nil, "window for " .. client.name .. " already exists")
     local text_width = vim.api.nvim_strwidth(client.text)
-    local winid = vim.api.nvim_open_win(client.bufnr, false, {
+    client.winid = vim.api.nvim_open_win(client.bufnr, false, {
         relative = "editor",
         col = get_win_col(text_width),
         row = get_win_row(client.pos),
@@ -146,9 +156,7 @@ local function create_window(client)
         border = "none",
         noautocmd = true,
     })
-    vim.wo[winid].winhl = highlight
-    client.winid = winid
-    total_wins = total_wins + 1
+    vim.wo[client.winid].winhl = highlight
 end
 
 --- Close the window
@@ -160,7 +168,6 @@ local function close_window(client)
             vim.api.nvim_win_close(client.winid, true)
         end
         client.winid = nil
-        total_wins = total_wins - 1
     end
 end
 
