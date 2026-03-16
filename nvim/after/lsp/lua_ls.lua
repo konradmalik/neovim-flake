@@ -6,6 +6,7 @@ return {
         client.server_capabilities.documentFormattingProvider = nil
         client.server_capabilities.documentRangeFormattingProvider = nil
     end,
+    ---@type lspconfig.settings.lua_ls
     settings = {
         Lua = {
             addonManager = { enable = false },

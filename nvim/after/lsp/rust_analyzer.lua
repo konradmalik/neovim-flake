@@ -47,6 +47,7 @@ end
 
 ---@type vim.lsp.Config
 return {
+    ---@type lspconfig.settings.rust_analyzer
     settings = {
         ["rust-analyzer"] = {
             files = {
@@ -60,9 +61,7 @@ return {
                     "./docs/",
                 },
             },
-            checkOnSave = {
-                enable = true,
-            },
+            checkOnSave = true,
             diagnostics = {
                 enable = true,
                 experimental = {

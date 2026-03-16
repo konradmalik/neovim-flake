@@ -8,6 +8,7 @@ return {
         client.server_capabilities.documentFormattingProvider = nil
         client.server_capabilities.documentRangeFormattingProvider = nil
     end,
+    ---@type lspconfig.settings.yamlls
     settings = {
         redhat = {
             telemetry = {

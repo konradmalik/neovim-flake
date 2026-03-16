@@ -7,10 +7,15 @@ return {
     init_options = {
         provideFormatter = false, -- use prettier instead
     },
+    ---@type lspconfig.settings.jsonls
     settings = {
         json = {
-            format = false,
-            validate = true,
+            format = {
+                enable = false,
+            },
+            validate = {
+                enable = true,
+            },
             schemas = schemastore.json.schemas(),
         },
     },
