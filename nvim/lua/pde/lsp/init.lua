@@ -46,7 +46,7 @@ function M.detach(client, bufnr)
     end
 
     if client_yes_others_not_buf_supports_method(ms.textDocument_documentColor) then
-        vim.lsp.document_color.enable(false, bufnr)
+        vim.lsp.document_color.enable(false, { client_id = client.id, bufnr = bufnr })
     end
 
     if client_yes_others_not_buf_supports_method(ms.textDocument_documentHighlight) then
@@ -128,7 +128,7 @@ function M.attach(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_documentColor) then
-        vim.lsp.document_color.enable(true, bufnr)
+        vim.lsp.document_color.enable(true, { client_id = client.id, bufnr = bufnr })
     end
 
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
