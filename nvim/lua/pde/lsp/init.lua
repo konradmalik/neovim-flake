@@ -42,11 +42,11 @@ function M.detach(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_inlineCompletion) then
-        vim.lsp.inline_completion.enable(false, { client_id = client_id, bufnr = bufnr })
+        vim.lsp.inline_completion.enable(false, { bufnr = bufnr })
     end
 
     if client_yes_others_not_buf_supports_method(ms.textDocument_documentColor) then
-        vim.lsp.document_color.enable(false, { client_id = client.id, bufnr = bufnr })
+        vim.lsp.document_color.enable(false, { bufnr = bufnr })
     end
 
     if client_yes_others_not_buf_supports_method(ms.textDocument_documentHighlight) then
@@ -62,7 +62,7 @@ function M.detach(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_onTypeFormatting) then
-        vim.lsp.on_type_formatting.enable(false, { client_id = client_id })
+        vim.lsp.on_type_formatting.enable(false, { bufnr = bufnr })
     end
 
     if client_yes_others_not_buf_supports_method(ms.textDocument_inlayHint) then
@@ -100,7 +100,7 @@ function M.attach(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_inlineCompletion) then
-        vim.lsp.inline_completion.enable(true, { client_id = client.id, bufnr = bufnr })
+        vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
     end
 
     if client_buf_supports_method(ms.textDocument_codeLens) then
@@ -116,7 +116,7 @@ function M.attach(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_onTypeFormatting) then
-        vim.lsp.on_type_formatting.enable(true, { client_id = client.id })
+        vim.lsp.on_type_formatting.enable(true, { bufnr = bufnr })
     end
 
     if client_buf_supports_method(ms.textDocument_declaration) then
@@ -128,7 +128,7 @@ function M.attach(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_documentColor) then
-        vim.lsp.document_color.enable(true, { client_id = client.id, bufnr = bufnr })
+        vim.lsp.document_color.enable(true, { bufnr = bufnr })
     end
 
     if client_buf_supports_method(ms.textDocument_documentHighlight) then
