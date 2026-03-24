@@ -1,7 +1,7 @@
+vim.g.foldingimports_enabled = false
+
 ---@type table<integer,string[]>
 local originals_per_win = {}
-
-local foldingimports_is_enabled = false
 
 ---@type CapabilityHandler
 return {
@@ -28,7 +28,7 @@ return {
             group = augroup,
             buffer = bufnr,
             callback = function(args)
-                if foldingimports_is_enabled and args.data.method == "textDocument/didOpen" then
+                if vim.g.foldingimports_enabled and args.data.method == "textDocument/didOpen" then
                     local auwin = vim.fn.bufwinid(args.buf)
                     if vim.api.nvim_win_is_valid(win) then vim.lsp.foldclose("imports", auwin) end
                 end
@@ -36,8 +36,8 @@ return {
         })
 
         vim.api.nvim_buf_create_user_command(bufnr, "FoldingImportsToggle", function()
-            foldingimports_is_enabled = not foldingimports_is_enabled
-            print("Setting imports folding to: " .. tostring(foldingimports_is_enabled))
+            vim.g.foldingimports_enabled = not vim.g.foldingimports_enabled
+            print("Setting imports folding to: " .. tostring(vim.g.foldingimports_enabled))
         end, {
             desc = "Enable/disable folding imports with lsp",
         })

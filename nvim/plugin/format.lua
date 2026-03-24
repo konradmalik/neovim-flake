@@ -1,4 +1,4 @@
-local format_is_enabled = true
+vim.g.autoformat_enabled = true
 
 ---@param bufnr integer?
 local function format(bufnr)
@@ -13,7 +13,7 @@ local function format(bufnr)
     -- and for formatexpr so just execute this always
     local view = vim.fn.winsaveview()
 
-    -- lsp if available
+    -- LSP if available
     if #clients > 0 then
         vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = 2000 })
     else
@@ -27,8 +27,8 @@ local function format(bufnr)
 end
 
 vim.api.nvim_create_user_command("AutoFormatToggle", function()
-    format_is_enabled = not format_is_enabled
-    print("Setting autoformatting to: " .. tostring(format_is_enabled))
+    vim.g.autoformat_enabled = not vim.g.autoformat_enabled
+    print("Setting autoformatting to: " .. tostring(vim.g.autoformat_enabled))
 end, {
     desc = "Enable/disable autoformat with formatexpr globally",
 })
@@ -38,7 +38,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     desc = "AutoFormat on save",
     group = group,
     callback = function(args)
-        if not format_is_enabled then return end
+        if not vim.g.autoformat_enabled then return end
 
         local bufnr = args.buf
         vim.api.nvim_buf_call(bufnr, function() format(bufnr) end)

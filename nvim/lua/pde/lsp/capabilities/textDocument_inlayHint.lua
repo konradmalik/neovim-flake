@@ -1,4 +1,4 @@
-local inlayhints_is_enabled = false
+vim.g.inlayhints_enabled = false
 
 ---@type CapabilityHandler
 return {
@@ -6,16 +6,16 @@ return {
         local bufnr = data.bufnr
 
         vim.api.nvim_buf_create_user_command(bufnr, "InlayHintsToggle", function()
-            inlayhints_is_enabled = not inlayhints_is_enabled
+            vim.g.inlayhints_enabled = not vim.g.inlayhints_enabled
             for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-                vim.lsp.inlay_hint.enable(inlayhints_is_enabled, { bufnr = buf })
+                vim.lsp.inlay_hint.enable(vim.g.inlayhints_enabled, { bufnr = buf })
             end
-            print("Setting inlayhints to: " .. tostring(inlayhints_is_enabled))
+            print("Setting inlayhints to: " .. tostring(vim.g.inlayhints_enabled))
         end, {
             desc = "Enable/disable inlayhints with lsp",
         })
 
-        vim.lsp.inlay_hint.enable(inlayhints_is_enabled, { bufnr = bufnr })
+        vim.lsp.inlay_hint.enable(vim.g.inlayhints_enabled, { bufnr = bufnr })
     end,
 
     detach = function(_, bufnr)

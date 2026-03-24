@@ -1,4 +1,4 @@
-local highlight_is_enabled = true
+vim.g.documenthighlight_enabled = true
 
 local buf_clear_references = function(buf)
     if vim.api.nvim_buf_is_loaded(buf) then
@@ -19,13 +19,13 @@ return {
         local bufnr = data.bufnr
 
         vim.api.nvim_buf_create_user_command(bufnr, "DocumentHighlightToggle", function()
-            highlight_is_enabled = not highlight_is_enabled
-            if not highlight_is_enabled then
+            vim.g.documenthighlight_enabled = not vim.g.documenthighlight_enabled
+            if not vim.g.documenthighlight_enabled then
                 for _, buf in ipairs(vim.api.nvim_list_bufs()) do
                     buf_clear_references(buf)
                 end
             end
-            print("Setting document highlight to: " .. tostring(highlight_is_enabled))
+            print("Setting document highlight to: " .. tostring(vim.g.documenthighlight_enabled))
         end, {
             desc = "Enable/disable highlight word under cursor with lsp",
         })
@@ -34,7 +34,7 @@ return {
             group = augroup,
             buffer = bufnr,
             callback = function()
-                if not highlight_is_enabled then return end
+                if not vim.g.documenthighlight_enabled then return end
                 buf_document_highlight(bufnr)
             end,
             desc = "Highlight references when cursor holds",
@@ -44,7 +44,7 @@ return {
             group = augroup,
             buffer = bufnr,
             callback = function()
-                if not highlight_is_enabled then return end
+                if not vim.g.documenthighlight_enabled then return end
                 buf_clear_references(bufnr)
             end,
             desc = "Clear references when cursor moves",
