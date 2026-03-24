@@ -4,6 +4,11 @@ vim.g.autoformat_enabled = true
 local function format(bufnr)
     bufnr = bufnr or 0
 
+    if vim.bo[bufnr].buftype ~= "" then
+        -- skip formatting for special buffers
+        return
+    end
+
     local clients = vim.lsp.get_clients({
         bufnr = bufnr,
         method = vim.lsp.protocol.Methods.textDocument_formatting,
