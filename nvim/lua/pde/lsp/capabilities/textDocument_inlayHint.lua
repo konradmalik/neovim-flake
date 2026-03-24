@@ -15,7 +15,7 @@ return {
             desc = "Enable/disable inlayhints with lsp",
         })
 
-        if inlayhints_is_enabled then vim.lsp.inlay_hint.enable(true, { bufnr = bufnr }) end
+        vim.lsp.inlay_hint.enable(inlayhints_is_enabled, { bufnr = bufnr })
     end,
 
     detach = function(_, bufnr)

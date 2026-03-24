@@ -31,7 +31,7 @@ local function testRun(cwd, filter)
     runner.run(cmd, { cwd = cwd })
 end
 
----@param bufnr any
+---@param bufnr integer?
 ---@param range table<string, table<string,integer>>
 ---@return TSNode|nil
 local function get_node_at_range(bufnr, range)
