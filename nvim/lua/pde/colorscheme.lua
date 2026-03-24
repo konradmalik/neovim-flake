@@ -24,6 +24,7 @@ require("kanagawa").setup({
             PmenuExtraSel = { link = "BlinkCmpMenuSelection" },
             PmenuSbar = { link = "BlinkCmpScrollBarGutter" },
             PmenuThumb = { link = "BlinkCmpScrollBarThumb" },
+            ["@lsp.mod.deprecated"] = { link = "BlinkCmpLabelDeprecated" },
         }
     end,
 })
