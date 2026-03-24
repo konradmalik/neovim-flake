@@ -45,7 +45,7 @@ function M.setup(config)
     })
 
     vim.api.nvim_create_autocmd({ "FileType" }, {
-        group = vim.api.nvim_create_augroup("pde_bigfile", { clear = true }),
+        group = vim.api.nvim_create_augroup("pde-bigfile", { clear = true }),
         pattern = "bigfile",
         callback = function(ev)
             if opts.notify then
