@@ -11,6 +11,7 @@ local function initialize_once()
     if initialized then return end
 
     mini_icons.tweak_lsp_kind("replace")
+
     for k, v in pairs(vim.lsp.protocol.CompletionItemKind) do
         if type(k) == "string" and type(v) == "number" then kind_map[v] = k end
     end
@@ -40,7 +41,9 @@ return {
         vim.lsp.completion.enable(true, client.id, bufnr, {
             autotrigger = autotrigger,
             convert = function(item)
-                local _, kind_hl, _ = mini_icons.get("lsp", kind_map[item.kind] or "Unknown")
+                local kind_category = kind_map[item.kind] or "Unknown"
+                local _, kind_hl, _ = mini_icons.get("lsp", kind_category)
+                ---@type vim.v.completed_item
                 return {
                     abbr_hlgroup = is_deprecated(item) and "@lsp.mod.deprecated" or kind_hl,
                     kind_hlgroup = kind_hl or nil,
