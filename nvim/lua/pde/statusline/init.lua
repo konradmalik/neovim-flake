@@ -3,13 +3,6 @@ local conditions = require("pde.statusline.conditions")
 local updates = require("pde.statusline.updates")
 local utils = require("pde.statusline.utils")
 
-local config = {
-    special = {
-        filetype = { "^git.*", "fugitive", "undotree", "diff" },
-        buftype = { "nofile", "prompt", "help", "quickfix" },
-    },
-}
-
 local function setup_updates()
     updates.git()
     updates.diagnostics()
@@ -27,7 +20,7 @@ local function setup_statusline()
 end
 
 ---@param bufnr integer
-local function is_special(bufnr) return conditions.buffer_matches(config.special, bufnr) end
+local function is_special(bufnr) return vim.bo[bufnr].buftype ~= "" end
 
 local function setup_local_winbar_with_autocmd()
     local winbar = "%!v:lua.require('pde.statusline').winbar()"
@@ -95,9 +88,7 @@ M.winbar = function()
     return components.cut .. components.cwd() .. components.space .. components.fileinfo(true)
 end
 
-M.setup = function(conf)
-    config = vim.tbl_deep_extend("force", config, conf or {})
-
+M.setup = function()
     setup_updates()
     setup_statusline()
     setup_local_winbar_with_autocmd()
