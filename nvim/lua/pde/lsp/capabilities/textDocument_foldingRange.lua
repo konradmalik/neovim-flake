@@ -9,16 +9,19 @@ return {
         local bufnr = data.bufnr
         local win = vim.fn.bufwinid(data.bufnr)
         if vim.api.nvim_win_is_valid(win) then
-            originals_per_win[win] =
-                { vim.wo[win].foldmethod, vim.wo[win].foldexpr, vim.wo[win].foldtext }
+            originals_per_win[win] = {
+                vim.wo[win][0].foldmethod,
+                vim.wo[win][0].foldexpr,
+                vim.wo[win][0].foldtext,
+            }
             -- NOTE this change first removes the foldcolumn
             -- then adds it only after lsp responds with folds
             -- which causes the current line to update, but the rest not
             -- this has a weird effect of text moving right as we go down
             -- a workaround is to force foldcolumn to some constant number, done in folds.lua
-            vim.wo[win].foldmethod = "expr"
-            vim.wo[win].foldexpr = "v:lua.vim.lsp.foldexpr()"
-            vim.wo[win].foldtext = "v:lua.vim.lsp.foldtext()"
+            vim.wo[win][0].foldmethod = "expr"
+            vim.wo[win][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
+            vim.wo[win][0].foldtext = "v:lua.vim.lsp.foldtext()"
         end
 
         local client = data.client
@@ -48,9 +51,9 @@ return {
         local win = vim.fn.bufwinid(bufnr)
         if vim.api.nvim_win_is_valid(win) then
             local originals = originals_per_win[win]
-            vim.wo[win].foldmethod = originals[1]
-            vim.wo[win].foldexpr = originals[2]
-            vim.wo[win].foldtext = originals[3]
+            vim.wo[win][0].foldmethod = originals[1]
+            vim.wo[win][0].foldexpr = originals[2]
+            vim.wo[win][0].foldtext = originals[3]
         end
     end,
 }

@@ -35,23 +35,17 @@ local function setup_local_winbar_with_autocmd()
     vim.api.nvim_create_autocmd({ "VimEnter", "UIEnter", "BufWinEnter", "FileType", "TermOpen" }, {
         group = group,
         callback = function(event)
-            if event.event == "VimEnter" or event.event == "UIEnter" then
-                for _, win in ipairs(vim.api.nvim_list_wins()) do
-                    local winbuf = vim.api.nvim_win_get_buf(win)
+            for _, winid in ipairs(vim.api.nvim_list_wins()) do
+                local winbuf = vim.api.nvim_win_get_buf(winid)
+
+                if event.event == "VimEnter" or event.event == "UIEnter" or winbuf == event.buf then
                     if is_special(winbuf) then
-                        if vim.wo[win].winbar == winbar then vim.wo[win].winbar = nil end
+                        if vim.wo[winid][0].winbar == winbar then vim.wo[winid][0].winbar = nil end
                     else
-                        vim.wo[win].winbar = winbar
+                        vim.wo[winid][0].winbar = winbar
                     end
                 end
             end
-
-            if is_special(event.buf) then
-                if vim.wo.winbar == winbar then vim.wo.winbar = nil end
-                return
-            end
-
-            vim.wo.winbar = winbar
         end,
         desc = "Personal: set window-local winbar",
     })
@@ -60,7 +54,7 @@ local function setup_local_winbar_with_autocmd()
     vim.api.nvim_create_autocmd("FileType", {
         group = group,
         pattern = { "fugitiveblame" },
-        callback = function() vim.wo.winbar = "Fugitive" end,
+        callback = function() vim.wo[0][0].winbar = "Fugitive" end,
         desc = "Personal: fix fugitive alignment",
     })
 end

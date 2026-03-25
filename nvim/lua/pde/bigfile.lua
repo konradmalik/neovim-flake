@@ -14,9 +14,9 @@ local defaults = {
 local function set_bigfile(ctx)
     if vim.fn.exists(":NoMatchParen") ~= 0 then vim.cmd([[NoMatchParen]]) end
     vim.bo.autocomplete = false
-    vim.wo[0].foldmethod = "manual"
-    vim.wo[0].statuscolumn = ""
-    vim.wo[0].conceallevel = 0
+    vim.wo[0][0].foldmethod = "manual"
+    vim.wo[0][0].statuscolumn = ""
+    vim.wo[0][0].conceallevel = 0
     vim.schedule(function()
         if vim.api.nvim_buf_is_valid(ctx.buf) then vim.bo[ctx.buf].syntax = ctx.ft end
     end)

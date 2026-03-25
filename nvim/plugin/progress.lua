@@ -161,7 +161,7 @@ local function create_window(client)
         border = "none",
         noautocmd = true,
     })
-    vim.wo[client.winid].winhl = highlight
+    vim.wo[client.winid][0].winhl = highlight
 end
 
 --- Close the window

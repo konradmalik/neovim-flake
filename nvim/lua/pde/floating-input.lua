@@ -36,8 +36,8 @@ local function create_window(config)
     local winid = vim.api.nvim_open_win(bufnr, true, config)
 
     -- avoid hiding text
-    vim.wo[winid].wrap = false
-    vim.wo[winid].sidescrolloff = 5
+    vim.wo[winid][0].wrap = false
+    vim.wo[winid][0].sidescrolloff = 5
 
     return winid, bufnr
 end
