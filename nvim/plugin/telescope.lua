@@ -1,3 +1,6 @@
+-- NOTE: telescope has a hard nvim-web-devicons dependency
+require("mini.icons").mock_nvim_web_devicons()
+
 local actions = require("telescope.actions")
 local layout = require("telescope.actions.layout")
 local lga_actions = require("telescope-live-grep-args.actions")

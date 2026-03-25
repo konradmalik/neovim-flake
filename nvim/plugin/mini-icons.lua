@@ -1,5 +1,4 @@
-local mini_icons = require("mini.icons")
-mini_icons.setup({
+require("mini.icons").setup({
     lsp = {
         constructor = { glyph = "" },
         ["function"] = { glyph = "󰊕" },
@@ -42,5 +41,3 @@ mini_icons.setup({
         typeparameter = { glyph = "" },
     },
 })
--- NOTE: I think this is only for telescope.nvim - hard nvim-web-devicons dependency
-mini_icons.mock_nvim_web_devicons()
