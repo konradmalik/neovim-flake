@@ -11,8 +11,6 @@ local ms = vim.lsp.protocol.Methods
 
 local M = {}
 
-function M.make_capabilities() return vim.lsp.protocol.make_client_capabilities() end
-
 ---@param client vim.lsp.Client
 ---@param bufnr integer
 function M.detach(client, bufnr)

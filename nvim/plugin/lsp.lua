@@ -5,7 +5,7 @@ require("pde.loader").add_to_on_reset(
     function() vim.fs.rm(vim.lsp.log.get_filename(), { force = true }) end
 )
 
-vim.lsp.config("*", { capabilities = lsp.make_capabilities() })
+vim.lsp.config("*", { capabilities = vim.lsp.protocol.make_client_capabilities() })
 vim.lsp.enable({
     "clangd",
     "golangci_lint_ls",
