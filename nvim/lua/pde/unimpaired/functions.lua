@@ -84,6 +84,4 @@ M.toggle_llist = function()
     end
 end
 
-M.opts_with_desc = function(desc) return { desc = "[unimpaired] " .. desc } end
-
 return M
