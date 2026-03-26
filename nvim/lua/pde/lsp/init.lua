@@ -33,15 +33,15 @@ function M.detach(client, bufnr)
         return client_buf_supports_method(method) and not other_client_buf_supports_method(method)
     end
 
-    if client_buf_supports_method(ms.textDocument_codeLens) then
-        require("pde.lsp.capabilities.textDocument_codeLens").detach(client_id, bufnr)
+    if client_yes_others_not_buf_supports_method(ms.textDocument_codeLens) then
+        require("pde.lsp.capabilities.textDocument_codeLens").detach(nil, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_completion) then
         require("pde.lsp.capabilities.textDocument_completion").detach(client_id, bufnr)
     end
 
-    if client_buf_supports_method(ms.textDocument_inlineCompletion) then
+    if client_yes_others_not_buf_supports_method(ms.textDocument_inlineCompletion) then
         vim.lsp.inline_completion.enable(false, { bufnr = bufnr })
     end
 
@@ -61,7 +61,7 @@ function M.detach(client, bufnr)
         require("pde.lsp.capabilities.textDocument_formatting").detach(client_id, bufnr)
     end
 
-    if client_buf_supports_method(ms.textDocument_onTypeFormatting) then
+    if client_yes_others_not_buf_supports_method(ms.textDocument_onTypeFormatting) then
         vim.lsp.on_type_formatting.enable(false, { bufnr = bufnr })
     end
 
