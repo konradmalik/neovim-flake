@@ -1,5 +1,5 @@
 local autocmd_group = vim.api.nvim_create_augroup("editor.treesitter", { clear = true })
-local diag = require("pde.syntax-diagnostics")
+local diag = require("pde.treesitter-diagnostics")
 
 vim.api.nvim_create_autocmd(
     { "FileType", "TextChanged", "InsertLeave", "LspAttach", "LspDetach" },
