@@ -9,6 +9,12 @@ local function format(bufnr)
         return
     end
 
+    local ft = vim.bo[bufnr].filetype
+    if ft:find("^git.*") then
+        -- skip formatting for special filetypes
+        return
+    end
+
     local clients = vim.lsp.get_clients({
         bufnr = bufnr,
         method = vim.lsp.protocol.Methods.textDocument_formatting,
