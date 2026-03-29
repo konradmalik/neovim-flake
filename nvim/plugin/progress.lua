@@ -11,22 +11,22 @@ local icons = {
 
 ---@alias LspProgress lsp.WorkDoneProgressBegin|lsp.WorkDoneProgressReport|lsp.WorkDoneProgressEnd
 
----@class ProgressClient
+---@class LspProgressClient
 ---@field name string name of the client
 ---@field spinner_idx integer current index of the spinner
 ---@field winid integer? winid of the floating window
 ---@field bufnr integer bufnr of the floating window
 ---@field text string the text that will be shown in the window
----@field history table<string,ProgressMessage> history of messages by token, because messages may rely on previous values
+---@field history table<string,LspProgressMessage> history of messages by token, because messages may rely on previous values
 ---@field pos integer the position of this window. 1 is the most bottom
 ---@field timer uv_timer_t used to delay the closing of the window
 
----@class ProgressMessage
+---@class LspProgressMessage
 ---@field title string
 ---@field message string?
 
 ---client properties by client id
----@type table<integer, ProgressClient>
+---@type table<integer, LspProgressClient>
 local clients = {}
 
 -- the total number of current windows
@@ -34,7 +34,7 @@ local clients = {}
 local function total_wins()
     local active_windows = vim.iter(vim.tbl_values(clients))
         :filter(
-            ---@param c ProgressClient
+            ---@param c LspProgressClient
             ---@return boolean
             function(c) return c.winid ~= nil end
         )
@@ -43,12 +43,12 @@ local function total_wins()
 end
 
 -- checks if all current message tokens are finished
----@param client ProgressClient
+---@param client LspProgressClient
 ---@return boolean
 local function is_done(client) return vim.tbl_isempty(client.history) end
 
 --- resets the client to "empty" state
----@param client ProgressClient
+---@param client LspProgressClient
 local function reset(client)
     client.spinner_idx = 1
     client.text = ""
@@ -57,7 +57,7 @@ end
 
 --- creates a new client
 --- @param client_id integer
---- @return ProgressClient
+--- @return LspProgressClient
 local function new_client(client_id)
     return {
         name = vim.lsp.get_client_by_id(client_id).name,
@@ -91,7 +91,7 @@ end
 --- Completion is derived from the history table being empty (all tokens ended).
 --- * General: ⣾ [client_name] title: message ( 5%)
 --- * Done:     [client_name] title: message
----@param client ProgressClient
+---@param client LspProgressClient
 ---@param token string
 ---@param progress LspProgress
 local function create_and_cache_message(client, token, progress)
@@ -131,7 +131,7 @@ local function create_and_cache_message(client, token, progress)
 end
 
 ---Update the window location and size
----@param client ProgressClient
+---@param client LspProgressClient
 local function reconfigure_window(client)
     if client.winid then
         local text_width = vim.api.nvim_strwidth(client.text)
@@ -146,7 +146,7 @@ local function reconfigure_window(client)
 end
 
 ---create new window
----@param client ProgressClient
+---@param client LspProgressClient
 local function create_window(client)
     assert(client.winid == nil, "window for " .. client.name .. " already exists")
     local text_width = vim.api.nvim_strwidth(client.text)
@@ -165,7 +165,7 @@ local function create_window(client)
 end
 
 --- Close the window
----@param client ProgressClient
+---@param client LspProgressClient
 local function close_window(client)
     client.timer:stop()
     if client.winid then
@@ -177,7 +177,7 @@ local function close_window(client)
 end
 
 --- Create a new window or update the existing one
----@param client ProgressClient
+---@param client LspProgressClient
 local function ensure_window(client)
     if
         client.winid ~= nil
@@ -194,13 +194,13 @@ local function ensure_window(client)
 end
 
 ---Show the progress message in floating window
----@param client ProgressClient
+---@param client LspProgressClient
 local function show_message(client)
     ensure_window(client)
     vim.api.nvim_buf_set_lines(client.bufnr, 0, 1, false, { client.text })
 end
 
----@param client ProgressClient
+---@param client LspProgressClient
 local function dispose_client(client)
     close_window(client)
 
