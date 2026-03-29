@@ -1,6 +1,5 @@
 {
   nvim,
-  neovimUtils,
   git,
   stdenv,
   sqlite,
@@ -57,7 +56,7 @@ let
   # git is required by vim.pack
   externalPackages = extraPackages ++ [ sqlite ] ++ lib.optionals (devPlugins != [ ]) [ git ];
 
-  extraWrapperArgs =
+  wrapperArgs =
     let
       sqliteLibExt = stdenv.hostPlatform.extensions.sharedLibrary;
       sqliteLibPath = "${sqlite.out}/lib/libsqlite3${sqliteLibExt}";
@@ -91,23 +90,11 @@ let
       "/tmp/${appName}-cache"
     ];
 
-  neovimConfig = neovimUtils.makeNeovimConfig {
-    inherit plugins;
-    viAlias = appName == "nvim";
-    vimAlias = appName == "nvim";
-    withPython3 = false;
-    withNodeJs = false;
-    withRuby = false;
+  nvim-wrapped = wrapNeovimUnstable nvim {
+    inherit plugins wrapperArgs;
+    luaRcContent = if devMode then "" else initLua;
+    wrapRc = !devMode;
   };
-
-  nvim-wrapped = wrapNeovimUnstable nvim (
-    neovimConfig
-    // {
-      luaRcContent = if devMode then "" else initLua;
-      wrapperArgs = neovimConfig.wrapperArgs ++ extraWrapperArgs;
-      wrapRc = !devMode;
-    }
-  );
 
   isCustomAppName = appName != null && appName != "nvim";
 in
