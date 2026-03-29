@@ -149,6 +149,18 @@
                     inherit (inputs.flint-ls.packages.${system}) flint-ls;
                     nvim-nightly = inputs.neovim-nightly-overlay.packages.${system}.default;
                   })
+                  # FIXME until fixed in nixpkgs-unstable
+                  (final: prev: {
+                    lua5_1 = prev.lua5_1.override {
+                      packageOverrides = (
+                        lfinal: lprev: {
+                          busted =
+                            (builtins.getFlake "github:nixos/nixpkgs/f8573b9c935cfaa162dd62cc9e75ae2db86f85df")
+                            .legacyPackages.${prev.pkgs.stdenv.hostPlatform.system}.lua5_1.pkgs.busted;
+                        }
+                      );
+                    };
+                  })
                 ];
               }
             )
