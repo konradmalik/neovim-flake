@@ -1,3 +1,4 @@
+local cache = require("pde.statusline.cache")
 local icons = require("pde.statusline.icons")
 local mini_icons = require("mini.icons")
 local utils = require("pde.statusline.utils")
@@ -120,38 +121,48 @@ M.mode = function()
     return left .. mode .. right
 end
 
-M.fileinfo = function(active)
-    local bufnr = utils.stbufnr()
-    local bufname = vim.api.nvim_buf_get_name(bufnr)
+M.fileinfo = cache.create(
+    ---@param active boolean
+    ---@return string
+    function(active)
+        local bufnr = utils.stbufnr()
+        local bufname = vim.api.nvim_buf_get_name(bufnr)
 
-    local icon, ihl, _ = mini_icons.get("file", bufname)
-    local hl
-    if not active then
-        ihl = colors.nontext
-        hl = colors.nontext
-    else
-        hl = colors.text
-    end
+        local icon, ihl, _ = mini_icons.get("file", bufname)
+        local hl
+        if not active then
+            ihl = colors.nontext
+            hl = colors.nontext
+        else
+            hl = colors.text
+        end
 
-    local filename
-    if bufname == "" then
-        filename = "[No Name]"
-    else
-        filename = vim.fn.fnamemodify(bufname, ":.") or ""
-    end
-    local text = wrap_hl(ihl, icon) .. " " .. wrap_hl(hl, filename)
+        local filename
+        if bufname == "" then
+            filename = "[No Name]"
+        else
+            filename = vim.fn.fnamemodify(bufname, ":.") or ""
+        end
+        local text = wrap_hl(ihl, icon) .. " " .. wrap_hl(hl, filename)
 
-    if vim.bo[bufnr].modified then return text .. wrap_hl(colors.diag_ok, " " .. icons.git.Mod) end
+        if vim.bo[bufnr].modified then
+            return text .. wrap_hl(colors.diag_ok, " " .. icons.git.Mod)
+        end
 
-    if vim.bo[bufnr].readonly then
-        text = text .. wrap_hl(colors.diag_warn, " " .. icons.ui.Lock)
-    end
-    if not vim.bo[bufnr].modifiable then
-        text = text .. wrap_hl(colors.diag_error, " " .. icons.ui.FilledLock)
-    end
+        if vim.bo[bufnr].readonly then
+            text = text .. wrap_hl(colors.diag_warn, " " .. icons.ui.Lock)
+        end
+        if not vim.bo[bufnr].modifiable then
+            text = text .. wrap_hl(colors.diag_error, " " .. icons.ui.FilledLock)
+        end
 
-    return text
-end
+        return text
+    end,
+    {
+        events = { "BufEnter", "BufLeave", "BufFilePost", "BufModifiedSet" },
+        buffer = true,
+    }
+)
 
 M.fileformat = function()
     return wrap_hl(colors.nontext, format_types[vim.bo[utils.stbufnr()].fileformat])
@@ -199,7 +210,7 @@ M.file_encoding = function()
     return wrap_hl(colors.nontext, encode:lower())
 end
 
-M.LSP_status = function()
+M.LSP_status = cache.create(function()
     local clients = vim.lsp.get_clients({ bufnr = utils.stbufnr() })
     local numClients = #clients
     if numClients == 0 then return "" end
@@ -216,11 +227,14 @@ M.LSP_status = function()
         text = table.concat(texts, " ")
     end
     return wrap_click("LSP_click", wrap_hl(colors.string, text))
-end
+end, {
+    events = { "LspAttach", "LspDetach" },
+    buffer = true,
+})
 
 M.LSP_click = function() vim.cmd("checkhealth lsp") end
 
-M.cwd = function()
+M.cwd = cache.create(function()
     local winnr = utils.stwinnr()
     local cwd = vim.fn.getcwd(winnr)
     cwd = vim.fn.fnamemodify(cwd, ":t")
@@ -230,7 +244,9 @@ M.cwd = function()
         .. " "
         .. cwd
     return wrap_hl(colors.directory, cwd)
-end
+end, {
+    events = "WinEnter",
+})
 
 do
     local ruler
