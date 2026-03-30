@@ -1,7 +1,3 @@
-local cmd = require("git-conflict.commands")
-
-require("git-conflict").setup()
-
 local opts_with_desc = function(desc) return { desc = "[GitConflict] " .. desc } end
 local function buf_opts_with_desc(bufnr, desc)
     local opts = opts_with_desc(desc)
@@ -9,12 +5,22 @@ local function buf_opts_with_desc(bufnr, desc)
     return opts
 end
 
-vim.keymap.set("n", "]x", cmd.buf_next_conflict, opts_with_desc("Next Conflict"))
-vim.keymap.set("n", "[x", cmd.buf_prev_conflict, opts_with_desc("Previous Conflict"))
+vim.keymap.set(
+    "n",
+    "]x",
+    require("git-conflict.commands").buf_next_conflict,
+    opts_with_desc("Next Conflict")
+)
+vim.keymap.set(
+    "n",
+    "[x",
+    require("git-conflict.commands").buf_prev_conflict,
+    opts_with_desc("Previous Conflict")
+)
 vim.keymap.set(
     "n",
     "<leader>xq",
-    cmd.send_conflicts_to_qf,
+    require("git-conflict.commands").send_conflicts_to_qf,
     opts_with_desc("Send repo conflicts to QF")
 )
 
@@ -22,6 +28,7 @@ vim.api.nvim_create_autocmd("User", {
     group = vim.api.nvim_create_augroup("OnGitConflict", { clear = true }),
     pattern = "GitConflict",
     callback = function(args)
+        local cmd = require("git-conflict.commands")
         local buf = args.buf
 
         vim.api.nvim_buf_create_user_command(
