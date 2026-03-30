@@ -1,5 +1,3 @@
-local runner = require("pde.runner")
-
 ---@param command lsp.Command
 ---@return boolean
 local function validate_command(command)
@@ -41,8 +39,7 @@ local function runSingle(command)
     end
 
     local cwd = task.args.workspaceRoot
-
-    runner.run(vim.iter(cmd):flatten():totable(), { cwd = cwd })
+    require("pde.runner").run(vim.iter(cmd):flatten():totable(), { cwd = cwd })
 end
 
 ---@type vim.lsp.Config

@@ -1,6 +1,4 @@
 -- https://github.com/redhat-developer/yaml-language-server
-local schemastore = require("schemastore")
-
 ---@type vim.lsp.Config
 return {
     on_init = function(client)
@@ -22,7 +20,7 @@ return {
             completion = true,
             hover = true,
             validate = true,
-            schemas = vim.tbl_extend("error", schemastore.yaml.schemas(), {
+            schemas = vim.tbl_extend("error", require("schemastore").yaml.schemas(), {
                 ["kubernetes"] = { "k8s/**/*.yml", "k8s/**/*.yaml" },
                 -- or use:
                 -- # yaml-language-server: $schema=<urlToTheSchema>

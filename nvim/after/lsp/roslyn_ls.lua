@@ -1,5 +1,3 @@
-local runner = require("pde.runner")
-
 local initToken = 0
 
 ---@param command lsp.Command
@@ -28,7 +26,7 @@ local function testRun(cwd, filter)
         "--filter",
         '"' .. filter .. '"',
     }
-    runner.run(cmd, { cwd = cwd })
+    require("pde.runner").run(cmd, { cwd = cwd })
 end
 
 ---@param bufnr integer?

@@ -1,6 +1,3 @@
-local augroups = require("pde.lsp.augroups")
-local keymapper = require("pde.lsp.keymapper")
-local telescope = require("telescope.builtin")
 local ms = vim.lsp.protocol.Methods
 
 ---@alias HandlerData {augroup: integer, bufnr: integer, client: vim.lsp.Client}
@@ -14,6 +11,9 @@ local M = {}
 ---@param client vim.lsp.Client
 ---@param bufnr integer
 function M.detach(client, bufnr)
+    local augroups = require("pde.lsp.augroups")
+    local keymapper = require("pde.lsp.keymapper")
+
     local client_id = client.id
     augroups.del_autocmds_for_buf(client, bufnr)
 
@@ -83,6 +83,10 @@ end
 ---@param client vim.lsp.Client
 ---@param bufnr integer
 function M.attach(client, bufnr)
+    local augroups = require("pde.lsp.augroups")
+    local keymapper = require("pde.lsp.keymapper")
+    local telescope = require("telescope.builtin")
+
     local augroup = augroups.get_augroup(client)
     local opts_with_desc = keymapper.opts_for(bufnr)
     local function client_buf_supports_method(method) return client:supports_method(method, bufnr) end

@@ -1,5 +1,3 @@
-local lsp = require("pde.lsp")
-
 local group = vim.api.nvim_create_augroup("personal-lsp", { clear = true })
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -8,7 +6,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         local client_id = args.data.client_id
         local client = vim.lsp.get_client_by_id(client_id)
         if client then
-            lsp.attach(client, args.buf)
+            require("pde.lsp").attach(client, args.buf)
         else
             vim.notify("cannot find client " .. client_id, vim.log.levels.ERROR)
         end
@@ -21,7 +19,7 @@ vim.api.nvim_create_autocmd("LspDetach", {
         local client_id = args.data.client_id
         local client = vim.lsp.get_client_by_id(client_id)
         if client then
-            lsp.detach(client, args.buf)
+            require("pde.lsp").detach(client, args.buf)
         else
             vim.notify("cannot find client " .. client_id, vim.log.levels.ERROR)
         end
