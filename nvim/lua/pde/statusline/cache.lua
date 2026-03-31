@@ -8,8 +8,8 @@ local M = {}
 --- @param component F
 --- @param spec {events: string|string[], buffer?: boolean}
 ---        Autocmd specs that invalidate the cache.
----        When `buffer` is true, only the affected buffer's cache entry is cleared.
----        When `buffer` is false (default), the entire cache is cleared.
+---        When `buffer` is true, the cache is created separately per buffer.
+---        When `buffer` is false (default), the cache is global for all buffers.
 --- @return F
 function M.create(component, spec)
     ---@type table<integer, string>
@@ -20,7 +20,7 @@ function M.create(component, spec)
     vim.api.nvim_create_autocmd(spec.events, {
         group = group,
         callback = function(ev)
-            if spec.buffer == true and ev.buf then
+            if spec.buffer == true then
                 cache[ev.buf] = nil
             else
                 for k in pairs(cache) do
@@ -32,10 +32,14 @@ function M.create(component, spec)
     })
 
     return function(bufnr, ...)
-        local result = cache[bufnr]
+        local cache_key = bufnr
+        if not spec.buffer then cache_key = -1 end
+
+        local result = cache[cache_key]
         if result ~= nil then return result end
+
         result = component(bufnr, ...)
-        cache[bufnr] = result
+        cache[cache_key] = result
         return result
     end
 end
