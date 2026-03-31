@@ -1,12 +1,10 @@
-local utils = require("pde.statusline.utils")
-
 local M = {}
 
 --- Creates an event-cached statusline component.
 --- The component function is called once per buffer and its result is cached.
 --- The cache is invalidated when any of the specified events fire.
 ---
---- @generic F: fun(...): string
+--- @generic F: fun(bufnr: integer, ...): string
 --- @param component F
 --- @param spec {events: string|string[], buffer?: boolean}
 ---        Autocmd specs that invalidate the cache.
@@ -33,11 +31,10 @@ function M.create(component, spec)
         desc = "invalidate cached statusline component '" .. tostring(component) .. "'",
     })
 
-    return function(args)
-        local bufnr = utils.stbufnr()
+    return function(bufnr, ...)
         local result = cache[bufnr]
         if result ~= nil then return result end
-        result = component(args)
+        result = component(bufnr, ...)
         cache[bufnr] = result
         return result
     end

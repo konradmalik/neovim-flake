@@ -1,8 +1,12 @@
 local components = require("pde.statusline.components")
 local conditions = require("pde.statusline.conditions")
 local updates = require("pde.statusline.updates")
-local utils = require("pde.statusline.utils")
 
+---@type fun(): integer
+local function stwinnr() return vim.g.statusline_winid end
+
+---@type fun(): integer
+local function stbufnr() return vim.api.nvim_win_get_buf(stwinnr()) end
 local function setup_updates()
     updates.git()
     updates.diagnostics()
@@ -55,37 +59,47 @@ end
 local M = {}
 
 M.statusline = function()
-    if is_special(utils.stbufnr()) then return components.filetype() .. components.busy() end
+    local bufnr = stbufnr()
+    if is_special(bufnr) then return components.filetype(bufnr) .. components.busy(bufnr) end
 
+    local winid = stwinnr()
     return components.mode()
         .. components.space
         .. components.space
-        .. components.git()
+        .. components.git(bufnr)
         .. components.space
-        .. components.gitchanges()
+        .. components.gitchanges(bufnr)
         .. components.cut
         .. components.align
-        .. components.busy()
+        .. components.busy(bufnr)
         .. components.align
-        .. components.diagnostics()
+        .. components.diagnostics(bufnr)
         .. components.space
         .. components.space
-        .. components.LSP_status()
+        .. components.LSP_status(bufnr)
         .. components.space
-        .. components.filetype()
+        .. components.filetype(bufnr)
         .. components.space
-        .. components.fileformat()
+        .. components.fileformat(bufnr)
         .. components.space
-        .. components.file_encoding()
+        .. components.file_encoding(bufnr)
         .. components.space
         .. components.ruler()
         .. components.space
-        .. components.scrollbar()
+        .. components.scrollbar(bufnr, winid)
 end
 
 M.winbar = function()
-    if not conditions.is_activewin() then return components.cut .. components.fileinfo(false) end
-    return components.cut .. components.cwd() .. components.space .. components.fileinfo(true)
+    local bufnr = stbufnr()
+    if not conditions.is_activewin() then
+        return components.cut .. components.fileinfo(bufnr, false)
+    end
+
+    local winid = stwinnr()
+    return components.cut
+        .. components.cwd(winid)
+        .. components.space
+        .. components.fileinfo(bufnr, true)
 end
 
 M.setup = function()
