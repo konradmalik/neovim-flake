@@ -1,5 +1,4 @@
 local components = require("pde.statusline.components")
-local conditions = require("pde.statusline.conditions")
 local updates = require("pde.statusline.updates")
 
 ---@type fun(): integer
@@ -7,6 +6,15 @@ local function stwinnr() return vim.g.statusline_winid end
 
 ---@type fun(): integer
 local function stbufnr() return vim.api.nvim_win_get_buf(stwinnr()) end
+
+--- Check if the provided winid is the active one
+---@param winid integer
+---@return boolean
+local function is_activewin(winid) return vim.api.nvim_get_current_win() == winid end
+
+---@param bufnr integer
+---@return boolean
+local function is_special(bufnr) return vim.bo[bufnr].buftype ~= "" end
 local function setup_updates()
     updates.git()
     updates.diagnostics()
@@ -22,10 +30,6 @@ local function setup_statusline()
 
     vim.o.statusline = "%!v:lua.require('pde.statusline').statusline()"
 end
-
----@param bufnr integer
-local function is_special(bufnr) return vim.bo[bufnr].buftype ~= "" end
-
 local function setup_local_winbar_with_autocmd()
     local winbar = "%!v:lua.require('pde.statusline').winbar()"
     local group = vim.api.nvim_create_augroup("personal-winbar", { clear = true })
@@ -88,11 +92,9 @@ end
 
 M.winbar = function()
     local bufnr = stbufnr()
-    if not conditions.is_activewin() then
-        return components.cut .. components.fileinfo(bufnr, false)
-    end
-
     local winid = stwinnr()
+    if not is_activewin(winid) then return components.cut .. components.fileinfo(bufnr, false) end
+
     return components.cut
         .. components.cwd(winid)
         .. components.space
