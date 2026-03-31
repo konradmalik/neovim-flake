@@ -20,13 +20,16 @@ function M.create(component, spec)
     vim.api.nvim_create_autocmd(spec.events, {
         group = group,
         callback = function(ev)
-            if spec.buffer == true then
-                cache[ev.buf] = nil
-            else
-                for k in pairs(cache) do
-                    cache[k] = nil
+            -- schedule avoids race condition by running only after other events stopped processing
+            vim.schedule(function()
+                if spec.buffer == true then
+                    cache[ev.buf] = nil
+                else
+                    for k in pairs(cache) do
+                        cache[k] = nil
+                    end
                 end
-            end
+            end)
         end,
         desc = "invalidate cached statusline component '" .. tostring(component) .. "'",
     })
