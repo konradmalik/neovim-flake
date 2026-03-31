@@ -1,7 +1,6 @@
 local cache = require("pde.statusline.cache")
 local icons = require("pde.statusline.icons")
 local mini_icons = require("mini.icons")
-local utils = require("pde.statusline.utils")
 
 ---@param hl string highlight name
 ---@param s string string to wrap
@@ -99,8 +98,10 @@ M.align = "%="
 
 M.cut = "%<"
 
-M.busy = function()
-    local busy = vim.bo[utils.stbufnr()].busy
+---@param bufnr integer
+---@return string
+M.busy = function(bufnr)
+    local busy = vim.bo[bufnr].busy
     if busy == 0 then return "" end
     return wrap_hl(colors.statement, "<buffer is busy>")
 end
@@ -122,10 +123,10 @@ M.mode = function()
 end
 
 M.fileinfo = cache.create(
+    ---@param bufnr integer
     ---@param active boolean
     ---@return string
-    function(active)
-        local bufnr = utils.stbufnr()
+    function(bufnr, active)
         local bufname = vim.api.nvim_buf_get_name(bufnr)
 
         local icon, ihl, _ = mini_icons.get("file", bufname)
@@ -164,18 +165,24 @@ M.fileinfo = cache.create(
     }
 )
 
-M.fileformat = function()
-    return wrap_hl(colors.nontext, format_types[vim.bo[utils.stbufnr()].fileformat])
+---@param bufnr integer
+---@return string
+M.fileformat = function(bufnr)
+    return wrap_hl(colors.nontext, format_types[vim.bo[bufnr].fileformat])
 end
 
-M.git = function()
-    local head = vim.b[utils.stbufnr()].gitsigns_head
+---@param bufnr integer
+---@return string
+M.git = function(bufnr)
+    local head = vim.b[bufnr].gitsigns_head
     if not head then return "" end
     return wrap_click("git_click", wrap_hl(colors.constant, icons.git.Branch .. " " .. head))
 end
 
-M.gitchanges = function()
-    local git_status = vim.b[utils.stbufnr()].gitsigns_status_dict
+---@param bufnr integer
+---@return string
+M.gitchanges = function(bufnr)
+    local git_status = vim.b[bufnr].gitsigns_status_dict
     if not git_status then return "" end
 
     local added = (git_status.added and git_status.added ~= 0)
@@ -193,60 +200,75 @@ end
 
 M.git_click = function() vim.cmd("Git") end
 
-M.diagnostics = function()
-    if not vim.diagnostic.is_enabled({ bufnr = utils.stbufnr() }) then return "" end
-    return vim.diagnostic.status(utils.stbufnr())
+---@param bufnr integer
+---@return string
+M.diagnostics = function(bufnr)
+    if not vim.diagnostic.is_enabled({ bufnr = bufnr }) then return "" end
+    return vim.diagnostic.status(bufnr)
 end
 
-M.filetype = function()
-    local ft = vim.bo[utils.stbufnr()].filetype
+---@param bufnr integer
+---@return string
+M.filetype = function(bufnr)
+    local ft = vim.bo[bufnr].filetype
     if ft == "" then ft = "plain text" end
     return wrap_hl(colors.filetype, icons.documents.FileContents .. " " .. ft)
 end
 
-M.file_encoding = function()
-    local encode = vim.bo[utils.stbufnr()].fileencoding
+---@param bufnr integer
+---@return string
+M.file_encoding = function(bufnr)
+    local encode = vim.bo[bufnr].fileencoding
     if encode == "" then encode = "none" end
     return wrap_hl(colors.nontext, encode:lower())
 end
 
-M.LSP_status = cache.create(function()
-    local clients = vim.lsp.get_clients({ bufnr = utils.stbufnr() })
-    local numClients = #clients
-    if numClients == 0 then return "" end
+M.LSP_status = cache.create(
+    ---@param bufnr integer
+    ---@return string
+    function(bufnr)
+        local clients = vim.lsp.get_clients({ bufnr = bufnr })
+        local numClients = #clients
+        if numClients == 0 then return "" end
 
-    local icon = numClients > 1 and icons.ui.HexagonAll or icons.ui.Hexagon
-    local text
-    if numClients >= 4 then
-        text = icon .. " " .. numClients .. " LSPs"
-    else
-        local texts = { icon }
-        for _, server in pairs(clients) do
-            table.insert(texts, server.name)
+        local icon = numClients > 1 and icons.ui.HexagonAll or icons.ui.Hexagon
+        local text
+        if numClients >= 4 then
+            text = icon .. " " .. numClients .. " LSPs"
+        else
+            local texts = { icon }
+            for _, server in pairs(clients) do
+                table.insert(texts, server.name)
+            end
+            text = table.concat(texts, " ")
         end
-        text = table.concat(texts, " ")
-    end
-    return wrap_click("LSP_click", wrap_hl(colors.string, text))
-end, {
-    events = { "LspAttach", "LspDetach" },
-    buffer = true,
-})
+        return wrap_click("LSP_click", wrap_hl(colors.string, text))
+    end,
+    {
+        events = { "LspAttach", "LspDetach" },
+        buffer = true,
+    }
+)
 
 M.LSP_click = function() vim.cmd("checkhealth lsp") end
 
-M.cwd = cache.create(function()
-    local winnr = utils.stwinnr()
-    local cwd = vim.fn.getcwd(winnr)
-    cwd = vim.fn.fnamemodify(cwd, ":t")
-    cwd = (vim.fn.haslocaldir(winnr) == 1 and "l" or "g")
-        .. " "
-        .. icons.documents.Folder
-        .. " "
-        .. cwd
-    return wrap_hl(colors.directory, cwd)
-end, {
-    events = "WinEnter",
-})
+M.cwd = cache.create(
+    ---@param winid integer
+    ---@return string
+    function(winid)
+        local cwd = vim.fn.getcwd(winid)
+        cwd = vim.fn.fnamemodify(cwd, ":t")
+        cwd = (vim.fn.haslocaldir(winid) == 1 and "l" or "g")
+            .. " "
+            .. icons.documents.Folder
+            .. " "
+            .. cwd
+        return wrap_hl(colors.directory, cwd)
+    end,
+    {
+        events = "WinEnter",
+    }
+)
 
 do
     local ruler
@@ -256,9 +278,12 @@ do
     end
 end
 
-M.scrollbar = function()
-    local curr_line = vim.api.nvim_win_get_cursor(utils.stwinnr())[1]
-    local lines = vim.api.nvim_buf_line_count(utils.stbufnr())
+---@param bufnr integer
+---@param winid integer
+---@return string
+M.scrollbar = function(bufnr, winid)
+    local curr_line = vim.api.nvim_win_get_cursor(winid)[1]
+    local lines = vim.api.nvim_buf_line_count(bufnr)
     if lines == 0 then return sbar[1] end
     local i = math.floor((curr_line - 1) / lines * #sbar) + 1
     return wrap_hl(colors.func, sbar[i])
