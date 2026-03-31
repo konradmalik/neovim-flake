@@ -35,8 +35,6 @@ local colors = {
     debug = "Debug",
 }
 
-local sbar = icons.ui.Animations.Fill
-
 local format_types = {
     unix = icons.oss.Linux,
     mac = icons.oss.Mac,
@@ -276,17 +274,6 @@ do
         if not ruler then ruler = wrap_hl(colors.statement, "[%7(%l/%3L%):%2c %P]") end
         return ruler
     end
-end
-
----@param bufnr integer
----@param winid integer
----@return string
-M.scrollbar = function(bufnr, winid)
-    local curr_line = vim.api.nvim_win_get_cursor(winid)[1]
-    local lines = vim.api.nvim_buf_line_count(bufnr)
-    if lines == 0 then return sbar[1] end
-    local i = math.floor((curr_line - 1) / lines * #sbar) + 1
-    return wrap_hl(colors.func, sbar[i])
 end
 
 -- test_status = function()

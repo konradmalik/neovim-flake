@@ -62,7 +62,6 @@ M.statusline = function()
     local bufnr = stbufnr()
     if is_special(bufnr) then return components.filetype(bufnr) .. components.busy(bufnr) end
 
-    local winid = stwinnr()
     return components.mode()
         .. components.space
         .. components.space
@@ -85,8 +84,6 @@ M.statusline = function()
         .. components.file_encoding(bufnr)
         .. components.space
         .. components.ruler()
-        .. components.space
-        .. components.scrollbar(bufnr, winid)
 end
 
 M.winbar = function()
