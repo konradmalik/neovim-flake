@@ -27,8 +27,8 @@ local function format(bufnr)
     -- LSP if available
     if #clients > 0 then
         vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = 2000 })
-    else
-        -- fallback: use formatexpr/formatprg via gq
+    -- fallback: use formatexpr/formatprg via gq
+    elseif vim.bo[bufnr].formatprg ~= "" or vim.bo[bufnr].formatexpr ~= "" then
         vim.cmd("silent keepjumps normal! gggqG")
     end
     -- remove trailing empty lines
