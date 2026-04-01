@@ -26,7 +26,7 @@ vim.o.undofile = true
 ---@diagnostic disable-next-line: assign-type-mismatch
 local state = vim.fn.stdpath("state")
 vim.o.undodir = vim.fs.joinpath(state, "undodir")
--- Case insensitive searching UNLESS /C or capital in search
+-- Case insensitive searching UNLESS \C or capital in search
 vim.o.ignorecase = true
 vim.o.smartcase = true
 -- Keep signcolumn on by default
