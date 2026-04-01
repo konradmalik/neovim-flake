@@ -198,12 +198,15 @@ end
 
 M.git_click = function() vim.cmd("Git") end
 
----@param bufnr integer
----@return string
-M.diagnostics = function(bufnr)
-    if not vim.diagnostic.is_enabled({ bufnr = bufnr }) then return "" end
-    return vim.diagnostic.status(bufnr)
-end
+M.diagnostics = cache.create(
+    ---@param bufnr integer
+    ---@return string
+    function(bufnr)
+        if not vim.diagnostic.is_enabled({ bufnr = bufnr }) then return "" end
+        return vim.diagnostic.status(bufnr)
+    end,
+    { events = "DiagnosticChanged", buffer = true }
+)
 
 ---@param bufnr integer
 ---@return string
