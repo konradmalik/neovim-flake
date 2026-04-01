@@ -1,3 +1,5 @@
+-- we have conform at home.
+-- conform at home:
 vim.g.autoformat_enabled = true
 
 ---@param bufnr integer?
