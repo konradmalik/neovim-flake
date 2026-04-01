@@ -1,5 +1,7 @@
 local M = {}
 
+local global_cache_key = -1
+
 --- Creates an event-cached statusline component.
 --- The component function is called once per buffer and its result is cached.
 --- The cache is invalidated when any of the specified events fire.
@@ -25,18 +27,23 @@ function M.create(component, spec)
                 if spec.buffer == true then
                     cache[ev.buf] = nil
                 else
-                    for k in pairs(cache) do
-                        cache[k] = nil
-                    end
+                    cache[global_cache_key] = nil
                 end
             end)
         end,
         desc = "invalidate cached statusline component '" .. tostring(component) .. "'",
     })
 
+    if spec.buffer == true then
+        vim.api.nvim_create_autocmd("BufDelete", {
+            group = group,
+            callback = function(ev) cache[ev.buf] = nil end,
+            desc = "clear cache for deleted buffer for '" .. tostring(component) .. "'",
+        })
+    end
     return function(bufnr, ...)
         local cache_key = bufnr
-        if not spec.buffer then cache_key = -1 end
+        if not spec.buffer then cache_key = global_cache_key end
 
         local result = cache[cache_key]
         if result ~= nil then return result end
