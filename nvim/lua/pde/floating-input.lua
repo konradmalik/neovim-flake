@@ -81,7 +81,6 @@ function M.input(opts, on_confirm, win_config)
         width = input_width,
         height = 1,
         title = prompt,
-        noautocmd = true,
     }
 
     local window_config = resolve_config(default ~= "", default_win_config, win_config)
