@@ -100,8 +100,8 @@ local function handle_fix_all_code_action(client, data)
 end
 
 ---@param client_id integer
----@param token integer|string
----@param value LspProgress
+---@param token lsp.ProgressToken
+---@param value lsp.WorkDoneProgressBegin|lsp.WorkDoneProgressReport|lsp.WorkDoneProgressEnd
 local function lsp_progress(client_id, token, value)
     if value.message then value.message = value.message:gsub("[\r\n]", "") end
 
@@ -218,7 +218,7 @@ return {
 
             local token = math.random(2000000000)
 
-            ---@param value LspProgress
+            ---@param value lsp.WorkDoneProgressBegin|lsp.WorkDoneProgressReport|lsp.WorkDoneProgressEnd
             local client_lsp_progress = function(value) lsp_progress(ctx.client_id, token, value) end
 
             client_lsp_progress({
