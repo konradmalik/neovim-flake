@@ -41,7 +41,10 @@ end
 
 vim.api.nvim_create_user_command("AutoFormatToggle", function()
     vim.g.autoformat_enabled = not vim.g.autoformat_enabled
-    print("Setting autoformatting to: " .. tostring(vim.g.autoformat_enabled))
+    vim.notify(
+        "Setting autoformatting to: " .. tostring(vim.g.autoformat_enabled),
+        vim.log.levels.INFO
+    )
 end, {
     desc = "Enable/disable autoformat with formatexpr globally",
 })

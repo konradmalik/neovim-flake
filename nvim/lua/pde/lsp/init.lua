@@ -220,7 +220,9 @@ function M.attach(client, bufnr)
     vim.keymap.set(
         "n",
         "grwl",
-        function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
+        function()
+            vim.notify(vim.inspect(vim.lsp.buf.list_workspace_folders()), vim.log.levels.INFO)
+        end,
         opts_with_desc("List Workspace Folders")
     )
 end

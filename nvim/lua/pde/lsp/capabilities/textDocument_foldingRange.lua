@@ -40,7 +40,10 @@ return {
 
         vim.api.nvim_buf_create_user_command(bufnr, "FoldingImportsToggle", function()
             vim.g.foldingimports_enabled = not vim.g.foldingimports_enabled
-            print("Setting imports folding to: " .. tostring(vim.g.foldingimports_enabled))
+            vim.notify(
+                "Setting imports folding to: " .. tostring(vim.g.foldingimports_enabled),
+                vim.log.levels.INFO
+            )
         end, {
             desc = "Enable/disable folding imports with lsp",
         })

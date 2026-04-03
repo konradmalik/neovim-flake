@@ -10,7 +10,10 @@ return {
             for _, buf in ipairs(vim.api.nvim_list_bufs()) do
                 vim.lsp.inlay_hint.enable(vim.g.inlayhints_enabled, { bufnr = buf })
             end
-            print("Setting inlayhints to: " .. tostring(vim.g.inlayhints_enabled))
+            vim.notify(
+                "Setting inlayhints to: " .. tostring(vim.g.inlayhints_enabled),
+                vim.log.levels.INFO
+            )
         end, {
             desc = "Enable/disable inlayhints with lsp",
         })

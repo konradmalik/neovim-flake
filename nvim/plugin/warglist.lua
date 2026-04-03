@@ -7,7 +7,7 @@ local function overview(winid)
     if vim.fn.argc(winid) > 0 then
         vim.cmd.args()
     else
-        print("no arglist entries")
+        vim.notify("no arglist entries", vim.log.levels.INFO)
     end
 end
 
@@ -17,7 +17,7 @@ end
 local function navigate_idx(winid, idx)
     local arglen = vim.fn.argc(winid)
     if idx < 0 or idx >= arglen then
-        print(idx .. " is out of range. Arglen: " .. arglen)
+        vim.notify(idx .. " is out of range. Arglen: " .. arglen, vim.log.levels.INFO)
         return false
     end
     vim.cmd((idx + 1) .. "argument")

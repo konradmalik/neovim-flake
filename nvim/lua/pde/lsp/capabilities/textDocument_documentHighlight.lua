@@ -25,7 +25,10 @@ return {
                     buf_clear_references(buf)
                 end
             end
-            print("Setting document highlight to: " .. tostring(vim.g.documenthighlight_enabled))
+            vim.notify(
+                "Setting document highlight to: " .. tostring(vim.g.documenthighlight_enabled),
+                vim.log.levels.INFO
+            )
         end, {
             desc = "Enable/disable highlight word under cursor with lsp",
         })

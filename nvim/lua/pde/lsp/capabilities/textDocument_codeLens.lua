@@ -9,7 +9,10 @@ return {
         vim.api.nvim_buf_create_user_command(bufnr, "CodeLensToggle", function()
             vim.g.codelens_enabled = not vim.g.codelens_enabled
             vim.lsp.codelens.enable(vim.g.codelens_enabled)
-            print("Setting codelens to: " .. tostring(vim.g.codelens_enabled))
+            vim.notify(
+                "Setting codelens to: " .. tostring(vim.g.codelens_enabled),
+                vim.log.levels.INFO
+            )
         end, {
             desc = "Enable/disable codelens with lsp",
         })
