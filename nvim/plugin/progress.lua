@@ -17,7 +17,7 @@ local icons = {
 ---@field winid integer? winid of the floating window
 ---@field bufnr integer bufnr of the floating window
 ---@field text string the text that will be shown in the window
----@field history table<string,LspProgressMessage> history of messages by token, because messages may rely on previous values
+---@field history table<lsp.ProgressToken,LspProgressMessage> history of messages by token, because messages may rely on previous values
 ---@field pos integer the position of this window. 1 is the most bottom
 ---@field timer uv_timer_t used to delay the closing of the window
 
@@ -92,7 +92,7 @@ end
 --- * General: ⣾ [client_name] title: message ( 5%)
 --- * Done:     [client_name] title: message
 ---@param client LspProgressClient
----@param token string
+---@param token lsp.ProgressToken
 ---@param progress LspProgress
 local function create_and_cache_message(client, token, progress)
     local message_builder = { "[", client.name, "]" }
@@ -215,35 +215,7 @@ local function dispose_client(client)
     reset(client)
 end
 
---- Send an OSC 9;4 escape sequence to set the terminal's progress bar.
---- See: https://rockorager.dev/misc/osc-9-4-progress-bars/
---- NOTE: this is a workaround for tmux, see https://www.reddit.com/r/neovim/comments/1rcvliq/ghostty_lsp_progress_bar/
---- normally, nvim_echo should be enough, maybe it will be in the future.
----@param state integer 0=remove, 1=default/determinate, 2=error, 3=indeterminate, 4=pause
----@param percent integer 0-100 progress percentage (only for state 1)
-local function set_terminal_progress(state, percent)
-    local osc = string.format("\27]9;4;%d;%d\a", state, percent)
-
-    -- wrap in TMUX passthrough if needed
-    -- needs 'set-option -g allow-passthrough on' in tmux config
-    if os.getenv("TMUX") then osc = string.format("\27Ptmux;\27%s\27\\", osc) end
-
-    io.stdout:write(osc)
-    io.stdout:flush()
-end
-
----@param progress LspProgress
-local function show_terminal_progress(progress)
-    if progress.kind == "end" then
-        set_terminal_progress(0, 0)
-    elseif progress.percentage then
-        set_terminal_progress(1, progress.percentage)
-    else
-        set_terminal_progress(3, 0)
-    end
-end
-
-local group = vim.api.nvim_create_augroup("lsp_progress", { clear = true })
+local group = vim.api.nvim_create_augroup("pde.progress.lsp", { clear = true })
 vim.api.nvim_create_autocmd("LspProgress", {
     group = group,
     callback = function(args)
@@ -255,9 +227,9 @@ vim.api.nvim_create_autocmd("LspProgress", {
 
         ---@type LspProgress
         local progress = args.data.params.value
-        show_terminal_progress(progress)
 
-        local token = tostring(args.data.params.token)
+        --- @type lsp.ProgressToken
+        local token = args.data.params.token
         create_and_cache_message(cur_client, token, progress)
 
         show_message(cur_client)
