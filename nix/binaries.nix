@@ -5,7 +5,7 @@ with pkgs;
   black
   isort
   nixfmt
-  nodePackages.prettier
+  prettier
   rustfmt
   shfmt
   stylua
@@ -24,7 +24,7 @@ with pkgs;
   lua-language-server
   marksman
   nixd
-  nodePackages.vscode-json-languageserver
+  vscode-json-languageserver
   roslyn-ls
   rust-analyzer
   terraform-ls
