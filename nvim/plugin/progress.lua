@@ -1,4 +1,4 @@
-local group = vim.api.nvim_create_augroup("pde.progress.terminal", { clear = true })
+local group = vim.api.nvim_create_augroup("pde.progress", { clear = true })
 vim.api.nvim_create_autocmd("LspProgress", {
     group = group,
     callback = function(args)
