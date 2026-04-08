@@ -177,24 +177,33 @@ M.git = function(bufnr)
     return wrap_click("git_click", wrap_hl(colors.constant, icons.git.Branch .. " " .. head))
 end
 
----@param bufnr integer
----@return string
-M.gitchanges = function(bufnr)
-    local git_status = vim.b[bufnr].gitsigns_status_dict
-    if not git_status then return "" end
+M.gitchanges = (function()
+    vim.api.nvim_create_autocmd("User", {
+        group = vim.api.nvim_create_augroup("StGitUpdate", { clear = true }),
+        pattern = "GitSignsUpdate",
+        callback = vim.schedule_wrap(function() vim.cmd.redrawstatus() end),
+        desc = "updates statusline every time git status is updated",
+    })
 
-    local added = (git_status.added and git_status.added ~= 0)
-            and wrap_hl(colors.git_add, icons.git.Add .. " " .. git_status.added .. " ")
-        or ""
-    local changed = (git_status.changed and git_status.changed ~= 0)
-            and wrap_hl(colors.git_change, icons.git.Mod .. " " .. git_status.changed .. " ")
-        or ""
-    local removed = (git_status.removed and git_status.removed ~= 0)
-            and wrap_hl(colors.git_del, icons.git.Remove .. " " .. git_status.removed .. " ")
-        or ""
+    ---@param bufnr integer
+    ---@return string
+    return function(bufnr)
+        local git_status = vim.b[bufnr].gitsigns_status_dict
+        if not git_status then return "" end
 
-    return wrap_click("git_click", added .. changed .. removed)
-end
+        local added = (git_status.added and git_status.added ~= 0)
+                and wrap_hl(colors.git_add, icons.git.Add .. " " .. git_status.added .. " ")
+            or ""
+        local changed = (git_status.changed and git_status.changed ~= 0)
+                and wrap_hl(colors.git_change, icons.git.Mod .. " " .. git_status.changed .. " ")
+            or ""
+        local removed = (git_status.removed and git_status.removed ~= 0)
+                and wrap_hl(colors.git_del, icons.git.Remove .. " " .. git_status.removed .. " ")
+            or ""
+
+        return wrap_click("git_click", added .. changed .. removed)
+    end
+end)()
 
 M.git_click = function() vim.cmd("Git") end
 
@@ -205,7 +214,12 @@ M.diagnostics = cache.create(
         if not vim.diagnostic.is_enabled({ bufnr = bufnr }) then return "" end
         return vim.diagnostic.status(bufnr)
     end,
-    { events = "DiagnosticChanged", buffer = true }
+    {
+        events = "DiagnosticChanged",
+        buffer = true,
+        -- nvim redraws on DiagnosticChanged
+        redraw = false,
+    }
 )
 
 ---@param bufnr integer

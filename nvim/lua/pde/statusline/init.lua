@@ -24,13 +24,6 @@ local function setup_statusline()
     vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "bg", fg = "fg" })
 
     vim.o.statusline = "%!v:lua.require('pde.statusline').statusline()"
-
-    vim.api.nvim_create_autocmd("User", {
-        group = vim.api.nvim_create_augroup("StGitUpdate", { clear = true }),
-        pattern = "GitSignsUpdate",
-        callback = vim.schedule_wrap(function() vim.cmd.redrawstatus() end),
-        desc = "updates statusline every time git status is updated",
-    })
 end
 local function setup_local_winbar_with_autocmd()
     local winbar = "%!v:lua.require('pde.statusline').winbar()"

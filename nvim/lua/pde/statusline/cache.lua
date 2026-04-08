@@ -8,17 +8,18 @@ local global_cache_key = -1
 ---
 --- @generic F: fun(bufnr: integer, ...): string
 --- @param component F
---- @param spec {events: string|string[], buffer?: boolean}
+--- @param spec {events: string|string[], buffer?: boolean, redraw?: boolean}
 ---        Autocmd specs that invalidate the cache.
 ---        When `buffer` is true, the cache is created separately per buffer.
 ---        When `buffer` is false (default), the cache is global for all buffers.
+---        When `redraw` is true (default), redrawstatus will be called right after clearing the cache.
 --- @return F
 function M.create(component, spec)
+    spec.redraw = spec.redraw or true
     ---@type table<integer, string>
     local cache = {}
 
     local group = vim.api.nvim_create_augroup("StCached_" .. tostring(component), { clear = true })
-
     vim.api.nvim_create_autocmd(spec.events, {
         group = group,
         callback = function(ev)
@@ -29,7 +30,7 @@ function M.create(component, spec)
                 else
                     cache[global_cache_key] = nil
                 end
-                vim.cmd.redrawstatus()
+                if spec.redraw then vim.cmd.redrawstatus() end
             end)
         end,
         desc = "invalidate cached statusline component '" .. tostring(component) .. "'",
