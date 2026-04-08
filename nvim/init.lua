@@ -6,5 +6,3 @@ require("pde.colorscheme")
 -- .nvim.lua
 vim.o.exrc = true
 vim.g.mapleader = vim.keycode("<Space>")
-
-require("pde.globals")
