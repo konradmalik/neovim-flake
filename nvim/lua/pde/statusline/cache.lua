@@ -29,6 +29,7 @@ function M.create(component, spec)
                 else
                     cache[global_cache_key] = nil
                 end
+                vim.cmd.redrawstatus()
             end)
         end,
         desc = "invalidate cached statusline component '" .. tostring(component) .. "'",

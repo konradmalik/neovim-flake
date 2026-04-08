@@ -1,5 +1,4 @@
 local components = require("pde.statusline.components")
-local updates = require("pde.statusline.updates")
 
 ---@type fun(): integer
 local function stwinnr() return vim.g.statusline_winid end
@@ -15,10 +14,6 @@ local function is_activewin(winid) return vim.api.nvim_get_current_win() == wini
 ---@param bufnr integer
 ---@return boolean
 local function is_special(bufnr) return vim.bo[bufnr].buftype ~= "" end
-local function setup_updates()
-    updates.git()
-    updates.diagnostics()
-end
 
 local function setup_statusline()
     vim.g.qf_disable_statusline = true
@@ -29,6 +24,13 @@ local function setup_statusline()
     vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "bg", fg = "fg" })
 
     vim.o.statusline = "%!v:lua.require('pde.statusline').statusline()"
+
+    vim.api.nvim_create_autocmd("User", {
+        group = vim.api.nvim_create_augroup("StGitUpdate", { clear = true }),
+        pattern = "GitSignsUpdate",
+        callback = vim.schedule_wrap(function() vim.cmd.redrawstatus() end),
+        desc = "updates statusline every time git status is updated",
+    })
 end
 local function setup_local_winbar_with_autocmd()
     local winbar = "%!v:lua.require('pde.statusline').winbar()"
@@ -102,7 +104,6 @@ M.winbar = function()
 end
 
 M.setup = function()
-    setup_updates()
     setup_statusline()
     setup_local_winbar_with_autocmd()
 end
