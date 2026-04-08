@@ -39,7 +39,7 @@ vim.api.nvim_create_autocmd("User", {
         )
         vim.keymap.set(
             "n",
-            "<leader>co",
+            "<localleader>co",
             function() cmd.buf_conflict_choose_current(buf) end,
             buf_opts_with_desc(buf, "Choose ours (current/HEAD/LOCAL)")
         )
@@ -52,7 +52,7 @@ vim.api.nvim_create_autocmd("User", {
         )
         vim.keymap.set(
             "n",
-            "<leader>ct",
+            "<localleader>ct",
             function() cmd.buf_conflict_choose_incoming(buf) end,
             buf_opts_with_desc(buf, "Choose theirs (incoming/REMOTE)")
         )
@@ -65,7 +65,7 @@ vim.api.nvim_create_autocmd("User", {
         )
         vim.keymap.set(
             "n",
-            "<leader>cb",
+            "<localleader>cb",
             function() cmd.buf_conflict_choose_both(buf) end,
             buf_opts_with_desc(buf, "Choose both")
         )
@@ -78,7 +78,7 @@ vim.api.nvim_create_autocmd("User", {
         )
         vim.keymap.set(
             "n",
-            "<leader>cn",
+            "<localleader>cn",
             function() cmd.buf_conflict_choose_none(buf) end,
             buf_opts_with_desc(buf, "Choose none")
         )

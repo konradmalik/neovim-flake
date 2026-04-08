@@ -5,4 +5,5 @@ require("pde.colorscheme")
 
 -- .nvim.lua
 vim.o.exrc = true
-vim.g.mapleader = vim.keycode("<Space>")
+vim.g.mapleader = " "
+vim.g.maplocalleader = ","
