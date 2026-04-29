@@ -22,21 +22,15 @@ local function format(bufnr)
         method = vim.lsp.protocol.Methods.textDocument_formatting,
     })
 
-    -- this is needed for trailing empty lines
-    -- and for formatexpr so just execute this always
-    local view = vim.fn.winsaveview()
-
     -- LSP if available
     if #clients > 0 then
         vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = 2000 })
     -- fallback: use formatexpr/formatprg via gq
     elseif vim.bo[bufnr].formatprg ~= "" or vim.bo[bufnr].formatexpr ~= "" then
+        local view = vim.fn.winsaveview()
         vim.cmd("silent keepjumps normal! gggqG")
+        vim.fn.winrestview(view)
     end
-    -- remove trailing empty lines
-    vim.cmd([[%s/\_s*\%$//e]])
-
-    vim.fn.winrestview(view)
 end
 
 vim.api.nvim_create_user_command("AutoFormatToggle", function()
