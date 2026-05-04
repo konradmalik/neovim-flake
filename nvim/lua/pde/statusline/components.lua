@@ -3,6 +3,7 @@ local icons = require("pde.statusline.icons")
 local mini_icons = require("mini.icons")
 
 ---@param hl string highlight name
+---
 ---@param s string string to wrap
 ---@return string
 local function wrap_hl(hl, s) return "%#" .. hl .. "#" .. s .. "%*" end
@@ -144,21 +145,38 @@ M.fileinfo = cache.create(
         end
         local text = wrap_hl(ihl, icon) .. " " .. wrap_hl(hl, filename)
 
-        if vim.bo[bufnr].modified then
-            return text .. wrap_hl(colors.diag_ok, " " .. icons.git.Mod)
-        end
+        return text
+    end,
+    {
+        events = {
+            "BufEnter",
+            "BufLeave",
+            "BufFilePost",
+        },
+        buffer = true,
+    }
+)
 
-        if vim.bo[bufnr].readonly then
-            text = text .. wrap_hl(colors.diag_warn, " " .. icons.ui.Lock)
-        end
+M.filemod = cache.create(
+    ---@param bufnr integer
+    ---@return string
+    function(bufnr)
+        if vim.bo[bufnr].modified then return wrap_hl(colors.diag_ok, icons.git.Mod) end
+
+        local text = ""
+        if vim.bo[bufnr].readonly then text = text .. wrap_hl(colors.diag_warn, icons.ui.Lock) end
         if not vim.bo[bufnr].modifiable then
-            text = text .. wrap_hl(colors.diag_error, " " .. icons.ui.FilledLock)
+            text = text .. wrap_hl(colors.diag_error, icons.ui.FilledLock)
         end
 
         return text
     end,
     {
-        events = { "BufEnter", "BufLeave", "BufFilePost", "BufModifiedSet" },
+        events = {
+            "BufWritePost",
+            "FileChangedShellPost",
+            { "OptionSet", pattern = "modified" },
+        },
         buffer = true,
     }
 )
@@ -215,7 +233,7 @@ M.diagnostics = cache.create(
         return vim.diagnostic.status(bufnr)
     end,
     {
-        events = "DiagnosticChanged",
+        events = { "DiagnosticChanged" },
         buffer = true,
         -- nvim redraws on DiagnosticChanged
         redraw = false,
@@ -281,7 +299,7 @@ M.cwd = cache.create(
         return wrap_hl(colors.directory, cwd)
     end,
     {
-        events = "WinEnter",
+        events = { "WinEnter" },
     }
 )
 

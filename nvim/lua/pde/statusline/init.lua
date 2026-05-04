@@ -94,6 +94,8 @@ M.winbar = function()
         .. components.cwd(winid)
         .. components.space
         .. components.fileinfo(bufnr, true)
+        .. components.space
+        .. components.filemod(bufnr)
 end
 
 M.setup = function()
