@@ -8,13 +8,13 @@ local global_cache_key = -1
 ---
 --- @generic F: fun(bufnr: integer, ...): string
 --- @param component F
---- @alias StCacheEvent string | {[1]: string, pattern: string}
+--- @alias StCacheEvent string | {event: string, pattern: string}
 --- @param spec {events: (StCacheEvent)[], buffer?: boolean, redraw?: boolean}
 ---        Autocmd specs that invalidate the cache.
 ---        When `buffer` is true, the cache is created separately per buffer.
 ---        When `buffer` is false (default), the cache is global for all buffers.
 ---        When `redraw` is true (default), redrawstatus will be called right after clearing the cache.
----        Events can be plain strings or tables with a pattern field, e.g. {"OptionSet", pattern="modified"}.
+---        Events can be plain strings or tables with `event` and `pattern` keys, e.g. {event="OptionSet", pattern="modified"}.
 --- @return F
 function M.create(component, spec)
     spec.redraw = spec.redraw or true
@@ -41,7 +41,7 @@ function M.create(component, spec)
 
     for _, event in ipairs(spec.events) do
         if type(event) == "table" then
-            vim.api.nvim_create_autocmd(event[1], {
+            vim.api.nvim_create_autocmd(event.event, {
                 group = group,
                 pattern = event.pattern,
                 callback = invalidate_callback,

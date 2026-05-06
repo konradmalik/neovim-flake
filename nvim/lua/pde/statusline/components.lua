@@ -174,7 +174,7 @@ M.filemod = cache.create(
     {
         events = {
             "FileChangedShellPost",
-            { "OptionSet", pattern = "modified" },
+            { event = "OptionSet", pattern = "modified" },
         },
         buffer = true,
     }
