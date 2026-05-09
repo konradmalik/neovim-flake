@@ -22,7 +22,9 @@ vim.api.nvim_create_autocmd("FileType", {
         -- if vim.treesitter.query.get(lang, "indents") then
         --     vim.bo[bufnr].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
         -- end
-        -- vim.bo[bufnr].syntax = "on"
+        -- so we just make sure old-school syntax is enabled
+        -- (it's not required, but old-school indents often use is)
+        vim.bo[bufnr].syntax = "on"
 
         if vim.treesitter.query.get(lang, "folds") then
             for _, win in ipairs(vim.api.nvim_list_wins()) do

@@ -40,7 +40,6 @@ local function get_or_create_buffer()
             vim.notify("cannot create runner buffer", vim.log.levels.ERROR)
             runner_bufnr = -1
         end
-        vim.bo[runner_bufnr].syntax = "markdown"
         vim.treesitter.start(runner_bufnr, "markdown")
         return runner_bufnr
     end
