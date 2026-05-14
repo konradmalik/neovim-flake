@@ -4,7 +4,7 @@ vim.o.complete = "o,.,w,b,u"
 vim.o.autocomplete = true
 vim.o.autocompletedelay = 200
 
-vim.api.nvim_create_autocmd("BufEnter", {
+vim.api.nvim_create_autocmd("BufNew", {
     group = vim.api.nvim_create_augroup("pde-completion-sanitizer", { clear = true }),
     callback = function(ev)
         if vim.bo[ev.buf].buftype ~= "" then vim.bo[ev.buf].autocomplete = false end
