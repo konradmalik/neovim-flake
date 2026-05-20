@@ -2,6 +2,22 @@
 -- conform at home:
 vim.g.autoformat_enabled = true
 
+---@param bufnr integer
+---@param join_undo boolean
+local function trim_trailing_blank_lines(bufnr, join_undo)
+    local last = vim.api.nvim_buf_line_count(bufnr)
+    local cutoff = last
+    while cutoff > 0 do
+        local line = vim.api.nvim_buf_get_lines(bufnr, cutoff - 1, cutoff, false)[1]
+        if line ~= "" then break end
+        cutoff = cutoff - 1
+    end
+    if cutoff >= last then return end
+
+    if join_undo then pcall(vim.cmd.undojoin) end
+    vim.api.nvim_buf_set_lines(bufnr, cutoff, last, false, {})
+end
+
 ---@param bufnr integer?
 local function format(bufnr)
     bufnr = bufnr or 0
@@ -25,11 +41,15 @@ local function format(bufnr)
     -- LSP if available
     if #clients > 0 then
         vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = 2000 })
+        trim_trailing_blank_lines(bufnr, true)
     -- fallback: use formatexpr/formatprg via gq
     elseif vim.bo[bufnr].formatprg ~= "" or vim.bo[bufnr].formatexpr ~= "" then
         local view = vim.fn.winsaveview()
         vim.cmd("silent keepjumps normal! gggqG")
         vim.fn.winrestview(view)
+        trim_trailing_blank_lines(bufnr, true)
+    else
+        trim_trailing_blank_lines(bufnr, false)
     end
 end
 
