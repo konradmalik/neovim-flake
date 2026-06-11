@@ -42,21 +42,21 @@ local function create_window(config)
     return winid, bufnr
 end
 
----@param has_default boolean whether the input has a default value
+---@param opts vim.ui.input.Opts
 ---@param default_config vim.api.keyset.win_config
 ---@param supplied_config? vim.api.keyset.win_config
 ---@return vim.api.keyset.win_config
-local function resolve_config(has_default, default_config, supplied_config)
+local function resolve_config(opts, default_config, supplied_config)
     local resolved_config = vim.tbl_deep_extend("force", default_config, supplied_config or {})
 
     -- Place the window near cursor when editing existing text, center otherwise.
-    if has_default then
-        resolved_config = vim.tbl_deep_extend("force", resolved_config, under_cursor)
+    local placement
+    if opts.scope == "line" or opts.scope == "cursor" then
+        placement = under_cursor
     else
-        resolved_config =
-            vim.tbl_deep_extend("force", resolved_config, window_center(0, resolved_config.width))
+        placement = window_center(0, resolved_config.width)
     end
-    return resolved_config
+    return vim.tbl_deep_extend("force", resolved_config, placement)
 end
 
 local M = {}
@@ -83,7 +83,7 @@ function M.input(opts, on_confirm, win_config)
         title = prompt,
     }
 
-    local window_config = resolve_config(default ~= "", default_win_config, win_config)
+    local window_config = resolve_config(opts, default_win_config, win_config)
     local winid, bufnr = create_window(window_config)
     vim.api.nvim_buf_set_text(bufnr, 0, 0, 0, 0, { default })
     vim.cmd("startinsert")
