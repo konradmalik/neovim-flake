@@ -4,9 +4,10 @@
   inputs,
 }:
 let
-  mkNeovim = pkgs.callPackage ./mkNeovim.nix { nvim = pkgs.nvim-nightly; };
+  nvim = pkgs.nvim-nightly;
 
-  mkPlugins = pkgs.callPackage ./plugins.nix { };
+  mkNeovim = pkgs.callPackage ./mkNeovim.nix { inherit nvim; };
+  mkPlugins = pkgs.callPackage ./plugins.nix { inherit nvim; };
 
   plugins = mkPlugins {
     inherit

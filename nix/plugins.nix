@@ -2,6 +2,7 @@
   stdenvNoCC,
   vimUtils,
   neovimUtils,
+  nvim,
 }:
 {
   inputs,
@@ -62,30 +63,52 @@ let
       dependencies ? [ ],
       # general packages
       runtimeDeps ? [ ],
+      # luarocks dependencies declared in the plugin's rockspec; given the lua
+      # package set, return the list of packages to satisfy them.
+      luaDeps ? (_: [ ]),
     }:
+    let
+      lua = nvim.lua;
+      pname = makePname input;
+
+      # rockspecs are named e.g. plenary.nvim-scm-1.rockspec, not matching our
+      # git-rev version, so locate the bundled rockspec explicitly and derive
+      # the luarocks version (e.g. scm-1) from its filename.
+      rockspecFilename =
+        let
+          rockspecs = builtins.filter (lib.strings.hasSuffix ".rockspec") (
+            builtins.attrNames (builtins.readDir src)
+          );
+        in
+        builtins.head rockspecs;
+      rockspecVersion = lib.removeSuffix ".rockspec" (lib.removePrefix "${pname}-" rockspecFilename);
+
+      luaAttr = lua.pkgs.buildLuarocksPackage {
+        inherit
+          src
+          version
+          pname
+          rockspecFilename
+          rockspecVersion
+          ;
+        propagatedBuildInputs = luaDeps lua.pkgs;
+      };
+    in
     neovimUtils.buildNeovimPlugin {
       inherit
+        luaAttr
         dependencies
         nvimRequireCheck
         nvimSkipModule
         runtimeDeps
-        src
-        version
         ;
-      pname = makePname input;
     };
 
   libs = {
-    plenary-nvim =
-      (buildNeovim {
-        input = "plenary-nvim";
-      }).overrideAttrs
-        {
-          postPatch = ''
-            sed -Ei lua/plenary/curl.lua \
-                -e 's@(command\s*=\s*")curl(")@\1${lib.getExe pkgs.curl}\2@'
-          '';
-        };
+    plenary-nvim = buildNeovim {
+      input = "plenary-nvim";
+      luaDeps = luapkgs: [ luapkgs.luassert ];
+    };
   };
 in
 lib.attrValues rec {
