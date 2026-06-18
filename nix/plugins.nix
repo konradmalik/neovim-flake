@@ -160,10 +160,6 @@ lib.attrValues rec {
   telescope-fzf-native-nvim =
     (buildVim {
       input = "telescope-fzf-native-nvim";
-      dependencies = [
-        libs.plenary-nvim
-        telescope-nvim
-      ];
     }).overrideAttrs
       { buildPhase = "make"; };
   telescope-live-grep-args-nvim = buildVim {
@@ -179,18 +175,12 @@ lib.attrValues rec {
       libs.plenary-nvim
     ];
     runtimeDeps = with pkgs; [
-      git
       fd
-      fzf
       ripgrep
     ];
   };
   telescope-ui-select-nvim = buildVim {
     input = "telescope-ui-select-nvim";
-    dependencies = [
-      telescope-nvim
-      libs.plenary-nvim
-    ];
   };
   vim-fugitive = buildVim {
     input = "vim-fugitive";
