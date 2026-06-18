@@ -53,7 +53,7 @@ telescope.setup({
                 i = {
                     ["<C-k>"] = lga_actions.quote_prompt(),
                     ["<C-t>"] = lga_actions.quote_prompt({ postfix = " --type " }),
-                    ["<C-space>"] = actions.to_fuzzy_refine,
+                    ["<C-f>"] = actions.to_fuzzy_refine,
                 },
             },
         },
