@@ -32,7 +32,6 @@ local colors = {
     git_change = "diffChanged",
     directory = "Directory",
     filetype = "Type",
-    text = "Normal",
     debug = "Debug",
 }
 
@@ -129,13 +128,6 @@ M.fileinfo = cache.create(
         local bufname = vim.api.nvim_buf_get_name(bufnr)
 
         local icon, ihl, _ = mini_icons.get("file", bufname)
-        local hl
-        if not active then
-            ihl = colors.nontext
-            hl = colors.nontext
-        else
-            hl = colors.text
-        end
 
         local filename
         if bufname == "" then
@@ -143,9 +135,13 @@ M.fileinfo = cache.create(
         else
             filename = vim.fn.fnamemodify(bufname, ":.") or ""
         end
-        local text = wrap_hl(ihl, icon) .. " " .. wrap_hl(hl, filename)
 
-        return text
+        if not active then
+            -- NonText only sets fg
+            return wrap_hl(colors.nontext, icon .. " " .. filename)
+        end
+
+        return wrap_hl(ihl, icon) .. " " .. filename
     end,
     {
         events = {
