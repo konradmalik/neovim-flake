@@ -13,8 +13,12 @@ require("kanagawa").setup({
             },
         },
     },
-    overrides = function(_)
+    overrides = function(colors)
+        local theme = colors.theme
         return {
+            StatusLine = { fg = theme.ui.fg_dim, bg = theme.ui.bg },
+            StatusLineNC = { fg = theme.ui.nontext, bg = theme.ui.bg },
+
             Pmenu = { link = "BlinkCmpMenu" },
             PmenuSel = { link = "BlinkCmpMenuSelection" },
             PmenuKind = { link = "BlinkCmpKind" },
