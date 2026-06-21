@@ -49,8 +49,8 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    kanagawa-nvim = {
-      url = "github:rebelot/kanagawa.nvim";
+    everforest = {
+      url = "github:sainnhe/everforest";
       flake = false;
     };
     mini-icons = {

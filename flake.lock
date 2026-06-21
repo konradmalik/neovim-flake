@@ -32,6 +32,22 @@
         "type": "github"
       }
     },
+    "everforest": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780933430,
+        "narHash": "sha256-286paC/KOSs9XU4k9q8DMVsi84V9LGT22Z4RzFKVSbM=",
+        "owner": "sainnhe",
+        "repo": "everforest",
+        "rev": "85a86eb62409e3ec88713bff3d1b9d7374e112e4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sainnhe",
+        "repo": "everforest",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -341,22 +357,6 @@
       "original": {
         "owner": "konradmalik",
         "repo": "incomplete.nvim",
-        "type": "github"
-      }
-    },
-    "kanagawa-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1778430713,
-        "narHash": "sha256-fMP4NUCKD1ZcNkaHy6SuNm020ECXpBOihGv2n1wyTN4=",
-        "owner": "rebelot",
-        "repo": "kanagawa.nvim",
-        "rev": "bb85e4bfc8d89b0e62c8fa53ccdd13d12e2f77b3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "rebelot",
-        "repo": "kanagawa.nvim",
         "type": "github"
       }
     },
@@ -685,13 +685,13 @@
       "inputs": {
         "SchemaStore-nvim": "SchemaStore-nvim",
         "efmls-configs-nvim": "efmls-configs-nvim",
+        "everforest": "everforest",
         "flint-ls": "flint-ls",
         "friendly-snippets": "friendly-snippets",
         "gen-luarc": "gen-luarc",
         "git-conflict-nvim": "git-conflict-nvim",
         "gitsigns-nvim": "gitsigns-nvim",
         "incomplete-nvim": "incomplete-nvim",
-        "kanagawa-nvim": "kanagawa-nvim",
         "mini-icons": "mini-icons",
         "neorocks": "neorocks",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
