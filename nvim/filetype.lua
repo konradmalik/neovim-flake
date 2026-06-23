@@ -4,4 +4,7 @@ vim.filetype.add({
         ["composer.lock"] = "json",
         Tiltfile = "python",
     },
+    extension = {
+        hujson = "hujson",
+    },
 })
