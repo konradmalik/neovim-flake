@@ -6,6 +6,8 @@ vim.api.nvim_create_autocmd(
         desc = "treesitter diagnostics",
         group = autocmd_group,
         callback = function(args)
+            if vim.b.treesitter_diagnostics_disable then return end
+
             local diag = require("pde.treesitter-diagnostics")
             -- simplification, but assume that if any LSP is connected, then we have diagnostics from that source
             local diagnosticProviders = vim.lsp.get_clients({ bufnr = args.buf })
