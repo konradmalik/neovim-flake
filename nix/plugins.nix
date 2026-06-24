@@ -142,8 +142,8 @@ lib.attrValues rec {
       {
         doInstallCheck = true;
       };
-  kanagawa-nvim = buildVim {
-    input = "kanagawa-nvim";
+  rose-pine = buildVim {
+    input = "rose-pine";
   };
   mini-icons = buildVim {
     input = "mini-icons";

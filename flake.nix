@@ -49,8 +49,8 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    kanagawa-nvim = {
-      url = "github:rebelot/kanagawa.nvim";
+    rose-pine = {
+      url = "github:rose-pine/neovim";
       flake = false;
     };
     mini-icons = {
