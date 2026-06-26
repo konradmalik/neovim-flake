@@ -11,6 +11,16 @@ local function window_center(winid, input_width)
     }
 end
 
+---@param input_width integer
+---@return vim.api.keyset.win_config
+local function editor_center(input_width)
+    return {
+        relative = "editor",
+        row = vim.o.lines / 2 - 1,
+        col = vim.o.columns / 2 - input_width / 2,
+    }
+end
+
 ---@type vim.api.keyset.win_config
 local under_cursor = {
     relative = "cursor",
@@ -23,9 +33,8 @@ local under_cursor = {
 ---@return integer
 local function get_input_width(prompt_length, default_length)
     local padding = 10
-    local default_width = default_length + padding
-    local prompt_width = prompt_length + padding
-    return default_width > prompt_width and default_width or prompt_width
+    local desired = math.max(default_length, prompt_length) + padding
+    return math.min(desired, vim.o.columns - 4)
 end
 
 ---@param config vim.api.keyset.win_config
@@ -49,10 +58,13 @@ end
 local function resolve_config(opts, default_config, supplied_config)
     local resolved_config = vim.tbl_deep_extend("force", default_config, supplied_config or {})
 
-    -- Place the window near cursor when editing existing text, center otherwise.
+    -- Place the window near cursor for small scopes, centered otherwise. Editor- and
+    -- project-wide scopes aren't window-bound, so center them on the whole editor.
     local placement
     if opts.scope == "line" or opts.scope == "cursor" then
         placement = under_cursor
+    elseif opts.scope == "editor" or opts.scope == "project" then
+        placement = editor_center(resolved_config.width)
     else
         placement = window_center(0, resolved_config.width)
     end
@@ -89,13 +101,24 @@ function M.input(opts, on_confirm, win_config)
     vim.cmd("startinsert")
     vim.api.nvim_win_set_cursor(winid, { 1, #default })
 
+    local confirmed = false
     ---@param input? string
     local close_win = function(input)
-        if not vim.api.nvim_win_is_valid(winid) then return end
-        vim.cmd("stopinsert")
-        vim.api.nvim_win_close(winid, true)
+        if confirmed then return end
+        confirmed = true
+        if vim.api.nvim_win_is_valid(winid) then
+            vim.cmd("stopinsert")
+            vim.api.nvim_win_close(winid, true)
+        end
         on_confirm(input)
     end
+
+    -- Treat leaving the float (mouse, :q, window switch) as an abort so on_confirm always fires.
+    vim.api.nvim_create_autocmd("BufLeave", {
+        buffer = bufnr,
+        once = true,
+        callback = function() close_win(nil) end,
+    })
 
     -- Enter to confirm
     vim.keymap.set({ "n", "i", "v" }, "<cr>", function()
