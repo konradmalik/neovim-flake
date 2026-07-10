@@ -42,8 +42,7 @@ in
   nvim-typecheck = pkgs.callPackage ./nvim-typecheck.nix { };
 
   nvim-luarc-json = pkgs.mk-luarc-json {
-    inherit plugins;
-    nvim = pkgs.neovim-nightly;
+    inherit plugins nvim;
   };
   busted-luarc-json = pkgs.mk-luarc-json {
     # use not-nightly neovim because busted uses that as well
