@@ -45,6 +45,7 @@ in
     inherit plugins nvim;
   };
   busted-luarc-json = pkgs.mk-luarc-json {
-    # use not-nightly neovim because busted uses that as well
+    # use stable (not-nightly) neovim because busted uses that as well
+    nvim = pkgs.neovim-unwrapped;
   };
 }
