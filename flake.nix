@@ -147,7 +147,17 @@
                   inputs.neorocks.overlays.default
                   (final: prev: {
                     inherit (inputs.flint-ls.packages.${system}) flint-ls;
-                    nvim-nightly = inputs.neovim-nightly-overlay.packages.${system}.default;
+                    # FIXME(darwin)
+                    nvim-nightly =
+                      let
+                        base = inputs.neovim-nightly-overlay.packages.${system}.default;
+                      in
+                      if prev.stdenv.hostPlatform.isDarwin then
+                        base.overrideAttrs (_: {
+                          doCheck = false;
+                        })
+                      else
+                        base;
                   })
                 ];
               }
