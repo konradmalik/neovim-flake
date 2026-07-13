@@ -1,5 +1,4 @@
 {
-  stdenvNoCC,
   vimUtils,
   neovimUtils,
   nvim,
@@ -13,7 +12,7 @@
 # - pname matters for packadd only
 # - require() is not influenced by any of the names here
 let
-  getSystem = attrset: attrset.${stdenvNoCC.hostPlatform.system};
+  getSystem = attrset: attrset.${pkgs.stdenv.hostPlatform.system};
 
   makePname =
     str:
@@ -31,7 +30,7 @@ let
       version ? inputs.${input}.shortRev,
       # null means check all detected modules
       nvimRequireCheck ? null,
-      nvimSkipModule ? null,
+      nvimSkipModules ? null,
       vimCommandCheck ? null,
       # other plugins
       dependencies ? [ ],
@@ -42,7 +41,7 @@ let
       inherit
         dependencies
         nvimRequireCheck
-        nvimSkipModule
+        nvimSkipModules
         runtimeDeps
         src
         version
@@ -58,7 +57,7 @@ let
       version ? inputs.${input}.shortRev,
       # null means check all detected modules
       nvimRequireCheck ? null,
-      nvimSkipModule ? null,
+      nvimSkipModules ? null,
       # other plugins
       dependencies ? [ ],
       # general packages
@@ -80,7 +79,10 @@ let
             builtins.attrNames (builtins.readDir src)
           );
         in
-        builtins.head rockspecs;
+        if rockspecs == [ ] then
+          throw "buildNeovim: no .rockspec found in source of '${pname}'; use buildVim for plugins without a rockspec"
+        else
+          builtins.head rockspecs;
       rockspecVersion = lib.removeSuffix ".rockspec" (lib.removePrefix "${pname}-" rockspecFilename);
 
       luaAttr = lua.pkgs.buildLuarocksPackage {
@@ -99,7 +101,7 @@ let
         luaAttr
         dependencies
         nvimRequireCheck
-        nvimSkipModule
+        nvimSkipModules
         runtimeDeps
         ;
     };
@@ -185,13 +187,12 @@ lib.attrValues rec {
   };
   vim-fugitive = buildVim {
     input = "vim-fugitive";
-    nvimRequireCheck = null;
     vimCommandCheck = "G";
     runtimeDeps = [ pkgs.git ];
   };
   which-key-nvim = buildVim {
     input = "which-key-nvim";
-    nvimSkipModule = [
+    nvimSkipModules = [
       "which-key.docs"
     ];
   };
