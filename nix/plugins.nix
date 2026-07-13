@@ -115,14 +115,15 @@ lib.attrValues rec {
   inherit (getSystem inputs.incomplete-nvim.packages) incomplete-nvim;
   inherit (getSystem inputs.git-conflict-nvim.packages) git-conflict-nvim;
   nvim-treesitter =
-    (getSystem inputs.nvim-treesitter.packages).nvim-treesitter.withAllGrammars.overrideAttrs
-      {
-        runtimeDeps = with pkgs; [
-          curl
-          gnutar
-          nodejs
-        ];
-      };
+    let
+      ts = pkgs.vimPlugins.nvim-treesitter;
+      parsers = lib.filter lib.isDerivation (lib.attrValues ts.parsers);
+      queries = lib.filter lib.isDerivation (lib.attrValues ts.queries);
+    in
+    pkgs.symlinkJoin {
+      name = "nvim-treesitter-parsers-and-queries";
+      paths = parsers ++ queries;
+    };
 
   SchemaStore-nvim = buildVim {
     input = "SchemaStore-nvim";

@@ -18,11 +18,6 @@ vim.api.nvim_create_autocmd("FileType", {
             vim.treesitter.start(args.buf, lang)
         end
 
-        -- apparently this does not work well and was basically abandoned
-        -- if vim.treesitter.query.get(lang, "indents") then
-        --     vim.bo[bufnr].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-        -- end
-
         if vim.treesitter.query.get(lang, "folds") then
             for _, win in ipairs(vim.api.nvim_list_wins()) do
                 local winbuf = vim.api.nvim_win_get_buf(win)

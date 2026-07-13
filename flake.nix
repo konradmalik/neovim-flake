@@ -65,10 +65,6 @@
       url = "github:neovim/nvim-lspconfig";
       flake = false;
     };
-    nvim-treesitter = {
-      url = "github:iofq/nvim-treesitter-main";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nvim-treesitter-context = {
       url = "github:nvim-treesitter/nvim-treesitter-context";
       flake = false;
