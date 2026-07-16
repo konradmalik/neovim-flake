@@ -1,21 +1,13 @@
 {
   pkgs,
-  lib,
   inputs,
 }:
 let
   nvim = pkgs.nvim-nightly;
 
   mkNeovim = pkgs.callPackage ./mkNeovim.nix { inherit nvim; };
-  mkPlugins = pkgs.callPackage ./plugins.nix { inherit nvim; };
 
-  plugins = mkPlugins {
-    inherit
-      pkgs
-      lib
-      inputs
-      ;
-  };
+  plugins = import ./plugins.nix { inherit pkgs inputs nvim; };
 
   extraPackages = import ./binaries.nix { inherit pkgs; };
 in

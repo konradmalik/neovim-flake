@@ -1,17 +1,14 @@
 {
-  vimUtils,
-  neovimUtils,
-  nvim,
-}:
-{
   inputs,
   pkgs,
-  lib,
+  nvim,
 }:
 # notes:
 # - pname matters for packadd only
 # - require() is not influenced by any of the names here
 let
+  inherit (pkgs) lib vimUtils neovimUtils;
+
   getSystem = attrset: attrset.${pkgs.stdenv.hostPlatform.system};
 
   makePname =

@@ -122,9 +122,8 @@
         (
           let
             pkgs = final.pkgs;
-            lib = pkgs.lib;
           in
-          (import ./nix { inherit pkgs lib inputs; })
+          (import ./nix { inherit pkgs inputs; })
         );
 
       forAllSystems =
