@@ -31,13 +31,6 @@ with pkgs;
   ty
   yaml-language-server
   zls
-
-  # debuggers
-  (writeShellScriptBin "debugpy" ''
-    exec ${python3.withPackages (p: [ p.debugpy ])}/bin/python "$@"
-  '')
-  delve
-  netcoredbg
 ]
 ++ lib.optionals stdenvNoCC.isLinux [
   # for faster filewatching in lsps
