@@ -142,11 +142,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1783057555,
-        "narHash": "sha256-dBsZ6DMxuv4cODY9il9+G0YGcAOHwM62WRllzO+W8q0=",
+        "lastModified": 1783661299,
+        "narHash": "sha256-wTJ9b19EGaFFwJxaiEqt26qTb/aC2xs9z0tylFSOGkk=",
         "owner": "konradmalik",
         "repo": "flint-ls",
-        "rev": "a70bcb9e525317933dd07968346ddbc368711641",
+        "rev": "cbeb68b5ffadf3441b622a7d28c8203a35adc41a",
         "type": "github"
       },
       "original": {
@@ -204,11 +204,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783057578,
-        "narHash": "sha256-02HEpvuLhJ6Zm3v3YjbMY/uFqKRw6Kphk70C15jTwe8=",
+        "lastModified": 1783661391,
+        "narHash": "sha256-G8mdW6appC0Ss75U6XlJC6KsvkjFSUaiwWSiCvnjsBg=",
         "owner": "konradmalik",
         "repo": "git-conflict.nvim",
-        "rev": "29b33a24cb0d6d49f014866faf9d6b05cbeb2624",
+        "rev": "5b976e9d42f196c651543cc6e7274601125fb8bc",
         "type": "github"
       },
       "original": {
@@ -285,11 +285,11 @@
     "gitsigns-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1782899415,
-        "narHash": "sha256-VqEz6o+9DvKekQ9h8QQntFaIb90BaveTctKKb0lmQLI=",
+        "lastModified": 1784038109,
+        "narHash": "sha256-dtfk6Fiq71jxTfJBO+ptjT54uUbiv9QAN3V7/sEuGUw=",
         "owner": "lewis6991",
         "repo": "gitsigns.nvim",
-        "rev": "eb60cc7b94c46005237fd34170d76f3a089a90aa",
+        "rev": "31d6fb2d618bca1482b9f274751ead5f03461408",
         "type": "github"
       },
       "original": {
@@ -308,11 +308,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783057601,
-        "narHash": "sha256-RGIWhH8Im/4qGsggfXALYuSWhRlmjPb69BIGVHVWWus=",
+        "lastModified": 1783661325,
+        "narHash": "sha256-VvUV3MZIqMrsa13/C/bQu32wY+hPVUT+J48Tw72R/Sc=",
         "owner": "konradmalik",
         "repo": "incomplete.nvim",
-        "rev": "05d21e49cc8dcf83b9682f218bf3fb62291574dd",
+        "rev": "c0cfee350fdf1053c65ca8b3e90451768e4d17d6",
         "type": "github"
       },
       "original": {
@@ -382,11 +382,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783587248,
-        "narHash": "sha256-FxMeJS7Qhu62TL7mvmhLDALepuZ/umk9xlky5aBoMFc=",
+        "lastModified": 1784186932,
+        "narHash": "sha256-tLbOIaJVJKQtCsOTbW/bEgIbGpGWdUmQZzfRw2doraQ=",
         "owner": "lumen-oss",
         "repo": "neorocks",
-        "rev": "0e3ff7017af74a38aa42a17c4e0794844591cb78",
+        "rev": "a0c703ed3cf2c1f02c7ed85589511bb7511f4b54",
         "type": "github"
       },
       "original": {
@@ -435,11 +435,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1782918843,
-        "narHash": "sha256-ETYnV9U7Sr+A45dohzZdfCZKOss4qrTkO+wgNZNvEc0=",
+        "lastModified": 1783279667,
+        "narHash": "sha256-/NAkDSsve+GNM0Bt6tleJdCGfsTlK89nPjkVOzZMo0s=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "e8273b29fe1390ec8d4603f2477357555291432e",
+        "rev": "f205b5574fd0cb7da5b702a2da51507b7f4fdd1b",
         "type": "github"
       },
       "original": {
@@ -510,11 +510,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1783279667,
-        "narHash": "sha256-/NAkDSsve+GNM0Bt6tleJdCGfsTlK89nPjkVOzZMo0s=",
+        "lastModified": 1784176690,
+        "narHash": "sha256-RUXu+GHGkY+eShsqx8hp0BIIo51K3V1Q8AY4pPAUcDw=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "f205b5574fd0cb7da5b702a2da51507b7f4fdd1b",
+        "rev": "6368bc923cec55a5f78960ade0cb4dd99580e087",
         "type": "github"
       },
       "original": {
@@ -527,11 +527,11 @@
     "nvim-lspconfig": {
       "flake": false,
       "locked": {
-        "lastModified": 1783160942,
-        "narHash": "sha256-nBUh7slBfsXAaJ0xYfvD/j+TfBxkETGqq12DtHlj2d0=",
+        "lastModified": 1784211093,
+        "narHash": "sha256-GeC6s5s+9yt1fCAANRMKKG7AhPBYZeNxqKdIFW/AYIw=",
         "owner": "neovim",
         "repo": "nvim-lspconfig",
-        "rev": "d224a1920728ba129880efc700d4a0180ac4ecbb",
+        "rev": "b386c50cd7816f8c8a2b13b298a218af1f5a75c6",
         "type": "github"
       },
       "original": {
