@@ -7,7 +7,7 @@ on:
 name: linux
 jobs:
   flake-check:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: wimpysworld/nothing-but-nix@v10
@@ -19,7 +19,7 @@ jobs:
         run: nix flake check
 
   build-shell:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs:
       - flake-check
     steps:
@@ -38,7 +38,7 @@ jobs:
         run: nix build .#devShells.x86_64-linux.default
 
   tests:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs:
       - build-shell
     steps:
@@ -56,8 +56,8 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - { os: ubuntu-24.04, system: x86_64-linux }
-          - { os: ubuntu-24.04-arm, system: aarch64-linux }
+          - { os: ubuntu-26.04, system: x86_64-linux }
+          - { os: ubuntu-26.04-arm, system: aarch64-linux }
     runs-on: ${{ matrix.platform.os }}
     needs:
       - tests
