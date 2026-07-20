@@ -66,7 +66,7 @@
       flake = false;
     };
     nvim-treesitter = {
-      url = "github:iofq/nvim-treesitter-main";
+      url = "github:konradmalik/nvim-treesitter-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nvim-treesitter-context = {
