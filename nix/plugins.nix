@@ -113,15 +113,7 @@ in
 lib.attrValues rec {
   inherit (getSystem inputs.incomplete-nvim.packages) incomplete-nvim;
   inherit (getSystem inputs.git-conflict-nvim.packages) git-conflict-nvim;
-  nvim-treesitter =
-    (getSystem inputs.nvim-treesitter.packages).nvim-treesitter.withAllGrammars.overrideAttrs
-      {
-        runtimeDeps = with pkgs; [
-          curl
-          gnutar
-          nodejs
-        ];
-      };
+  nvim-treesitter = (getSystem inputs.nvim-treesitter.packages).nvim-treesitter.withAllGrammars;
 
   SchemaStore-nvim = buildVim {
     input = "SchemaStore-nvim";
