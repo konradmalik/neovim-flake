@@ -548,11 +548,11 @@
         "nvim-treesitter": "nvim-treesitter_2"
       },
       "locked": {
-        "lastModified": 1784541892,
-        "narHash": "sha256-/vlLW4ztecSQ4Id10E713Fsv1gBmLoZHFDWMfrCCa+0=",
+        "lastModified": 1784549641,
+        "narHash": "sha256-egzQPNcRVMq0JAckNfPbDEL3vYBwlYbSfpnXnDAoVEs=",
         "owner": "konradmalik",
         "repo": "nvim-treesitter-nightly-overlay",
-        "rev": "5e6ff74a4a3a805fea0a6e0430b6b408d809fc2e",
+        "rev": "964b7fb5d186293f4b8456d4942b889dce7d0f7e",
         "type": "github"
       },
       "original": {
