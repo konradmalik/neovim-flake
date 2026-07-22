@@ -645,12 +645,29 @@
         "nvim-treesitter-context": "nvim-treesitter-context",
         "oil-nvim": "oil-nvim",
         "plenary-nvim": "plenary-nvim",
+        "sops-nvim": "sops-nvim",
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
         "telescope-live-grep-args-nvim": "telescope-live-grep-args-nvim",
         "telescope-nvim": "telescope-nvim",
         "telescope-ui-select-nvim": "telescope-ui-select-nvim",
         "vim-fugitive": "vim-fugitive",
         "which-key-nvim": "which-key-nvim"
+      }
+    },
+    "sops-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1783728147,
+        "narHash": "sha256-pMnAGm7tkgM5pxhNEs06Qdx69qztMd14uNpuRi4I4qE=",
+        "owner": "trixnz",
+        "repo": "sops.nvim",
+        "rev": "4de0cb71746d7a6de6311c85bc39873e56bcefc7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "trixnz",
+        "repo": "sops.nvim",
+        "type": "github"
       }
     },
     "telescope-fzf-native-nvim": {

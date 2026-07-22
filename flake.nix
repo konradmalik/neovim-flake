@@ -81,6 +81,10 @@
       url = "github:nvim-lua/plenary.nvim";
       flake = false;
     };
+    sops-nvim = {
+      url = "github:trixnz/sops.nvim";
+      flake = false;
+    };
     telescope-fzf-native-nvim = {
       url = "github:nvim-telescope/telescope-fzf-native.nvim";
       flake = false;

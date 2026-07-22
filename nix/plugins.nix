@@ -145,6 +145,10 @@ lib.attrValues rec {
   nvim-treesitter-context = buildVim {
     input = "nvim-treesitter-context";
   };
+  sops-nvim = buildVim {
+    input = "sops-nvim";
+    runtimeDeps = [ pkgs.sops ];
+  };
   oil-nvim = buildVim {
     input = "oil-nvim";
   };
