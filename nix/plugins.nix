@@ -30,9 +30,11 @@ let
       dependencies ? [ ],
       # general packages
       runtimeDeps ? [ ],
+      # attrs (or a function) passed to overrideAttrs on the built derivation
+      overrideAttrs ? { },
     }:
     input:
-    vimUtils.buildVimPlugin {
+    (vimUtils.buildVimPlugin {
       inherit
         dependencies
         nvimRequireCheck
@@ -43,7 +45,8 @@ let
       src = inputs.${input};
       version = inputs.${input}.shortRev;
       pname = makePname input;
-    };
+    }).overrideAttrs
+      overrideAttrs;
 
   buildNeovim =
     {
@@ -57,6 +60,8 @@ let
       # luarocks dependencies declared in the plugin's rockspec; given the lua
       # package set, return the list of packages to satisfy them.
       luaDeps ? (_: [ ]),
+      # attrs (or a function) passed to overrideAttrs on the built derivation
+      overrideAttrs ? { },
     }:
     input:
     let
@@ -91,7 +96,7 @@ let
         propagatedBuildInputs = luaDeps lua.pkgs;
       };
     in
-    neovimUtils.buildNeovimPlugin {
+    (neovimUtils.buildNeovimPlugin {
       inherit
         luaAttr
         dependencies
@@ -99,7 +104,8 @@ let
         nvimSkipModules
         runtimeDeps
         ;
-    };
+    }).overrideAttrs
+      overrideAttrs;
 
   inferInputs = lib.mapAttrs (name: mk: mk name);
 
@@ -109,58 +115,64 @@ let
     };
   };
 
-  plugins = inferInputs {
-    incomplete-nvim = _: (getSystem inputs.incomplete-nvim.packages).incomplete-nvim;
-    git-conflict-nvim = _: (getSystem inputs.git-conflict-nvim.packages).git-conflict-nvim;
-    nvim-treesitter = _: (getSystem inputs.nvim-treesitter.packages).nvim-treesitter.withAllGrammars;
-
-    SchemaStore-nvim = buildVim { };
-    efmls-configs-nvim = buildVim {
-      dependencies = [ plugins.nvim-lspconfig ];
-    };
-    friendly-snippets = buildVim { };
-    gitsigns-nvim =
-      input:
-      (buildVim {
+  plugins =
+    # already packaged for nix
+    {
+      inherit (getSystem inputs.incomplete-nvim.packages) incomplete-nvim;
+      inherit (getSystem inputs.git-conflict-nvim.packages) git-conflict-nvim;
+      nvim-treesitter = (getSystem inputs.nvim-treesitter.packages).nvim-treesitter.withAllGrammars;
+    }
+    # packaged here
+    // (inferInputs {
+      SchemaStore-nvim = buildVim { };
+      efmls-configs-nvim = buildVim {
+        dependencies = [ plugins.nvim-lspconfig ];
+      };
+      friendly-snippets = buildVim { };
+      gitsigns-nvim = buildVim {
         runtimeDeps = [ pkgs.git ];
-      } input).overrideAttrs
-        {
+        overrideAttrs = {
           doInstallCheck = true;
         };
-    kanagawa-nvim = buildVim { };
-    mini-icons = buildVim { };
-    nvim-lspconfig = buildVim { };
-    nvim-treesitter-context = buildVim { };
-    sops-nvim = buildVim {
-      runtimeDeps = [ pkgs.sops ];
-    };
-    oil-nvim = buildVim { };
-    telescope-fzf-native-nvim = input: (buildVim { } input).overrideAttrs { buildPhase = "make"; };
-    telescope-live-grep-args-nvim = buildVim {
-      dependencies = [
-        libs.plenary-nvim
-        plugins.telescope-nvim
-      ];
-    };
-    telescope-nvim = buildVim {
-      dependencies = [
-        libs.plenary-nvim
-      ];
-      runtimeDeps = with pkgs; [
-        fd
-        ripgrep
-      ];
-    };
-    telescope-ui-select-nvim = buildVim { };
-    vim-fugitive = buildVim {
-      vimCommandCheck = "G";
-      runtimeDeps = [ pkgs.git ];
-    };
-    which-key-nvim = buildVim {
-      nvimSkipModules = [
-        "which-key.docs"
-      ];
-    };
-  };
+      };
+      kanagawa-nvim = buildVim { };
+      mini-icons = buildVim { };
+      nvim-lspconfig = buildVim { };
+      nvim-treesitter-context = buildVim { };
+      sops-nvim = buildVim {
+        runtimeDeps = [ pkgs.sops ];
+      };
+      oil-nvim = buildVim { };
+      telescope-fzf-native-nvim = buildVim {
+        overrideAttrs = {
+          buildPhase = "make";
+        };
+      };
+      telescope-live-grep-args-nvim = buildVim {
+        dependencies = [
+          libs.plenary-nvim
+          plugins.telescope-nvim
+        ];
+      };
+      telescope-nvim = buildVim {
+        dependencies = [
+          libs.plenary-nvim
+        ];
+        runtimeDeps = with pkgs; [
+          fd
+          ripgrep
+        ];
+      };
+      telescope-ui-select-nvim = buildVim { };
+      vim-fugitive = buildVim {
+        vimCommandCheck = "G";
+        runtimeDeps = [ pkgs.git ];
+      };
+      which-key-nvim = buildVim {
+        nvimSkipModules = [
+          "which-key.docs"
+        ];
+      };
+    });
 in
 lib.attrValues plugins
