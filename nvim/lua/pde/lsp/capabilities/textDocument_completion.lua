@@ -16,6 +16,18 @@ local function initialize_once()
         if type(k) == "string" and type(v) == "number" then kind_map[v] = k end
     end
 
+    -- HACK: add default border to documentation popup
+    -- https://github.com/neovim/neovim/issues/38248
+    local orig_complete_set = vim.api.nvim__complete_set
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.api.nvim__complete_set = function(...)
+        local result = orig_complete_set(...)
+        if result and result.winid then
+            pcall(vim.api.nvim_win_set_config, result.winid, { border = vim.o.winborder })
+        end
+        return result
+    end
+
     initialized = true
 end
 

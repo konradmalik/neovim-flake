@@ -3,7 +3,6 @@ local icons = require("pde.statusline.icons")
 local mini_icons = require("mini.icons")
 
 ---@param hl string highlight name
----
 ---@param s string string to wrap
 ---@return string
 local function wrap_hl(hl, s) return "%#" .. hl .. "#" .. s .. "%*" end
