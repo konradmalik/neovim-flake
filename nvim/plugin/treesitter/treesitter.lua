@@ -28,8 +28,7 @@ vim.api.nvim_create_autocmd("FileType", {
                 local winbuf = vim.api.nvim_win_get_buf(win)
                 if winbuf == bufnr then
                     vim.wo[win][0].foldmethod = "expr"
-                    vim.wo[win][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
-                    vim.wo[win][0].foldtext = "v:lua.vim.treesitter.foldtext()"
+                    vim.wo[win][0].foldexpr = vim.treesitter.foldexpr
                 end
             end
         end
