@@ -31,7 +31,12 @@ vim.keymap.set(
 )
 
 -- misc
-vim.keymap.set("n", "<leader>*", "<cmd>grep <cword><CR>", opts_with_desc("Grep word under cursor"))
+vim.keymap.set(
+    "n",
+    "<leader>*",
+    "<cmd>silent grep! <cword><CR>",
+    opts_with_desc("Grep word under cursor")
+)
 
 vim.keymap.set("i", "<C-c>", "<esc>", opts_with_desc("Ctrl-c as ESC in insert mode"))
 
