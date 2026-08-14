@@ -32,7 +32,7 @@ with pkgs;
   yaml-language-server
   zls
 ]
-++ lib.optionals stdenvNoCC.isLinux [
+++ lib.optionals stdenvNoCC.hostPlatform.isLinux [
   # for faster filewatching in lsps
   inotify-tools
 ]
