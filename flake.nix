@@ -203,6 +203,9 @@
           nvim = {
             type = "app";
             program = lib.getExe pkgs.nvim-pkg;
+            meta = {
+              description = "Neovim with my configuration";
+            };
           };
         }
       );
