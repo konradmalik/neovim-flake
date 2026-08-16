@@ -54,7 +54,7 @@ return {
         local win = vim.fn.bufwinid(bufnr)
         if vim.api.nvim_win_is_valid(win) then
             local originals = originals_per_win[win]
-            vim.wo[win][0].foldmethod = string(originals[1])
+            vim.wo[win][0].foldmethod = tostring(originals[1])
             vim.wo[win][0].foldexpr = originals[2]
             vim.wo[win][0].foldtext = originals[3]
         end
