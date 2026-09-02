@@ -1,3 +1,5 @@
+if vim.b.did_qf_ftplugin then return end
+
 local is_locationlist = function()
     local info = vim.fn.getwininfo(vim.fn.win_getid())[1]
     return info["loclist"] == 1 and info["quickfix"] == 1
@@ -45,3 +47,5 @@ vim.keymap.set("n", "dd", del_item, opts_with_desc("Remove entry from the list")
 vim.keymap.set("v", "d", del_item, opts_with_desc("Remove entry from the list"))
 vim.keymap.set("n", "u", older_list, opts_with_desc("Go to older list"))
 vim.keymap.set("n", "<C-r>", newer_list, opts_with_desc("Go to newer list"))
+
+vim.b.did_qf_ftplugin = true
