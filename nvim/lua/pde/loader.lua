@@ -10,6 +10,7 @@ vim.api.nvim_create_user_command("CacheReset", function()
     end
 end, { desc = "Reset vim.loader cache and do other maintenance tasks" })
 
+---@class pde.loader
 local M = {}
 
 ---Add the given function to be run on each CacheReset command

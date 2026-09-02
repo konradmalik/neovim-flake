@@ -2,6 +2,7 @@
 local ms = vim.lsp.protocol.Methods
 local timeout_ms = 2000
 
+---@class pde.lsp.rename
 local M = {}
 
 ---@param path string

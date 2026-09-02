@@ -1,4 +1,5 @@
 -- based on https://github.com/tummetott/unimpaired.nvim
+---@class pde.unimpaired
 local M = {}
 
 local get_current_wininfo = function() return vim.fn.getwininfo(vim.fn.win_getid())[1] end

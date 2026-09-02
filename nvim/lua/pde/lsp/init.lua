@@ -6,6 +6,7 @@ local ms = vim.lsp.protocol.Methods
 ---@field attach fun(data: HandlerData)
 ---@field detach fun(client_id: integer?, bufnr: integer)
 
+---@class pde.lsp
 local M = {}
 
 ---@param client vim.lsp.Client

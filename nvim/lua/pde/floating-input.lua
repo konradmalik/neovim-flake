@@ -71,6 +71,7 @@ local function resolve_config(opts, default_config, supplied_config)
     return vim.tbl_deep_extend("force", resolved_config, placement)
 end
 
+---@class pde.floating-input
 local M = {}
 
 ---@param opts? vim.ui.input.Opts

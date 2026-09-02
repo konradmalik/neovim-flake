@@ -1,4 +1,5 @@
 local cache = {}
+---@class pde.paths
 local M = {}
 
 ---@param name string

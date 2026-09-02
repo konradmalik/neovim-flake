@@ -32,6 +32,7 @@ local function create_message(node)
     return message
 end
 
+---@class pde.treesitter-diagnostics
 local M = {}
 
 ---Clear existing diagnostics from this namespace

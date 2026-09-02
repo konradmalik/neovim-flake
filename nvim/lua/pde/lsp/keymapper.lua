@@ -1,5 +1,6 @@
 local keymap_prefix = "[LSP]"
 
+---@class pde.lsp.keymapper
 local M = {}
 
 ---@param bufnr integer

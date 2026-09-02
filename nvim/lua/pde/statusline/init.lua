@@ -55,6 +55,7 @@ local function setup_local_winbar_with_autocmd()
     })
 end
 
+---@class pde.statusline
 local M = {}
 
 M.statusline = function()
