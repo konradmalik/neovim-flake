@@ -5,6 +5,7 @@ luacheck:
 .PHONY: typecheck
 typecheck:
 	@nvim-typecheck ./nvim
+	@nvim-typecheck ./spec
 
 .PHONY: fmt
 fmt:
