@@ -36,8 +36,19 @@ in
   nvim-luarc-json = pkgs.mk-luarc-json {
     inherit plugins nvim;
   };
-  busted-luarc-json = pkgs.mk-luarc-json {
-    # use stable (not-nightly) neovim because busted uses that as well
-    nvim = pkgs.neovim-unwrapped;
-  };
+  busted-luarc-json =
+    let
+      luarc = pkgs.mk-luarc {
+        # use stable (not-nightly) neovim because busted uses that as well
+        nvim = pkgs.neovim-unwrapped;
+      };
+    in
+    pkgs.luarc-to-json (
+      luarc
+      // {
+        workspace = luarc.workspace // {
+          library = luarc.workspace.library ++ [ "../nvim/lua" ];
+        };
+      }
+    );
 }
