@@ -87,6 +87,7 @@ local modes = {
     ["t"] = { "T", colors.func },
 }
 
+---@class pde.statusline.components
 local M = {}
 
 M.space = " "

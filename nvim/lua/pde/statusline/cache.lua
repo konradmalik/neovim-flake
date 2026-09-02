@@ -1,3 +1,4 @@
+---@class pde.statusline.cache
 local M = {}
 
 local global_cache_key = -1

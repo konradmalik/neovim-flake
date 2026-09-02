@@ -23,6 +23,7 @@ local set_keymaps = function(config)
     )
 end
 
+---@class pde.notes
 local M = {}
 
 ---@param config table

@@ -1,3 +1,4 @@
+---@class pde.lsp.augroups
 local M = {}
 
 -- client id to group id mapping

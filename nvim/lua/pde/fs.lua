@@ -1,3 +1,4 @@
+---@class pde.fs
 local M = {}
 
 ---checks if buffer is a real readable file
