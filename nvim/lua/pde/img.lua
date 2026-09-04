@@ -39,7 +39,12 @@ local state = {
     want = nil,
 }
 
----@type table<string, string> source -> PNG bytes
+---A decoded PNG is megabytes, so rather than keeping every image ever looked
+---at for the whole session, entries are owned by the buffer that fetched them
+---and dropped when it closes. Keying by buffer costs a second conversion when
+---two buffers show the same image, which is cheaper than the alternative of
+---clearing every buffer's entries whenever any one of them closes.
+---@type table<integer, table<string, string>> bufnr -> source -> PNG bytes
 local cache = {}
 
 ---@type { row: integer, col: integer, screen: string }? cached, see `tmux_offset`
@@ -142,11 +147,13 @@ local function image_src(line, buf)
 end
 
 ---Hand back PNG bytes for `src`, converting whatever it really is.
+---@param buf integer buffer the source belongs to; owns the cache entry
 ---@param src string
 ---@param callback fun(png: string)
-local function fetch(src, callback)
-    if cache[src] then
-        callback(cache[src])
+local function fetch(buf, src, callback)
+    local cached = cache[buf] and cache[buf][src]
+    if cached then
+        callback(cached)
         return
     end
 
@@ -171,7 +178,8 @@ local function fetch(src, callback)
         }
         vim.system(cmd, { stdin = blob }, function(res)
             if res.code ~= 0 or res.stdout == "" then return end
-            cache[src] = res.stdout
+            cache[buf] = cache[buf] or {}
+            cache[buf][src] = res.stdout
             vim.schedule(function() callback(res.stdout) end)
         end)
     end
@@ -229,6 +237,7 @@ local function refresh()
 
     state.want = src
     fetch(
+        buf,
         src,
         vim.schedule_wrap(function(blob)
             if state.want ~= src then return end
@@ -245,7 +254,9 @@ end
 ---Preview the image under the cursor in `buf`.
 ---@param buf? integer buffer to attach to (default: the current buffer)
 function M.attach(buf)
-    buf = buf or 0
+    -- resolve to a real number now: 0 means "current" to the autocmd API, but
+    -- the cache is keyed by buffer and `refresh` looks entries up by the real one
+    if not buf or buf == 0 then buf = vim.api.nvim_get_current_buf() end
 
     vim.api.nvim_create_autocmd("CursorHold", {
         group = augroup,
@@ -270,6 +281,13 @@ function M.attach(buf)
             callback = function() M.hide() end,
         }
     )
+
+    vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
+        group = augroup,
+        buffer = buf,
+        callback = function() cache[buf] = nil end,
+        desc = "drop this buffer's cached images when it is closed",
+    })
 end
 
 ---exposed so `spec/img_spec.lua` can reach them.

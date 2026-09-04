@@ -105,7 +105,7 @@ M.busy = function(bufnr)
 end
 
 M.mode = function()
-    local m = modes[vim.api.nvim_get_mode().mode]
+    local m = modes[vim.api.nvim_get_mode().mode] or modes["n"]
 
     local mname = m[1]
     local mhl = m[2]
@@ -294,7 +294,7 @@ M.cwd = cache.create(
         return wrap_hl(colors.directory, cwd)
     end,
     {
-        events = { "WinEnter" },
+        events = { "WinEnter", "DirChanged" },
     }
 )
 

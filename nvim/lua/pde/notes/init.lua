@@ -10,8 +10,10 @@ local default_config = {
     quicknotes = "notes.md",
 }
 
+-- `:vsplit` takes a single argument, so the `+cmd` (which opens on the last
+-- line) and the path have to go in as one string
 ---@param path string
-local open_quicknotes = function(path) vim.cmd("botright vsplit + " .. path) end
+local open_quicknotes = function(path) vim.cmd("botright vsplit + " .. vim.fn.fnameescape(path)) end
 
 ---@param config NotesConfig
 local set_keymaps = function(config)

@@ -12,7 +12,7 @@ local function overview(winid)
 end
 
 ---@param winid integer? if not provided, uses current
----@param idx integer? go to arglist entry at index. Go to current index if not provided
+---@param idx integer go to arglist entry at this index
 ---@return boolean
 local function navigate_idx(winid, idx)
     local arglen = vim.fn.argc(winid)
@@ -38,49 +38,26 @@ local function navigate(winid, count)
     return navigate_idx(winid, nextidx)
 end
 
-local function append_curr() vim.cmd("$argadd | argdedupe") end
-local function delete_curr() vim.cmd("argdelete %") end
-local function clear_all() vim.cmd("%argdelete") end
+---@param lhs string
+---@param f fun()
+---@param desc string
+local function map(lhs, f, desc)
+    vim.keymap.set("n", lhs, function()
+        f()
+        overview(nil)
+    end, opts_with_desc(desc))
+end
 
-vim.keymap.set("n", "<leader>aa", function()
-    append_curr()
-    local winid = nil
-    overview(winid)
-end, opts_with_desc("append current buffer to the end"))
-vim.keymap.set("n", "<leader>ad", function()
-    delete_curr()
-    local winid = nil
-    overview(winid)
-end, opts_with_desc("delete current buffer"))
-vim.keymap.set("n", "<leader>ac", function()
-    clear_all()
-    local winid = nil
-    overview(winid)
-end, opts_with_desc("clear all entries"))
-vim.keymap.set("n", "<leader>ao", overview, opts_with_desc("overview"))
-vim.keymap.set("n", "[a", function()
-    local winid = nil
-    navigate(winid, vim.v.count1 * -1)
-    overview(winid)
-end, opts_with_desc("prev entry"))
-vim.keymap.set("n", "]a", function()
-    local winid = nil
-    navigate(winid, vim.v.count1)
-    overview(winid)
-end, opts_with_desc("next entry"))
-vim.keymap.set("n", "<leader>aj", function()
-    local winid = nil
-    if navigate_idx(winid, 0) then overview(winid) end
-end, opts_with_desc("1st entry"))
-vim.keymap.set("n", "<leader>ak", function()
-    local winid = nil
-    if navigate_idx(winid, 1) then overview(winid) end
-end, opts_with_desc("2nd entry"))
-vim.keymap.set("n", "<leader>al", function()
-    local winid = nil
-    if navigate_idx(winid, 2) then overview(winid) end
-end, opts_with_desc("3rd entry"))
-vim.keymap.set("n", "<leader>a;", function()
-    local winid = nil
-    if navigate_idx(winid, 3) then overview(winid) end
-end, opts_with_desc("4th entry"))
+map("<leader>aa", function() vim.cmd("$argadd | argdedupe") end, "append current buffer to the end")
+map("<leader>ad", function() vim.cmd("argdelete %") end, "delete current buffer")
+map("<leader>ac", function() vim.cmd("%argdelete") end, "clear all entries")
+map("<leader>ao", function() end, "overview")
+
+map("[a", function() navigate(nil, -vim.v.count1) end, "prev entry")
+map("]a", function() navigate(nil, vim.v.count1) end, "next entry")
+
+for i, key in ipairs({ "j", "k", "l", ";" }) do
+    vim.keymap.set("n", "<leader>a" .. key, function()
+        if navigate_idx(nil, i - 1) then overview(nil) end
+    end, opts_with_desc("entry no. " .. i))
+end

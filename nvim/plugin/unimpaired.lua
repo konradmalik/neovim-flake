@@ -40,5 +40,5 @@ vim.keymap.set(
 
 vim.keymap.set("i", "<C-c>", "<esc>", opts_with_desc("Ctrl-c as ESC in insert mode"))
 
-vim.keymap.set("v", "J", ":m '>+1<CR>gv", opts_with_desc("move current selection up"))
-vim.keymap.set("v", "K", ":m '<-2<CR>gv", opts_with_desc("move current selection down"))
+vim.keymap.set("v", "J", ":m '>+1<CR>gv", opts_with_desc("move current selection down"))
+vim.keymap.set("v", "K", ":m '<-2<CR>gv", opts_with_desc("move current selection up"))

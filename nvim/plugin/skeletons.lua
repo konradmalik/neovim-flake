@@ -1,9 +1,11 @@
-local current_file_path = vim.fs.dirname(debug.getinfo(1, "S").source:sub(2))
-local skeletons_path = vim.fs.normalize(current_file_path .. "/../skeletons")
+local skeletons_path = vim.api.nvim_get_runtime_file("skeletons", false)[1]
+if not skeletons_path then return end
 
 local group = vim.api.nvim_create_augroup("personal-skeletons", { clear = true })
 
-local insert_skeleton = function(name) vim.cmd("0r " .. vim.fs.joinpath(skeletons_path, name)) end
+local insert_skeleton = function(name)
+    vim.cmd.read({ vim.fn.fnameescape(vim.fs.joinpath(skeletons_path, name)), range = { 0 } })
+end
 
 for name, _ in vim.fs.dir(skeletons_path) do
     vim.api.nvim_create_autocmd({ "BufNewFile" }, {

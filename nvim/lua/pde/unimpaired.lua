@@ -45,7 +45,7 @@ M.previous_file = function()
         vim.cmd("silent! colder " .. vim.v.count1)
     else
         local file = file_by_offset(-vim.v.count1)
-        if file then vim.cmd("edit " .. file) end
+        if file then vim.cmd.edit(vim.fn.fnameescape(file)) end
     end
 end
 
@@ -57,7 +57,7 @@ M.next_file = function()
         vim.cmd("silent! cnewer " .. vim.v.count1)
     else
         local file = file_by_offset(vim.v.count1)
-        if file then vim.cmd("edit " .. file) end
+        if file then vim.cmd.edit(vim.fn.fnameescape(file)) end
     end
 end
 

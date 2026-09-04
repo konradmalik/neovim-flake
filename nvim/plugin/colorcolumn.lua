@@ -6,15 +6,14 @@ local function get_max_line_length()
 end
 
 vim.api.nvim_create_user_command("ColorcolumnToggle", function()
-    local current = vim.o.colorcolumn
-    if current == "" then
+    if vim.wo[0][0].colorcolumn == "" then
         local size = get_max_line_length()
         vim.notify("enabling colorcolumn as: " .. tostring(size), vim.log.levels.INFO)
-        vim.o.colorcolumn = tostring(size)
+        vim.wo[0][0].colorcolumn = tostring(size)
     else
         vim.notify("disabling colorcolumn")
-        vim.o.colorcolumn = ""
+        vim.wo[0][0].colorcolumn = ""
     end
 end, {
-    desc = "Enable/disable colorcolumn. Respects editorconfig.",
+    desc = "Enable/disable colorcolumn in the current window. Respects editorconfig.",
 })
