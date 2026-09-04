@@ -167,17 +167,14 @@
               ln -fs ${pkgs.nvim-luarc-json} ./nvim/.luarc.json
               ln -fs ${pkgs.busted-luarc-json} ./spec/.luarc.json
             '';
-          packages =
-            (with pkgs; [
-              gnumake
-              busted-nlua
-              luajitPackages.luacheck
-              stylua
-            ])
-            ++ (with pkgs; [
-              nvim-typecheck
-              nvim-dev
-            ]);
+          packages = with pkgs; [
+            gnumake
+            busted-nlua
+            luajitPackages.luacheck
+            stylua
+            nvim-typecheck
+            nvim-dev
+          ];
         };
       });
 

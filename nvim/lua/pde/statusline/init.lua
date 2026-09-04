@@ -18,11 +18,6 @@ local function is_special(bufnr) return vim.bo[bufnr].buftype ~= "" end
 local function setup_statusline()
     vim.g.qf_disable_statusline = true
     vim.o.laststatus = 3
-    -- highlight group of the active window statusline
-    -- vim.api.nvim_set_hl(0, "StatusLine", { bg = "bg", fg = "fg" })
-    -- nc -> non-active
-    -- vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "bg", fg = "fg" })
-
     vim.o.statusline = "%!v:lua.require('pde.statusline').statusline()"
 end
 local function setup_local_winbar_with_autocmd()

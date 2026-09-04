@@ -9,9 +9,7 @@ local augroups = {}
 M.get_augroup = function(client)
     if not augroups[client.id] then
         local group_name = "personal-lsp-" .. client.name .. "-" .. client.id
-        local group = vim.api.nvim_create_augroup(group_name, { clear = true })
-        augroups[client.id] = group
-        return group
+        augroups[client.id] = vim.api.nvim_create_augroup(group_name, { clear = true })
     end
     return augroups[client.id]
 end

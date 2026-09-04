@@ -14,7 +14,6 @@ return {
         HexagonAll = "󰛡",
         Lock = "󰍁",
         FilledLock = "󰌾",
-        Bug = "󰃤",
         LeftHalf = "",
         RightHalf = "",
     },

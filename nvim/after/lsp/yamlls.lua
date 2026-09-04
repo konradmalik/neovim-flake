@@ -17,9 +17,6 @@ return {
             format = {
                 enable = false, -- use prettier instead
             },
-            completion = true,
-            hover = true,
-            validate = true,
             schemas = vim.tbl_extend("error", require("schemastore").yaml.schemas(), {
                 ["kubernetes"] = { "k8s/**/*.yml", "k8s/**/*.yaml" },
                 -- or use:

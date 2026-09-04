@@ -25,7 +25,6 @@ stdenvNoCC.mkDerivation {
   dontFixup = true;
 
   doCheck = true;
-  checkInputs = [ ];
   preCheck = ''
     ln -s ${nvim-luarc-json} ./nvim/.luarc.json
   '';

@@ -58,9 +58,7 @@ return {
                     "./docs/",
                 },
             },
-            checkOnSave = true,
             diagnostics = {
-                enable = true,
                 experimental = {
                     enable = true,
                 },
