@@ -96,7 +96,7 @@ let
     wrapRc = !devMode;
   };
 
-  isCustomAppName = appName != null && appName != "nvim";
+  isCustomAppName = appName != "nvim";
 in
 nvim-wrapped.overrideAttrs (oa: {
   buildPhase =

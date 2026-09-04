@@ -23,15 +23,12 @@ local colors = {
     special = "Special",
     diag_warn = "DiagnosticWarn",
     diag_error = "DiagnosticError",
-    diag_hint = "DiagnosticHint",
-    diag_info = "DiagnosticInfo",
     diag_ok = "DiagnosticOk",
     git_del = "diffDeleted",
     git_add = "diffAdded",
     git_change = "diffChanged",
     directory = "Directory",
     filetype = "Type",
-    debug = "Debug",
 }
 
 local format_types = {
@@ -305,13 +302,5 @@ do
         return ruler
     end
 end
-
--- test_status = function()
--- 	return table.concat({
--- 		M.diagnostics(),
--- 	})
--- end
---
--- vim.o.statusline = "%!v:lua.test_status()"
 
 return M

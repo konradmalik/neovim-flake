@@ -2,7 +2,6 @@ local group = vim.api.nvim_create_augroup("pde-treesitter", { clear = true })
 
 vim.api.nvim_create_autocmd("FileType", {
     group = group,
-    pattern = "*",
     callback = function(args)
         local ft = args.match
         local bufnr = args.buf
