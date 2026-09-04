@@ -18,7 +18,7 @@ local global_cache_key = -1
 ---        Events can be plain strings or tables with `event` and `pattern` keys, e.g. {event="OptionSet", pattern="modified"}.
 --- @return F
 function M.create(component, spec)
-    spec.redraw = spec.redraw or true
+    if spec.redraw == nil then spec.redraw = true end
     ---@type table<integer, string>
     local cache = {}
 

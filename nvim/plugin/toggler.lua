@@ -50,15 +50,14 @@ local function toggle()
     return false
 end
 
-vim.keymap.set("n", "<C-a>", function()
-    if not toggle() then
-        local key = vim.api.nvim_replace_termcodes("<C-a>", true, false, true)
-        vim.cmd.normal({ key, bang = true })
+---@param lhs string
+local function toggle_or_fallback(lhs)
+    return function()
+        if toggle() then return end
+        local key = vim.api.nvim_replace_termcodes(lhs, true, false, true)
+        vim.cmd.normal({ vim.v.count1 .. key, bang = true })
     end
-end)
-vim.keymap.set("n", "<C-x>", function()
-    if not toggle() then
-        local key = vim.api.nvim_replace_termcodes("<C-x>", true, false, true)
-        vim.cmd.normal({ key, bang = true })
-    end
-end)
+end
+
+vim.keymap.set("n", "<C-a>", toggle_or_fallback("<C-a>"))
+vim.keymap.set("n", "<C-x>", toggle_or_fallback("<C-x>"))

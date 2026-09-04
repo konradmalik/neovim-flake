@@ -1,6 +1,11 @@
 vim.g.foldingimports_enabled = false
 
----@type table<integer,string[]|function[]>
+---@class pde.lsp.FoldOptions
+---@field foldmethod string
+---@field foldexpr string|function
+---@field foldtext string|function
+
+---@type table<integer, pde.lsp.FoldOptions>
 local originals_per_win = {}
 
 ---@type CapabilityHandler
@@ -10,9 +15,9 @@ return {
         local win = vim.fn.bufwinid(data.bufnr)
         if vim.api.nvim_win_is_valid(win) then
             originals_per_win[win] = {
-                vim.wo[win][0].foldmethod,
-                vim.wo[win][0].foldexpr,
-                vim.wo[win][0].foldtext,
+                foldmethod = vim.wo[win][0].foldmethod,
+                foldexpr = vim.wo[win][0].foldexpr,
+                foldtext = vim.wo[win][0].foldtext,
             }
             -- NOTE this change first removes the foldcolumn
             -- then adds it only after lsp responds with folds
@@ -52,11 +57,13 @@ return {
     detach = function(_, bufnr)
         vim.api.nvim_buf_del_user_command(bufnr, "FoldingImportsToggle")
         local win = vim.fn.bufwinid(bufnr)
-        if vim.api.nvim_win_is_valid(win) then
-            local originals = originals_per_win[win]
-            vim.wo[win][0].foldmethod = tostring(originals[1])
-            vim.wo[win][0].foldexpr = originals[2]
-            vim.wo[win][0].foldtext = originals[3]
-        end
+        -- attach only records originals when the buffer was displayed, and the
+        -- window may be gone or be a different one by now
+        local originals = originals_per_win[win]
+        if not originals or not vim.api.nvim_win_is_valid(win) then return end
+        originals_per_win[win] = nil
+        vim.wo[win][0].foldmethod = originals.foldmethod
+        vim.wo[win][0].foldexpr = originals.foldexpr
+        vim.wo[win][0].foldtext = originals.foldtext
     end,
 }

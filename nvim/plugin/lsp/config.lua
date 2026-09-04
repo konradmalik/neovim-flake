@@ -4,11 +4,9 @@ require("pde.loader").add_to_on_reset(
 
 vim.lsp.log.set_level(vim.log.levels.WARN)
 
-vim.lsp.config("*", { capabilities = vim.lsp.protocol.make_client_capabilities() })
 vim.lsp.enable({
     "clangd",
     "golangci_lint_ls",
-    "gopls",
     "gopls",
     "harper_ls",
     "json_fl",

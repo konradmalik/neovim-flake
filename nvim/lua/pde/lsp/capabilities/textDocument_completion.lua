@@ -1,7 +1,4 @@
 local mini_icons = require("mini.icons")
--- some LSPs for some reason say they have completionItem_resolve capability
--- but then throw errors when this is executed (I look at you gopls)
----@type table<integer, boolean>
 
 ---@type table<integer,string>
 local kind_map = {}
