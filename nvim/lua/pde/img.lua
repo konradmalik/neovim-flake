@@ -10,6 +10,8 @@
 ---3. Given both `c` and `r` the terminal stretches the image to fill that
 ---   rectangle, so the box has to carry the image's own aspect ratio.
 
+local async = vim.async
+
 ---@class pde.img
 local M = {}
 
@@ -35,8 +37,8 @@ local state = {
     src = nil,
     ---@type vim.ui.img.Opts? opts it was placed with
     opts = nil,
-    ---@type string? source we last decided to show; makes a slow fetch a no-op
-    want = nil,
+    ---@type vim.async.Task<any>? in-flight refresh, closed once it stops mattering
+    task = nil,
 }
 
 ---A decoded PNG is megabytes, so rather than keeping every image ever looked
@@ -51,6 +53,54 @@ local cache = {}
 local offset = nil
 
 local augroup = vim.api.nvim_create_augroup("pde_img", { clear = true })
+
+---To cancel a suspended task `vim.async` calls `close(self, callback)` on
+---whatever the await handed back, and only resumes once that callback fires.
+---Neither handle we await fits: `vim.SystemObj` has no `close` at all, and the
+---one from `vim.net.request` drops the callback, which would leave the task
+---suspended for good. Both are wrapped in this instead.
+---@param kill fun()
+---@return vim.async.Closable
+local function closable(kill)
+    return {
+        close = function(_, callback)
+            kill()
+            if callback then callback() end
+        end,
+    }
+end
+
+---Await a subprocess, killing it if the task is cancelled.
+---@async
+---@param cmd string[]
+---@param opts vim.SystemOpts
+---@return vim.SystemCompleted
+local function system(cmd, opts)
+    local res = async.await(function(callback)
+        local obj = vim.system(cmd, opts, callback)
+        return closable(function()
+            if not obj:is_closing() then obj:kill(9) end
+        end)
+    end) --[[@as vim.SystemCompleted]]
+    -- `vim.system` calls back from a `uv` check handle, so we resume in a fast
+    -- event context; everything downstream of a fetch touches windows and buffers
+    async.await(vim.schedule)
+    return res
+end
+
+---Await an HTTP GET, aborting it if the task is cancelled.
+---@async
+---@param url string
+---@return string? body nil if the request failed
+local function http_get(url)
+    local err, res = async.await(function(callback)
+        local handle = vim.net.request(url, {}, callback)
+        return closable(handle.close)
+    end)
+    async.await(vim.schedule)
+    if err or not res then return nil end
+    return res.body
+end
 
 local TMUX_FORMAT = "#{client_height} #{window_height} #{status-position} "
     .. "#{pane_top} #{pane_left}"
@@ -73,6 +123,7 @@ local function parse_offset(stdout)
     return int(top) + (position == "top" and int(client_h) - int(window_h) or 0), int(left)
 end
 
+---@async
 ---@return { row: integer, col: integer }
 local function tmux_offset()
     -- keyed on the screen size, so a resize while another buffer is current
@@ -83,7 +134,7 @@ local function tmux_offset()
     local row, col = 0, 0
     if vim.env.TMUX then
         local cmd = { "tmux", "display-message", "-p", "-t", vim.env.TMUX_PANE or "", TMUX_FORMAT }
-        row, col = parse_offset(vim.system(cmd):wait().stdout or "")
+        row, col = parse_offset(system(cmd, {}).stdout or "")
     end
 
     offset = { row = row, col = col, screen = screen }
@@ -147,50 +198,46 @@ local function image_src(line, buf)
 end
 
 ---Hand back PNG bytes for `src`, converting whatever it really is.
+---@async
 ---@param buf integer buffer the source belongs to; owns the cache entry
 ---@param src string
----@param callback fun(png: string)
-local function fetch(buf, src, callback)
+---@return string? png nil if the source could not be read or converted
+local function fetch(buf, src)
     local cached = cache[buf] and cache[buf][src]
-    if cached then
-        callback(cached)
-        return
-    end
+    if cached then return cached end
 
-    ---@param blob string raw bytes in any format ImageMagick reads
-    local function convert(blob)
-        local cmd = {
-            "magick",
-            -- a density this far above the default only matters for vector
-            -- sources, which would otherwise render at their natural size and
-            -- then be blown up; the resize below pulls raster ones back down
-            "-density",
-            "384",
-            "-[0]", -- first frame only, or an animation arrives as several PNGs
-            "-resize",
-            -- a 4000px png is 96MB of base64 down the tty, and nothing on
-            -- screen is ever that wide, so shrink everything to something sane
-            config.raster_width .. "x>",
-            "-depth",
-            "8", -- magick defaults to 16, which triples the payload for nothing
-            "-strip",
-            "png:-",
-        }
-        vim.system(cmd, { stdin = blob }, function(res)
-            if res.code ~= 0 or res.stdout == "" then return end
-            cache[buf] = cache[buf] or {}
-            cache[buf][src] = res.stdout
-            vim.schedule(function() callback(res.stdout) end)
-        end)
-    end
-
+    ---@type string? raw bytes in any format ImageMagick reads
+    local blob
     if is_web(src) then
-        vim.net.request(src, {}, function(err, res)
-            if not err and res and res.body then convert(res.body) end
-        end)
+        blob = http_get(src)
     else
-        convert(vim.fn.readblob(src))
+        blob = vim.fn.readblob(src)
     end
+    if not blob or blob == "" then return nil end
+
+    local cmd = {
+        "magick",
+        -- a density this far above the default only matters for vector
+        -- sources, which would otherwise render at their natural size and
+        -- then be blown up; the resize below pulls raster ones back down
+        "-density",
+        "384",
+        "-[0]", -- first frame only, or an animation arrives as several PNGs
+        "-resize",
+        -- a 4000px png is 96MB of base64 down the tty, and nothing on
+        -- screen is ever that wide, so shrink everything to something sane
+        config.raster_width .. "x>",
+        "-depth",
+        "8", -- magick defaults to 16, which triples the payload for nothing
+        "-strip",
+        "png:-",
+    }
+    local res = system(cmd, { stdin = blob })
+    if res.code ~= 0 or res.stdout == "" then return nil end
+
+    cache[buf] = cache[buf] or {}
+    cache[buf][src] = res.stdout
+    return res.stdout
 end
 
 ---Where to put `blob`, as a box anchored to the top-right of the current window.
@@ -220,9 +267,33 @@ local function placement(blob, off)
     }
 end
 
+---Fetch `src` and put it on screen, replacing whatever is there.
+---@async
+---@param buf integer buffer `src` was resolved against
+---@param src string
+---@return nil
+local function show(buf, src)
+    local blob = fetch(buf, src)
+    if not blob then return end
+
+    local opts = placement(blob, tmux_offset())
+    if state.src == src and vim.deep_equal(state.opts, opts) then return end
+
+    if state.id then vim.ui.img.del(state.id) end
+    state.id, state.src, state.opts = vim.ui.img.set(blob, opts), src, opts
+end
+
+---Stop the in-flight refresh, if any. Closing the task also kills whatever
+---subprocess or request it is suspended on, so a fetch we no longer care about
+---stops costing anything rather than merely being ignored on arrival.
+local function cancel()
+    if state.task then state.task:close() end
+    state.task = nil
+end
+
 ---Remove the image on screen, if any.
 function M.hide()
-    state.want = nil
+    cancel()
     if state.id then vim.ui.img.del(state.id) end
     state.id, state.src, state.opts = nil, nil, nil
 end
@@ -235,20 +306,18 @@ local function refresh()
         return
     end
 
-    state.want = src
-    fetch(
-        buf,
-        src,
-        vim.schedule_wrap(function(blob)
-            if state.want ~= src then return end
+    cancel()
+    local task = async.run("pde.img", function() show(buf, src) end)
 
-            local opts = placement(blob, tmux_offset())
-            if state.src == src and vim.deep_equal(state.opts, opts) then return end
+    -- a task keeps its failure to itself, and being cancelled is the ordinary
+    -- way a refresh ends; anything else is a bug worth seeing
+    task:on_complete(function(err)
+        if err ~= nil and err ~= "closed" then
+            vim.notify("pde.img: " .. tostring(err), vim.log.levels.ERROR)
+        end
+    end)
 
-            if state.id then vim.ui.img.del(state.id) end
-            state.id, state.src, state.opts = vim.ui.img.set(blob, opts), src, opts
-        end)
-    )
+    state.task = task
 end
 
 ---Preview the image under the cursor in `buf`.
