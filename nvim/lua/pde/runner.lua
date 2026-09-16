@@ -75,7 +75,7 @@ local function run(cmd, opts)
     end
     get_or_create_window(bufnr)
 
-    if type(cmd) == "string" then cmd = { cmd } end
+    if type(cmd) == "string" then cmd = { "sh", "-c", cmd } end
     local cmd_str = table.concat(cmd, " ")
 
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {

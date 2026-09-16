@@ -9,22 +9,47 @@ local function validate_command(command)
     return true
 end
 
+---@param path string
+---@param needle string
+---@return boolean
+local function file_contains(path, needle)
+    local ok, lines = pcall(vim.fn.readfile, path)
+    return ok and table.concat(lines, "\n"):find(needle, 1, true) ~= nil
+end
+
+---@type table<string, boolean>
+local mtp_cache = {}
+
+---Tells if the solution runs on Microsoft.Testing.Platform instead of VSTest.
+---@param root_dir string
+---@return boolean
+local function uses_mtp(root_dir)
+    if mtp_cache[root_dir] == nil then
+        mtp_cache[root_dir] = file_contains(
+            vim.fs.joinpath(root_dir, "global.json"),
+            '"runner": "Microsoft.Testing.Platform"'
+        ) or file_contains(
+            vim.fs.joinpath(root_dir, "Directory.Build.props"),
+            "<TestingPlatformDotnetTestSupport>true"
+        )
+    end
+    return mtp_cache[root_dir]
+end
+
 ---@param cwd string
 ---@param filter string
 local function testRun(cwd, filter)
-    local cmd = {
-        "dotnet",
-        "test",
-        "--nologo",
-        "--logger",
-        '"console;verbosity=detailed"',
-        "--verbosity",
-        "quiet",
-        "--clp:ErrorsOnly",
-        "--filter",
-        '"' .. filter .. '"',
-    }
-    require("pde.runner").run(cmd, { cwd = cwd })
+    -- build separately with errors only, otherwise build warnings spam the test output
+    local build = "dotnet build --verbosity quiet --clp:ErrorsOnly"
+    local test = "dotnet test --no-build --verbosity quiet"
+    if uses_mtp(cwd) then
+        test = test .. (' -- --ignore-exit-code 8 --filter "%s"'):format(filter)
+    else
+        test = test
+            .. (' --nologo --logger "console;verbosity=detailed" --filter "%s"'):format(filter)
+    end
+
+    require("pde.runner").run(build .. " && " .. test, { cwd = cwd })
 end
 
 ---@param bufnr integer?
