@@ -37,6 +37,8 @@ vim.filetype.add({
                 local lines = vim.api.nvim_buf_line_count(buf)
                 return (size - lines) / lines > opts.line_length and bigfile_ft or nil
             end,
+            -- must win over the nix-shebang detector in filetype.lua
+            { priority = 10 },
         },
     },
 })
