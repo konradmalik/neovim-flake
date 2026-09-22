@@ -14,6 +14,7 @@ vim.lsp.enable({
     "lua_ls",
     "marksman",
     "nixd",
+    "nvim_ls",
     "prettier",
     "py_fl",
     "roslyn_ls",
