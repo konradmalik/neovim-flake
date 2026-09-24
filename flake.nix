@@ -82,8 +82,11 @@
       flake = false;
     };
     sops-nvim = {
-      url = "github:trixnz/sops.nvim";
-      flake = false;
+      url = "github:konradmalik/sops.nvim";
+      inputs = {
+        gen-luarc.follows = "gen-luarc";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
     telescope-fzf-native-nvim = {
       url = "github:nvim-telescope/telescope-fzf-native.nvim";

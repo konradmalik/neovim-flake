@@ -655,17 +655,24 @@
       }
     },
     "sops-nvim": {
-      "flake": false,
+      "inputs": {
+        "gen-luarc": [
+          "gen-luarc"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1789230334,
-        "narHash": "sha256-SXlI2M2BjNKEbReqTnNXITmryAboPjQJmq1IcgAMc5A=",
-        "owner": "trixnz",
+        "lastModified": 1790249927,
+        "narHash": "sha256-88Z0V+rmPBSJ308kIiBawf5657qCpnXuyVvviOd/0xA=",
+        "owner": "konradmalik",
         "repo": "sops.nvim",
-        "rev": "26592d8fab2a4c133d2a5d95e90d2ba54eb3c018",
+        "rev": "81be195e9b0b5c493988d483ae0a90188412c55e",
         "type": "github"
       },
       "original": {
-        "owner": "trixnz",
+        "owner": "konradmalik",
         "repo": "sops.nvim",
         "type": "github"
       }

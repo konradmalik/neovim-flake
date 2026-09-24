@@ -120,6 +120,7 @@ let
     {
       inherit (getSystem inputs.incomplete-nvim.packages) incomplete-nvim;
       inherit (getSystem inputs.git-conflict-nvim.packages) git-conflict-nvim;
+      inherit (getSystem inputs.sops-nvim.packages) sops-nvim;
       nvim-treesitter = (getSystem inputs.nvim-treesitter.packages).nvim-treesitter.withAllGrammars;
     }
     # packaged here
@@ -139,9 +140,6 @@ let
       mini-icons = buildVim { };
       nvim-lspconfig = buildVim { };
       nvim-treesitter-context = buildVim { };
-      sops-nvim = buildVim {
-        runtimeDeps = [ pkgs.sops ];
-      };
       oil-nvim = buildVim { };
       telescope-fzf-native-nvim = buildVim {
         overrideAttrs = {
