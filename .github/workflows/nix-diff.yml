@@ -1,0 +1,23 @@
+on:
+  pull_request:
+
+name: nix-diff
+jobs:
+  nix-diff:
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: DeterminateSystems/nix-installer-action@v23
+        with:
+          extra-conf: |
+            accept-flake-config = true
+      - name: Diff closures against base
+        uses: natsukium/nix-diff-action@v1.1.1
+        with:
+          comment-strategy: update
+          attributes: |
+            - displayName: nvim (x86_64-linux)
+              attribute: packages.x86_64-linux.nvim
