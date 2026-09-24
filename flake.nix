@@ -150,9 +150,14 @@
                 nvim-overlay
                 inputs.gen-luarc.overlays.default
                 inputs.neorocks.overlays.default
-                (_final: _prev: {
+                (final: _prev: {
                   inherit (inputs.flint-ls.packages.${system}) flint-ls;
                   nvim-nightly = inputs.neovim-nightly-overlay.packages.${system}.default;
+
+                  # busted runs specs through nlua, which bakes this into its shebang.
+                  # Point it at the same nightly the config targets so specs can
+                  # exercise nightly-only features. Nothing else here uses it.
+                  neovim-unwrapped = final.nvim-nightly;
                 })
               ]
             )

@@ -39,8 +39,8 @@ in
   busted-luarc-json =
     let
       luarc = pkgs.mk-luarc {
-        # use stable (not-nightly) neovim because busted uses that as well
-        nvim = pkgs.neovim-unwrapped;
+        # busted runs specs on this same neovim, see the nlua override in flake.nix
+        inherit nvim;
       };
     in
     pkgs.luarc-to-json (
