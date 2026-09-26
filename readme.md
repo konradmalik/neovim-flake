@@ -11,7 +11,7 @@ Try it out:
 $ nix run github:konradmalik/neovim-flake
 ```
 
-Run checks (nixfmt, stylua, luacheck, typecheck via lua-language-server):
+Run checks (nixfmt, stylua, shfmt, prettier, luacheck, shellcheck, typecheck via lua-language-server):
 
 ```bash
 $ make check

@@ -182,6 +182,9 @@
             gnumake
             busted-nlua
             luajitPackages.luacheck
+            prettier
+            shellcheck
+            shfmt
             stylua
             nvim-typecheck
             nvim-dev
