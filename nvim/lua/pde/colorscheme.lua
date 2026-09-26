@@ -1,3 +1,5 @@
+local loader = require("pde.loader")
+
 require("kanagawa").setup({
     compile = true,
     background = {
@@ -33,6 +35,8 @@ require("kanagawa").setup({
     end,
 })
 
+-- compile before the first load, recompiling after load does not fully apply until restart
+if loader.build_changed then require("kanagawa").compile() end
+
 vim.o.background = "dark"
 vim.cmd.colorscheme("kanagawa")
-require("pde.loader").add_to_on_reset(function() vim.cmd("KanagawaCompile") end)

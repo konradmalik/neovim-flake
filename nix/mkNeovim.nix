@@ -36,7 +36,7 @@ let
     }
   ];
 
-  initLua =
+  userInitLua =
     builtins.readFile ../nvim/init.lua
     + lib.optionalString (devPlugins != [ ]) (
       let
@@ -51,6 +51,25 @@ let
         vim.pack.update({ ${names} }, { force = true })
       ''
     );
+
+  # changes with anything nvim loads, the config uses it to detect the first start after a rebuild
+  buildId = builtins.hashString "sha256" (
+    toString (
+      [
+        nvim
+        configDir
+      ]
+      ++ plugins
+    )
+    + userInitLua
+  );
+
+  initLua =
+    # lua
+    ''
+      vim.g.nix_build_id = "${buildId}"
+    ''
+    + userInitLua;
 
   # sqlite is required by some plugins, just add it always
   # git is required by vim.pack
