@@ -1,22 +1,19 @@
 local autocmd_group = vim.api.nvim_create_augroup("editor.treesitter", { clear = true })
 
-vim.api.nvim_create_autocmd(
-    { "FileType", "TextChanged", "InsertLeave", "LspAttach", "LspDetach" },
-    {
-        desc = "treesitter diagnostics",
-        group = autocmd_group,
-        callback = function(args)
-            if vim.b.treesitter_diagnostics_disable then return end
+vim.api.nvim_create_autocmd({ "FileType", "TextChanged", "InsertLeave", "LspAttach", "LspDetach" }, {
+    desc = "treesitter diagnostics",
+    group = autocmd_group,
+    callback = function(args)
+        if vim.b.treesitter_diagnostics_disable then return end
 
-            local diag = require("pde.treesitter-diagnostics")
-            -- simplification, but assume that if any LSP is connected, then we have diagnostics from that source
-            local diagnosticProviders = vim.lsp.get_clients({ bufnr = args.buf })
-            if #diagnosticProviders > 0 then
-                diag.clear(args.buf)
-                return
-            end
+        local diag = require("pde.treesitter-diagnostics")
+        -- simplification, but assume that if any LSP is connected, then we have diagnostics from that source
+        local diagnosticProviders = vim.lsp.get_clients({ bufnr = args.buf })
+        if #diagnosticProviders > 0 then
+            diag.clear(args.buf)
+            return
+        end
 
-            diag.diagnose(args.buf)
-        end,
-    }
-)
+        diag.diagnose(args.buf)
+    end,
+})

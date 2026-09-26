@@ -8,9 +8,7 @@ local get_files = function(dir)
     local entries = vim.fn.split(vim.fn.glob(dir .. "/*"), "\n")
     local files = {}
     for _, entry in pairs(entries) do
-        if vim.fn.isdirectory(entry) ~= 1 then
-            table.insert(files, vim.fn.fnamemodify(entry, ":t"))
-        end
+        if vim.fn.isdirectory(entry) ~= 1 then table.insert(files, vim.fn.fnamemodify(entry, ":t")) end
     end
     if vim.tbl_isempty(files) then return end
     return files
@@ -61,13 +59,9 @@ M.next_file = function()
     end
 end
 
-local qf_is_shown = function()
-    return #vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix && !v:val.loclist") > 0
-end
+local qf_is_shown = function() return #vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix && !v:val.loclist") > 0 end
 
-local ll_is_shown = function()
-    return #vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix && v:val.loclist") > 0
-end
+local ll_is_shown = function() return #vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix && v:val.loclist") > 0 end
 
 M.toggle_qflist = function()
     if qf_is_shown() then

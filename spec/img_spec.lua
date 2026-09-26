@@ -95,10 +95,7 @@ describe("parse_offset", function()
         function() assert.are.same({ 0, 0 }, { parse_offset("24 23 bottom 0 0") }) end
     )
 
-    it(
-        "counts a multi-line status bar",
-        function() assert.are.same({ 2, 0 }, { parse_offset("24 22 top 0 0") }) end
-    )
+    it("counts a multi-line status bar", function() assert.are.same({ 2, 0 }, { parse_offset("24 22 top 0 0") }) end)
 
     it(
         "adds the pane offset on top of the status lines",
@@ -114,9 +111,7 @@ end)
 describe("image_src", function()
     it(
         "finds a plain markdown image",
-        function()
-            assert.are.equal("https://x.dev/a.png", image_src("![alt](https://x.dev/a.png)", 0))
-        end
+        function() assert.are.equal("https://x.dev/a.png", image_src("![alt](https://x.dev/a.png)", 0)) end
     )
 
     it("finds an image wrapped in a link, as CI badges are", function()
@@ -126,9 +121,7 @@ describe("image_src", function()
 
     it(
         "ignores a title after the source",
-        function()
-            assert.are.equal("https://x.dev/a.png", image_src('![a](https://x.dev/a.png "t")', 0))
-        end
+        function() assert.are.equal("https://x.dev/a.png", image_src('![a](https://x.dev/a.png "t")', 0)) end
     )
 
     it("returns nil for a line with no image", function()

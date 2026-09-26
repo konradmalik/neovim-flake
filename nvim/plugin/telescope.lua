@@ -71,18 +71,8 @@ local builtin = require("telescope.builtin")
 
 vim.keymap.set("n", "<leader>ff", builtin.find_files, opts_with_desc("[F]ind [F]iles"))
 vim.keymap.set("n", "<leader>fi", builtin.git_files, opts_with_desc("Find (G[i]t) Files"))
-vim.keymap.set(
-    "n",
-    "<leader>fg",
-    telescope.extensions.live_grep_args.live_grep_args,
-    opts_with_desc("Live [G]rep")
-)
-vim.keymap.set(
-    "n",
-    "<leader>f*",
-    lga_shortcuts.grep_word_under_cursor,
-    opts_with_desc("Grep word under cursor")
-)
+vim.keymap.set("n", "<leader>fg", telescope.extensions.live_grep_args.live_grep_args, opts_with_desc("Live [G]rep"))
+vim.keymap.set("n", "<leader>f*", lga_shortcuts.grep_word_under_cursor, opts_with_desc("Grep word under cursor"))
 vim.keymap.set(
     "n",
     "<leader>f/",

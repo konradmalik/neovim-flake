@@ -2,9 +2,7 @@ local gitsigns = require("gitsigns")
 
 gitsigns.setup({
     on_attach = function(bufnr)
-        local opts_with_desc = function(desc)
-            return { desc = "[Gitsigns] " .. desc, buffer = bufnr }
-        end
+        local opts_with_desc = function(desc) return { desc = "[Gitsigns] " .. desc, buffer = bufnr } end
 
         vim.keymap.set(
             "n",
@@ -12,24 +10,9 @@ gitsigns.setup({
             function() gitsigns.setqflist("all") end,
             opts_with_desc("All Hunks to qf list")
         )
-        vim.keymap.set(
-            "n",
-            "<leader>gl",
-            gitsigns.setloclist,
-            opts_with_desc("All current buffer hunks to loclist")
-        )
-        vim.keymap.set(
-            "n",
-            "<leader>gj",
-            function() gitsigns.nav_hunk("next") end,
-            opts_with_desc("Next Hunk")
-        )
-        vim.keymap.set(
-            "n",
-            "<leader>gk",
-            function() gitsigns.nav_hunk("prev") end,
-            opts_with_desc("Prev Hunk")
-        )
+        vim.keymap.set("n", "<leader>gl", gitsigns.setloclist, opts_with_desc("All current buffer hunks to loclist"))
+        vim.keymap.set("n", "<leader>gj", function() gitsigns.nav_hunk("next") end, opts_with_desc("Next Hunk"))
+        vim.keymap.set("n", "<leader>gk", function() gitsigns.nav_hunk("prev") end, opts_with_desc("Prev Hunk"))
         vim.keymap.set("n", "<leader>gp", gitsigns.preview_hunk, opts_with_desc("Preview Hunk"))
         vim.keymap.set("n", "<leader>gr", gitsigns.reset_hunk, opts_with_desc("Reset Hunk"))
         vim.keymap.set("n", "<leader>gR", gitsigns.reset_buffer, opts_with_desc("Reset Buffer"))

@@ -139,30 +139,15 @@ function M.attach(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_documentSymbol) then
-        vim.keymap.set(
-            "n",
-            "gO",
-            telescope.lsp_document_symbols,
-            opts_with_desc("Document Symbols")
-        )
+        vim.keymap.set("n", "gO", telescope.lsp_document_symbols, opts_with_desc("Document Symbols"))
     end
 
     if client_buf_supports_method(ms.workspace_symbol) then
-        vim.keymap.set(
-            "n",
-            "gwO",
-            telescope.lsp_dynamic_workspace_symbols,
-            opts_with_desc("Workspace Symbols")
-        )
+        vim.keymap.set("n", "gwO", telescope.lsp_dynamic_workspace_symbols, opts_with_desc("Workspace Symbols"))
     end
 
     if client_buf_supports_method(ms.textDocument_implementation) then
-        vim.keymap.set(
-            "n",
-            "gri",
-            telescope.lsp_implementations,
-            opts_with_desc("Go To Implementation")
-        )
+        vim.keymap.set("n", "gri", telescope.lsp_implementations, opts_with_desc("Go To Implementation"))
     end
 
     if client_buf_supports_method(ms.textDocument_linkedEditingRange) then
@@ -181,12 +166,7 @@ function M.attach(client, bufnr)
         client_buf_supports_method(ms.workspace_willRenameFiles)
         or client_buf_supports_method(ms.workspace_didRenameFiles)
     then
-        vim.keymap.set(
-            "n",
-            "grfn",
-            require("pde.lsp.rename").rename_file,
-            opts_with_desc("Rename current file")
-        )
+        vim.keymap.set("n", "grfn", require("pde.lsp.rename").rename_file, opts_with_desc("Rename current file"))
     end
 
     if client_buf_supports_method(ms.textDocument_signatureHelp) then
@@ -194,36 +174,19 @@ function M.attach(client, bufnr)
     end
 
     if client_buf_supports_method(ms.textDocument_typeDefinition) then
-        vim.keymap.set(
-            "n",
-            "grt",
-            telescope.lsp_type_definitions,
-            opts_with_desc("Type Definition")
-        )
+        vim.keymap.set("n", "grt", telescope.lsp_type_definitions, opts_with_desc("Type Definition"))
     end
 
     if client_buf_supports_method(ms.textDocument_inlayHint) then
         require("pde.lsp.capabilities.textDocument_inlayHint").attach(handler_data)
     end
 
-    vim.keymap.set(
-        "n",
-        "grwa",
-        vim.lsp.buf.add_workspace_folder,
-        opts_with_desc("Add Workspace Folder")
-    )
-    vim.keymap.set(
-        "n",
-        "grwr",
-        vim.lsp.buf.remove_workspace_folder,
-        opts_with_desc("Remove Workspace Folder")
-    )
+    vim.keymap.set("n", "grwa", vim.lsp.buf.add_workspace_folder, opts_with_desc("Add Workspace Folder"))
+    vim.keymap.set("n", "grwr", vim.lsp.buf.remove_workspace_folder, opts_with_desc("Remove Workspace Folder"))
     vim.keymap.set(
         "n",
         "grwl",
-        function()
-            vim.notify(vim.inspect(vim.lsp.buf.list_workspace_folders()), vim.log.levels.INFO)
-        end,
+        function() vim.notify(vim.inspect(vim.lsp.buf.list_workspace_folders()), vim.log.levels.INFO) end,
         opts_with_desc("List Workspace Folders")
     )
 end

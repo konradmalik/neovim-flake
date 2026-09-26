@@ -13,9 +13,7 @@ vim.api.nvim_create_autocmd("FileType", {
         local ok, _ = vim.treesitter.language.add(lang)
         if not ok then return end
 
-        if vim.treesitter.query.get(lang, "highlights") then
-            vim.treesitter.start(args.buf, lang)
-        end
+        if vim.treesitter.query.get(lang, "highlights") then vim.treesitter.start(args.buf, lang) end
 
         -- apparently this does not work well and was basically abandoned
         -- if vim.treesitter.query.get(lang, "indents") then

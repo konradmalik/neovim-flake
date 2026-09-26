@@ -1,7 +1,6 @@
 ---@return string
 local function get_dir()
-    local mktemp_obj = vim.system({ "mktemp", "-d", "-t", "neovim-flake-XXXXXX" }, { text = true })
-        :wait()
+    local mktemp_obj = vim.system({ "mktemp", "-d", "-t", "neovim-flake-XXXXXX" }, { text = true }):wait()
 
     if mktemp_obj.code ~= 0 then error("cannot create tmpdir") end
 

@@ -13,9 +13,7 @@ end
 
 ---@param s string word to check
 ---@return boolean
-local function is_title_case(s)
-    return s:sub(1, 1) == s:sub(1, 1):upper() and s:sub(2) == s:sub(2):lower()
-end
+local function is_title_case(s) return s:sub(1, 1) == s:sub(1, 1):upper() and s:sub(2) == s:sub(2):lower() end
 
 ---@param s string
 ---@return string

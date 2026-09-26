@@ -33,10 +33,7 @@ local function build(name, configs, languages)
             ok, entry = pcall(require, "efmls-configs.linters." .. config)
         end
         if not ok then
-            vim.notify(
-                "no '" .. config .. "' formatter nor linter in efmls-configs",
-                vim.log.levels.ERROR
-            )
+            vim.notify("no '" .. config .. "' formatter nor linter in efmls-configs", vim.log.levels.ERROR)
         end
 
         for _, lang in ipairs(languages) do
@@ -45,9 +42,7 @@ local function build(name, configs, languages)
         end
 
         if not formattingEnabled and entry.formatCommand then formattingEnabled = true end
-        if not rangeFormattingEnabled and entry.formatCanRange then
-            rangeFormattingEnabled = true
-        end
+        if not rangeFormattingEnabled and entry.formatCanRange then rangeFormattingEnabled = true end
     end
 
     ---@type vim.lsp.Config

@@ -15,17 +15,12 @@ local function create_message(node)
     -- add context to the error using sibling and parent nodes
     local previous = node:prev_sibling()
     if previous and previous:type() ~= "ERROR" then
-        local previous_type = previous:named() and previous:type()
-            or string.format("`%s`", previous:type())
+        local previous_type = previous:named() and previous:type() or string.format("`%s`", previous:type())
         message = message .. " after " .. previous_type
     end
 
     local parent = node:parent()
-    if
-        parent
-        and parent:type() ~= "ERROR"
-        and (previous == nil or previous:type() ~= parent:type())
-    then
+    if parent and parent:type() ~= "ERROR" and (previous == nil or previous:type() ~= parent:type()) then
         message = message .. " in " .. parent:type()
     end
 

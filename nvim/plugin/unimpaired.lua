@@ -16,27 +16,12 @@ vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], opts_with_desc("yank to syste
 vim.keymap.set("n", "<leader>Y", [["+Y]], opts_with_desc("yank to system clipboard"))
 
 -- search and replace
-vim.keymap.set(
-    "n",
-    "<leader>ss",
-    [[viwy:%s/<C-r>0/]],
-    opts_with_desc("prepopulate <cmd> to replace the current word")
-)
+vim.keymap.set("n", "<leader>ss", [[viwy:%s/<C-r>0/]], opts_with_desc("prepopulate <cmd> to replace the current word"))
 
-vim.keymap.set(
-    "v",
-    "<leader>ss",
-    [[y:%s/<C-r>0/]],
-    opts_with_desc("prepopulate <cmd> to replace the selection")
-)
+vim.keymap.set("v", "<leader>ss", [[y:%s/<C-r>0/]], opts_with_desc("prepopulate <cmd> to replace the selection"))
 
 -- misc
-vim.keymap.set(
-    "n",
-    "<leader>*",
-    "<cmd>silent grep! <cword><CR>",
-    opts_with_desc("Grep word under cursor")
-)
+vim.keymap.set("n", "<leader>*", "<cmd>silent grep! <cword><CR>", opts_with_desc("Grep word under cursor"))
 
 vim.keymap.set("i", "<C-c>", "<esc>", opts_with_desc("Ctrl-c as ESC in insert mode"))
 

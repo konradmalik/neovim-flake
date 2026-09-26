@@ -45,10 +45,7 @@ vim.keymap.set("n", "<leader>dq", vim.diagnostic.setqflist, opts_with_desc("Send
 
 vim.api.nvim_create_user_command("DiagnosticsToggle", function()
     vim.diagnostic.enable(not vim.diagnostic.is_enabled())
-    vim.notify(
-        "Setting diagnostics to: " .. tostring(vim.diagnostic.is_enabled()),
-        vim.log.levels.INFO
-    )
+    vim.notify("Setting diagnostics to: " .. tostring(vim.diagnostic.is_enabled()), vim.log.levels.INFO)
 end, {
     desc = "Enable/disable diagnostics globally",
 })
@@ -60,17 +57,11 @@ end
 vim.api.nvim_create_user_command("DiagnosticLinesToggle", function()
     diagnostic_lines_toggle()
     vim.notify(
-        "Setting diagnostic lines (virtual_lines) to: "
-            .. tostring(vim.diagnostic.config().virtual_lines),
+        "Setting diagnostic lines (virtual_lines) to: " .. tostring(vim.diagnostic.config().virtual_lines),
         vim.log.levels.INFO
     )
 end, {
     desc = "Enable/disable diagnostic lines globally",
 })
 
-vim.keymap.set(
-    "n",
-    "<leader>dv",
-    diagnostic_lines_toggle,
-    opts_with_desc("Toggle diagnostic lines")
-)
+vim.keymap.set("n", "<leader>dv", diagnostic_lines_toggle, opts_with_desc("Toggle diagnostic lines"))

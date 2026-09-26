@@ -31,8 +31,7 @@ end
 ---@param item lsp.CompletionItem
 ---@return boolean
 local function is_deprecated(item)
-    return item.deprecated
-        or vim.list_contains(item.tags or {}, vim.lsp.protocol.CompletionTag.Deprecated)
+    return item.deprecated or vim.list_contains(item.tags or {}, vim.lsp.protocol.CompletionTag.Deprecated)
 end
 
 ---@type CapabilityHandler

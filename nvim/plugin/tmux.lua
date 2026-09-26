@@ -4,9 +4,7 @@ if os.getenv("TMUX") then
     --- every ESC must be doubled, else tmux ends the DCS on the payload's own ST
     ---@param content string
     ---@return string
-    local function wrap_tmux(content)
-        return string.format("\27Ptmux;%s\27\\", (content:gsub("\27", "\27\27")))
-    end
+    local function wrap_tmux(content) return string.format("\27Ptmux;%s\27\\", (content:gsub("\27", "\27\27"))) end
 
     local original_ui_send = vim.api.nvim_ui_send
 

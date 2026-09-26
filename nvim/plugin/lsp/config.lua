@@ -1,6 +1,4 @@
-require("pde.loader").add_to_on_reset(
-    function() vim.fs.rm(vim.lsp.log.get_filename(), { force = true }) end
-)
+require("pde.loader").add_to_on_reset(function() vim.fs.rm(vim.lsp.log.get_filename(), { force = true }) end)
 
 vim.lsp.log.set_level(vim.log.levels.WARN)
 

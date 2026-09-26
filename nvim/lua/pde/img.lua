@@ -102,8 +102,7 @@ local function http_get(url)
     return res.body
 end
 
-local TMUX_FORMAT = "#{client_height} #{window_height} #{status-position} "
-    .. "#{pane_top} #{pane_left}"
+local TMUX_FORMAT = "#{client_height} #{window_height} #{status-position} " .. "#{pane_top} #{pane_left}"
 
 ---Rows and columns the host terminal adds before nvim's own grid origin.
 ---
@@ -312,9 +311,7 @@ local function refresh()
     -- a task keeps its failure to itself, and being cancelled is the ordinary
     -- way a refresh ends; anything else is a bug worth seeing
     task:on_complete(function(err)
-        if err ~= nil and err ~= "closed" then
-            vim.notify("pde.img: " .. tostring(err), vim.log.levels.ERROR)
-        end
+        if err ~= nil and err ~= "closed" then vim.notify("pde.img: " .. tostring(err), vim.log.levels.ERROR) end
     end)
 
     state.task = task
@@ -342,14 +339,11 @@ function M.attach(buf)
         end,
     })
 
-    vim.api.nvim_create_autocmd(
-        { "BufLeave", "WinLeave", "InsertEnter", "TabLeave", "VimResized", "FocusLost" },
-        {
-            group = augroup,
-            buffer = buf,
-            callback = function() M.hide() end,
-        }
-    )
+    vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave", "InsertEnter", "TabLeave", "VimResized", "FocusLost" }, {
+        group = augroup,
+        buffer = buf,
+        callback = function() M.hide() end,
+    })
 
     vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
         group = augroup,

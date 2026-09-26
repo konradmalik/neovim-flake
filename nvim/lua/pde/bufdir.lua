@@ -36,9 +36,7 @@ end
 ---it; -1, -1 asks both about the buffer scope rather than a window or a tab.
 ---@param buf integer
 ---@return string?
-local function local_dir(buf)
-    return vim.fn.haslocaldir(-1, -1, buf) == 1 and vim.fn.getcwd(-1, -1, buf) or nil
-end
+local function local_dir(buf) return vim.fn.haslocaldir(-1, -1, buf) == 1 and vim.fn.getcwd(-1, -1, buf) or nil end
 
 ---The directory to complete against, or nil when the buffer has none that makes
 ---sense: an unnamed or special buffer, or a new file under a directory that does

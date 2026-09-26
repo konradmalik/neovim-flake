@@ -79,10 +79,7 @@ describe("bufdir", function()
 
             bufdir.use(buf)
             assert.are.same({ "sibling.txt" }, vim.fn.getcompletion("s", "file"))
-            assert.are.same(
-                { "./deep/", "./main.lua", "./sibling.txt" },
-                vim.fn.getcompletion("./", "file")
-            )
+            assert.are.same({ "./deep/", "./main.lua", "./sibling.txt" }, vim.fn.getcompletion("./", "file"))
             assert.are.same({ "../root_level.txt", "../sub/" }, vim.fn.getcompletion("../", "file"))
         end)
 

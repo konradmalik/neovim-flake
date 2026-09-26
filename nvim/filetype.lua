@@ -13,8 +13,7 @@ local function nix_hashbang_filetype(_path, buf)
     if not first or first:sub(1, 2) ~= "#!" then return end
 
     -- `-S` is tried first: [%w-]+ would otherwise capture it as the tool
-    local tool = first:match("^#!%s*/usr/bin/env%s+%-S%s+([%w-]+)")
-        or first:match("^#!%s*/usr/bin/env%s+([%w-]+)")
+    local tool = first:match("^#!%s*/usr/bin/env%s+%-S%s+([%w-]+)") or first:match("^#!%s*/usr/bin/env%s+([%w-]+)")
 
     local interpreter_arg
     if tool == "nix-shell" then

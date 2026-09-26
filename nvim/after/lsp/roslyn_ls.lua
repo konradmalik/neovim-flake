@@ -45,8 +45,7 @@ local function testRun(cwd, filter)
     if uses_mtp(cwd) then
         test = test .. (' -- --ignore-exit-code 8 --filter "%s"'):format(filter)
     else
-        test = test
-            .. (' --nologo --logger "console;verbosity=detailed" --filter "%s"'):format(filter)
+        test = test .. (' --nologo --logger "console;verbosity=detailed" --filter "%s"'):format(filter)
     end
 
     require("pde.runner").run(build .. " && " .. test, { cwd = cwd })
@@ -64,9 +63,7 @@ end
 
 ---@param bufnr integer
 local function ensure_tree_is_parsed(bufnr)
-    if not vim.treesitter.highlighter.active[bufnr] then
-        vim.treesitter.get_parser(bufnr):parse()
-    end
+    if not vim.treesitter.highlighter.active[bufnr] then vim.treesitter.get_parser(bufnr):parse() end
 end
 
 ---@type vim.lsp.Config
@@ -104,10 +101,7 @@ return {
             local curr_node = root_node
             -- gather all classes and namespaces along the way to the top
             while curr_node and curr_node:type() ~= "compilation_unit" do
-                if
-                    curr_node:type() == "class_declaration"
-                    or curr_node:type() == "namespace_declaration"
-                then
+                if curr_node:type() == "class_declaration" or curr_node:type() == "namespace_declaration" then
                     insert_filter(curr_node)
                 end
 

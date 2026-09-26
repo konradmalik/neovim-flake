@@ -5,18 +5,8 @@ local function buf_opts_with_desc(bufnr, desc)
     return opts
 end
 
-vim.keymap.set(
-    "n",
-    "]x",
-    require("git-conflict.commands").buf_next_conflict,
-    opts_with_desc("Next Conflict")
-)
-vim.keymap.set(
-    "n",
-    "[x",
-    require("git-conflict.commands").buf_prev_conflict,
-    opts_with_desc("Previous Conflict")
-)
+vim.keymap.set("n", "]x", require("git-conflict.commands").buf_next_conflict, opts_with_desc("Next Conflict"))
+vim.keymap.set("n", "[x", require("git-conflict.commands").buf_prev_conflict, opts_with_desc("Previous Conflict"))
 vim.keymap.set(
     "n",
     "<leader>xq",

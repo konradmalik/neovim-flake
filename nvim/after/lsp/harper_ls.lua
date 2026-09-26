@@ -1,7 +1,5 @@
 -- https://writewithharper.com/docs/integrations/neovim
-local function get_user_dictionary_file(language)
-    return require("pde.paths").get_spellfile(vim.split(language, "-")[1])
-end
+local function get_user_dictionary_file(language) return require("pde.paths").get_spellfile(vim.split(language, "-")[1]) end
 
 local function get_file_dictionary_dir() return require("pde.paths").get_spellfile(nil) end
 

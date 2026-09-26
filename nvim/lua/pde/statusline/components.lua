@@ -158,9 +158,7 @@ M.filemod = cache.create(
 
         local text = ""
         if vim.bo[bufnr].readonly then text = text .. wrap_hl(colors.diag_warn, icons.ui.Lock) end
-        if not vim.bo[bufnr].modifiable then
-            text = text .. wrap_hl(colors.diag_error, icons.ui.FilledLock)
-        end
+        if not vim.bo[bufnr].modifiable then text = text .. wrap_hl(colors.diag_error, icons.ui.FilledLock) end
 
         return text
     end,
@@ -175,9 +173,7 @@ M.filemod = cache.create(
 
 ---@param bufnr integer
 ---@return string
-M.fileformat = function(bufnr)
-    return wrap_hl(colors.nontext, format_types[vim.bo[bufnr].fileformat])
-end
+M.fileformat = function(bufnr) return wrap_hl(colors.nontext, format_types[vim.bo[bufnr].fileformat]) end
 
 ---@param bufnr integer
 ---@return string
@@ -283,11 +279,7 @@ M.cwd = cache.create(
     function(winid)
         local cwd = vim.fn.getcwd(winid)
         cwd = vim.fn.fnamemodify(cwd, ":t")
-        cwd = (vim.fn.haslocaldir(winid) == 1 and "l" or "g")
-            .. " "
-            .. icons.documents.Folder
-            .. " "
-            .. cwd
+        cwd = (vim.fn.haslocaldir(winid) == 1 and "l" or "g") .. " " .. icons.documents.Folder .. " " .. cwd
         return wrap_hl(colors.directory, cwd)
     end,
     {

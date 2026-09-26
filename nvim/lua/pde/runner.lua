@@ -21,10 +21,7 @@ local function get_or_create_window(bufnr)
     elseif #potential_wins == 1 then
         winnr = potential_wins[1]
     else
-        vim.notify(
-            "found runner_bufnr in multiple windows, shouldn't be possible",
-            vim.log.levels.ERROR
-        )
+        vim.notify("found runner_bufnr in multiple windows, shouldn't be possible", vim.log.levels.ERROR)
         return nil
     end
     return winnr
