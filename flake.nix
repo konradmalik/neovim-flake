@@ -175,14 +175,17 @@
               ln -fs ${pkgs.nvim-luarc-json} ./nvim/.luarc.json
               ln -fs ${pkgs.busted-luarc-json} ./spec/.luarc.json
             '';
-          packages = with pkgs; [
+          packages = [
+            inputs.self.formatter.${pkgs.stdenv.hostPlatform.system}
+          ]
+          ++ (with pkgs; [
             gnumake
             busted-nlua
             luajitPackages.luacheck
             stylua
             nvim-typecheck
             nvim-dev
-          ];
+          ]);
         };
       });
 
@@ -206,22 +209,6 @@
               description = "Neovim with my configuration";
             };
           };
-        }
-      );
-
-      checks = forAllSystems (
-        pkgs:
-        let
-          inherit (pkgs) lib;
-          mkCheck = pkgs.callPackage ./nix/mkCheck.nix { };
-        in
-        {
-          luacheck = mkCheck "luacheck" ''
-            ${lib.getExe pkgs.lua.pkgs.luacheck} --codes --no-cache ./nvim
-          '';
-          typecheck = mkCheck "typecheck" ''
-            ${lib.getExe pkgs.nvim-typecheck} ./nvim
-          '';
         }
       );
 

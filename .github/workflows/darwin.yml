@@ -35,6 +35,19 @@ jobs:
       - name: Shell build
         run: nix build .#devShells.aarch64-darwin.default
 
+  check:
+    runs-on: macos-26
+    needs:
+      - build-shell
+    steps:
+      - uses: actions/checkout@v7
+      - uses: DeterminateSystems/nix-installer-action@v23
+        with:
+          extra-conf: |
+            accept-flake-config = true
+      - name: Formatting and linting
+        run: nix develop --command make check
+
   tests:
     runs-on: macos-26
     needs:

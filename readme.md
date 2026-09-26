@@ -11,11 +11,10 @@ Try it out:
 $ nix run github:konradmalik/neovim-flake
 ```
 
-Run checks (stylua, luacheck, typecheck via lua-language-server):
+Run checks (nixfmt, stylua, luacheck, typecheck via lua-language-server):
 
 ```bash
-$ make check-fmt
-$ make check-lint
+$ make check
 ```
 
 Run tests (busted using nvim as an interpreter):
