@@ -182,6 +182,7 @@
             gnumake
             busted-nlua
             luajitPackages.luacheck
+            nixfmt
             prettier
             shellcheck
             shfmt
@@ -215,6 +216,6 @@
         }
       );
 
-      formatter = forAllSystems (pkgs: pkgs.nixfmt);
+      formatter = forAllSystems (pkgs: pkgs.nixfmt-tree);
     };
 }
