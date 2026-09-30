@@ -1,42 +1,44 @@
 -- https://writewithharper.com/docs/integrations/neovim
-local function get_user_dictionary_file(language) return require("pde.paths").get_spellfile(vim.split(language, "-")[1]) end
+-- grammar only, and only for prose: nvim's own 'spell' does the spelling,
+-- but harper reads its good words so they don't trip the grammar linters
+local function get_user_dictionary_file() return vim.split(vim.o.spellfile, ",")[1] end
 
-local function get_file_dictionary_dir() return require("pde.paths").get_spellfile(nil) end
+---@type uv.uv_fs_event_t?
+local dictionary_watcher
+
+-- harper only reads the dictionary when its config changes, so resend the
+-- config to every client whenever `zg` and friends write to the spellfile.
+-- Watching the directory also catches rewrites that replace the file.
+---@param name string the clients to notify
+local function watch_user_dictionary(name)
+    if dictionary_watcher then return end
+    local file = get_user_dictionary_file()
+    dictionary_watcher = assert(vim.uv.new_fs_event())
+    dictionary_watcher:start(
+        vim.fs.dirname(file),
+        {},
+        vim.schedule_wrap(function(err, filename)
+            if err or filename ~= vim.fs.basename(file) then return end
+            for _, client in ipairs(vim.lsp.get_clients({ name = name })) do
+                client:notify("workspace/didChangeConfiguration", { settings = client.settings })
+            end
+        end)
+    )
+end
 
 ---@type vim.lsp.Config
 return {
-    on_attach = function(_, bufnr)
-        -- 'spell' is window-local, but `vim.wo[win][0]` sets the value nvim
-        -- remembers per buffer, so clearing it in one window is enough: the
-        -- buffer carries it into every window it is shown in afterwards.
-        ---@return boolean whether the buffer was displayed anywhere
-        local function disable_spell()
-            local wins = vim.fn.win_findbuf(bufnr)
-            for _, win in ipairs(wins) do
-                vim.wo[win][0].spell = false
-            end
-            return #wins > 0
-        end
-
-        -- the client can attach before the buffer is in a window, in which
-        -- case there is nothing to set yet; returning true from the callback
-        -- deletes the autocmd, so it only ever runs until it succeeds once
-        if not disable_spell() then
-            vim.api.nvim_create_autocmd("BufWinEnter", {
-                group = vim.api.nvim_create_augroup("pde-harper-spell", { clear = false }),
-                buffer = bufnr,
-                callback = disable_spell,
-                desc = "harper_ls provides the spelling, so turn off nvim's",
-            })
-        end
-    end,
+    filetypes = { "markdown", "text" },
+    on_init = function(client) watch_user_dictionary(client.name) end,
     settings = {
         ["harper-ls"] = {
             linters = {
+                SpellCheck = false,
                 SentenceCapitalization = false,
+                LongSentences = false,
             },
-            userDictPath = get_user_dictionary_file("us"),
-            fileDictPath = get_file_dictionary_dir(),
+            diagnosticSeverity = "hint",
+            userDictPath = get_user_dictionary_file(),
             isolateEnglish = true,
         },
     },

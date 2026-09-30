@@ -28,6 +28,9 @@ in
           ''
             # allow quick iteration of lua configs
             ln -Tfns $PWD/nvim ~/.config/nvim-dev
+            # share the spellfile with the main nvim, which home-manager links to the same dir
+            mkdir -p ~/.local/state/nvim-dev
+            ln -Tfns $PWD/state/spell ~/.local/state/nvim-dev/spell
           '';
       };
 

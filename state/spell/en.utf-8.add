@@ -22,3 +22,12 @@ filesystem
 XSS
 CVE
 colorscheme
+Neovim
+nixfmt
+stylua
+shfmt
+luacheck
+shellcheck
+typecheck
+nvim
+devshell
