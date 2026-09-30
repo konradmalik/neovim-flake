@@ -1,194 +1,115 @@
 local ms = vim.lsp.protocol.Methods
+local keymapper = require("pde.lsp.keymapper")
 
----@alias HandlerData {augroup: integer, bufnr: integer, client: vim.lsp.Client}
+---@class pde.lsp.Feature
+---@field attach fun(client: vim.lsp.Client, bufnr: integer)
+---@field detach fun(client: vim.lsp.Client, bufnr: integer)
+---@field per_client? boolean detach for every client, not only the last one supporting the method
 
----@class CapabilityHandler
----@field attach fun(data: HandlerData)
----@field detach fun(client_id: integer?, bufnr: integer)
+-- takes the module itself (not a string name), so lua_ls checks the field access
+-- and the enable() call against this type.
+-- a module that doesn't fit this shape gets a hand-written entry instead
+---@param mod { enable: fun(enable?: boolean, filter?: { bufnr?: integer }) }
+---@return pde.lsp.Feature
+local function builtin(mod)
+    return {
+        attach = function(_, bufnr) mod.enable(true, { bufnr = bufnr }) end,
+        detach = function(_, bufnr) mod.enable(false, { bufnr = bufnr }) end,
+    }
+end
+
+---@param lhs string
+---@param rhs function
+---@param desc string
+---@return pde.lsp.Feature
+local function map(lhs, rhs, desc)
+    return {
+        attach = function(_, bufnr) keymapper.set(bufnr, lhs, rhs, desc) end,
+        detach = function(_, bufnr) keymapper.del(bufnr, lhs) end,
+    }
+end
+
+---@param picker string
+---@return function
+local function telescope(picker)
+    return function() require("telescope.builtin")[picker]() end
+end
+
+---@type table<string, pde.lsp.Feature>
+local features = {
+    [ms.textDocument_codeLens] = require("pde.lsp.capabilities.textDocument_codeLens"),
+    [ms.textDocument_completion] = require("pde.lsp.capabilities.textDocument_completion"),
+    [ms.textDocument_documentHighlight] = require("pde.lsp.capabilities.textDocument_documentHighlight"),
+    [ms.textDocument_foldingRange] = require("pde.lsp.capabilities.textDocument_foldingRange"),
+    [ms.textDocument_formatting] = require("pde.lsp.capabilities.textDocument_formatting"),
+    [ms.textDocument_inlayHint] = require("pde.lsp.capabilities.textDocument_inlayHint"),
+
+    [ms.textDocument_documentColor] = builtin(vim.lsp.document_color),
+    [ms.textDocument_inlineCompletion] = builtin(vim.lsp.inline_completion),
+    [ms.textDocument_linkedEditingRange] = builtin(vim.lsp.linked_editing_range),
+    [ms.textDocument_onTypeFormatting] = builtin(vim.lsp.on_type_formatting),
+    [ms.textDocument_semanticTokens_full] = builtin(vim.lsp.semantic_tokens),
+
+    [ms.textDocument_declaration] = map("grd", vim.lsp.buf.declaration, "Go To Declaration"),
+    [ms.textDocument_definition] = map("<c-]>", telescope("lsp_definitions"), "Go To Definition"),
+    [ms.textDocument_documentSymbol] = map("gO", telescope("lsp_document_symbols"), "Document Symbols"),
+    [ms.textDocument_implementation] = map("gri", telescope("lsp_implementations"), "Go To Implementation"),
+    [ms.textDocument_references] = map("grr", telescope("lsp_references"), "Go To References"),
+    [ms.textDocument_signatureHelp] = map("grs", vim.lsp.buf.signature_help, "Signature Help"),
+    [ms.textDocument_typeDefinition] = map("grt", telescope("lsp_type_definitions"), "Type Definition"),
+    [ms.workspace_symbol] = map("gwO", telescope("lsp_dynamic_workspace_symbols"), "Workspace Symbols"),
+}
+
+-- file rename needs either of two methods, so it lives outside the one-method features table
+---@param client vim.lsp.Client
+---@param bufnr integer
+---@return boolean
+local function supports_rename(client, bufnr)
+    return client:supports_method(ms.workspace_willRenameFiles, bufnr)
+        or client:supports_method(ms.workspace_didRenameFiles, bufnr)
+end
 
 ---@class pde.lsp
 local M = {}
 
 ---@param client vim.lsp.Client
 ---@param bufnr integer
-function M.detach(client, bufnr)
-    local augroups = require("pde.lsp.augroups")
-    local keymapper = require("pde.lsp.keymapper")
-
-    local client_id = client.id
-    augroups.del_autocmds_for_buf(client, bufnr)
-
-    local function client_buf_supports_method(method) return client:supports_method(method, bufnr) end
-
-    local all_clients = vim.lsp.get_clients({ bufnr = bufnr })
-    local function other_client_buf_supports_method(method)
-        for _, c in ipairs(all_clients) do
-            if c.id ~= client_id and c:supports_method(method, bufnr) then return true end
-        end
-        return false
+function M.attach(client, bufnr)
+    for method, feature in pairs(features) do
+        if client:supports_method(method, bufnr) then feature.attach(client, bufnr) end
     end
 
-    local function client_yes_others_not_buf_supports_method(method)
-        return client_buf_supports_method(method) and not other_client_buf_supports_method(method)
+    if supports_rename(client, bufnr) then
+        keymapper.set(bufnr, "grfn", require("pde.lsp.rename").rename_file, "Rename current file")
     end
 
-    if client_yes_others_not_buf_supports_method(ms.textDocument_codeLens) then
-        require("pde.lsp.capabilities.textDocument_codeLens").detach(nil, bufnr)
-    end
-
-    if client_buf_supports_method(ms.textDocument_completion) then
-        require("pde.lsp.capabilities.textDocument_completion").detach(client_id, bufnr)
-    end
-
-    if client_yes_others_not_buf_supports_method(ms.textDocument_inlineCompletion) then
-        vim.lsp.inline_completion.enable(false, { bufnr = bufnr })
-    end
-
-    if client_yes_others_not_buf_supports_method(ms.textDocument_documentColor) then
-        vim.lsp.document_color.enable(false, { bufnr = bufnr })
-    end
-
-    if client_yes_others_not_buf_supports_method(ms.textDocument_documentHighlight) then
-        require("pde.lsp.capabilities.textDocument_documentHighlight").detach(nil, bufnr)
-    end
-
-    if client_yes_others_not_buf_supports_method(ms.textDocument_foldingRange) then
-        require("pde.lsp.capabilities.textDocument_foldingRange").detach(nil, bufnr)
-    end
-
-    if client_buf_supports_method(ms.textDocument_formatting) then
-        require("pde.lsp.capabilities.textDocument_formatting").detach(client_id, bufnr)
-    end
-
-    if client_yes_others_not_buf_supports_method(ms.textDocument_onTypeFormatting) then
-        vim.lsp.on_type_formatting.enable(false, { bufnr = bufnr })
-    end
-
-    if client_yes_others_not_buf_supports_method(ms.textDocument_inlayHint) then
-        require("pde.lsp.capabilities.textDocument_inlayHint").detach(nil, bufnr)
-    end
-
-    if client_yes_others_not_buf_supports_method(ms.textDocument_linkedEditingRange) then
-        vim.lsp.linked_editing_range.enable(false, { bufnr = bufnr })
-    end
-
-    if client_yes_others_not_buf_supports_method(ms.textDocument_semanticTokens_full) then
-        vim.lsp.semantic_tokens.enable(false, { bufnr = bufnr })
-    end
-
-    -- Don't remove if more than 1 client attached
-    -- 1 is allowed, since detach runs just before detaching from buffer
-    if #all_clients <= 1 then keymapper.clear(bufnr) end
+    keymapper.set(bufnr, "grwa", vim.lsp.buf.add_workspace_folder, "Add Workspace Folder")
+    keymapper.set(bufnr, "grwr", vim.lsp.buf.remove_workspace_folder, "Remove Workspace Folder")
+    keymapper.set(
+        bufnr,
+        "grwl",
+        function() vim.notify(vim.inspect(vim.lsp.buf.list_workspace_folders()), vim.log.levels.INFO) end,
+        "List Workspace Folders"
+    )
 end
 
 ---@param client vim.lsp.Client
 ---@param bufnr integer
-function M.attach(client, bufnr)
-    local augroups = require("pde.lsp.augroups")
-    local keymapper = require("pde.lsp.keymapper")
-    local telescope = require("telescope.builtin")
+function M.detach(client, bufnr)
+    -- detach runs just before the client leaves, so it is still in this list
+    local others = vim.tbl_filter(function(c) return c.id ~= client.id end, vim.lsp.get_clients({ bufnr = bufnr }))
 
-    local augroup = augroups.get_augroup(client)
-    local opts_with_desc = keymapper.opts_for(bufnr)
-    local function client_buf_supports_method(method) return client:supports_method(method, bufnr) end
+    ---@param supports fun(c: vim.lsp.Client): boolean
+    local function is_last(supports) return supports(client) and not vim.iter(others):any(supports) end
 
-    local handler_data = {
-        augroup = augroup,
-        bufnr = bufnr,
-        client = client,
-    }
-
-    if client_buf_supports_method(ms.textDocument_completion) then
-        require("pde.lsp.capabilities.textDocument_completion").attach(handler_data)
+    for method, feature in pairs(features) do
+        local function supports(c) return c:supports_method(method, bufnr) end
+        if (feature.per_client and supports(client)) or is_last(supports) then feature.detach(client, bufnr) end
     end
 
-    if client_buf_supports_method(ms.textDocument_inlineCompletion) then
-        vim.lsp.inline_completion.enable(true, { bufnr = bufnr })
-    end
+    if is_last(function(c) return supports_rename(c, bufnr) end) then keymapper.del(bufnr, "grfn") end
 
-    if client_buf_supports_method(ms.textDocument_codeLens) then
-        require("pde.lsp.capabilities.textDocument_codeLens").attach(handler_data)
-    end
-
-    if client_buf_supports_method(ms.textDocument_foldingRange) then
-        require("pde.lsp.capabilities.textDocument_foldingRange").attach(handler_data)
-    end
-
-    if client_buf_supports_method(ms.textDocument_formatting) then
-        require("pde.lsp.capabilities.textDocument_formatting").attach(handler_data)
-    end
-
-    if client_buf_supports_method(ms.textDocument_onTypeFormatting) then
-        vim.lsp.on_type_formatting.enable(true, { bufnr = bufnr })
-    end
-
-    if client_buf_supports_method(ms.textDocument_declaration) then
-        vim.keymap.set("n", "grd", vim.lsp.buf.declaration, opts_with_desc("Go To Declaration"))
-    end
-
-    if client_buf_supports_method(ms.textDocument_definition) then
-        vim.keymap.set("n", "<c-]>", telescope.lsp_definitions, opts_with_desc("Go To Definition"))
-    end
-
-    if client_buf_supports_method(ms.textDocument_documentColor) then
-        vim.lsp.document_color.enable(true, { bufnr = bufnr })
-    end
-
-    if client_buf_supports_method(ms.textDocument_documentHighlight) then
-        require("pde.lsp.capabilities.textDocument_documentHighlight").attach(handler_data)
-    end
-
-    if client_buf_supports_method(ms.textDocument_documentSymbol) then
-        vim.keymap.set("n", "gO", telescope.lsp_document_symbols, opts_with_desc("Document Symbols"))
-    end
-
-    if client_buf_supports_method(ms.workspace_symbol) then
-        vim.keymap.set("n", "gwO", telescope.lsp_dynamic_workspace_symbols, opts_with_desc("Workspace Symbols"))
-    end
-
-    if client_buf_supports_method(ms.textDocument_implementation) then
-        vim.keymap.set("n", "gri", telescope.lsp_implementations, opts_with_desc("Go To Implementation"))
-    end
-
-    if client_buf_supports_method(ms.textDocument_linkedEditingRange) then
-        vim.lsp.linked_editing_range.enable(true, { bufnr = bufnr })
-    end
-
-    if client_buf_supports_method(ms.textDocument_semanticTokens_full) then
-        vim.lsp.semantic_tokens.enable(true, { bufnr = bufnr })
-    end
-
-    if client_buf_supports_method(ms.textDocument_references) then
-        vim.keymap.set("n", "grr", telescope.lsp_references, opts_with_desc("Go To References"))
-    end
-
-    if
-        client_buf_supports_method(ms.workspace_willRenameFiles)
-        or client_buf_supports_method(ms.workspace_didRenameFiles)
-    then
-        vim.keymap.set("n", "grfn", require("pde.lsp.rename").rename_file, opts_with_desc("Rename current file"))
-    end
-
-    if client_buf_supports_method(ms.textDocument_signatureHelp) then
-        vim.keymap.set("n", "grs", vim.lsp.buf.signature_help, opts_with_desc("Signature Help"))
-    end
-
-    if client_buf_supports_method(ms.textDocument_typeDefinition) then
-        vim.keymap.set("n", "grt", telescope.lsp_type_definitions, opts_with_desc("Type Definition"))
-    end
-
-    if client_buf_supports_method(ms.textDocument_inlayHint) then
-        require("pde.lsp.capabilities.textDocument_inlayHint").attach(handler_data)
-    end
-
-    vim.keymap.set("n", "grwa", vim.lsp.buf.add_workspace_folder, opts_with_desc("Add Workspace Folder"))
-    vim.keymap.set("n", "grwr", vim.lsp.buf.remove_workspace_folder, opts_with_desc("Remove Workspace Folder"))
-    vim.keymap.set(
-        "n",
-        "grwl",
-        function() vim.notify(vim.inspect(vim.lsp.buf.list_workspace_folders()), vim.log.levels.INFO) end,
-        opts_with_desc("List Workspace Folders")
-    )
+    if #others == 0 then keymapper.clear(bufnr) end
 end
 
 return M

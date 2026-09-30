@@ -1,28 +1,24 @@
+local keymapper = require("pde.lsp.keymapper")
+
 vim.g.codelens_enabled = true
 
----@type CapabilityHandler
+vim.api.nvim_create_user_command("CodeLensToggle", function()
+    vim.g.codelens_enabled = not vim.g.codelens_enabled
+    vim.lsp.codelens.enable(vim.g.codelens_enabled)
+    vim.notify("Setting codelens to: " .. tostring(vim.g.codelens_enabled), vim.log.levels.INFO)
+end, {
+    desc = "Enable/disable codelens with lsp",
+})
+
+---@type pde.lsp.Feature
 return {
-    attach = function(data)
-        local keymapper = require("pde.lsp.keymapper")
-
-        local bufnr = data.bufnr
-        vim.api.nvim_buf_create_user_command(bufnr, "CodeLensToggle", function()
-            vim.g.codelens_enabled = not vim.g.codelens_enabled
-            vim.lsp.codelens.enable(vim.g.codelens_enabled)
-            vim.notify("Setting codelens to: " .. tostring(vim.g.codelens_enabled), vim.log.levels.INFO)
-        end, {
-            desc = "Enable/disable codelens with lsp",
-        })
-
+    attach = function(_, bufnr)
         vim.lsp.codelens.enable(vim.g.codelens_enabled, { bufnr = bufnr })
-
-        local opts_with_desc = keymapper.opts_for(bufnr)
-        vim.keymap.set("n", "grl", vim.lsp.codelens.run, opts_with_desc("CodeLens run"))
+        keymapper.set(bufnr, "grl", vim.lsp.codelens.run, "CodeLens run")
     end,
 
     detach = function(_, bufnr)
         vim.lsp.codelens.enable(false, { bufnr = bufnr })
-        vim.api.nvim_buf_del_keymap(bufnr, "n", "grl")
-        vim.api.nvim_buf_del_user_command(bufnr, "CodeLensToggle")
+        keymapper.del(bufnr, "grl")
     end,
 }
