@@ -1,44 +1,30 @@
 vim.g.documenthighlight_enabled = true
 
-local buf_clear_references = function(buf)
-    if vim.api.nvim_buf_is_loaded(buf) then
-        vim.api.nvim_buf_call(buf, function() vim.lsp.buf.clear_references() end)
+vim.api.nvim_create_user_command("DocumentHighlightToggle", function()
+    vim.g.documenthighlight_enabled = not vim.g.documenthighlight_enabled
+    if not vim.g.documenthighlight_enabled then
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+            vim.lsp.util.buf_clear_references(buf)
+        end
     end
-end
+    vim.notify("Setting document highlight to: " .. tostring(vim.g.documenthighlight_enabled), vim.log.levels.INFO)
+end, {
+    desc = "Enable/disable highlight word under cursor with lsp",
+})
 
-local buf_document_highlight = function(buf)
-    if vim.api.nvim_buf_is_loaded(buf) then
-        vim.api.nvim_buf_call(buf, function() vim.lsp.buf.document_highlight() end)
-    end
-end
+-- one set of autocmds per buffer, not per client: document_highlight() already asks all clients
+local augroup = vim.api.nvim_create_augroup("pde-lsp-document-highlight", { clear = true })
 
----@type CapabilityHandler
+---@type pde.lsp.Feature
 return {
-    attach = function(data)
-        local augroup = data.augroup
-        local bufnr = data.bufnr
-
-        vim.api.nvim_buf_create_user_command(bufnr, "DocumentHighlightToggle", function()
-            vim.g.documenthighlight_enabled = not vim.g.documenthighlight_enabled
-            if not vim.g.documenthighlight_enabled then
-                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-                    buf_clear_references(buf)
-                end
-            end
-            vim.notify(
-                "Setting document highlight to: " .. tostring(vim.g.documenthighlight_enabled),
-                vim.log.levels.INFO
-            )
-        end, {
-            desc = "Enable/disable highlight word under cursor with lsp",
-        })
+    attach = function(_, bufnr)
+        vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
 
         vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
             group = augroup,
             buffer = bufnr,
             callback = function()
-                if not vim.g.documenthighlight_enabled then return end
-                buf_document_highlight(bufnr)
+                if vim.g.documenthighlight_enabled then vim.lsp.buf.document_highlight() end
             end,
             desc = "Highlight references when cursor holds",
         })
@@ -46,16 +32,13 @@ return {
         vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
             group = augroup,
             buffer = bufnr,
-            callback = function()
-                if not vim.g.documenthighlight_enabled then return end
-                buf_clear_references(bufnr)
-            end,
+            callback = function() vim.lsp.util.buf_clear_references(bufnr) end,
             desc = "Clear references when cursor moves",
         })
     end,
 
     detach = function(_, bufnr)
-        buf_clear_references(bufnr)
-        vim.api.nvim_buf_del_user_command(bufnr, "DocumentHighlightToggle")
+        vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+        vim.lsp.util.buf_clear_references(bufnr)
     end,
 }

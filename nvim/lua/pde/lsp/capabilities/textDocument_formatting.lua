@@ -4,12 +4,11 @@
 ---and overlapping functionality
 local buffer_to_client = {}
 
----@type CapabilityHandler
+---@type pde.lsp.Feature
 return {
-    attach = function(data)
-        local bufnr = data.bufnr
-        local client = data.client
+    per_client = true,
 
+    attach = function(client, bufnr)
         local existing_client = buffer_to_client[bufnr]
         if existing_client and existing_client ~= client.id then
             vim.notify(
@@ -26,5 +25,8 @@ return {
         buffer_to_client[bufnr] = client.id
     end,
 
-    detach = function(_, bufnr) buffer_to_client[bufnr] = nil end,
+    detach = function(client, bufnr)
+        -- a rejected client leaving must not drop the actual owner
+        if buffer_to_client[bufnr] == client.id then buffer_to_client[bufnr] = nil end
+    end,
 }

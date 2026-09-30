@@ -3,29 +3,20 @@ local mini_icons = require("mini.icons")
 ---@type table<integer,string>
 local kind_map = {}
 
-local initialized = false
-local function initialize_once()
-    if initialized then return end
+mini_icons.tweak_lsp_kind("replace")
 
-    mini_icons.tweak_lsp_kind("replace")
+for k, v in pairs(vim.lsp.protocol.CompletionItemKind) do
+    if type(k) == "string" and type(v) == "number" then kind_map[v] = k end
+end
 
-    for k, v in pairs(vim.lsp.protocol.CompletionItemKind) do
-        if type(k) == "string" and type(v) == "number" then kind_map[v] = k end
-    end
-
-    -- HACK: add default border to documentation popup
-    -- https://github.com/neovim/neovim/issues/38248
-    local orig_complete_set = vim.api.nvim__complete_set
-    ---@diagnostic disable-next-line: duplicate-set-field
-    vim.api.nvim__complete_set = function(...)
-        local result = orig_complete_set(...)
-        if result and result.winid then
-            pcall(vim.api.nvim_win_set_config, result.winid, { border = vim.o.winborder })
-        end
-        return result
-    end
-
-    initialized = true
+-- HACK: add default border to documentation popup
+-- https://github.com/neovim/neovim/issues/38248
+local orig_complete_set = vim.api.nvim__complete_set
+---@diagnostic disable-next-line: duplicate-set-field
+vim.api.nvim__complete_set = function(...)
+    local result = orig_complete_set(...)
+    if result and result.winid then pcall(vim.api.nvim_win_set_config, result.winid, { border = vim.o.winborder }) end
+    return result
 end
 
 ---@param item lsp.CompletionItem
@@ -34,14 +25,11 @@ local function is_deprecated(item)
     return item.deprecated or vim.list_contains(item.tags or {}, vim.lsp.protocol.CompletionTag.Deprecated)
 end
 
----@type CapabilityHandler
+---@type pde.lsp.Feature
 return {
-    attach = function(data)
-        local bufnr = data.bufnr
-        local client = data.client
+    per_client = true,
 
-        initialize_once()
-
+    attach = function(client, bufnr)
         local autotrigger = not vim.bo[bufnr].autocomplete
         -- NOTE: what is this, compared to just vim.bo.autocomplete with omnifunc (that is already set without the below line)?
         -- This enables autocommands to apply sideeffects like additionalTextEdits, snippet expansions, commands etc. on selecting completion item
@@ -60,5 +48,5 @@ return {
         })
     end,
 
-    detach = function(client_id, bufnr) vim.lsp.completion.enable(false, client_id, bufnr) end,
+    detach = function(client, bufnr) vim.lsp.completion.enable(false, client.id, bufnr) end,
 }
