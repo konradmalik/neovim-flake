@@ -1,14 +1,9 @@
--- Neovim resolves a `nix`/`nix-shell` hashbang to filetype "nix", but the body of such a
--- script is written in whatever `-i` (nix-shell) or `-c`/`--command` (nix) names:
---
---   #!/usr/bin/env nix-shell
---   #!nix-shell -p python3 -i python3
---
--- Runs on every buffer, so it bails on the first line whenever it can.
+-- #!/usr/bin/env nix-shell
+-- #!nix-shell -p python3 -i python3
 ---@param buf integer
 ---@return string?
 ---@return fun(buf: integer)?
-local function nix_hashbang_filetype(_path, buf)
+local function nix_hashbang_filetype(_, buf)
     local first = vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1]
     if not first or first:sub(1, 2) ~= "#!" then return end
 
@@ -42,8 +37,7 @@ end
 
 vim.filetype.add({
     pattern = {
-        -- ".-" anchors to "^.-$", which matches every path just like "^.*$" does, but is a
-        -- distinct key. vim.filetype.add stores patterns as pattern[""]["^"..pat.."$"], so
+        -- vim.filetype.add stores patterns as pattern[""]["^"..pat.."$"], so
         -- reusing ".*" here would silently overwrite the catch-all in plugin/bigfile.lua
         -- (plugin files are sourced after this one).
         [".-"] = { nix_hashbang_filetype, { priority = 5 } },
