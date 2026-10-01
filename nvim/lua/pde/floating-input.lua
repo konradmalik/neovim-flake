@@ -99,8 +99,7 @@ function M.input(opts, on_confirm, win_config)
     local window_config = resolve_config(opts, default_win_config, win_config)
     local winid, bufnr = create_window(window_config)
     vim.api.nvim_buf_set_text(bufnr, 0, 0, 0, 0, { default })
-    vim.cmd("startinsert")
-    vim.api.nvim_win_set_cursor(winid, { 1, #default })
+    vim.cmd("startinsert!")
 
     local confirmed = false
     ---@param input? string
