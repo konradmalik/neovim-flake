@@ -1,6 +1,7 @@
 local keymapper = require("pde.lsp.keymapper")
 
-vim.g.codelens_enabled = true
+-- reference counts are annoying most of the time, but sometimes I might want this
+vim.g.codelens_enabled = false
 
 vim.api.nvim_create_user_command("CodeLensToggle", function()
     vim.g.codelens_enabled = not vim.g.codelens_enabled
