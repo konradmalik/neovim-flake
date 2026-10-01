@@ -11,9 +11,6 @@ with pkgs;
   stylua
   taplo
 
-  # image conversion for vim.ui.img, which only transmits png
-  imagemagick
-
   # linters
   golangci-lint-langserver
   jq
