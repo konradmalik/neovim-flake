@@ -55,9 +55,7 @@ local M = {}
 
 M.statusline = function()
     local bufnr = stbufnr()
-    if is_special(bufnr) then
-        return components.filetype(bufnr) .. components.space .. components.busy(bufnr)
-    end
+    if is_special(bufnr) then return components.filetype(bufnr) .. components.space .. components.busy(bufnr) end
 
     return components.mode()
         .. components.space
