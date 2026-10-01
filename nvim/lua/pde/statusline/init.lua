@@ -23,13 +23,13 @@ end
 local function setup_local_winbar_with_autocmd()
     local winbar = "%!v:lua.require('pde.statusline').winbar()"
     local group = vim.api.nvim_create_augroup("personal-winbar", { clear = true })
-    vim.api.nvim_create_autocmd({ "VimEnter", "UIEnter", "BufWinEnter", "FileType", "TermOpen" }, {
+    vim.api.nvim_create_autocmd({ "VimEnter", "BufWinEnter", "FileType", "TermOpen" }, {
         group = group,
         callback = function(event)
             for _, winid in ipairs(vim.api.nvim_list_wins()) do
                 local winbuf = vim.api.nvim_win_get_buf(winid)
 
-                if event.event == "VimEnter" or event.event == "UIEnter" or winbuf == event.buf then
+                if event.event == "VimEnter" or winbuf == event.buf then
                     if is_special(winbuf) then
                         if vim.wo[winid][0].winbar == winbar then vim.wo[winid][0].winbar = nil end
                     else
@@ -55,7 +55,9 @@ local M = {}
 
 M.statusline = function()
     local bufnr = stbufnr()
-    if is_special(bufnr) then return components.filetype(bufnr) .. components.busy(bufnr) end
+    if is_special(bufnr) then
+        return components.filetype(bufnr) .. components.space .. components.busy(bufnr)
+    end
 
     return components.mode()
         .. components.space
@@ -78,7 +80,7 @@ M.statusline = function()
         .. components.space
         .. components.file_encoding(bufnr)
         .. components.space
-        .. components.ruler()
+        .. components.ruler
 end
 
 M.winbar = function()

@@ -54,7 +54,7 @@ local modes = {
     ["V"] = { "V_", colors.special },
     ["Vs"] = { "Vs", colors.special },
     [""] = { "^V", colors.special },
-    ["s"] = { "^V", colors.special },
+    ["s"] = { "^Vs", colors.special },
 
     ["s"] = { "S", colors.statement },
     ["S"] = { "S_", colors.statement },
@@ -101,75 +101,69 @@ M.busy = function(bufnr)
     return wrap_hl(colors.statement, "<buffer is busy>")
 end
 
+---@type table<string, string> source highlight group -> mode highlight group
+local mode_hls = {}
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+    group = vim.api.nvim_create_augroup("StModeHl", { clear = true }),
+    callback = function() mode_hls = {} end,
+    desc = "recreate statusline mode highlights",
+})
+
+--- Returns a bold highlight group with `group`'s fg as its bg, creating it on first use.
+---@param group string
+---@return string
+local function mode_hl(group)
+    if not mode_hls[group] then
+        local name = "StMode" .. group
+        local hl = vim.api.nvim_get_hl(0, { name = group, link = false })
+        vim.api.nvim_set_hl(0, name, { bold = true, bg = hl.fg, fg = "bg" })
+        mode_hls[group] = name
+    end
+    return mode_hls[group]
+end
+
 M.mode = function()
     local m = modes[vim.api.nvim_get_mode().mode] or modes["n"]
 
     local mname = m[1]
     local mhl = m[2]
-    local hl = vim.api.nvim_get_hl(0, { name = mhl })
 
     local left = wrap_hl(mhl, icons.ui.LeftHalf)
     local right = wrap_hl(mhl, icons.ui.RightHalf)
 
-    vim.api.nvim_set_hl(0, "StMode", { bold = true, bg = hl.fg, fg = "bg" })
-    local mode = wrap_hl("StMode", icons.misc.Neovim .. " " .. mname)
+    local mode = wrap_hl(mode_hl(mhl), icons.misc.Neovim .. " " .. mname)
 
     return left .. mode .. right
 end
 
-M.fileinfo = cache.create(
-    ---@param bufnr integer
-    ---@param active boolean
-    ---@return string
-    function(bufnr, active)
-        local bufname = vim.api.nvim_buf_get_name(bufnr)
+---@param bufnr integer
+---@param active boolean
+---@return string
+M.fileinfo = function(bufnr, active)
+    local bufname = vim.api.nvim_buf_get_name(bufnr)
+    local icon, ihl, _ = mini_icons.get("file", bufname)
+    local filename = bufname == "" and "[No Name]" or vim.fn.fnamemodify(bufname, ":.")
 
-        local icon, ihl, _ = mini_icons.get("file", bufname)
+    if not active then
+        -- NonText only sets fg
+        return wrap_hl(colors.nontext, icon .. " " .. filename)
+    end
 
-        local filename
-        if bufname == "" then
-            filename = "[No Name]"
-        else
-            filename = vim.fn.fnamemodify(bufname, ":.") or ""
-        end
+    return wrap_hl(ihl, icon) .. " " .. filename
+end
 
-        if not active then
-            -- NonText only sets fg
-            return wrap_hl(colors.nontext, icon .. " " .. filename)
-        end
+---@param bufnr integer
+---@return string
+M.filemod = function(bufnr)
+    if vim.bo[bufnr].modified then return wrap_hl(colors.diag_ok, icons.git.Mod) end
 
-        return wrap_hl(ihl, icon) .. " " .. filename
-    end,
-    {
-        events = {
-            "BufEnter",
-            "BufLeave",
-            "BufFilePost",
-        },
-        buffer = true,
-    }
-)
+    local text = ""
+    if vim.bo[bufnr].readonly then text = text .. wrap_hl(colors.diag_warn, icons.ui.Lock) end
+    if not vim.bo[bufnr].modifiable then text = text .. wrap_hl(colors.diag_error, icons.ui.FilledLock) end
 
-M.filemod = cache.create(
-    ---@param bufnr integer
-    ---@return string
-    function(bufnr)
-        if vim.bo[bufnr].modified then return wrap_hl(colors.diag_ok, icons.git.Mod) end
-
-        local text = ""
-        if vim.bo[bufnr].readonly then text = text .. wrap_hl(colors.diag_warn, icons.ui.Lock) end
-        if not vim.bo[bufnr].modifiable then text = text .. wrap_hl(colors.diag_error, icons.ui.FilledLock) end
-
-        return text
-    end,
-    {
-        events = {
-            "FileChangedShellPost",
-            { event = "OptionSet", pattern = "modified" },
-        },
-        buffer = true,
-    }
-)
+    return text
+end
 
 ---@param bufnr integer
 ---@return string
@@ -191,42 +185,37 @@ M.gitchanges = (function()
         desc = "updates statusline every time git status is updated",
     })
 
+    local git_parts = {
+        { key = "added", hl = colors.git_add, icon = icons.git.Add },
+        { key = "changed", hl = colors.git_change, icon = icons.git.Mod },
+        { key = "removed", hl = colors.git_del, icon = icons.git.Remove },
+    }
+
     ---@param bufnr integer
     ---@return string
     return function(bufnr)
         local git_status = vim.b[bufnr].gitsigns_status_dict
         if not git_status then return "" end
 
-        local added = (git_status.added and git_status.added ~= 0)
-                and wrap_hl(colors.git_add, icons.git.Add .. " " .. git_status.added .. " ")
-            or ""
-        local changed = (git_status.changed and git_status.changed ~= 0)
-                and wrap_hl(colors.git_change, icons.git.Mod .. " " .. git_status.changed .. " ")
-            or ""
-        local removed = (git_status.removed and git_status.removed ~= 0)
-                and wrap_hl(colors.git_del, icons.git.Remove .. " " .. git_status.removed .. " ")
-            or ""
+        local text = ""
+        for _, part in ipairs(git_parts) do
+            local count = git_status[part.key]
+            if count and count ~= 0 then text = text .. wrap_hl(part.hl, part.icon .. " " .. count .. " ") end
+        end
 
-        return wrap_click("git_click", added .. changed .. removed)
+        if text == "" then return "" end
+        return wrap_click("git_click", text)
     end
 end)()
 
 M.git_click = function() vim.cmd("Git") end
 
-M.diagnostics = cache.create(
-    ---@param bufnr integer
-    ---@return string
-    function(bufnr)
-        if not vim.diagnostic.is_enabled({ bufnr = bufnr }) then return "" end
-        return vim.diagnostic.status(bufnr)
-    end,
-    {
-        events = { "DiagnosticChanged" },
-        buffer = true,
-        -- nvim redraws on DiagnosticChanged
-        redraw = false,
-    }
-)
+---@param bufnr integer
+---@return string
+M.diagnostics = function(bufnr)
+    if not vim.diagnostic.is_enabled({ bufnr = bufnr }) then return "" end
+    return vim.diagnostic.status(bufnr)
+end
 
 ---@param bufnr integer
 ---@return string
@@ -240,7 +229,7 @@ end
 ---@return string
 M.file_encoding = function(bufnr)
     local encode = vim.bo[bufnr].fileencoding
-    if encode == "" then encode = "none" end
+    if encode == "" then encode = vim.o.encoding end
     return wrap_hl(colors.nontext, encode:lower())
 end
 
@@ -258,7 +247,7 @@ M.LSP_status = cache.create(
             text = icon .. " " .. numClients .. " LSPs"
         else
             local texts = { icon }
-            for _, server in pairs(clients) do
+            for _, server in ipairs(clients) do
                 table.insert(texts, server.name)
             end
             text = table.concat(texts, " ")
@@ -287,12 +276,6 @@ M.cwd = cache.create(
     }
 )
 
-do
-    local ruler
-    M.ruler = function()
-        if not ruler then ruler = wrap_hl(colors.statement, "[%7(%l/%3L%):%2c %P]") end
-        return ruler
-    end
-end
+M.ruler = wrap_hl(colors.statement, "[%7(%l/%3L%):%2c %P]")
 
 return M
