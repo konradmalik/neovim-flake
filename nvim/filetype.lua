@@ -37,10 +37,9 @@ end
 
 vim.filetype.add({
     pattern = {
-        -- vim.filetype.add stores patterns as pattern[""]["^"..pat.."$"], so
-        -- reusing ".*" here would silently overwrite the catch-all in plugin/bigfile.lua
-        -- (plugin files are sourced after this one).
-        [".-"] = { nix_hashbang_filetype, { priority = 5 } },
+        -- extensionless files and .sh are the only cases extension detection gets wrong
+        ["[^.]+"] = nix_hashbang_filetype,
+        [".+%.sh"] = nix_hashbang_filetype,
     },
     filename = {
         condarc = "yaml",
