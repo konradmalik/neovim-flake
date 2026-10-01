@@ -2,80 +2,60 @@
 ---@class pde.unimpaired
 local M = {}
 
-local get_current_wininfo = function() return vim.fn.getwininfo(vim.fn.win_getid())[1] end
+---Path of the file `offset` entries away from the current one in its directory, sorted by
+---name and clamped at the ends. nil when there is nowhere to go.
+---@param offset integer
+---@return string?
+local function sibling_file(offset)
+    if vim.bo.buftype ~= "" then return end
+    local path = vim.api.nvim_buf_get_name(0)
+    local dir = path == "" and vim.fn.getcwd() or vim.fs.dirname(path)
 
-local get_files = function(dir)
-    local entries = vim.fn.split(vim.fn.glob(dir .. "/*"), "\n")
+    -- only files on the side we're heading to, so this also works when the current
+    -- file isn't on disk (unnamed, or not written yet)
     local files = {}
-    for _, entry in pairs(entries) do
-        if vim.fn.isdirectory(entry) ~= 1 then table.insert(files, vim.fn.fnamemodify(entry, ":t")) end
+    for name in vim.fs.dir(dir) do
+        local file = vim.fs.joinpath(dir, name)
+        local ahead = offset > 0 and file > path or offset < 0 and file < path
+        -- fs_stat follows symlinks; skips directories, broken links and special files
+        if ahead and (vim.uv.fs_stat(file) or {}).type == "file" then table.insert(files, file) end
     end
-    if vim.tbl_isempty(files) then return end
-    return files
+    table.sort(files)
+
+    if offset > 0 then return files[math.min(offset, #files)] end
+    return files[math.max(1, #files + offset + 1)]
 end
 
-local file_by_offset = function(offset)
-    local dir = vim.fn.expand("%:p:h")
-    local files = get_files(dir)
-    if not files then return end
-    local current = vim.fn.expand("%:t")
-    if current == "" then
-        if offset < 0 then return vim.fs.joinpath(dir, files[1]) end
-        return vim.fs.joinpath(dir, files[#files])
-    else
-        local index = vim.fn.index(files, current) + 1
-        if index == 0 then return end
-        index = index + offset
-        if index < 1 then
-            index = 1
-        elseif index > #files then
-            index = #files
-        end
-        return vim.fs.joinpath(dir, files[index])
+---In a quickfix/location list window: go to an older/newer list. Elsewhere: go to a sibling file.
+---@param direction 1|-1
+local function step(direction)
+    local count = vim.v.count1
+    local wintype = vim.fn.win_gettype()
+    if wintype == "quickfix" or wintype == "loclist" then
+        local cmd = (wintype == "loclist" and "l" or "c") .. (direction > 0 and "newer" or "older")
+        vim.cmd({ cmd = cmd, count = count, mods = { emsg_silent = true } })
+        return
     end
+    local file = sibling_file(direction * count)
+    if file then vim.cmd.edit(vim.fn.fnameescape(file)) end
 end
 
-M.previous_file = function()
-    local wininfo = get_current_wininfo()
-    if wininfo.loclist == 1 then
-        vim.cmd("silent! lolder " .. vim.v.count1)
-    elseif wininfo.quickfix == 1 then
-        vim.cmd("silent! colder " .. vim.v.count1)
-    else
-        local file = file_by_offset(-vim.v.count1)
-        if file then vim.cmd.edit(vim.fn.fnameescape(file)) end
-    end
-end
-
-M.next_file = function()
-    local wininfo = get_current_wininfo()
-    if wininfo.loclist == 1 then
-        vim.cmd("silent! lnewer " .. vim.v.count1)
-    elseif wininfo.quickfix == 1 then
-        vim.cmd("silent! cnewer " .. vim.v.count1)
-    else
-        local file = file_by_offset(vim.v.count1)
-        if file then vim.cmd.edit(vim.fn.fnameescape(file)) end
-    end
-end
-
-local qf_is_shown = function() return #vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix && !v:val.loclist") > 0 end
-
-local ll_is_shown = function() return #vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix && v:val.loclist") > 0 end
+M.previous_file = function() step(-1) end
+M.next_file = function() step(1) end
 
 M.toggle_qflist = function()
-    if qf_is_shown() then
-        vim.cmd("cclose")
+    if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then
+        vim.cmd.cclose()
     else
-        vim.cmd("copen")
+        vim.cmd.copen()
     end
 end
 
 M.toggle_llist = function()
-    if ll_is_shown() then
-        vim.cmd("lclose")
-    else
-        if not pcall(function() vim.cmd("lopen") end) then vim.notify("no location list") end
+    if vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 then
+        vim.cmd.lclose()
+    elseif not pcall(vim.cmd.lopen) then
+        vim.notify("no location list")
     end
 end
 
