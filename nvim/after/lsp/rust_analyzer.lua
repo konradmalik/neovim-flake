@@ -24,22 +24,16 @@ local function runSingle(command)
     ---@type table
     ---@diagnostic disable-next-line: assign-type-mismatch
     local task = command.arguments[1]
-    if not task then
-        vim.notify("no command arguments", vim.log.levels.ERROR)
-        return
-    end
-    local cmd = {
-        task.kind,
-        task.args.cargoArgs,
-        task.args.cargoExtraArgs,
-    }
+    local cmd = { task.kind }
+    vim.list_extend(cmd, task.args.cargoArgs)
+    vim.list_extend(cmd, task.args.cargoExtraArgs)
     if not vim.tbl_isempty(task.args.executableArgs) then
-        table.insert(cmd, { "--" })
-        table.insert(cmd, task.args.executableArgs)
+        table.insert(cmd, "--")
+        vim.list_extend(cmd, task.args.executableArgs)
     end
 
     local cwd = task.args.workspaceRoot
-    require("pde.runner").run(vim.iter(cmd):flatten():totable(), { cwd = cwd })
+    require("pde.runner").run(cmd, { cwd = cwd })
 end
 
 ---@type vim.lsp.Config
