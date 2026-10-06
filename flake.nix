@@ -165,7 +165,7 @@
     in
     {
       devShells = forAllSystems (pkgs: {
-        default = pkgs.mkShell {
+        default = pkgs.mkShellNoCC {
           name = "neovim-shell";
           shellHook =
             pkgs.nvim-dev.shellHook
