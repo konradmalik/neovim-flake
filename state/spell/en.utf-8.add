@@ -31,3 +31,4 @@ shellcheck
 typecheck
 nvim
 devshell
+dotfiles
