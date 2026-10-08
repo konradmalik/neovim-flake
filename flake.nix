@@ -21,6 +21,10 @@
       url = "github:mrcjkb/nix-gen-luarc-json";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # plugins
     SchemaStore-nvim = {
@@ -162,36 +166,41 @@
               ]
             )
           );
+
+      treefmtFor = pkgs: inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+
+      # each lua dir is checked against its own .luarc.json
+      linkLuarcs =
+        pkgs:
+        # bash
+        ''
+          ln -fs ${pkgs.nvim-luarc-json} ./nvim/.luarc.json
+          ln -fs ${pkgs.busted-luarc-json} ./spec/.luarc.json
+        '';
     in
     {
-      devShells = forAllSystems (pkgs: {
-        default = pkgs.mkShellNoCC {
-          name = "neovim-shell";
-          shellHook =
-            pkgs.nvim-dev.shellHook
-            +
-            # bash
-            ''
-              ln -fs ${pkgs.nvim-luarc-json} ./nvim/.luarc.json
-              ln -fs ${pkgs.busted-luarc-json} ./spec/.luarc.json
-            '';
-          packages = [
-            inputs.self.formatter.${pkgs.stdenv.hostPlatform.system}
-          ]
-          ++ (with pkgs; [
-            gnumake
-            busted-nlua
-            luajitPackages.luacheck
-            nixfmt
-            prettier
-            shellcheck
-            shfmt
-            stylua
-            nvim-typecheck
-            nvim-dev
-          ]);
-        };
-      });
+      devShells = forAllSystems (
+        pkgs:
+        let
+          treefmt = (treefmtFor pkgs).config.build;
+        in
+        {
+          default = pkgs.mkShellNoCC {
+            name = "neovim-shell";
+            shellHook = pkgs.nvim-dev.shellHook + linkLuarcs pkgs;
+            packages = [
+              treefmt.wrapper
+            ]
+            ++ builtins.attrValues treefmt.programs
+            ++ (with pkgs; [
+              busted-nlua
+              luajitPackages.luacheck
+              nvim-typecheck
+              nvim-dev
+            ]);
+          };
+        }
+      );
 
       packages = forAllSystems (pkgs: {
         default = pkgs.nvim-pkg;
@@ -216,6 +225,39 @@
         }
       );
 
-      formatter = forAllSystems (pkgs: pkgs.nixfmt-tree);
+      checks = forAllSystems (
+        pkgs:
+        let
+          # runs the script in a writable copy of the repo, set up like the devshell
+          mkCheck =
+            name: packages: script:
+            pkgs.runCommandLocal name { nativeBuildInputs = packages; } ''
+              export HOME=$TMPDIR
+              cp -r ${inputs.self} src && chmod -R u+w src && cd src
+              ${linkLuarcs pkgs}
+              ${script}
+              touch $out
+            '';
+        in
+        {
+          formatting = (treefmtFor pkgs).config.build.check inputs.self;
+
+          lint-lua =
+            mkCheck "lint-lua"
+              [
+                pkgs.luajitPackages.luacheck
+                pkgs.nvim-typecheck
+              ]
+              ''
+                luacheck --codes --no-cache nvim spec
+                nvim-typecheck ./nvim
+                nvim-typecheck ./spec
+              '';
+
+          tests = mkCheck "tests" [ pkgs.busted-nlua ] "busted";
+        }
+      );
+
+      formatter = forAllSystems (pkgs: (treefmtFor pkgs).config.build.wrapper);
     };
 }

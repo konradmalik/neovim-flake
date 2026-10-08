@@ -11,17 +11,19 @@ Try it out:
 $ nix run github:konradmalik/neovim-flake
 ```
 
-Run checks (nixfmt, stylua, shfmt, prettier, luacheck, shellcheck, typecheck via lua-language-server):
+## Development
+
+Enter the devshell with `nix develop` (or direnv, see `.envrc`). It links a generated `.luarc.json` into `nvim` and
+`spec`, so lua-language-server knows about Neovim and the plugins.
 
 ```bash
-$ make check
+$ nix fmt
+$ nix flake check
 ```
 
-Run tests (busted using nvim as an interpreter):
-
-```bash
-$ make test
-```
+`nix fmt` formats everything through treefmt (`treefmt.nix`). `nix flake check` covers formatting, shellcheck,
+luacheck, typecheck via lua-language-server, and the tests (busted using nvim as an interpreter). In the devshell,
+`busted` runs the tests directly.
 
 ## Assumptions
 
@@ -46,9 +48,9 @@ prepending to PATH.
 One of the cons of using Neovim in nix is - no "dirty" modifications to Neovim to try something out quickly. Experimentation becomes harder.
 You always need to rebuild it, but `nix build` and then `./result/bin/nvim` is quick and easy enough for it to not be a deal-breaker.
 
-Another solution implemented in this repo is `nvim-dev` command that becomes available inside devShell here.
-It runs the neovim package defined in the repo with `plugins` and `extraPackages` provided, but the native lua
-config gets read "live" from `~/.config/nvim-dev` which is linked to `nvim` folder here in the repo.
+Another solution implemented in this repo is the `nvim-dev` command that becomes available inside the devshell.
+It runs the neovim package defined in the repo with `plugins` and `extraPackages` provided, but the lua config gets read
+"live" from `~/.config/nvim-dev`, which the devshell links to the `nvim` folder here in the repo.
 This allows for instant feedback and dynamic development just like when using neovim without nix.
 
 ## Credits
