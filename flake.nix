@@ -44,6 +44,7 @@
       inputs = {
         gen-luarc.follows = "gen-luarc";
         nixpkgs.follows = "nixpkgs";
+        treefmt-nix.follows = "treefmt-nix";
       };
     };
     gitsigns-nvim = {
@@ -55,6 +56,7 @@
       inputs = {
         gen-luarc.follows = "gen-luarc";
         nixpkgs.follows = "nixpkgs";
+        treefmt-nix.follows = "treefmt-nix";
       };
     };
     kanagawa-nvim = {
@@ -71,7 +73,10 @@
     };
     nvim-treesitter = {
       url = "github:konradmalik/nvim-treesitter-nightly-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        treefmt-nix.follows = "treefmt-nix";
+      };
     };
     nvim-treesitter-context = {
       url = "github:nvim-treesitter/nvim-treesitter-context";
