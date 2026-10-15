@@ -1,11 +1,6 @@
 -- https://github.com/redhat-developer/yaml-language-server
 ---@type vim.lsp.Config
 return {
-    on_init = function(client)
-        -- BUG: since recently, even though yaml.format.enable = false, yamlls reports formatting capability
-        client.server_capabilities.documentFormattingProvider = nil
-        client.server_capabilities.documentRangeFormattingProvider = nil
-    end,
     ---@type lspconfig.settings.yamlls
     settings = {
         redhat = {
@@ -14,9 +9,6 @@ return {
             },
         },
         yaml = {
-            format = {
-                enable = false, -- use prettier instead
-            },
             schemas = vim.tbl_extend("error", require("schemastore").yaml.schemas(), {
                 ["kubernetes"] = { "k8s/**/*.yml", "k8s/**/*.yaml" },
                 -- or use:

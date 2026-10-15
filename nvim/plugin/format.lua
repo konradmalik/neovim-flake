@@ -1,6 +1,20 @@
--- we have conform at home.
--- conform at home:
+-- format on save: conform, then LSP, then formatprg/formatexpr
 vim.g.autoformat_enabled = true
+
+local timeout_ms = 2000
+local conform = require("conform")
+-- no format_on_save, formatting is driven by the autocmd below
+conform.setup({
+    formatters_by_ft = {
+        json = { "prettier" },
+        jsonc = { "prettier" },
+        lua = { "stylua" },
+        markdown = { "prettier" },
+        python = { "isort", "black" },
+        toml = { "taplo" },
+        yaml = { "prettier" },
+    },
+})
 
 ---@param bufnr integer
 ---@param join_undo boolean
@@ -33,14 +47,20 @@ local function format(bufnr)
         return
     end
 
+    local formatters = conform.list_formatters_for_buffer(bufnr)
     local clients = vim.lsp.get_clients({
         bufnr = bufnr,
         method = vim.lsp.protocol.Methods.textDocument_formatting,
     })
 
-    -- LSP if available
-    if #clients > 0 then
-        vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = 2000 })
+    -- conform if it has formatters configured for this buffer
+    if #formatters > 0 then
+        -- passed explicitly so conform warns about missing binaries instead of skipping them silently
+        conform.format({ bufnr = bufnr, formatters = formatters, lsp_format = "never", timeout_ms = timeout_ms })
+        trim_trailing_blank_lines(bufnr, true)
+    -- then LSP if available
+    elseif #clients > 0 then
+        vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = timeout_ms })
         trim_trailing_blank_lines(bufnr, true)
     -- fallback: use formatexpr/formatprg via gq
     elseif vim.bo[bufnr].formatprg ~= "" or vim.bo[bufnr].formatexpr ~= "" then
@@ -57,7 +77,7 @@ vim.api.nvim_create_user_command("AutoFormatToggle", function()
     vim.g.autoformat_enabled = not vim.g.autoformat_enabled
     vim.notify("Setting autoformatting to: " .. tostring(vim.g.autoformat_enabled), vim.log.levels.INFO)
 end, {
-    desc = "Enable/disable autoformat with formatexpr globally",
+    desc = "Enable/disable autoformat globally",
 })
 
 local group = vim.api.nvim_create_augroup("pde-autoformat", { clear = true })

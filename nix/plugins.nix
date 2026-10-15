@@ -126,9 +126,7 @@ let
     # packaged here
     // (inferInputs {
       SchemaStore-nvim = buildVim { };
-      efmls-configs-nvim = buildVim {
-        dependencies = [ plugins.nvim-lspconfig ];
-      };
+      conform-nvim = buildVim { };
       friendly-snippets = buildVim { };
       gitsigns-nvim = buildVim {
         runtimeDeps = [ pkgs.git ];

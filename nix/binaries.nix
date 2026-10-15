@@ -13,12 +13,11 @@ with pkgs;
 
   # linters
   golangci-lint-langserver
-  jq
   shellcheck
 
   # lsps
+  bash-language-server
   clang-tools
-  flint-ls
   gopls
   harper
   lua-language-server

@@ -8,8 +8,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    flint-ls.url = "github:konradmalik/flint-ls";
-
     neorocks = {
       url = "github:lumen-oss/neorocks";
       inputs = {
@@ -31,8 +29,8 @@
       url = "github:b0o/SchemaStore.nvim";
       flake = false;
     };
-    efmls-configs-nvim = {
-      url = "github:creativenull/efmls-configs-nvim";
+    conform-nvim = {
+      url = "github:stevearc/conform.nvim";
       flake = false;
     };
     friendly-snippets = {
@@ -160,7 +158,6 @@
                 inputs.gen-luarc.overlays.default
                 inputs.neorocks.overlays.default
                 (final: _prev: {
-                  inherit (inputs.flint-ls.packages.${system}) flint-ls;
                   nvim-nightly = inputs.neovim-nightly-overlay.packages.${system}.default;
 
                   # busted runs specs through nlua, which bakes this into its shebang.

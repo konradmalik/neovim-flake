@@ -16,19 +16,19 @@
         "type": "github"
       }
     },
-    "efmls-configs-nvim": {
+    "conform-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1788229808,
-        "narHash": "sha256-0Ta8Oo1k+3RKWngWrmw0QDe0LDgjxQtd7nfGDZo2WgQ=",
-        "owner": "creativenull",
-        "repo": "efmls-configs-nvim",
-        "rev": "f145a2e8212a195d44c1430e76cbc96efb0afb08",
+        "lastModified": 1786458409,
+        "narHash": "sha256-7VkQLpkDak/O5tphT/EWX/rE9r0Dd2UCF5CFbl4rK+A=",
+        "owner": "stevearc",
+        "repo": "conform.nvim",
+        "rev": "016802de402556da54c36bd7359b441266b01cdd",
         "type": "github"
       },
       "original": {
-        "owner": "creativenull",
-        "repo": "efmls-configs-nvim",
+        "owner": "stevearc",
+        "repo": "conform.nvim",
         "type": "github"
       }
     },
@@ -137,24 +137,6 @@
         "type": "github"
       }
     },
-    "flint-ls": {
-      "inputs": {
-        "nixpkgs": "nixpkgs"
-      },
-      "locked": {
-        "lastModified": 1790925853,
-        "narHash": "sha256-QMORLdFDh7vxHa1KZs8zniL1b1PsgrUIWQqMbk2oWQo=",
-        "owner": "konradmalik",
-        "repo": "flint-ls",
-        "rev": "7516fb6d68b93e7318fca5fc983b2386d798f907",
-        "type": "github"
-      },
-      "original": {
-        "owner": "konradmalik",
-        "repo": "flint-ls",
-        "type": "github"
-      }
-    },
     "friendly-snippets": {
       "flake": false,
       "locked": {
@@ -247,7 +229,7 @@
     "git-hooks_2": {
       "inputs": {
         "flake-compat": "flake-compat_3",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs"
       },
       "locked": {
         "lastModified": 1790500375,
@@ -441,15 +423,15 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1790570722,
-        "narHash": "sha256-Avcz96Q+8OkfUIUXipBBVsQn19L622BtKP7mk6M+uls=",
-        "owner": "nixos",
+        "lastModified": 1787631388,
+        "narHash": "sha256-vMiXptXarfSdJb1Gkc+FYVOAibuBRj7qxGa8z68q1Uw=",
+        "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "419fe0f449b3fbe3bdd53d9840288db4509ec32e",
+        "rev": "ac6b2166e7a9375683b8e98f860f273222337b16",
         "type": "github"
       },
       "original": {
-        "owner": "nixos",
+        "owner": "NixOS",
         "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
         "type": "github"
@@ -499,22 +481,6 @@
       }
     },
     "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1787631388,
-        "narHash": "sha256-vMiXptXarfSdJb1Gkc+FYVOAibuBRj7qxGa8z68q1Uw=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "ac6b2166e7a9375683b8e98f860f273222337b16",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixpkgs-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_3": {
       "locked": {
         "lastModified": 1791366222,
         "narHash": "sha256-o0N4g6uSOIppU7CGToNvGlMf5vC+B6O6ukFHKY/TKOY=",
@@ -637,8 +603,7 @@
     "root": {
       "inputs": {
         "SchemaStore-nvim": "SchemaStore-nvim",
-        "efmls-configs-nvim": "efmls-configs-nvim",
-        "flint-ls": "flint-ls",
+        "conform-nvim": "conform-nvim",
         "friendly-snippets": "friendly-snippets",
         "gen-luarc": "gen-luarc",
         "git-conflict-nvim": "git-conflict-nvim",
@@ -648,7 +613,7 @@
         "mini-icons": "mini-icons",
         "neorocks": "neorocks",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
-        "nixpkgs": "nixpkgs_3",
+        "nixpkgs": "nixpkgs_2",
         "nvim-lspconfig": "nvim-lspconfig",
         "nvim-treesitter": "nvim-treesitter",
         "nvim-treesitter-context": "nvim-treesitter-context",
