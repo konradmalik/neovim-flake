@@ -17,6 +17,7 @@ vim.lsp.enable({
     "nixd",
     "nvim_ls",
     "roslyn_ls",
+    "ruff",
     "rust_analyzer",
     "terraformls",
     "ty",

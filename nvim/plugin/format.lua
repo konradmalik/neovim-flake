@@ -10,7 +10,6 @@ conform.setup({
         jsonc = { "prettier" },
         lua = { "stylua" },
         markdown = { "prettier" },
-        python = { "isort", "black" },
         toml = { "taplo" },
         yaml = { "prettier" },
     },

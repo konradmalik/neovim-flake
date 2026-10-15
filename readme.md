@@ -38,9 +38,9 @@ to configure Neovim.
 Those are managed by nix and appended to the end of PATH for Neovim.
 This allows Neovim to use them, but also to use other versions by prepending them to PATH.
 
-An example - you can have some project which uses an older version of `black` which formats files a bit differently.
+An example - you can have some project which uses an older version of `ruff` which formats files a bit differently.
 Assuming that this project has a devshell defined, you can just enter that devshell and run Neovim.
-The older `black` from the devshell will take precedence over the one provided by this flake, because devshell works by
+The older `ruff` from the devshell will take precedence over the one provided by this flake, because devshell works by
 prepending to PATH.
 
 ## Experimentation

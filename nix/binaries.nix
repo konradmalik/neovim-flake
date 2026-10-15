@@ -2,10 +2,9 @@
 with pkgs;
 [
   # formatters
-  black
-  isort
   nixfmt
   prettier
+  ruff
   rustfmt
   shfmt
   stylua
