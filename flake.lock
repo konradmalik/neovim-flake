@@ -16,22 +16,6 @@
         "type": "github"
       }
     },
-    "conform-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1786458409,
-        "narHash": "sha256-7VkQLpkDak/O5tphT/EWX/rE9r0Dd2UCF5CFbl4rK+A=",
-        "owner": "stevearc",
-        "repo": "conform.nvim",
-        "rev": "016802de402556da54c36bd7359b441266b01cdd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "stevearc",
-        "repo": "conform.nvim",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -603,7 +587,6 @@
     "root": {
       "inputs": {
         "SchemaStore-nvim": "SchemaStore-nvim",
-        "conform-nvim": "conform-nvim",
         "friendly-snippets": "friendly-snippets",
         "gen-luarc": "gen-luarc",
         "git-conflict-nvim": "git-conflict-nvim",

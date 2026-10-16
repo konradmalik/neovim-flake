@@ -1,10 +1,15 @@
--- format on save: conform, then LSP, then formatprg/formatexpr
+-- format on save: external formatter, then LSP, then formatprg/formatexpr
 vim.g.autoformat_enabled = true
 
 local timeout_ms = 2000
-local conform = require("conform")
--- no format_on_save, formatting is driven by the autocmd below
-conform.setup({
+local pde_format = require("pde.format")
+-- projects can replace any of these from .nvim.lua with require("pde.format").override()
+pde_format.setup({
+    formatters = {
+        prettier = { "prettier", "--stdin-filepath", "$FILENAME" },
+        stylua = { "stylua", "--search-parent-directories", "--respect-ignores", "--stdin-filepath", "$FILENAME", "-" },
+        taplo = { "taplo", "format", "--stdin-filepath", "$FILENAME", "-" },
+    },
     formatters_by_ft = {
         json = { "prettier" },
         jsonc = { "prettier" },
@@ -46,16 +51,14 @@ local function format(bufnr)
         return
     end
 
-    local formatters = conform.list_formatters_for_buffer(bufnr)
     local clients = vim.lsp.get_clients({
         bufnr = bufnr,
         method = vim.lsp.protocol.Methods.textDocument_formatting,
     })
 
-    -- conform if it has formatters configured for this buffer
-    if #formatters > 0 then
-        -- passed explicitly so conform warns about missing binaries instead of skipping them silently
-        conform.format({ bufnr = bufnr, formatters = formatters, lsp_format = "never", timeout_ms = timeout_ms })
+    -- external formatter if one is configured for this filetype
+    if pde_format.has_formatter(bufnr) then
+        pde_format.format(bufnr, timeout_ms)
         trim_trailing_blank_lines(bufnr, true)
     -- then LSP if available
     elseif #clients > 0 then
