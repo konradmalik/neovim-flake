@@ -74,11 +74,14 @@ local function hunk_to_text_edit(old_lines, new_lines, hunk)
     if old_count == 0 then
         -- an insert means "after old_start"
         start_line, end_line = old_start, old_start
-        -- the text needs its own line break, except at the end of the buffer where it is implicit
+        -- the text needs its own line break, except at the end of the buffer where it is implicit;
+        -- there apply_text_edits also drops a trailing empty line, so blank lines a formatter
+        -- appends at the very end are lost (as with conform, and autoformat trims them anyway)
         if start_line < #old_lines then table.insert(replacement, "") end
     elseif new_count > 0 then
         -- a replacement: end on the last replaced line itself and skip the unchanged prefix/suffix
         end_line = end_line - 1
+        -- always a real line: apply_diff terminates the last line, so hunks never point past it
         local first, last = old_lines[old_start], old_lines[end_line + 1]
         start_char = common_prefix_len(first, replacement[1])
         replacement[1] = replacement[1]:sub(start_char + 1)
@@ -159,6 +162,7 @@ local function run(name, filename, input, timeout_ms)
     end
     local result = proc:wait(timeout_ms)
     if result.code ~= 0 then
+        -- 124 is what vim.system reports when it killed the process on timeout
         local reason = result.code == 124 and "timed out" or vim.trim(result.stderr or "")
         vim.notify(("formatter '%s' failed: %s"):format(name, reason), vim.log.levels.ERROR)
         return
@@ -193,6 +197,39 @@ function M.format(bufnr, timeout_ms)
     local new_lines = vim.split(output, "\n", { plain = true })
     if new_lines[#new_lines] == "" then table.remove(new_lines) end
     apply_diff(bufnr, old_lines, new_lines)
+end
+
+---Report each filetype's formatter chain and whether it can run, see :checkhealth pde.format
+function M.check_health()
+    vim.health.start("formatters by filetype")
+    local fts = vim.tbl_keys(vim.tbl_extend("force", defaults.formatters_by_ft, overrides.formatters_by_ft))
+    table.sort(fts)
+    for _, ft in ipairs(fts) do
+        local names = lookup("formatters_by_ft", ft)
+        local source = overrides.formatters_by_ft[ft] ~= nil and " (override)" or ""
+        if not names or #names == 0 then
+            vim.health.info(("%s: disabled%s"):format(ft, source))
+        else
+            -- each formatter with the binary it resolves to, or the reason it cannot run
+            local chain, problems = {}, {}
+            for _, name in ipairs(names) do
+                local cmd = lookup("formatters", name)
+                local path = cmd and vim.fn.exepath(cmd[1]) or ""
+                if not cmd then
+                    table.insert(problems, ("'%s' is not configured"):format(name))
+                elseif path == "" then
+                    table.insert(problems, ("'%s' not found"):format(cmd[1]))
+                end
+                table.insert(chain, path == "" and name or ("%s (%s)"):format(name, path))
+            end
+            local line = ("%s: %s%s"):format(ft, table.concat(chain, " -> "), source)
+            if #problems == 0 then
+                vim.health.ok(line)
+            else
+                vim.health.error(("%s, %s"):format(line, table.concat(problems, ", ")))
+            end
+        end
+    end
 end
 
 M._internal = {

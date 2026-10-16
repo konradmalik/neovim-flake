@@ -301,4 +301,38 @@ describe("format", function()
             assert.are.equal("project", formatted(edit("a.txt", { "x" })))
         end)
     end)
+
+    describe("check_health", function()
+        local original_health = vim.health
+        local report
+
+        before_each(function()
+            report = {}
+            local function record(kind)
+                return function(msg) table.insert(report, kind .. " " .. msg) end
+            end
+            ---@diagnostic disable-next-line: missing-fields
+            vim.health = { start = function() end, ok = record("ok"), info = record("info"), error = record("error") }
+        end)
+
+        after_each(function() vim.health = original_health end)
+
+        it("reports each filetype's chain, sorted, and what keeps it from running", function()
+            format.setup({
+                formatters = { upper = sh("tr a-z A-Z"), missing = { "no-such-formatter" } },
+                formatters_by_ft = { b_ft = { "upper", "missing" }, a_ft = { "upper" }, c_ft = { "upper" }, e_ft = {} },
+            })
+            format.override({ formatters_by_ft = { c_ft = false, d_ft = { "nope" } } })
+            format.check_health()
+            -- where sh lives depends on the environment, only check that it is an absolute path
+            local normalized = vim.tbl_map(function(line) return (line:gsub("%(/[^)]*/sh%)", "(/.../sh)")) end, report)
+            assert.are.same({
+                "ok a_ft: upper (/.../sh)",
+                "error b_ft: upper (/.../sh) -> missing, 'no-such-formatter' not found",
+                "info c_ft: disabled (override)",
+                "error d_ft: nope (override), 'nope' is not configured",
+                "info e_ft: disabled",
+            }, normalized)
+        end)
+    end)
 end)
