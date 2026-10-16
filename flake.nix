@@ -29,10 +29,6 @@
       url = "github:b0o/SchemaStore.nvim";
       flake = false;
     };
-    conform-nvim = {
-      url = "github:stevearc/conform.nvim";
-      flake = false;
-    };
     friendly-snippets = {
       url = "github:rafamadriz/friendly-snippets";
       flake = false;
@@ -256,7 +252,11 @@
                 nvim-typecheck ./spec
               '';
 
-          tests = mkCheck "tests" [ pkgs.busted-nlua ] "busted";
+          tests = mkCheck "tests" [
+            pkgs.busted-nlua
+            # real formatter for the pde.format config resolution spec
+            pkgs.stylua
+          ] "busted";
         }
       );
 

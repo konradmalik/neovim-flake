@@ -126,7 +126,6 @@ let
     # packaged here
     // (inferInputs {
       SchemaStore-nvim = buildVim { };
-      conform-nvim = buildVim { };
       friendly-snippets = buildVim { };
       gitsigns-nvim = buildVim {
         runtimeDeps = [ pkgs.git ];
