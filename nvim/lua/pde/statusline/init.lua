@@ -41,6 +41,15 @@ local function setup_local_winbar_with_autocmd()
         desc = "Personal: set window-local winbar",
     })
 
+    -- prob. an upstream bug
+    -- repro: save unmodified file - winbar will show modified and stay until a cursor is moved
+    vim.api.nvim_create_autocmd("OptionSet", {
+        group = group,
+        pattern = "modified",
+        callback = function() vim.cmd.redrawstatus({ bang = true }) end,
+        desc = "Personal: redraw winbar when modified flag changes",
+    })
+
     -- fix fugitive windows scroll-sync by placing a dummy winbar in them
     vim.api.nvim_create_autocmd("FileType", {
         group = group,
