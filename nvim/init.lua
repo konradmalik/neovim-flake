@@ -1,7 +1,7 @@
 -- caching needs to be first
 require("pde.loader")
 -- colorscheme as soon as possible
-require("pde.colorscheme")
+vim.cmd.colorscheme("kanagawa")
 
 -- .nvim.lua
 vim.o.exrc = true

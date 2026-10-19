@@ -53,10 +53,6 @@
         treefmt-nix.follows = "treefmt-nix";
       };
     };
-    kanagawa-nvim = {
-      url = "github:rebelot/kanagawa.nvim";
-      flake = false;
-    };
     mini-icons = {
       url = "github:echasnovski/mini.icons";
       flake = false;

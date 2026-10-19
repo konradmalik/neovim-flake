@@ -133,7 +133,6 @@ let
           doInstallCheck = true;
         };
       };
-      kanagawa-nvim = buildVim { };
       mini-icons = buildVim { };
       nvim-lspconfig = buildVim { };
       nvim-treesitter-context = buildVim { };
