@@ -11,12 +11,12 @@ with pkgs;
   taplo
 
   # linters
-  golangci-lint-langserver
   shellcheck
 
   # lsps
   bash-language-server
   clang-tools
+  golangci-lint-langserver
   gopls
   harper
   lua-language-server
