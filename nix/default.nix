@@ -16,6 +16,10 @@ in
     inherit plugins extraPackages;
   };
 
+  nvim-minimal = mkNeovim {
+    inherit plugins;
+  };
+
   nvim-dev =
     (mkNeovim {
       inherit plugins extraPackages;

@@ -203,6 +203,7 @@
       packages = forAllSystems (pkgs: {
         default = pkgs.nvim-pkg;
         nvim = pkgs.nvim-pkg;
+        nvim-minimal = pkgs.nvim-minimal;
         nvim-dev = pkgs.nvim-dev;
       });
 
