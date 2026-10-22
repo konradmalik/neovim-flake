@@ -89,7 +89,8 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     callback = function(args)
         if not vim.g.autoformat_enabled then return end
 
-        local bufnr = args.buf
-        vim.api.nvim_buf_call(bufnr, function() format(bufnr) end)
+        -- no nvim_buf_call: the written buffer is already current here, and inside it an
+        -- ERROR notify from a failing formatter becomes an exception with a traceback
+        format(args.buf)
     end,
 })
