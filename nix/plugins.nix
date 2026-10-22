@@ -142,12 +142,6 @@ let
           buildPhase = "make";
         };
       };
-      telescope-live-grep-args-nvim = buildVim {
-        dependencies = [
-          libs.plenary-nvim
-          plugins.telescope-nvim
-        ];
-      };
       telescope-nvim = buildVim {
         dependencies = [
           libs.plenary-nvim

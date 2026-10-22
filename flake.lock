@@ -587,7 +587,6 @@
         "plenary-nvim": "plenary-nvim",
         "sops-nvim": "sops-nvim",
         "telescope-fzf-native-nvim": "telescope-fzf-native-nvim",
-        "telescope-live-grep-args-nvim": "telescope-live-grep-args-nvim",
         "telescope-nvim": "telescope-nvim",
         "telescope-ui-select-nvim": "telescope-ui-select-nvim",
         "treefmt-nix": "treefmt-nix_2",
@@ -632,22 +631,6 @@
       "original": {
         "owner": "nvim-telescope",
         "repo": "telescope-fzf-native.nvim",
-        "type": "github"
-      }
-    },
-    "telescope-live-grep-args-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1775652220,
-        "narHash": "sha256-kGGVegympVG4lzJ0zdFjsjiioy0gSQbJuENjll3jNlQ=",
-        "owner": "nvim-telescope",
-        "repo": "telescope-live-grep-args.nvim",
-        "rev": "53e9df55b3651dd7cf77e172f1e8c9a17407acca",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nvim-telescope",
-        "repo": "telescope-live-grep-args.nvim",
         "type": "github"
       }
     },

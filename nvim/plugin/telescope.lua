@@ -2,44 +2,31 @@
 require("mini.icons").mock_nvim_web_devicons()
 
 local actions = require("telescope.actions")
+local conf = require("telescope.config").values
+local finders = require("telescope.finders")
 local layout = require("telescope.actions.layout")
-local lga_actions = require("telescope-live-grep-args.actions")
-local lga_shortcuts = require("telescope-live-grep-args.shortcuts")
+local make_entry = require("telescope.make_entry")
+local pickers = require("telescope.pickers")
+local sorters = require("telescope.sorters")
 local telescope = require("telescope")
 local themes = require("telescope.themes")
 
 local in_mappings = {
-    ["<C-p>"] = layout.toggle_preview,
-    ["<C-q>"] = function(buf)
-        actions.smart_send_to_qflist(buf)
-        actions.open_qflist(buf)
-    end,
-    ["<C-e>"] = function(buf)
-        actions.smart_add_to_qflist(buf)
-        actions.open_qflist(buf)
-    end,
+    ["<M-p>"] = layout.toggle_preview,
+    ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
+    ["<C-e>"] = actions.smart_add_to_qflist + actions.open_qflist,
+    ["<C-l>"] = actions.smart_send_to_loclist + actions.open_loclist,
 }
 
 telescope.setup({
     defaults = {
         layout_strategy = "vertical",
-        layout_config = {
-            vertical = {
-                height = 0.9,
-                width = 0.9,
-            },
-        },
         mappings = {
             i = in_mappings,
             n = in_mappings,
         },
-        path_display = {
-            filename_first = {
-                reverse_directories = true,
-            },
-        },
         preview = {
-            hide_on_startup = true, -- hide previewer when picker starts
+            hide_on_startup = true,
         },
         prompt_prefix = " ",
         selection_caret = "󰁕 ",
@@ -48,22 +35,35 @@ telescope.setup({
         ["ui-select"] = {
             themes.get_dropdown(),
         },
-        live_grep_args = {
-            mappings = {
-                i = {
-                    ["<C-k>"] = lga_actions.quote_prompt(),
-                    ["<C-t>"] = lga_actions.quote_prompt({ postfix = " --type " }),
-                    ["<C-f>"] = actions.to_fuzzy_refine,
-                },
-            },
-        },
     },
 })
--- To get extensions loaded and working with telescope, you need to call
--- load_extension, somewhere after setup function:
 telescope.load_extension("fzf")
-telescope.load_extension("live_grep_args")
 telescope.load_extension("ui-select")
+
+-- live grep where anything after two spaces is passed to rg as flags: "foo bar  -t lua -w"
+local function live_grep_with_args()
+    pickers
+        .new({ preview = conf.preview }, {
+            prompt_title = "Live Grep (rg flags after two spaces)",
+            finder = finders.new_job(function(prompt)
+                prompt = prompt or ""
+                local pattern, flags = prompt:match("^(.-)%s%s+(.*)$")
+                pattern = pattern or prompt
+                if pattern == "" then return nil end
+                local cmd = vim.list_extend({}, conf.vimgrep_arguments)
+                vim.list_extend(cmd, vim.split(flags or "", "%s+", { trimempty = true }))
+                return vim.list_extend(cmd, { "--", pattern })
+            end, make_entry.gen_from_vimgrep({})),
+            previewer = conf.grep_previewer({}),
+            sorter = sorters.highlighter_only({}),
+            push_cursor_on_edit = true,
+            attach_mappings = function(_, map)
+                map("i", "<C-g>", actions.to_fuzzy_refine)
+                return true
+            end,
+        })
+        :find()
+end
 
 local opts_with_desc = function(desc) return { desc = "[Telescope] " .. desc } end
 
@@ -71,8 +71,8 @@ local builtin = require("telescope.builtin")
 
 vim.keymap.set("n", "<leader>ff", builtin.find_files, opts_with_desc("[F]ind [F]iles"))
 vim.keymap.set("n", "<leader>fi", builtin.git_files, opts_with_desc("Find (G[i]t) Files"))
-vim.keymap.set("n", "<leader>fg", telescope.extensions.live_grep_args.live_grep_args, opts_with_desc("Live [G]rep"))
-vim.keymap.set("n", "<leader>f*", lga_shortcuts.grep_word_under_cursor, opts_with_desc("Grep word under cursor"))
+vim.keymap.set("n", "<leader>fg", live_grep_with_args, opts_with_desc("Live [G]rep"))
+vim.keymap.set({ "n", "x" }, "<leader>f*", builtin.grep_string, opts_with_desc("Grep word under cursor"))
 vim.keymap.set(
     "n",
     "<leader>f/",
