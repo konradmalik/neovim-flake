@@ -25,6 +25,9 @@ telescope.setup({
             i = in_mappings,
             n = in_mappings,
         },
+        path_display = {
+            filename_first = {},
+        },
         preview = {
             hide_on_startup = true,
         },
