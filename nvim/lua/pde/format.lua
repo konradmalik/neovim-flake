@@ -136,6 +136,13 @@ function M.has_formatter(bufnr)
     return names ~= nil and #names > 0
 end
 
+---Where to run a formatter for `filename`: the repository root, like on the command line,
+---since formatters find their ignore files (.prettierignore, .gitignore) relative to the
+---working directory and not to the file. Outside of a repository, neovim's wd.
+---@param filename string
+---@return string
+local function formatter_cwd(filename) return vim.fs.root(filename, ".git") or vim.fn.getcwd() end
+
 ---Run one formatter on the given text.
 ---@param name string
 ---@param filename string
@@ -155,7 +162,7 @@ local function run(name, filename, input, timeout_ms)
 
     cmd = vim.tbl_map(function(arg) return arg == "$FILENAME" and filename or arg end, cmd)
     -- text = true turns CRLF output into plain line breaks, 'fileformat' decides them on write
-    local ok, proc = pcall(vim.system, cmd, { stdin = input, text = true, cwd = vim.fs.dirname(filename) })
+    local ok, proc = pcall(vim.system, cmd, { stdin = input, text = true, cwd = formatter_cwd(filename) })
     if not ok then
         vim.notify(("formatter '%s' failed to start: %s"):format(name, proc), vim.log.levels.ERROR)
         return
