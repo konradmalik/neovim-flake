@@ -79,6 +79,7 @@ M.statusline = function()
         .. components.diagnostics(bufnr)
         .. components.space
         .. components.space
+        .. components.progress
         .. components.LSP_status(bufnr)
         .. components.space
         .. components.filetype(bufnr)

@@ -7,6 +7,10 @@ local mini_icons = require("mini.icons")
 ---@return string
 local function wrap_hl(hl, s) return "%#" .. hl .. "#" .. s .. "%*" end
 
+---@param s string plain text to insert into a statusline
+---@return string
+local function esc(s) return (s:gsub("%%", "%%%%")) end
+
 ---@param func_name string name of lua function in this module
 ---@param s string string to wrap
 ---@return string
@@ -143,7 +147,7 @@ end
 M.fileinfo = function(bufnr, active)
     local bufname = vim.api.nvim_buf_get_name(bufnr)
     local icon, ihl, _ = mini_icons.get("file", bufname)
-    local filename = bufname == "" and "[No Name]" or vim.fn.fnamemodify(bufname, ":.")
+    local filename = bufname == "" and "[No Name]" or esc(vim.fn.fnamemodify(bufname, ":."))
 
     if not active then
         -- NonText only sets fg
@@ -174,7 +178,7 @@ M.fileformat = function(bufnr) return wrap_hl(colors.nontext, format_types[vim.b
 M.git = function(bufnr)
     local head = vim.b[bufnr].gitsigns_head
     if not head then return "" end
-    return wrap_click("git_click", wrap_hl(colors.constant, icons.git.Branch .. " " .. head))
+    return wrap_click("git_click", wrap_hl(colors.constant, icons.git.Branch .. " " .. esc(head)))
 end
 
 M.gitchanges = (function()
@@ -233,25 +237,28 @@ M.file_encoding = function(bufnr)
     return wrap_hl(colors.nontext, encode:lower())
 end
 
+M.progress = (function()
+    vim.api.nvim_create_autocmd("Progress", {
+        group = vim.api.nvim_create_augroup("StProgressUpdate", { clear = true }),
+        callback = vim.schedule_wrap(function() vim.cmd.redrawstatus() end),
+        desc = "updates statusline every time progress is reported",
+    })
+
+    -- %{} inserts the result verbatim, %( %) hides the trailing space when empty
+    return wrap_hl(colors.nontext, "%(%{v:lua.vim.ui.progress_status()} %)")
+end)()
+
 M.LSP_status = cache.create(
     ---@param bufnr integer
     ---@return string
     function(bufnr)
         local clients = vim.lsp.get_clients({ bufnr = bufnr })
-        local numClients = #clients
-        if numClients == 0 then return "" end
+        if #clients == 0 then return "" end
 
-        local icon = numClients > 1 and icons.ui.HexagonAll or icons.ui.Hexagon
-        local text
-        if numClients >= 4 then
-            text = icon .. " " .. numClients .. " LSPs"
-        else
-            local texts = { icon }
-            for _, server in ipairs(clients) do
-                table.insert(texts, server.name)
-            end
-            text = table.concat(texts, " ")
-        end
+        local names = vim.tbl_map(function(c) return c.name end, clients)
+        local text = table.concat(names, " ")
+        if #text > 30 then text = #clients .. " LSPs" end
+        text = icons.misc.Lsp .. text
         return wrap_click("LSP_click", wrap_hl(colors.string, text))
     end,
     {
@@ -267,7 +274,7 @@ M.cwd = cache.create(
     ---@return string
     function(winid)
         local cwd = vim.fn.getcwd(winid)
-        cwd = vim.fn.fnamemodify(cwd, ":t")
+        cwd = esc(vim.fn.fnamemodify(cwd, ":t"))
         cwd = (vim.fn.haslocaldir(winid) == 1 and "l" or "g") .. " " .. icons.documents.Folder .. " " .. cwd
         return wrap_hl(colors.directory, cwd)
     end,

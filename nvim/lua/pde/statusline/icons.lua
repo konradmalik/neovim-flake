@@ -10,14 +10,13 @@ return {
         Branch = "󰘬",
     },
     ui = {
-        Hexagon = "󰋘",
-        HexagonAll = "󰛡",
         Lock = "󰍁",
         FilledLock = "󰌾",
         LeftHalf = "",
         RightHalf = "",
     },
     misc = {
+        Lsp = " ",
         Neovim = "",
     },
     oss = {
