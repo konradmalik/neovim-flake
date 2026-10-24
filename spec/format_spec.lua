@@ -113,6 +113,13 @@ describe("format", function()
             vim.cmd("silent undo")
             assert.are.same({ "first", "one", "two" }, lines(buf))
         end)
+
+        it("leaves an unlisted buffer unlisted", function()
+            local buf = edit("a.txt", { "a" })
+            vim.bo[buf].buflisted = false
+            apply_diff(buf, lines(buf), { "b" })
+            assert.is_false(vim.bo[buf].buflisted)
+        end)
     end)
 
     describe("has_formatter", function()
@@ -189,6 +196,43 @@ describe("format", function()
             assert.are.same({ "original" }, lines(buf))
             assert.are.equal(vim.log.levels.ERROR, notifications[1].level)
             assert.truthy(notifications[1].msg:find("broken", 1, true))
+        end)
+
+        it("reports the exit code when the formatter fails silently", function()
+            fake_formatter("exit 3")
+            local buf = edit("a.txt", { "original" })
+            format.format(buf, timeout_ms)
+            assert.truthy(notifications[1].msg:find("exit code 3", 1, true))
+        end)
+
+        it("keeps the buffer when the formatter is killed by a signal mid-output", function()
+            -- the killed process exits with code 0, only its signal tells it apart from success
+            fake_formatter("echo partial; kill -9 $$")
+            local buf = edit("a.txt", { "original", "content" })
+            format.format(buf, timeout_ms)
+            assert.are.same({ "original", "content" }, lines(buf))
+            assert.are.equal(vim.log.levels.ERROR, notifications[1].level)
+            assert.truthy(notifications[1].msg:find("signal 9", 1, true))
+        end)
+
+        it("does not run a formatter that needs a file name on an unnamed buffer", function()
+            fake_formatter('cat >/dev/null; echo "$1"', "$FILENAME")
+            vim.cmd.enew()
+            local buf = vim.api.nvim_get_current_buf()
+            vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "original" })
+            vim.bo[buf].filetype = test_ft
+            format.format(buf, timeout_ms)
+            assert.are.same({ "original" }, lines(buf))
+            assert.are.equal(vim.log.levels.WARN, notifications[1].level)
+        end)
+
+        it("leaves a non-modifiable buffer alone", function()
+            fake_formatter("tr a-z A-Z")
+            local buf = edit("a.txt", { "original" })
+            vim.bo[buf].modifiable = false
+            format.format(buf, timeout_ms)
+            assert.are.same({ "original" }, lines(buf))
+            assert.are.same({}, notifications)
         end)
 
         it("keeps the buffer when the formatter times out", function()
@@ -328,10 +372,10 @@ describe("format", function()
 
         it("reports each filetype's chain, sorted, and what keeps it from running", function()
             format.setup({
-                formatters = { upper = sh("tr a-z A-Z"), missing = { "no-such-formatter" } },
+                formatters = { upper = sh("tr a-z A-Z"), missing = { "no-such-formatter" }, empty = {} },
                 formatters_by_ft = { b_ft = { "upper", "missing" }, a_ft = { "upper" }, c_ft = { "upper" }, e_ft = {} },
             })
-            format.override({ formatters_by_ft = { c_ft = false, d_ft = { "nope" } } })
+            format.override({ formatters_by_ft = { c_ft = false, d_ft = { "nope", "empty" } } })
             format.check_health()
             -- where sh lives depends on the environment, only check that it is an absolute path
             local normalized = vim.tbl_map(function(line) return (line:gsub("%(/[^)]*/sh%)", "(/.../sh)")) end, report)
@@ -339,7 +383,7 @@ describe("format", function()
                 "ok a_ft: upper (/.../sh)",
                 "error b_ft: upper (/.../sh) -> missing, 'no-such-formatter' not found",
                 "info c_ft: disabled (override)",
-                "error d_ft: nope (override), 'nope' is not configured",
+                "error d_ft: nope -> empty (override), 'nope' is not configured, 'empty' is not configured",
                 "info e_ft: disabled",
             }, normalized)
         end)

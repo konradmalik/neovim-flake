@@ -15,25 +15,28 @@ local M = {}
 ---Each layer is a shallow merge of all calls made to it: a key given again replaces the
 ---old value whole, other keys stay. Overrides are looked up first, so .nvim.lua
 ---wins over the defaults no matter which ran first; false there disables a default.
----@type pde.format.Opts
-local defaults = { formatters = {}, formatters_by_ft = {} }
----@type pde.format.Opts
-local overrides = { formatters = {}, formatters_by_ft = {} }
+---@return pde.format.Opts
+local function new_layer() return { formatters = {}, formatters_by_ft = {} } end
+
+local defaults = new_layer()
+local overrides = new_layer()
 
 ---@param layer pde.format.Opts
 ---@param opts pde.format.Opts
 local function merge(layer, opts)
-    layer.formatters = vim.tbl_extend("force", layer.formatters, opts.formatters or {})
-    layer.formatters_by_ft = vim.tbl_extend("force", layer.formatters_by_ft, opts.formatters_by_ft or {})
+    for _, field in ipairs({ "formatters", "formatters_by_ft" }) do
+        layer[field] = vim.tbl_extend("force", layer[field], opts[field] or {})
+    end
 end
 
 ---@param field "formatters"|"formatters_by_ft"
 ---@param key string
----@return string[]?
+---@return string[]? value nil when unset, disabled with false or empty
 local function lookup(field, key)
     local value = overrides[field][key]
     if value == nil then value = defaults[field][key] end
-    return value or nil
+    if not value or #value == 0 then return nil end
+    return value
 end
 
 ---@param a string
@@ -118,7 +121,10 @@ local function apply_diff(bufnr, old_lines, new_lines)
     if #hunks == 0 then return end
 
     local edits = vim.tbl_map(function(hunk) return hunk_to_text_edit(old_lines, new_lines, hunk) end, hunks)
+    -- apply_text_edits lists the buffer, as LSP edits may target files not open yet
+    local listed = vim.bo[bufnr].buflisted
     vim.lsp.util.apply_text_edits(edits, bufnr, "utf-8")
+    vim.bo[bufnr].buflisted = listed
 end
 
 ---Configure the defaults, meant for the main config.
@@ -131,10 +137,7 @@ function M.override(opts) merge(overrides, opts) end
 
 ---@param bufnr integer?
 ---@return boolean
-function M.has_formatter(bufnr)
-    local names = lookup("formatters_by_ft", vim.bo[bufnr or 0].filetype)
-    return names ~= nil and #names > 0
-end
+function M.has_formatter(bufnr) return lookup("formatters_by_ft", vim.bo[bufnr or 0].filetype) ~= nil end
 
 ---Where to run a formatter for `filename`: the repository root, like on the command line,
 ---since formatters find their ignore files (.prettierignore, .gitignore) relative to the
@@ -159,6 +162,10 @@ local function run(name, filename, input, timeout_ms)
         vim.notify(("formatter '%s' not found"):format(cmd[1]), vim.log.levels.WARN)
         return
     end
+    if filename == "" and vim.list_contains(cmd, "$FILENAME") then
+        vim.notify(("formatter '%s' needs a file name, the buffer has none"):format(name), vim.log.levels.WARN)
+        return
+    end
 
     cmd = vim.tbl_map(function(arg) return arg == "$FILENAME" and filename or arg end, cmd)
     -- text = true turns CRLF output into plain line breaks, 'fileformat' decides them on write
@@ -167,10 +174,20 @@ local function run(name, filename, input, timeout_ms)
         vim.notify(("formatter '%s' failed to start: %s"):format(name, proc), vim.log.levels.ERROR)
         return
     end
-    local result = proc:wait(timeout_ms)
-    if result.code ~= 0 then
+    -- nil when the process did not even die from the SIGKILL sent on timeout within timeout_ms
+    local result = proc:wait(timeout_ms) --[[@as vim.SystemCompleted?]]
+    if not result then
+        vim.notify(("formatter '%s' failed: timed out"):format(name), vim.log.levels.ERROR)
+        return
+    end
+    -- a process killed by a signal exits with code 0 on unix, its stdout possibly cut short
+    if result.code ~= 0 or result.signal ~= 0 then
+        local stderr = vim.trim(result.stderr or "")
         -- 124 is what vim.system reports when it killed the process on timeout
-        local reason = result.code == 124 and "timed out" or vim.trim(result.stderr or "")
+        local reason = result.code == 124 and "timed out"
+            or result.signal ~= 0 and ("killed by signal %d"):format(result.signal)
+            or stderr ~= "" and stderr
+            or ("exit code %d"):format(result.code)
         vim.notify(("formatter '%s' failed: %s"):format(name, reason), vim.log.levels.ERROR)
         return
     end
@@ -188,7 +205,7 @@ end
 function M.format(bufnr, timeout_ms)
     if not bufnr or bufnr == 0 then bufnr = vim.api.nvim_get_current_buf() end
     local names = lookup("formatters_by_ft", vim.bo[bufnr].filetype)
-    if not names then return end
+    if not names or not vim.bo[bufnr].modifiable then return end
 
     local filename = vim.api.nvim_buf_get_name(bufnr)
     local old_lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
@@ -214,20 +231,23 @@ function M.check_health()
     for _, ft in ipairs(fts) do
         local names = lookup("formatters_by_ft", ft)
         local source = overrides.formatters_by_ft[ft] ~= nil and " (override)" or ""
-        if not names or #names == 0 then
+        if not names then
             vim.health.info(("%s: disabled%s"):format(ft, source))
         else
             -- each formatter with the binary it resolves to, or the reason it cannot run
             local chain, problems = {}, {}
             for _, name in ipairs(names) do
                 local cmd = lookup("formatters", name)
-                local path = cmd and vim.fn.exepath(cmd[1]) or ""
+                local path = cmd and vim.fn.exepath(cmd[1])
                 if not cmd then
                     table.insert(problems, ("'%s' is not configured"):format(name))
+                    table.insert(chain, name)
                 elseif path == "" then
                     table.insert(problems, ("'%s' not found"):format(cmd[1]))
+                    table.insert(chain, name)
+                else
+                    table.insert(chain, ("%s (%s)"):format(name, path))
                 end
-                table.insert(chain, path == "" and name or ("%s (%s)"):format(name, path))
             end
             local line = ("%s: %s%s"):format(ft, table.concat(chain, " -> "), source)
             if #problems == 0 then
@@ -243,8 +263,8 @@ M._internal = {
     apply_diff = apply_diff,
     ---Forget all configuration.
     reset = function()
-        defaults = { formatters = {}, formatters_by_ft = {} }
-        overrides = { formatters = {}, formatters_by_ft = {} }
+        defaults = new_layer()
+        overrides = new_layer()
     end,
 }
 
