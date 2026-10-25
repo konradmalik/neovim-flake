@@ -1,20 +1,23 @@
----Formats buffers with external commands, conform-style but without conform.
+---We have conform at home.
 ---
----The buffer is piped to the formatter on stdin together with the real file path, so that
----the formatter itself resolves .editorconfig, .prettierrc, stylua.toml and friends.
----The output is diffed against the buffer and only the changed bytes are replaced,
----which keeps extmarks and marks on untouched text.
+---Pipes the buffer to the formatter along with its real path, so the formatter finds its own config.
+---Replaces only the changed bytes, keeping extmarks on untouched text.
 local M = {}
 
+---A command; an argument "$FILENAME" becomes the buffer's path.
+---@class pde.format.Formatter: string[]
+---where to run it, as vim.fs.root markers: tried in order, nest a list for equal priority,
+---e.g. { { "stylua.toml", ".stylua.toml" }, ".editorconfig" }; default: git root, else nvim's cwd
+---@field root_markers? (string|string[])[]
+
 ---@class pde.format.Opts
----formatter name -> command, an argument that is exactly "$FILENAME" becomes the buffer's file path
----@field formatters? table<string, string[]|false>
----filetype -> formatter names, run in order with each one's output fed to the next
+---formatter name -> command
+---@field formatters? table<string, pde.format.Formatter|false>
+---filetype -> formatter names, chained in order
 ---@field formatters_by_ft? table<string, string[]|false>
 
----Each layer is a shallow merge of all calls made to it: a key given again replaces the
----old value whole, other keys stay. Overrides are looked up first, so .nvim.lua
----wins over the defaults no matter which ran first; false there disables a default.
+---Calls merge shallowly: a repeated key replaces the old value whole.
+---Overrides win over defaults regardless of call order; false disables a default.
 ---@return pde.format.Opts
 local function new_layer() return { formatters = {}, formatters_by_ft = {} } end
 
@@ -31,7 +34,7 @@ end
 
 ---@param field "formatters"|"formatters_by_ft"
 ---@param key string
----@return string[]? value nil when unset, disabled with false or empty
+---@return pde.format.Formatter? value nil when unset, disabled with false or empty
 local function lookup(field, key)
     local value = overrides[field][key]
     if value == nil then value = defaults[field][key] end
@@ -61,8 +64,7 @@ local function common_suffix_len(a, b)
     return len
 end
 
----Turn one diff hunk into a text edit, narrowed to the changed bytes for replacements.
----Ported from conform.nvim's runner.
+---Turn a diff hunk into a text edit of only the changed bytes. Ported from conform's runner.
 ---@param old_lines string[]
 ---@param new_lines string[]
 ---@param hunk integer[] as returned by vim.text.diff with result_type = "indices"
@@ -77,14 +79,13 @@ local function hunk_to_text_edit(old_lines, new_lines, hunk)
     if old_count == 0 then
         -- an insert means "after old_start"
         start_line, end_line = old_start, old_start
-        -- the text needs its own line break, except at the end of the buffer where it is implicit;
-        -- there apply_text_edits also drops a trailing empty line, so blank lines a formatter
-        -- appends at the very end are lost (as with conform, and autoformat trims them anyway)
+        -- needs its own line break, except at the buffer's end, where apply_text_edits also
+        -- drops trailing blank lines (as in conform; autoformat trims them anyway)
         if start_line < #old_lines then table.insert(replacement, "") end
     elseif new_count > 0 then
-        -- a replacement: end on the last replaced line itself and skip the unchanged prefix/suffix
+        -- a replacement: end on the last replaced line, skip the unchanged prefix/suffix
         end_line = end_line - 1
-        -- always a real line: apply_diff terminates the last line, so hunks never point past it
+        -- always a real line, apply_diff terminates the last line
         local first, last = old_lines[old_start], old_lines[end_line + 1]
         start_char = common_prefix_len(first, replacement[1])
         replacement[1] = replacement[1]:sub(start_char + 1)
@@ -109,9 +110,7 @@ end
 ---@param old_lines string[]
 ---@param new_lines string[]
 local function apply_diff(bufnr, old_lines, new_lines)
-    -- terminate the last line too, not only the ones in between: the diff compares line
-    -- breaks as well, so an unterminated last line would differ from the same text with
-    -- a line after it, turning an append into a rewrite of that last line
+    -- terminate the last line too, or an append diffs as a rewrite of it
     local hunks = vim.text.diff(
         table.concat(old_lines, "\n") .. "\n",
         table.concat(new_lines, "\n") .. "\n",
@@ -121,7 +120,7 @@ local function apply_diff(bufnr, old_lines, new_lines)
     if #hunks == 0 then return end
 
     local edits = vim.tbl_map(function(hunk) return hunk_to_text_edit(old_lines, new_lines, hunk) end, hunks)
-    -- apply_text_edits lists the buffer, as LSP edits may target files not open yet
+    -- apply_text_edits lists the buffer, undo that
     local listed = vim.bo[bufnr].buflisted
     vim.lsp.util.apply_text_edits(edits, bufnr, "utf-8")
     vim.bo[bufnr].buflisted = listed
@@ -139,12 +138,14 @@ function M.override(opts) merge(overrides, opts) end
 ---@return boolean
 function M.has_formatter(bufnr) return lookup("formatters_by_ft", vim.bo[bufnr or 0].filetype) ~= nil end
 
----Where to run a formatter for `filename`: the repository root, like on the command line,
----since formatters find their ignore files (.prettierignore, .gitignore) relative to the
----working directory and not to the file. Outside of a repository, neovim's wd.
+---The root markers' directory, else the git root (formatters read ignore files like
+---.prettierignore from their cwd, not the file's directory), else nvim's cwd.
 ---@param filename string
+---@param markers (string|string[])[]?
 ---@return string
-local function formatter_cwd(filename) return vim.fs.root(filename, ".git") or vim.fn.getcwd() end
+local function formatter_cwd(filename, markers)
+    return markers and vim.fs.root(filename, markers) or vim.fs.root(filename, ".git") or vim.fn.getcwd()
+end
 
 ---Run one formatter on the given text.
 ---@param name string
@@ -167,23 +168,24 @@ local function run(name, filename, input, timeout_ms)
         return
     end
 
+    local cwd = formatter_cwd(filename, cmd.root_markers)
     cmd = vim.tbl_map(function(arg) return arg == "$FILENAME" and filename or arg end, cmd)
-    -- text = true turns CRLF output into plain line breaks, 'fileformat' decides them on write
-    local ok, proc = pcall(vim.system, cmd, { stdin = input, text = true, cwd = formatter_cwd(filename) })
+    -- text = true turns CRLF into LF, 'fileformat' decides line endings on write
+    local ok, proc = pcall(vim.system, cmd, { stdin = input, text = true, cwd = cwd })
     if not ok then
         vim.notify(("formatter '%s' failed to start: %s"):format(name, proc), vim.log.levels.ERROR)
         return
     end
-    -- nil when the process did not even die from the SIGKILL sent on timeout within timeout_ms
+    -- nil when the process survived even the SIGKILL sent on timeout
     local result = proc:wait(timeout_ms) --[[@as vim.SystemCompleted?]]
     if not result then
         vim.notify(("formatter '%s' failed: timed out"):format(name), vim.log.levels.ERROR)
         return
     end
-    -- a process killed by a signal exits with code 0 on unix, its stdout possibly cut short
+    -- killed by a signal means code 0 on unix, with stdout possibly cut short
     if result.code ~= 0 or result.signal ~= 0 then
         local stderr = vim.trim(result.stderr or "")
-        -- 124 is what vim.system reports when it killed the process on timeout
+        -- 124: vim.system killed it on timeout
         local reason = result.code == 124 and "timed out"
             or result.signal ~= 0 and ("killed by signal %d"):format(result.signal)
             or stderr ~= "" and stderr
@@ -198,8 +200,8 @@ local function run(name, filename, input, timeout_ms)
     return output
 end
 
----Format the buffer synchronously with its filetype's formatters, if it has any.
----The buffer is only changed when every formatter in the chain succeeded.
+---Format the buffer synchronously with its filetype's formatters.
+---Changes it only if every formatter in the chain succeeds.
 ---@param bufnr integer?
 ---@param timeout_ms integer per formatter
 function M.format(bufnr, timeout_ms)
@@ -234,7 +236,7 @@ function M.check_health()
         if not names then
             vim.health.info(("%s: disabled%s"):format(ft, source))
         else
-            -- each formatter with the binary it resolves to, or the reason it cannot run
+            -- each formatter with its binary, or why it cannot run
             local chain, problems = {}, {}
             for _, name in ipairs(names) do
                 local cmd = lookup("formatters", name)

@@ -26,7 +26,7 @@ local function mark_pos(buf, ns, id) return vim.api.nvim_buf_get_extmark_by_id(b
 ---A shell snippet as a formatter command; it reads the buffer on stdin.
 ---@param script string
 ---@param ... string extra arguments, available as $1, $2, ... in the script
----@return string[]
+---@return pde.format.Formatter
 local function sh(script, ...) return { "sh", "-c", script, "sh", ... } end
 
 ---Configure a shell snippet as the only formatter of test_ft.
@@ -165,6 +165,31 @@ describe("format", function()
 
         it("runs the formatter in the repository root, where its ignore files are", function()
             fake_formatter("cat >/dev/null; pwd -P")
+            vim.fn.mkdir(vim.fs.joinpath(root, ".git"), "p")
+            vim.fn.mkdir(vim.fs.joinpath(root, "sub"), "p")
+            local buf = edit("sub/a.txt", { "content" })
+            format.format(buf, timeout_ms)
+            assert.are.same({ root }, lines(buf))
+        end)
+
+        it("runs the formatter in the directory of its nearest root marker", function()
+            local cmd = sh("cat >/dev/null; pwd -P")
+            -- nested for equal priority: the nearest one wins, not the first one listed
+            cmd.root_markers = { { ".fmtrc", ".fmtrc.toml" } }
+            format.setup({ formatters = { fake = cmd }, formatters_by_ft = { [test_ft] = { "fake" } } })
+            vim.fn.mkdir(vim.fs.joinpath(root, ".git"), "p")
+            vim.fn.mkdir(vim.fs.joinpath(root, "sub", "deep"), "p")
+            vim.fn.writefile({}, vim.fs.joinpath(root, ".fmtrc"))
+            vim.fn.writefile({}, vim.fs.joinpath(root, "sub", ".fmtrc.toml"))
+            local buf = edit("sub/deep/a.txt", { "content" })
+            format.format(buf, timeout_ms)
+            assert.are.same({ vim.fs.joinpath(root, "sub") }, lines(buf))
+        end)
+
+        it("runs the formatter in the repository root when no root marker is found", function()
+            local cmd = sh("cat >/dev/null; pwd -P")
+            cmd.root_markers = { ".fmtrc" }
+            format.setup({ formatters = { fake = cmd }, formatters_by_ft = { [test_ft] = { "fake" } } })
             vim.fn.mkdir(vim.fs.joinpath(root, ".git"), "p")
             vim.fn.mkdir(vim.fs.joinpath(root, "sub"), "p")
             local buf = edit("sub/a.txt", { "content" })
