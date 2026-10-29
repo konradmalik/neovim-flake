@@ -68,6 +68,11 @@ end
 
 ---@type vim.lsp.Config
 return {
+    -- let the server discover the solution/projects from the workspace folder
+    -- TODO remove once https://github.com/neovim/nvim-lspconfig/pull/4561 is merged
+    cmd = { "Microsoft.CodeAnalysis.LanguageServer", "--stdio", "--autoLoadProjects" },
+    -- replaces lspconfig's on_init
+    on_init = function() end,
     settings = {
         -- avoid fullSolution because it's slow for large codebases
         ["csharp|background_analysis"] = {
