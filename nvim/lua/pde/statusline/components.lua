@@ -171,6 +171,15 @@ end
 
 ---@param bufnr integer
 ---@return string
+M.sops = function(bufnr)
+    if not vim.b[bufnr].sops then return "" end
+    -- warn while secrets are on screen
+    if vim.b[bufnr].sops_plaintext then return wrap_hl(colors.diag_warn, icons.ui.Key .. " sops") end
+    return wrap_hl(colors.nontext, icons.ui.Key .. " sops")
+end
+
+---@param bufnr integer
+---@return string
 M.fileformat = function(bufnr) return wrap_hl(colors.nontext, format_types[vim.bo[bufnr].fileformat]) end
 
 ---@param bufnr integer

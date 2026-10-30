@@ -102,6 +102,8 @@ M.winbar = function()
         .. components.fileinfo(bufnr, true)
         .. components.space
         .. components.filemod(bufnr)
+        .. components.space
+        .. components.sops(bufnr)
 end
 
 M.setup = function()

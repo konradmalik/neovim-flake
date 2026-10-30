@@ -12,6 +12,7 @@ return {
     ui = {
         Lock = "󰍁",
         FilledLock = "󰌾",
+        Key = "󰌆",
         LeftHalf = "",
         RightHalf = "",
     },
