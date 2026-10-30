@@ -1,6 +1,5 @@
 {
   nvim,
-  git,
   stdenv,
   sqlite,
   wrapNeovimUnstable,
@@ -11,9 +10,6 @@
   plugins ? [ ],
   extraPackages ? [ ],
   appName ? "nvim",
-  # plugins added via vim.pack, useful for plugin development
-  # schema: { name = <name>, uri = <any git-compatible uri> }
-  devPlugins ? [ ],
   devMode ? false,
 }:
 let
@@ -36,21 +32,7 @@ let
     }
   ];
 
-  userInitLua =
-    builtins.readFile ../nvim/init.lua
-    + lib.optionalString (devPlugins != [ ]) (
-      let
-        specs = lib.concatMapStringsSep ", " (
-          plugin: "{ name = '${plugin.name}', src = '${plugin.uri}'}"
-        ) devPlugins;
-        names = lib.concatMapStringsSep ", " (plugin: "'${plugin.name}'") devPlugins;
-      in
-      # lua
-      ''
-        vim.pack.add({ ${specs} }, { confirm = false, load = true })
-        vim.pack.update({ ${names} }, { force = true })
-      ''
-    );
+  userInitLua = builtins.readFile ../nvim/init.lua;
 
   # changes with anything nvim loads, the config uses it to detect the first start after a rebuild
   buildId = builtins.hashString "sha256" (
@@ -72,8 +54,7 @@ let
     + userInitLua;
 
   # sqlite is required by some plugins, just add it always
-  # git is required by vim.pack
-  externalPackages = extraPackages ++ [ sqlite ] ++ lib.optionals (devPlugins != [ ]) [ git ];
+  externalPackages = extraPackages ++ [ sqlite ];
 
   wrapperArgs =
     let

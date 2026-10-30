@@ -53,6 +53,25 @@ It runs the neovim package defined in the repo with `plugins` and `extraPackages
 "live" from `~/.config/nvim-dev`, which the devshell links to the `nvim` folder here in the repo.
 This allows for instant feedback and dynamic development just like when using neovim without nix.
 
+### Local plugin checkouts
+
+To try out a local checkout of a plugin in `nvim-dev`, add it to the `checkouts` table in
+`nvim/lua/pde/devplugins.lua`, keyed by the packaged plugin's directory name.
+It replaces the packaged plugin, edits are picked up on restart:
+
+```lua
+local checkouts = {
+    ["nvim-lspconfig"] = "~/Code/nvim-lspconfig",
+}
+```
+
+To build or check the flake against a checkout, override the input instead of editing `flake.nix`.
+Uncommitted changes to tracked files are included, new files need to be `git add`ed:
+
+```bash
+nix build .#nvim --override-input nvim-lspconfig git+file:$HOME/Code/nvim-lspconfig
+```
+
 ## Credits
 
 Inspired by:
