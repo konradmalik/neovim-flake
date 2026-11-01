@@ -1,5 +1,3 @@
-vim.loader.enable()
-
 ---Compare the build baked in by nix with the one seen on the previous start and record the current one.
 ---@return boolean
 local function check_build_changed()
@@ -22,9 +20,14 @@ local M = {}
 ---regenerate their own artifacts before they are used.
 M.build_changed = check_build_changed()
 
+-- Bytecode is keyed by file path and nix store paths change with every build, so entries of old
+-- builds are never hit again and nvim never prunes them. Drop them all, before enable() recreates
+-- the dir (cache writes assume it exists).
 if M.build_changed then
-    vim.loader.reset()
+    vim.fn.delete(vim.loader.path, "rf")
     vim.schedule(function() vim.notify("New build detected, caches reset", vim.log.levels.INFO) end)
 end
+
+vim.loader.enable()
 
 return M
