@@ -5,8 +5,8 @@ local checkouts = {
     -- ["nvim-lspconfig"] = "~/Code/github.com/konradmalik/nvim-lspconfig",
 }
 
--- dev mode only, it has no nix build
-if vim.g.nix_build_id or vim.tbl_isempty(checkouts) then return end
+-- dev mode only, see nvim-dev in nix/default.nix
+if vim.env.NVIM_APPNAME ~= "nvim-dev" or vim.tbl_isempty(checkouts) then return end
 
 for name, path in pairs(checkouts) do
     checkouts[name] = vim.fs.normalize(path)

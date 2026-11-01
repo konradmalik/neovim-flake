@@ -1,5 +1,5 @@
 -- caching needs to be first
-require("pde.loader")
+vim.loader.enable()
 -- before anything loads plugins
 require("pde.devplugins")
 -- colorscheme as soon as possible
