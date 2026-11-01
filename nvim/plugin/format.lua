@@ -53,7 +53,7 @@ local function format(bufnr)
 
     local clients = vim.lsp.get_clients({
         bufnr = bufnr,
-        method = vim.lsp.protocol.Methods.textDocument_formatting,
+        method = "textDocument/formatting",
     })
 
     -- external formatter if one is configured for this filetype

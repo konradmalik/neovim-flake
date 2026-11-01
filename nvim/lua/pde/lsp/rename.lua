@@ -1,5 +1,4 @@
 -- based on https://github.com/folke/snacks.nvim/blob/main/lua/snacks/rename.lua
-local ms = vim.lsp.protocol.Methods
 local timeout_ms = 2000
 
 ---@class pde.lsp.rename
@@ -56,8 +55,8 @@ function M.on_rename_file(from, to, rename)
 
     local clients = vim.lsp.get_clients()
     for _, client in ipairs(clients) do
-        if client:supports_method(ms.workspace_willRenameFiles) then
-            local resp = client:request_sync(ms.workspace_willRenameFiles, changes, timeout_ms, 0)
+        if client:supports_method("workspace/willRenameFiles") then
+            local resp = client:request_sync("workspace/willRenameFiles", changes, timeout_ms, 0)
             if resp and resp.result ~= nil then
                 vim.lsp.util.apply_workspace_edit(resp.result, client.offset_encoding)
             end
@@ -67,8 +66,8 @@ function M.on_rename_file(from, to, rename)
     if rename then rename() end
 
     for _, client in ipairs(clients) do
-        if client:supports_method(ms.workspace_didRenameFiles) then
-            client:notify(ms.workspace_didRenameFiles, changes)
+        if client:supports_method("workspace/didRenameFiles") then
+            client:notify("workspace/didRenameFiles", changes)
         end
     end
 end

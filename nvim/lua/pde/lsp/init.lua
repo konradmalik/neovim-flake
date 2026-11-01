@@ -1,4 +1,3 @@
-local ms = vim.lsp.protocol.Methods
 local keymapper = require("pde.lsp.keymapper")
 
 ---@class pde.lsp.Feature
@@ -35,29 +34,29 @@ local function telescope(picker)
     return function() require("telescope.builtin")[picker]() end
 end
 
----@type table<string, pde.lsp.Feature>
+---@type table<vim.lsp.protocol.Method.ClientToServer, pde.lsp.Feature>
 local features = {
-    [ms.textDocument_codeLens] = require("pde.lsp.capabilities.textDocument_codeLens"),
-    [ms.textDocument_completion] = require("pde.lsp.capabilities.textDocument_completion"),
-    [ms.textDocument_documentHighlight] = require("pde.lsp.capabilities.textDocument_documentHighlight"),
-    [ms.textDocument_foldingRange] = require("pde.lsp.capabilities.textDocument_foldingRange"),
-    [ms.textDocument_formatting] = require("pde.lsp.capabilities.textDocument_formatting"),
-    [ms.textDocument_inlayHint] = require("pde.lsp.capabilities.textDocument_inlayHint"),
+    ["textDocument/codeLens"] = require("pde.lsp.capabilities.textDocument_codeLens"),
+    ["textDocument/completion"] = require("pde.lsp.capabilities.textDocument_completion"),
+    ["textDocument/documentHighlight"] = require("pde.lsp.capabilities.textDocument_documentHighlight"),
+    ["textDocument/foldingRange"] = require("pde.lsp.capabilities.textDocument_foldingRange"),
+    ["textDocument/formatting"] = require("pde.lsp.capabilities.textDocument_formatting"),
+    ["textDocument/inlayHint"] = require("pde.lsp.capabilities.textDocument_inlayHint"),
 
-    [ms.textDocument_documentColor] = builtin(vim.lsp.document_color),
-    [ms.textDocument_inlineCompletion] = builtin(vim.lsp.inline_completion),
-    [ms.textDocument_linkedEditingRange] = builtin(vim.lsp.linked_editing_range),
-    [ms.textDocument_onTypeFormatting] = builtin(vim.lsp.on_type_formatting),
-    [ms.textDocument_semanticTokens_full] = builtin(vim.lsp.semantic_tokens),
+    ["textDocument/documentColor"] = builtin(vim.lsp.document_color),
+    ["textDocument/inlineCompletion"] = builtin(vim.lsp.inline_completion),
+    ["textDocument/linkedEditingRange"] = builtin(vim.lsp.linked_editing_range),
+    ["textDocument/onTypeFormatting"] = builtin(vim.lsp.on_type_formatting),
+    ["textDocument/semanticTokens/full"] = builtin(vim.lsp.semantic_tokens),
 
-    [ms.textDocument_declaration] = map("grd", vim.lsp.buf.declaration, "Go To Declaration"),
-    [ms.textDocument_definition] = map("<c-]>", telescope("lsp_definitions"), "Go To Definition"),
-    [ms.textDocument_documentSymbol] = map("gO", telescope("lsp_document_symbols"), "Document Symbols"),
-    [ms.textDocument_implementation] = map("gri", telescope("lsp_implementations"), "Go To Implementation"),
-    [ms.textDocument_references] = map("grr", telescope("lsp_references"), "Go To References"),
-    [ms.textDocument_signatureHelp] = map("grs", vim.lsp.buf.signature_help, "Signature Help"),
-    [ms.textDocument_typeDefinition] = map("grt", telescope("lsp_type_definitions"), "Type Definition"),
-    [ms.workspace_symbol] = map("gwO", telescope("lsp_dynamic_workspace_symbols"), "Workspace Symbols"),
+    ["textDocument/declaration"] = map("grd", vim.lsp.buf.declaration, "Go To Declaration"),
+    ["textDocument/definition"] = map("<c-]>", telescope("lsp_definitions"), "Go To Definition"),
+    ["textDocument/documentSymbol"] = map("gO", telescope("lsp_document_symbols"), "Document Symbols"),
+    ["textDocument/implementation"] = map("gri", telescope("lsp_implementations"), "Go To Implementation"),
+    ["textDocument/references"] = map("grr", telescope("lsp_references"), "Go To References"),
+    ["textDocument/signatureHelp"] = map("grs", vim.lsp.buf.signature_help, "Signature Help"),
+    ["textDocument/typeDefinition"] = map("grt", telescope("lsp_type_definitions"), "Type Definition"),
+    ["workspace/symbol"] = map("gwO", telescope("lsp_dynamic_workspace_symbols"), "Workspace Symbols"),
 }
 
 -- file rename needs either of two methods, so it lives outside the one-method features table
@@ -65,8 +64,8 @@ local features = {
 ---@param bufnr integer
 ---@return boolean
 local function supports_rename(client, bufnr)
-    return client:supports_method(ms.workspace_willRenameFiles, bufnr)
-        or client:supports_method(ms.workspace_didRenameFiles, bufnr)
+    return client:supports_method("workspace/willRenameFiles", bufnr)
+        or client:supports_method("workspace/didRenameFiles", bufnr)
 end
 
 ---@class pde.lsp

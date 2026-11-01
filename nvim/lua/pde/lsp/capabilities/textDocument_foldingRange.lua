@@ -45,10 +45,7 @@ return {
             group = augroup,
             buffer = bufnr,
             callback = function(args)
-                if
-                    vim.g.foldingimports_enabled
-                    and args.data.method == vim.lsp.protocol.Methods.textDocument_didOpen
-                then
+                if vim.g.foldingimports_enabled and args.data.method == "textDocument/didOpen" then
                     local auwin = vim.fn.bufwinid(args.buf)
                     if vim.api.nvim_win_is_valid(auwin) then vim.lsp.foldclose("imports", auwin) end
                 end
