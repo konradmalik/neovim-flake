@@ -129,9 +129,6 @@ let
       friendly-snippets = buildVim { };
       gitsigns-nvim = buildVim {
         runtimeDeps = [ pkgs.git ];
-        overrideAttrs = {
-          doInstallCheck = true;
-        };
       };
       mini-icons = buildVim { };
       nvim-lspconfig = buildVim { };

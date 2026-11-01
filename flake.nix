@@ -150,7 +150,8 @@
 
                   # busted runs specs through nlua, which bakes this into its shebang.
                   # Point it at the same nightly the config targets so specs can
-                  # exercise nightly-only features. Nothing else here uses it.
+                  # exercise nightly-only features. vimUtils.toVimPlugin also takes
+                  # its lua from here, so plugin builds and require checks match too.
                   neovim-unwrapped = final.nvim-nightly;
                 })
               ]

@@ -1,7 +1,5 @@
 {
   nvim,
-  stdenv,
-  sqlite,
   wrapNeovimUnstable,
   linkFarm,
   lib,
@@ -34,47 +32,41 @@ let
 
   userInitLua = builtins.readFile ../nvim/init.lua;
 
-  # sqlite is required by some plugins, just add it always
-  externalPackages = extraPackages ++ [ sqlite ];
+  # in dev mode init.lua is read live from the linked config dir, but still through
+  # the generated rc so we keep what the wrapper adds (provider settings etc.)
+  devInitLua = # lua
+    ''
+      dofile(vim.fn.stdpath("config") .. "/init.lua")
+    '';
 
-  wrapperArgs =
-    let
-      sqliteLibExt = stdenv.hostPlatform.extensions.sharedLibrary;
-      sqliteLibPath = "${sqlite.out}/lib/libsqlite3${sqliteLibExt}";
-    in
-    [
-      "--set"
-      "NVIM_APPNAME"
-      appName
-      "--set"
-      "LIBSQLITE_CLIB_PATH"
-      "${sqliteLibPath}"
-      "--set"
-      "LIBSQLITE"
-      "${sqliteLibPath}"
-    ]
-    ++ lib.optionals (extraPackages != [ ]) [
-      "--suffix"
-      "PATH"
-      ":"
-      "${lib.makeBinPath externalPackages}"
-    ]
-    ++ lib.optionals (!devMode) [
-      "--prefix"
-      "XDG_CONFIG_DIRS"
-      ":"
-      "${preparedConfig}"
-    ]
-    ++ lib.optionals devMode [
-      "--set"
-      "XDG_CACHE_HOME"
-      "/tmp/${appName}-cache"
-    ];
+  wrapperArgs = [
+    "--set"
+    "NVIM_APPNAME"
+    appName
+  ]
+  ++ lib.optionals (extraPackages != [ ]) [
+    "--suffix"
+    "PATH"
+    ":"
+    "${lib.makeBinPath extraPackages}"
+  ]
+  ++ lib.optionals (!devMode) [
+    "--prefix"
+    "XDG_CONFIG_DIRS"
+    ":"
+    "${preparedConfig}"
+  ]
+  ++ lib.optionals devMode [
+    "--set"
+    "XDG_CACHE_HOME"
+    "/tmp/${appName}-cache"
+  ];
 
   nvim-wrapped = wrapNeovimUnstable nvim {
     inherit plugins wrapperArgs;
-    luaRcContent = if devMode then "" else userInitLua;
-    wrapRc = !devMode;
+    # tells the dev and release wrappers apart in build logs
+    extraName = lib.optionalString devMode "-dev";
+    luaRcContent = if devMode then devInitLua else userInitLua;
   };
 
   isCustomAppName = appName != "nvim";
