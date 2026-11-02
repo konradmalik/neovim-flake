@@ -11,11 +11,24 @@ end
 
 -- HACK: add default border to documentation popup
 -- https://github.com/neovim/neovim/issues/38248
+-- remove once 'completepopup' lands: https://github.com/neovim/neovim/pull/40943
+---@param winid integer?
+local function set_info_border(winid)
+    if winid and winid > 0 then pcall(vim.api.nvim_win_set_config, winid, { border = vim.o.winborder }) end
+end
+
+-- info present up front: popup is created by C before CompleteChanged fires
+vim.api.nvim_create_autocmd("CompleteChanged", {
+    group = vim.api.nvim_create_augroup("pde.completion.info_border", {}),
+    callback = function() set_info_border(vim.fn.complete_info({ "selected" }).preview_winid) end,
+})
+
+-- info from completionItem/resolve: popup is created later via nvim__complete_set
 local orig_complete_set = vim.api.nvim__complete_set
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.api.nvim__complete_set = function(...)
     local result = orig_complete_set(...)
-    if result and result.winid then pcall(vim.api.nvim_win_set_config, result.winid, { border = vim.o.winborder }) end
+    set_info_border(result and result.winid)
     return result
 end
 
