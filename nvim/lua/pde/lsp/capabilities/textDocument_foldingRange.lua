@@ -1,68 +1,78 @@
-vim.g.foldingimports_enabled = false
+local method = "textDocument/foldingRange"
+local foldexpr = "v:lua.vim.lsp.foldexpr()"
+local imports_enabled = false
 
-vim.api.nvim_create_user_command("FoldingImportsToggle", function()
-    vim.g.foldingimports_enabled = not vim.g.foldingimports_enabled
-    vim.notify("Setting imports folding to: " .. tostring(vim.g.foldingimports_enabled), vim.log.levels.INFO)
-end, {
-    desc = "Enable/disable folding imports with lsp",
+---@param win integer
+local function use_lsp(win)
+    vim.wo[win][0].foldmethod = "expr"
+    vim.wo[win][0].foldexpr = foldexpr
+    vim.wo[win][0].foldtext = "v:lua.vim.lsp.foldtext()"
+end
+
+-- back to the global values from folds.lua; anything not set by use_lsp (a modeline, say) stays
+---@param win integer
+local function use_default(win)
+    if vim.wo[win][0].foldexpr ~= foldexpr then return end
+    vim.wo[win][0].foldmethod = vim.go.foldmethod
+    vim.wo[win][0].foldexpr = vim.go.foldexpr
+    vim.wo[win][0].foldtext = vim.go.foldtext
+end
+
+---@param win integer
+---@param bufnr integer
+local function close_imports(win, bufnr)
+    -- foldclose needs the folding provider, which lsp foldexpr creates (scheduled) on first use.
+    -- didOpen is sent before LspAttach, so waiting for it in LspNotify never sees the first open
+    vim.api.nvim_win_call(win, function() vim.lsp.foldexpr(1) end)
+    vim.schedule(function()
+        if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) == bufnr then
+            vim.lsp.foldclose("imports", win)
+        end
+    end)
+end
+
+-- windows opened on the buffer later, or showing it again after a detach while it was hidden
+local augroup = vim.api.nvim_create_augroup("pde-lsp-folding", { clear = true })
+vim.api.nvim_create_autocmd("BufWinEnter", {
+    group = augroup,
+    callback = function(args)
+        local win = vim.api.nvim_get_current_win()
+        if next(vim.lsp.get_clients({ bufnr = args.buf, method = method })) then
+            use_lsp(win)
+        else
+            use_default(win)
+        end
+    end,
+    desc = "Use lsp folds where a client supports them",
 })
 
--- one autocmd per buffer, not per client, so a second supporting client doesn't add another
-local augroup = vim.api.nvim_create_augroup("pde-lsp-folding", { clear = true })
+---@class pde.lsp.Folding: pde.lsp.Feature
+---@field imports pde.lsp.Toggle
 
----@class pde.lsp.FoldOptions
----@field foldmethod string
----@field foldexpr string|function
----@field foldtext string|function
-
----@type table<integer, pde.lsp.FoldOptions>
-local originals_per_win = {}
-
----@type pde.lsp.Feature
+---@type pde.lsp.Folding
 return {
     attach = function(_, bufnr)
-        local win = vim.fn.bufwinid(bufnr)
-        -- don't overwrite: a second supporting client would record the lsp values as the originals
-        if vim.api.nvim_win_is_valid(win) and not originals_per_win[win] then
-            originals_per_win[win] = {
-                foldmethod = vim.wo[win][0].foldmethod,
-                foldexpr = vim.wo[win][0].foldexpr,
-                foldtext = vim.wo[win][0].foldtext,
-            }
-            -- NOTE this change first removes the foldcolumn
-            -- then adds it only after lsp responds with folds
-            -- which causes the current line to update, but the rest not
-            -- this has a weird effect of text moving right as we go down
-            -- a workaround is to force foldcolumn to some constant number, done in folds.lua
-            vim.wo[win][0].foldmethod = "expr"
-            vim.wo[win][0].foldexpr = vim.lsp.foldexpr
-            vim.wo[win][0].foldtext = vim.lsp.foldtext
+        for _, win in ipairs(vim.fn.win_findbuf(bufnr)) do
+            use_lsp(win)
+            if imports_enabled then close_imports(win, bufnr) end
         end
-
-        vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-        vim.api.nvim_create_autocmd("LspNotify", {
-            desc = "Folding imports",
-            group = augroup,
-            buffer = bufnr,
-            callback = function(args)
-                if vim.g.foldingimports_enabled and args.data.method == "textDocument/didOpen" then
-                    local auwin = vim.fn.bufwinid(args.buf)
-                    if vim.api.nvim_win_is_valid(auwin) then vim.lsp.foldclose("imports", auwin) end
-                end
-            end,
-        })
     end,
 
     detach = function(_, bufnr)
-        vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-        local win = vim.fn.bufwinid(bufnr)
-        -- attach only records originals when the buffer was displayed, and the
-        -- window may be gone or be a different one by now
-        local originals = originals_per_win[win]
-        if not originals or not vim.api.nvim_win_is_valid(win) then return end
-        originals_per_win[win] = nil
-        vim.wo[win][0].foldmethod = originals.foldmethod
-        vim.wo[win][0].foldexpr = originals.foldexpr
-        vim.wo[win][0].foldtext = originals.foldtext
+        for _, win in ipairs(vim.fn.win_findbuf(bufnr)) do
+            use_default(win)
+        end
     end,
+
+    imports = {
+        enable = function(enable)
+            imports_enabled = enable ~= false
+            if not imports_enabled then return end
+            -- buffers attached before enabling won't attach again, so close their imports now
+            for _, win in ipairs(vim.api.nvim_list_wins()) do
+                if vim.wo[win][0].foldexpr == foldexpr then close_imports(win, vim.api.nvim_win_get_buf(win)) end
+            end
+        end,
+        is_enabled = function() return imports_enabled end,
+    },
 }

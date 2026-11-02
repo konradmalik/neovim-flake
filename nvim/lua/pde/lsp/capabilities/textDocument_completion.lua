@@ -25,10 +25,9 @@ local function is_deprecated(item)
     return item.deprecated or vim.list_contains(item.tags or {}, vim.lsp.protocol.CompletionTag.Deprecated)
 end
 
+-- no detach: vim.lsp.completion cleans up itself on LspDetach
 ---@type pde.lsp.Feature
 return {
-    per_client = true,
-
     attach = function(client, bufnr)
         local autotrigger = not vim.bo[bufnr].autocomplete
         -- NOTE: what is this, compared to just vim.bo.autocomplete with omnifunc (that is already set without the below line)?
@@ -47,6 +46,4 @@ return {
             end,
         })
     end,
-
-    detach = function(client, bufnr) vim.lsp.completion.enable(false, client.id, bufnr) end,
 }
