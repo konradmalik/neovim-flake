@@ -2,20 +2,9 @@ local keymapper = require("pde.lsp.keymapper")
 
 ---@class pde.lsp.Feature
 ---@field attach fun(client: vim.lsp.Client, bufnr: integer)
----@field detach fun(client: vim.lsp.Client, bufnr: integer)
----@field per_client? boolean detach for every client, not only the last one supporting the method
+---@field detach? fun(client: vim.lsp.Client, bufnr: integer) runs when the last client supporting the method leaves
 
--- takes the module itself (not a string name), so lua_ls checks the field access
--- and the enable() call against this type.
--- a module that doesn't fit this shape gets a hand-written entry instead
----@param mod { enable: fun(enable?: boolean, filter?: { bufnr?: integer }) }
----@return pde.lsp.Feature
-local function builtin(mod)
-    return {
-        attach = function(_, bufnr) mod.enable(true, { bufnr = bufnr }) end,
-        detach = function(_, bufnr) mod.enable(false, { bufnr = bufnr }) end,
-    }
-end
+---@alias pde.lsp.Toggle { enable: fun(enable?: boolean), is_enabled: fun(): boolean }
 
 ---@param lhs string
 ---@param rhs function
@@ -34,21 +23,15 @@ local function telescope(picker)
     return function() require("telescope.builtin")[picker]() end
 end
 
+local document_highlight = require("pde.lsp.capabilities.textDocument_documentHighlight")
+local folding = require("pde.lsp.capabilities.textDocument_foldingRange")
+
 ---@type table<vim.lsp.protocol.Method.ClientToServer, pde.lsp.Feature>
 local features = {
-    ["textDocument/codeLens"] = require("pde.lsp.capabilities.textDocument_codeLens"),
     ["textDocument/completion"] = require("pde.lsp.capabilities.textDocument_completion"),
-    ["textDocument/documentHighlight"] = require("pde.lsp.capabilities.textDocument_documentHighlight"),
-    ["textDocument/foldingRange"] = require("pde.lsp.capabilities.textDocument_foldingRange"),
-    ["textDocument/formatting"] = require("pde.lsp.capabilities.textDocument_formatting"),
-    ["textDocument/inlayHint"] = require("pde.lsp.capabilities.textDocument_inlayHint"),
+    ["textDocument/foldingRange"] = folding,
 
-    ["textDocument/documentColor"] = builtin(vim.lsp.document_color),
-    ["textDocument/inlineCompletion"] = builtin(vim.lsp.inline_completion),
-    ["textDocument/linkedEditingRange"] = builtin(vim.lsp.linked_editing_range),
-    ["textDocument/onTypeFormatting"] = builtin(vim.lsp.on_type_formatting),
-    ["textDocument/semanticTokens/full"] = builtin(vim.lsp.semantic_tokens),
-
+    ["textDocument/codeLens"] = map("grl", vim.lsp.codelens.run, "CodeLens run"),
     ["textDocument/declaration"] = map("grd", vim.lsp.buf.declaration, "Go To Declaration"),
     ["textDocument/definition"] = map("<c-]>", telescope("lsp_definitions"), "Go To Definition"),
     ["textDocument/documentSymbol"] = map("gO", telescope("lsp_document_symbols"), "Document Symbols"),
@@ -58,6 +41,32 @@ local features = {
     ["textDocument/typeDefinition"] = map("grt", telescope("lsp_type_definitions"), "Type Definition"),
     ["workspace/symbol"] = map("gwO", telescope("lsp_dynamic_workspace_symbols"), "Workspace Symbols"),
 }
+
+-- builtin features, all set explicitly so a changed default doesn't go unnoticed.
+-- enabling without a bufnr is global and also applies to clients that attach later
+-- reference counts are annoying most of the time, but sometimes I might want this
+vim.lsp.codelens.enable(false)
+vim.lsp.document_color.enable(true)
+vim.lsp.inlay_hint.enable(false)
+vim.lsp.inline_completion.enable(true)
+vim.lsp.linked_editing_range.enable(true)
+vim.lsp.on_type_formatting.enable(true)
+vim.lsp.semantic_tokens.enable(true)
+
+---@param cmd string
+---@param name string
+---@param mod pde.lsp.Toggle
+local function toggle_cmd(cmd, name, mod)
+    vim.api.nvim_create_user_command(cmd, function()
+        mod.enable(not mod.is_enabled())
+        vim.notify("Setting " .. name .. " to: " .. tostring(mod.is_enabled()), vim.log.levels.INFO)
+    end, { desc = "Enable/disable " .. name .. " with lsp" })
+end
+
+toggle_cmd("CodeLensToggle", "codelens", vim.lsp.codelens)
+toggle_cmd("InlayHintsToggle", "inlayhints", vim.lsp.inlay_hint)
+toggle_cmd("DocumentHighlightToggle", "document highlight", document_highlight)
+toggle_cmd("FoldingImportsToggle", "imports folding", folding.imports)
 
 -- file rename needs either of two methods, so it lives outside the one-method features table
 ---@param client vim.lsp.Client
@@ -103,7 +112,7 @@ function M.detach(client, bufnr)
 
     for method, feature in pairs(features) do
         local function supports(c) return c:supports_method(method, bufnr) end
-        if (feature.per_client and supports(client)) or is_last(supports) then feature.detach(client, bufnr) end
+        if feature.detach and is_last(supports) then feature.detach(client, bufnr) end
     end
 
     if is_last(function(c) return supports_rename(c, bufnr) end) then keymapper.del(bufnr, "grfn") end

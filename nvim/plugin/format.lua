@@ -60,8 +60,12 @@ local function format(bufnr)
     if pde_format.has_formatter(bufnr) then
         pde_format.format(bufnr, timeout_ms)
         trim_trailing_blank_lines(bufnr, true)
+    -- several LSP formatters would format in turn; refuse rather than guess which one is right
+    elseif #clients > 1 then
+        local names = table.concat(vim.tbl_map(function(c) return c.name end, clients), ", ")
+        vim.notify("not formatting: several lsp clients can format this buffer: " .. names, vim.log.levels.ERROR)
     -- then LSP if available
-    elseif #clients > 0 then
+    elseif #clients == 1 then
         vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = timeout_ms })
         trim_trailing_blank_lines(bufnr, true)
     -- fallback: use formatexpr/formatprg via gq

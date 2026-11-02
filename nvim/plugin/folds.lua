@@ -1,3 +1,5 @@
+-- fixed, not "auto": lsp folds arrive after the window switches to foldexpr,
+-- and "auto" would make the column (and the text) jump while they fill in
 vim.o.foldcolumn = "1"
 vim.opt.fillchars = {
     eob = " ",
