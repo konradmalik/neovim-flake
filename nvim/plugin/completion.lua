@@ -31,11 +31,11 @@ local file_completion_keys = vim.keycode("<C-x><C-f>")
 ---the other. Both mappings work at any point of an insert session, including while
 ---a completion popup is open, so the two switch back and forth rather than set a
 ---mode that has to be unset again.
----@param prepare fun(buf: integer)
+---@param prepare fun()
 ---@return fun()
 local function complete_path(prepare)
     return function()
-        prepare(vim.api.nvim_get_current_buf())
+        prepare()
         vim.api.nvim_feedkeys(file_completion_keys, "n", false)
     end
 end

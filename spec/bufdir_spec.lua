@@ -9,6 +9,9 @@ local function edit(root, relative)
     return vim.api.nvim_get_current_buf()
 end
 
+---Fire what leaving insert mode fires, without having to be in insert mode.
+local function leave_insert() vim.api.nvim_exec_autocmds("ModeChanged", { pattern = "i:n" }) end
+
 describe("bufdir", function()
     local root
     -- the busted lpath is relative, so the repo cwd has to be put back after each
@@ -68,16 +71,16 @@ describe("bufdir", function()
 
     describe("use", function()
         it("points the cwd at the buffer's own directory", function()
-            local buf = edit(root, "sub/main.lua")
-            assert.is_true(bufdir.use(buf))
+            edit(root, "sub/main.lua")
+            assert.is_true(bufdir.use())
             assert.are.same(vim.fs.joinpath(root, "sub"), vim.fn.getcwd())
         end)
 
         it("makes file completion resolve against the buffer, not the project root", function()
-            local buf = edit(root, "sub/main.lua")
+            edit(root, "sub/main.lua")
             assert.are.same({ "sub/" }, vim.fn.getcompletion("s", "file"))
 
-            bufdir.use(buf)
+            bufdir.use()
             assert.are.same({ "sibling.txt" }, vim.fn.getcompletion("s", "file"))
             assert.are.same({ "./deep/", "./main.lua", "./sibling.txt" }, vim.fn.getcompletion("./", "file"))
             assert.are.same({ "../root_level.txt", "../sub/" }, vim.fn.getcompletion("../", "file"))
@@ -85,58 +88,77 @@ describe("bufdir", function()
 
         it("restores the cwd when insert mode ends", function()
             local buf = edit(root, "sub/main.lua")
-            bufdir.use(buf)
+            bufdir.use()
 
-            vim.api.nvim_exec_autocmds("InsertLeave", { buffer = buf })
+            leave_insert()
             assert.are.same(root, vim.fn.getcwd())
             assert.are.same(0, vim.fn.haslocaldir(-1, -1, buf))
         end)
 
-        -- :bcd is documented for pinning a buffer to its project root, so a swap must
-        -- hand that back rather than unset it, see :h project-dir
-        it("puts back a pre-existing buffer-local directory", function()
+        -- re-triggering completion to descend a level must not strand the buffer in
+        -- the swapped-in directory
+        it("can be re-triggered while swapped", function()
             local buf = edit(root, "sub/main.lua")
-            vim.cmd.bcd(vim.fn.fnameescape(root))
-
-            bufdir.use(buf)
+            bufdir.use()
+            assert.is_true(bufdir.use())
             assert.are.same(vim.fs.joinpath(root, "sub"), vim.fn.getcwd())
 
-            vim.api.nvim_exec_autocmds("InsertLeave", { buffer = buf })
-            assert.are.same(root, vim.fn.getcwd())
-            assert.are.same(1, vim.fn.haslocaldir(-1, -1, buf))
-        end)
-
-        -- re-triggering completion to descend a level must not save the swapped-in
-        -- directory as the one to restore, which would strand the buffer in it
-        it("keeps the original directory when re-triggered while swapped", function()
-            local buf = edit(root, "sub/main.lua")
-            bufdir.use(buf)
-            assert.is_true(bufdir.use(buf))
-            assert.are.same(vim.fs.joinpath(root, "sub"), vim.fn.getcwd())
-
-            vim.api.nvim_exec_autocmds("InsertLeave", { buffer = buf })
+            leave_insert()
             assert.are.same(root, vim.fn.getcwd())
             assert.are.same(0, vim.fn.haslocaldir(-1, -1, buf))
         end)
 
-        -- getcwd() reports the window-local directory for a buffer that has none of
-        -- its own, which must not be handed back as if it were a bcd
-        it("does not turn a window-local directory into a buffer-local one", function()
+        it("leaves a window-local directory in effect afterwards", function()
             local buf = edit(root, "sub/main.lua")
             local deep = vim.fs.joinpath(root, "sub", "deep")
             vim.cmd.lcd(vim.fn.fnameescape(deep))
 
-            bufdir.use(buf)
-            vim.api.nvim_exec_autocmds("InsertLeave", { buffer = buf })
+            bufdir.use()
+            leave_insert()
             assert.are.same(0, vim.fn.haslocaldir(-1, -1, buf))
             assert.are.same(deep, vim.fn.getcwd())
         end)
 
+        it("restores the cwd when replace mode ends", function()
+            local buf = edit(root, "sub/main.lua")
+            bufdir.use()
+
+            vim.api.nvim_exec_autocmds("ModeChanged", { pattern = "R:n" })
+            assert.are.same(0, vim.fn.haslocaldir(-1, -1, buf))
+        end)
+
+        it("stays swapped when switching between insert and replace mode", function()
+            edit(root, "sub/main.lua")
+            bufdir.use()
+
+            vim.api.nvim_exec_autocmds("ModeChanged", { pattern = "i:R" })
+            assert.are.same(vim.fs.joinpath(root, "sub"), vim.fn.getcwd())
+        end)
+
+        it("leaves no autocmds behind across insert sessions", function()
+            edit(root, "sub/main.lua")
+            local before = #vim.api.nvim_get_autocmds({ group = "pde-bufdir" })
+            for _ = 1, 3 do
+                bufdir.use()
+                leave_insert()
+            end
+            assert.are.same(before, #vim.api.nvim_get_autocmds({ group = "pde-bufdir" }))
+        end)
+
+        it("does not fire DirChanged for the swap", function()
+            edit(root, "sub/main.lua")
+            local fired = 0
+            local id = vim.api.nvim_create_autocmd("DirChanged", { callback = function() fired = fired + 1 end })
+            bufdir.use()
+            leave_insert()
+            vim.api.nvim_del_autocmd(id)
+            assert.are.same(0, fired)
+        end)
+
         it("leaves the cwd alone for a buffer with no usable directory", function()
             vim.cmd.enew()
-            local buf = vim.api.nvim_get_current_buf()
 
-            assert.is_false(bufdir.use(buf))
+            assert.is_false(bufdir.use())
             assert.are.same(root, vim.fn.getcwd())
         end)
 
@@ -145,8 +167,8 @@ describe("bufdir", function()
             vim.fn.mkdir(odd, "p")
             vim.fn.writefile({}, vim.fs.joinpath(odd, "x.txt"))
 
-            local buf = edit(root, "sub/we%ird #dir/x.txt")
-            assert.is_true(bufdir.use(buf))
+            edit(root, "sub/we%ird #dir/x.txt")
+            assert.is_true(bufdir.use())
             assert.are.same(odd, vim.fn.getcwd())
             assert.are.same({ "x.txt" }, vim.fn.getcompletion("x", "file"))
         end)
@@ -155,46 +177,36 @@ describe("bufdir", function()
     describe("restore", function()
         it("puts the cwd back without waiting for insert mode to end", function()
             local buf = edit(root, "sub/main.lua")
-            bufdir.use(buf)
+            bufdir.use()
 
-            bufdir.restore(buf)
+            bufdir.restore()
             assert.are.same(root, vim.fn.getcwd())
             assert.are.same(0, vim.fn.haslocaldir(-1, -1, buf))
         end)
 
-        it("puts back a pre-existing buffer-local directory", function()
+        -- insert mode ended in another buffer, so nothing undid the swap yet
+        it("undoes a swap left in a buffer switched away from mid-insert", function()
             local buf = edit(root, "sub/main.lua")
-            vim.cmd.bcd(vim.fn.fnameescape(root))
-            bufdir.use(buf)
+            bufdir.use()
+            edit(root, "root_level.txt")
+            leave_insert()
 
-            bufdir.restore(buf)
+            vim.cmd.buffer(buf)
+            bufdir.restore()
             assert.are.same(root, vim.fn.getcwd())
-            assert.are.same(1, vim.fn.haslocaldir(-1, -1, buf))
+            assert.are.same(0, vim.fn.haslocaldir(-1, -1, buf))
         end)
 
-        -- the mapping calls this unconditionally, so it must not clear a project-dir
-        -- bcd that no swap of ours replaced
-        it("leaves a directory it did not swap in alone", function()
-            local buf = edit(root, "sub/main.lua")
-            local deep = vim.fs.joinpath(root, "sub", "deep")
-            vim.cmd.bcd(vim.fn.fnameescape(deep))
-
-            bufdir.restore(buf)
-            assert.are.same(deep, vim.fn.getcwd())
-            assert.are.same(1, vim.fn.haslocaldir(-1, -1, buf))
-        end)
-
-        -- switching between the two mappings mid-insert leaves a second InsertLeave
-        -- autocmd behind, which must not undo the swap the later one put in place
+        -- switching between the two mappings mid-insert must allow a fresh swap
         it("allows swapping in again afterwards", function()
             local buf = edit(root, "sub/main.lua")
-            bufdir.use(buf)
-            bufdir.restore(buf)
+            bufdir.use()
+            bufdir.restore()
 
-            assert.is_true(bufdir.use(buf))
+            assert.is_true(bufdir.use())
             assert.are.same(vim.fs.joinpath(root, "sub"), vim.fn.getcwd())
 
-            vim.api.nvim_exec_autocmds("InsertLeave", { buffer = buf })
+            leave_insert()
             assert.are.same(root, vim.fn.getcwd())
             assert.are.same(0, vim.fn.haslocaldir(-1, -1, buf))
         end)
