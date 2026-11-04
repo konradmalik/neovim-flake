@@ -605,11 +605,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1793203294,
-        "narHash": "sha256-0hn/X9M2/ovP49giMykKe/S+NvNmYaMvMfuICMiSxhA=",
+        "lastModified": 1793798085,
+        "narHash": "sha256-CeXYaG1KACKCkYBlrpU8vf1RThB5lr5iY15Pm5f7P8w=",
         "owner": "konradmalik",
         "repo": "sops.nvim",
-        "rev": "895fe15a35d67c4ffe73e266715e6a6256ed1390",
+        "rev": "7de29cb4625ac9529b46a894688029cd0cb78966",
         "type": "github"
       },
       "original": {
