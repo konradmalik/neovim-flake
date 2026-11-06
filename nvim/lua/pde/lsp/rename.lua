@@ -47,8 +47,8 @@ function M.on_rename_file(from, to, rename)
     local changes = {
         files = {
             {
-                oldUri = vim.uri_from_fname(from),
-                newUri = vim.uri_from_fname(to),
+                oldUri = vim.uri.from_fname(from),
+                newUri = vim.uri.from_fname(to),
             },
         },
     }
