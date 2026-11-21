@@ -15,7 +15,6 @@
     };
     shfmt = {
       enable = true;
-      useEditorConfig = true;
       includes = [ "*.sh" ];
     };
     shellcheck = {
